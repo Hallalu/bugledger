@@ -13,6 +13,7 @@ Agent instructions: fetch /AGENT.md and follow the protocol. Report back with PO
 - [AGENT.md](https://bugledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
 - POST https://bugledger.coconvo.workers.dev/api/checks : record that you checked an app (needs header x-ledger-key)
 - GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
+- Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
 
 ## Human pages
 - [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, and Check-log panels

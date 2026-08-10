@@ -59,6 +59,17 @@ curl -s -X POST https://bugledger.coconvo.workers.dev/api/checks \
 ```
 Or, to log the scanner's own findings automatically: `node ~/BugLedger/scan.mjs . --app "Hallalu CRM" --log`.
 
+## Show your work live (optional but nice)
+While you do all of the above, you can stream progress to a live board the user watches at
+`https://bugledger.coconvo.workers.dev/live`:
+```bash
+node ~/BugLedger/worklog.mjs start --app "APP" --project "$(basename "$PWD")" --title "Checking APP vs the ledger" --tasks "Pull checklist|Check each bug|Run detectors|Log the pass"
+node ~/BugLedger/worklog.mjs step 1 --current "checking the localStorage scoping"
+node ~/BugLedger/worklog.mjs done 1
+node ~/BugLedger/worklog.mjs finish
+```
+Each call posts to `POST /api/session`; the board polls every ~1.5s and ticks tasks off as you go.
+
 ## Step 4 — Tell the user
 Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the
 security status, and confirm the log was posted (the response includes an `id`). The log shows up
