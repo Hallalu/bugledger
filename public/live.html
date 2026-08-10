@@ -100,58 +100,96 @@
   <div class="foot">Live worklog · agents stream here with <a href="AGENT.md">worklog.mjs</a> · <a href="/">back to the ledger</a></div>
 </div>
 <script>
-  var prev = {};              // key sid:idx -> status, for tick-pop detection
-  var startedMap = {};        // sid -> started ms (for elapsed clock)
   var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
   function ago(ms){ var s=Math.max(0,Math.floor(ms/1000)); if(s<60) return s+'s'; var m=Math.floor(s/60); if(m<60) return m+'m '+(s%60)+'s'; var h=Math.floor(m/60); return h+'h '+(m%60)+'m'; }
-
-  function icon(t){
-    if(t.status==='done') return '<span class="ic">✓</span>';
-    if(t.status==='active') return '<span class="ic"><span class="spin"></span></span>';
-    return '<span class="ic">•</span>';
+  function iconHTML(status){
+    if(status==='done') return '✓';
+    if(status==='active') return '<span class="spin"></span>';
+    return '•';
   }
-  function card(s, now){
-    var live = s.live, done = s.status==='done';
-    var st = done ? '<span class="status done">✓ done</span>'
-      : live ? '<span class="status live"><span class="pip"></span>live</span>'
-             : '<span class="status idle">idle</span>';
-    var tasks = (s.tasks||[]).map(function(t,i){
-      var key = s.id+':'+i, pop = (prev[key] && prev[key]!=='done' && t.status==='done') ? ' pop' : '';
-      return '<li class="task '+t.status+pop+'">'+icon(t)+'<span class="tx">'+esc(t.text)+'</span></li>';
-    }).join('');
-    var total = s.total||(s.tasks||[]).length, dn = s.done||0;
-    var pct = total? Math.round(dn/total*100):0;
-    var elapsed = ago((now||Date.now()) - (s.started||now));
-    return '<section class="card">'+
-      '<div class="chead">'+st+
-        '<div class="meta"><b>'+esc(s.app||'')+'</b>'+(s.project?' · '+esc(s.project):'')+'<br>'+
-          (done?'finished':'started')+' '+elapsed+(done?' ago':' ago')+'</div></div>'+
-      (s.title?'<div class="title">'+esc(s.title)+'</div>':'')+
-      '<div class="current">'+esc(s.current||'…')+(live?'<span class="car"></span>':'')+'</div>'+
-      '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
-      '<div class="barlbl"><span>'+dn+' / '+total+' done</span><span>'+pct+'%</span></div>'+
-      '<ul class="tasks">'+tasks+'</ul>'+
-      (s.note?'<div class="note">'+esc(s.note)+'</div>':'')+
-    '</section>';
+  var board = document.getElementById('board');
+  var cards = {};      // id -> {el, refs, started, prevTasks:[status], prevCurrent, offset}
+  var skew = 0;        // serverNow - clientNow, so elapsed clocks stay honest between polls
+
+  function makeCard(s){
+    var el = document.createElement('section'); el.className='card'; el.dataset.id=s.id;
+    el.innerHTML =
+      '<div class="chead"><span class="status"></span><div class="meta"></div></div>'+
+      '<div class="title"></div>'+
+      '<div class="current"></div>'+
+      '<div class="bar"><i></i></div>'+
+      '<div class="barlbl"><span class="dn"></span><span class="pct"></span></div>'+
+      '<ul class="tasks"></ul>'+
+      '<div class="note" hidden></div>';
+    var refs = { status:el.querySelector('.status'), meta:el.querySelector('.meta'), title:el.querySelector('.title'),
+      current:el.querySelector('.current'), bar:el.querySelector('.bar>i'), dn:el.querySelector('.dn'),
+      pct:el.querySelector('.pct'), tasks:el.querySelector('.tasks'), note:el.querySelector('.note') };
+    return { el:el, refs:refs, prevTasks:[], prevCurrent:null, started:s.started };
+  }
+
+  function renderTasks(c, tasks){
+    var ul = c.refs.tasks;
+    if(ul.children.length !== tasks.length){        // structure changed → rebuild rows
+      ul.innerHTML = tasks.map(function(t){ return '<li class="task '+t.status+'"><span class="ic">'+iconHTML(t.status)+'</span><span class="tx">'+esc(t.text)+'</span></li>'; }).join('');
+    } else {
+      tasks.forEach(function(t,i){
+        var li = ul.children[i], was = c.prevTasks[i];
+        if(li.className.indexOf(t.status)<0 || was!==t.status){
+          li.className = 'task '+t.status + ((was && was!=='done' && t.status==='done') ? ' pop' : '');
+          li.querySelector('.ic').innerHTML = iconHTML(t.status);
+          if(li.className.indexOf('pop')>=0) setTimeout((function(x){return function(){x.classList.remove('pop');};})(li), 600);
+        }
+        var tx=li.querySelector('.tx'); if(tx.textContent!==t.text) tx.textContent=t.text;
+      });
+    }
+    c.prevTasks = tasks.map(function(t){return t.status;});
+  }
+
+  function update(c, s, now){
+    var live=s.live, done=s.status==='done';
+    c.refs.status.className = 'status '+(done?'done':live?'live':'idle');
+    c.refs.status.innerHTML = done?'✓ done':live?'<span class="pip"></span>live':'idle';
+    c.started = s.started;
+    c.refs.meta.innerHTML = '<b>'+esc(s.app||'')+'</b>'+(s.project?' · '+esc(s.project):'')+'<br>'+
+      (done?'finished ':'started ')+ago(now-(s.started||now))+' ago';
+    if(c.refs.title.textContent!==(s.title||'')) c.refs.title.textContent=s.title||'';
+    c.refs.title.hidden = !s.title;
+    var cur=(s.current||'…');
+    if(c.prevCurrent!==cur){                          // fade the bold line only when it changes
+      c.refs.current.style.opacity=0;
+      setTimeout(function(){ c.refs.current.innerHTML=esc(cur)+(live?'<span class="car"></span>':''); c.refs.current.style.opacity=1; }, 140);
+      c.prevCurrent=cur;
+    } else if(!c.refs.current.querySelector('.car') && live){ c.refs.current.innerHTML=esc(cur)+'<span class="car"></span>'; }
+    var total=s.total||(s.tasks||[]).length, dn=s.done||0, pct=total?Math.round(dn/total*100):0;
+    c.refs.bar.style.width=pct+'%';
+    c.refs.dn.textContent=dn+' / '+total+' done'; c.refs.pct.textContent=pct+'%';
+    renderTasks(c, s.tasks||[]);
+    if(s.note){ c.refs.note.hidden=false; c.refs.note.textContent=s.note; } else c.refs.note.hidden=true;
   }
 
   function render(data){
-    var board = document.getElementById('board');
-    var sessions = (data && data.sessions) || [];
-    // active/live first, then most-recently updated
+    var sessions=(data&&data.sessions)||[];
     sessions.sort(function(a,b){ return (b.live?1:0)-(a.live?1:0) || b.updated-a.updated; });
+    var empty=document.getElementById('emptyState');
     if(!sessions.length){
-      board.innerHTML = '<div class="empty"><h1>No live work right now</h1>'+
-        '<p>When an agent runs <code>worklog.mjs</code> (or <code>/showwork</code>) you\'ll watch its tasks tick off here in real time.</p></div>';
-      prev = {}; return;
+      Object.keys(cards).forEach(function(id){ cards[id].el.remove(); delete cards[id]; });
+      if(!empty){ board.innerHTML='<div class="empty" id="emptyState"><h1>No live work right now</h1>'+
+        '<p>When an agent runs <code>worklog.mjs</code> (or <code>/showwork</code>) you\'ll watch its tasks tick off here in real time.</p></div>'; }
+      document.getElementById('pollstate').textContent='watching…'; return;
     }
-    var now = data.now || Date.now();
-    board.innerHTML = sessions.map(function(s){ startedMap[s.id]=s.started; return card(s, now); }).join('');
-    // record statuses for next diff (after paint so .pop plays once)
-    var np = {};
-    sessions.forEach(function(s){ (s.tasks||[]).forEach(function(t,i){ np[s.id+':'+i]=t.status; }); });
-    prev = np;
-    document.getElementById('pollstate').textContent = sessions.some(function(s){return s.live;}) ? 'live' : 'watching…';
+    if(empty) empty.remove();
+    if(data.now) skew = data.now - Date.now();
+    var now=Date.now()+skew, seen={};
+    sessions.forEach(function(s){
+      seen[s.id]=1;
+      var c=cards[s.id];
+      if(!c){ c=makeCard(s); cards[s.id]=c; board.appendChild(c.el); }
+      update(c, s, now);
+    });
+    Object.keys(cards).forEach(function(id){ if(!seen[id]){ cards[id].el.remove(); delete cards[id]; } });
+    // keep DOM order = sorted order
+    sessions.forEach(function(s){ board.appendChild(cards[s.id].el); });
+    document.getElementById('pollstate').textContent = sessions.some(function(s){return s.live;})?'live':'watching…';
   }
 
   function poll(){
@@ -160,10 +198,6 @@
       .catch(function(){ document.getElementById('pollstate').textContent='reconnecting…'; });
   }
   poll(); setInterval(poll, 1500);
-  // local elapsed ticker (keeps the clock moving between polls)
-  setInterval(function(){
-    document.querySelectorAll('.card').forEach(function(){});
-  }, 1000);
 </script>
 </body>
 </html>

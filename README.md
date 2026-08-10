@@ -107,6 +107,25 @@ Check-logs are stored in D1 (`bugledger-checks`) and render on the site's **✅ 
 The write token + base URL live in `~/.bugledger.json` (machine-local); the worker holds the matching
 `LEDGER_WRITE_TOKEN` secret so random callers can't write.
 
+## Show your work live — the `/live` board
+
+Any agent can stream what it's doing, in parallel with the work, to a beautiful live board the user
+watches at **[bugledger.coconvo.workers.dev/live](https://bugledger.coconvo.workers.dev/live)** — a bold
+"doing now" line and tasks ticking off in real time (aurora-glass, polls ~1.5s). A pulsing "● live"
+banner also appears on the main ledger while a session is active.
+
+Say **"show your work in bugledger"** in any project, or run the `/showwork` command. Under the hood it's
+the `worklog.mjs` helper:
+```bash
+node ~/BugLedger/worklog.mjs start --app "Aprizely" --project aprizely \
+     --title "Fix the unlock keypad" --tasks "Center numbers|Tuck letters|Rename button|Verify"
+node ~/BugLedger/worklog.mjs step 0 --current "centering each digit in .key"   # earlier→done, this→active
+node ~/BugLedger/worklog.mjs done 0
+node ~/BugLedger/worklog.mjs finish
+```
+Each call POSTs to `/api/session` (D1 `sessions` table, token-gated). `GET /api/sessions?active=1` powers
+the board. Per-repo state lives in `./.worklog.json`.
+
 ## Rebuild the site data
 
 `public/data.js`, `public/data-sec.js`, `public/data-scan.js`, `BUGS.md`, `CHECKLIST.md` and
