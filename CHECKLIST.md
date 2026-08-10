@@ -1,4 +1,4 @@
-# BUG REGRESSION CHECKLIST — 304 known bugs across 14 apps
+# BUG REGRESSION CHECKLIST — 314 known bugs across 15 apps
 # Paste this into any build session and re-check each item (bugs recur).
 # Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
 
@@ -19,8 +19,9 @@
 - [ ] [low/open] L6 Unlock codes are 64-bit-tag bearer tokens with no expiry — mintCode appends only the first 8 HMAC bytes; verifyCode never checks the embedded issue-day f…
 - [ ] [low/open] L7 Dead code webapp/public/app.js with weaker save()/esc() — Not referenced by index.html; defines a weaker save() that writes state to the plaintext guest…
 
-## Finished. (135)
+## Finished. (138)
 - [ ] Anon could enumerate every user's media files — A signed-out user could list('') the media bucket and enumerate all users' folders and files.
+- [ ] Anthropic API key survived account switch (next user bills previous) — After switching accounts on a shared device, the previous user's saved Anthropic API key persi…
 - [ ] Could not post multiple / photo stories — Posting more than one story (specifically photo stories) failed with 'new row violates row-lev…
 - [ ] Cross-account local data leak on shared device — Signing into a second account on the same device exposed the first account's countdowns, notes…
 - [ ] Cross-user data leak on account switch — After switching accounts locally, a user saw another user's celebration countdowns.
@@ -97,6 +98,7 @@
 - [ ] Every-boot cache purge re-downloaded Whisper model — Each visit forced a ~40MB Whisper model re-download.
 - [ ] Redundant duplicate profile fetches — 250+ duplicate profile fetches were issued per session.
 - [ ] Screen recording freezes in a background tab — Recordings froze whenever the tab was hidden or backgrounded.
+- [ ] Screen recordings smeared and dropped frames from low bitrate and oversized canvas — 1080p+ screen text looked smeared in recordings, and frames were silently dropped on 4K/5K scr…
 - [ ] Tracker Edit did nothing then lagged ~1s before opening — Clicking Edit on a tracker appeared to do nothing, then the edit screen opened after a lag.
 - [ ] '20 free' credits wording was incorrect — Copy said accounts start with 20 free when they actually start with 5.
 - [ ] 'Add another tracker' button disappeared when trackers existed — The tracker builder hid the add button once trackers already existed.
@@ -154,9 +156,10 @@
 - [ ] Downloaded webm has infinite/no duration — Downloaded recordings had no duration header and wouldn't seek.
 - [ ] fix-webm-duration dependency dropped from package.json — The Cloudflare deploy would have broken even though local builds passed.
 - [ ] Password-reset emails sent from an unverified domain — The send-reset function would have its emails rejected by Resend.
+- [ ] Shared-Supabase table collision broke the Stripe-entitlements migration — Wiring Stripe entitlements failed with 'column email doesn't exist on existing profiles'.
 - [ ] Stale cached JavaScript made features appear broken — Write templates, the Homework + button, and AI features all did nothing even though the code w…
 
-## Hallalu CRM (42)
+## Hallalu CRM (48)
 - [ ] Business-plan /pitch gate bypassable via path tricks — The gated /pitch content could be reached with two path tricks despite the gate.
 - [ ] Owner email exposed client-side in admin.js — The admin owner email was shipped in the client-side admin.js bundle.
 - [ ] Invoice builder wipes line items on every repaint — 'Add a line' did nothing and invoices could not be saved.
@@ -165,6 +168,8 @@
 - [ ] Hallucinated Stripe checkout APIs — Checkout would have failed the instant real keys were added.
 - [ ] Stale HTML shell served from cache — The browser kept serving a stale index.html, making fixes look broken for testers and real use…
 - [ ] Billing view shows outdated Solo/Studio/£19 pricing — The billing/pricing view still displayed the old Solo/Studio tiers with a £19 price even for t…
+- [ ] Call recap invents bullets and ignores the transcript — The grounded-outreach call recap showed hardcoded bullets (e.g. 'Friday'/'mockup') instead of…
+- [ ] Currency search fails on plurals and place names — Typing terms like 'dollars', 'trinidad' or 'america' into the currency search returned no matc…
 - [ ] Date handling produced the wrong year — Goal/close dates resolved to the wrong year (e.g. 2024, and 'next Tuesday' became 2027).
 - [ ] Dead route after creating a project while viewing a client — Creating a project while viewing a client left the user on a dead route.
 - [ ] Delete actions silently do nothing — Several delete controls appeared to work but deleted nothing.
@@ -180,18 +185,22 @@
 - [ ] Phone-number parser misreads across lines — Phone parsing failed on multi-line input and numbers with a leading parenthesis.
 - [ ] Read-aloud reply and button do nothing — The assistant's reply did not speak and the read-aloud button after the fact did nothing.
 - [ ] Rolodex cards show fields with no way to enter them — Contact cards displayed fields (e.g. in influencers) that had no corresponding input path.
+- [ ] Sign-out always prompts a confirm, breaking auto-forget — signOut always showed a confirmation dialog, which is wrong for the auto-forget (ephemeral 'ke…
 - [ ] Trial→paid KPI shows NaN% — The admin dashboard's 'Trial→paid' KPI rendered NaN%.
 - [ ] Worker chunking not byte-safe and header auth broken — Worker request chunking and header-based auth were faulty.
+- [ ] Add-expense modal locked to 7 hardcoded categories — The add-expense modal offered only a hardcoded list of 7 categories with no way to enter a cus…
 - [ ] AI status stuck on 'Checking…' when API unreachable — The AI buttons showed a perpetual 'Checking…' state and failed silently when the API was not r…
 - [ ] Ava assistant invisible on mobile/dark — The Ava assistant was white-on-white and unreadable in dark mode on phones.
 - [ ] Broken Followers/Following/Photo grid — The Followers/Following and Photo layout was mis-arranged.
 - [ ] Clients-signed ring misaligned — Ring numerals sat on different baselines and the 'clients signed' label was small and off-cent…
 - [ ] Confetti persists under tab throttling — Confetti outlived its welcome, lingering after it should have cleared.
 - [ ] Contact card not full width — The rich-contact card rendered narrower than the container.
+- [ ] Dark-mode hero/aurora + a dozen surfaces stay light (invisible text) — In dark mode the hero/aurora card and many other surfaces stayed white, making their text invi…
 - [ ] Demo portraits mismatch names and gender — Demo lead photos didn't match the leads' names or gender.
 - [ ] Header buttons overflow, blocking Add to-do — On a phone the 'Add to-do' button was clipped off the right edge, so users couldn't add a goal…
-- [ ] Landing hero/aurora card invisible in dark mode — In dark mode the hero/aurora card stayed light, making its text invisible.
 - [ ] Microphone icon not centered in inputs — The mic sat near the top line instead of centered in goal, to-do and other fields.
+- [ ] Mobile FAB overlaps the 5-tab bottom bar — On mobile the floating action button sat over the taller 5-tab bottom bar and the tab labels w…
+- [ ] Start screen mic oversized and off-centre — The onboarding Start screen's record mic rendered too large and not centred.
 - [ ] Tax page not findable in the nav — The Tax page existed but users couldn't find or reach it.
 - [ ] Timezone widget falls off screen — Swapping timezones pushed the widget off-screen at mid widths.
 - [ ] Unsized SVG renders oversized — An SVG rendered giant on screen.
@@ -347,6 +356,9 @@
 - [ ] cur0 is not defined crash on post save — Saving a post with income entered crashed the app.
 - [ ] Older profiles crash on missing state fields — Profiles created before new features crashed on load.
 - [ ] To-do done button crash — Clicking a to-do's done button threw undefined.split.
+
+## Hallalu Bookings (1)
+- [ ] Orphaned dead whitespace in FAQ + Policies section — The FAQ and Policies cards sat only in the right column while the left column ended at the tes…
 
 ## Unknown (1)
 - [ ] Screenshot box completely unstyled — A box looked cheap because it had no styling at all.
