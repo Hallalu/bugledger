@@ -1,19 +1,19 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**304 bugs fixed** across **14 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**314 bugs fixed** across **15 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 304 |
-| Apps | 14 |
-| Security fixes | 27 |
+| Total bugs fixed | 314 |
+| Apps | 15 |
+| Security fixes | 28 |
 | Data-loss / sync fixes | 25 |
 | Crashes fixed | 21 |
 | Security-audit findings | 15 (9 open) |
 
 ### By category
 
-`ui: 111` `logic: 77` `security: 27` `crash: 21` `other: 18` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 6`
+`ui: 115` `logic: 80` `security: 28` `crash: 21` `other: 19` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 7`
 
 ---
 
@@ -69,10 +69,12 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 
 ---
 
-## Finished.  ·  135 fixed
+## Finished.  ·  138 fixed
 
 - [ ] **Anon could enumerate every user's media files** `security`
   *Symptom:* A signed-out user could list('') the media bucket and enumerate all users' folders and files.  <br>*Cause:* The storage SELECT policy allowed anon to list the whole bucket.  <br>*Fix:* Migration lock_media_bucket_select_to_own_folder scoped SELECT to authenticated users and their own folder; verified playback still works.
+- [ ] **Anthropic API key survived account switch (next user bills previous)** `security`
+  *Symptom:* After switching accounts on a shared device, the previous user's saved Anthropic API key persisted, so the next user's AI actions would silently bill the previous user.  <br>*Cause:* The stored API key was not scoped or cleared on account switch, unlike other per-account local content.  <br>*Fix:* Cleared/scoped the API key on account switch so it no longer survives into the next user's session.
 - [ ] **Could not post multiple / photo stories** `security`
   *Symptom:* Posting more than one story (specifically photo stories) failed with 'new row violates row-level security policy'.  <br>*Cause:* A storage RLS issue on the media bucket blocked the upsert for photo stories (text-only worked).  <br>*Fix:* Added an additive own-folder UPDATE policy on storage so photo/multi stories post.
 - [ ] **Cross-account local data leak on shared device** `security`
@@ -225,6 +227,8 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* 250+ duplicate profile fetches were issued per session.  <br>*Cause:* Profile fetches weren't cached.  <br>*Fix:* Cached the profile fetch for 30 seconds.
 - [ ] **Screen recording freezes in a background tab** `perf`
   *Symptom:* Recordings froze whenever the tab was hidden or backgrounded.  <br>*Cause:* The draw loop was visibility-throttled when the tab wasn't focused.  <br>*Fix:* Drive the draw loop from a Web Worker timer with captureStream(0) + explicit requestFrame so capture isn't tied to compositing.
+- [ ] **Screen recordings smeared and dropped frames from low bitrate and oversized canvas** `perf`
+  *Symptom:* 1080p+ screen text looked smeared in recordings, and frames were silently dropped on 4K/5K screens.  <br>*Cause:* The recorder used the browser default ~2.5 Mbps bitrate regardless of resolution and multiplied the compositor canvas by devicePixelRatio, so VP9 couldn't keep up in realtime above ~1080p.  <br>*Fix:* Raised the bitrate from 2.5 to 8 Mbps and capped the compositor canvas at ~1080p so the encoder keeps up and text stays sharp.
 - [ ] **Tracker Edit did nothing then lagged ~1s before opening** `perf`
   *Symptom:* Clicking Edit on a tracker appeared to do nothing, then the edit screen opened after a lag.  <br>*Cause:* Tracker groups recomputed on each render causing ~1s open latency.  <br>*Fix:* Memoised the tracker cards/groups via useMemo, cutting open time from ~1s to ~7ms.
 - [ ] **'20 free' credits wording was incorrect** `ui`
@@ -339,10 +343,12 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The Cloudflare deploy would have broken even though local builds passed.  <br>*Cause:* A concurrent session's commit had wiped `fix-webm-duration` out of package.json.  <br>*Fix:* Restored the dependency in package.json.
 - [ ] **Password-reset emails sent from an unverified domain** `other`
   *Symptom:* The send-reset function would have its emails rejected by Resend.  <br>*Cause:* The function sent from hi@hallalu.com, which is not the verified domain.  <br>*Fix:* Changed the from address to hi@finished.hallalu.com (verified) with reply-to hi@hallalu.com.
+- [ ] **Shared-Supabase table collision broke the Stripe-entitlements migration** `other`
+  *Symptom:* Wiring Stripe entitlements failed with 'column email doesn't exist on existing profiles'.  <br>*Cause:* Finished. shared its Supabase project with other apps, colliding with a pre-existing profiles table that lacked the expected column.  <br>*Fix:* Namespaced Finished.'s tables as finished_* so they no longer collide with the shared schema.
 - [ ] **Stale cached JavaScript made features appear broken** `other`
   *Symptom:* Write templates, the Homework + button, and AI features all did nothing even though the code was correct.  <br>*Cause:* The deployed app was serving stale JavaScript from the service worker cache.  <br>*Fix:* Fixed the service worker so every deploy arrives instantly (with a one-time hard-refresh to clear the old bundle).
 
-## Hallalu CRM  ·  42 fixed
+## Hallalu CRM  ·  48 fixed
 
 - [ ] **Business-plan /pitch gate bypassable via path tricks** `security`
   *Symptom:* The gated /pitch content could be reached with two path tricks despite the gate.  <br>*Cause:* The gate only guarded the route while the protected content still shipped in the static asset bundle.  <br>*Fix:* Removed the protected content from the asset bundle entirely so the gate actually holds.
@@ -360,6 +366,10 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The browser kept serving a stale index.html, making fixes look broken for testers and real users.  <br>*Cause:* The HTML shell was being cached even though versioned assets already handle caching.  <br>*Fix:* Made the shell never cache so deploys are picked up immediately.
 - [ ] **Billing view shows outdated Solo/Studio/£19 pricing** `logic`
   *Symptom:* The billing/pricing view still displayed the old Solo/Studio tiers with a £19 price even for the free plan (the 'free 19 pounds' bug).  <br>*Cause:* The billing view rendered a stale pricing model instead of the current flat tiers.  <br>*Fix:* Rewrote the billing view to USD flat pricing with free=$0 and stripped the pricing promises.
+- [ ] **Call recap invents bullets and ignores the transcript** `logic`
+  *Symptom:* The grounded-outreach call recap showed hardcoded bullets (e.g. 'Friday'/'mockup') instead of anything from the actual call.  <br>*Cause:* extractPoints invented 4 hardcoded bullets when the transcript was short and showRecap never sent the transcript to the AI, rendering static templates.  <br>*Fix:* Grounded the recap in the real transcript with a non-inventing fallback so the key points come from the user's own words.
+- [ ] **Currency search fails on plurals and place names** `logic`
+  *Symptom:* Typing terms like 'dollars', 'trinidad' or 'america' into the currency search returned no match.  <br>*Cause:* curSearch didn't stem trailing plurals (or map related place terms), so 'dollars' never matched 'dollar'.  <br>*Fix:* Made curSearch stem trailing plurals so plural and related terms resolve to the right currency.
 - [ ] **Date handling produced the wrong year** `logic`
   *Symptom:* Goal/close dates resolved to the wrong year (e.g. 2024, and 'next Tuesday' became 2027).  <br>*Cause:* Date arithmetic was wrong and the first guard only blocked past dates, pushing them to 2027.  <br>*Fix:* Fixed date computation generally so relative dates resolve to the correct year.
 - [ ] **Dead route after creating a project while viewing a client** `logic`
@@ -390,10 +400,14 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The assistant's reply did not speak and the read-aloud button after the fact did nothing.  <br>*Cause:* The speak-on-reply path and the manual read-aloud handler were both broken.  <br>*Fix:* Fixed both halves so replies speak and the button works.
 - [ ] **Rolodex cards show fields with no way to enter them** `logic`
   *Symptom:* Contact cards displayed fields (e.g. in influencers) that had no corresponding input path.  <br>*Cause:* Card display and the entry form were driven by different definitions.  <br>*Fix:* Refactored so one schema drives both the card and the entry form.
+- [ ] **Sign-out always prompts a confirm, breaking auto-forget** `logic`
+  *Symptom:* signOut always showed a confirmation dialog, which is wrong for the auto-forget (ephemeral 'keep me signed in') flow.  <br>*Cause:* The sign-out path unconditionally showed a confirm dialog regardless of the ephemeral/auto-forget session mode.  <br>*Fix:* Made the ephemeral auto-forget sign-out skip the confirm dialog.
 - [ ] **Trial→paid KPI shows NaN%** `logic`
   *Symptom:* The admin dashboard's 'Trial→paid' KPI rendered NaN%.  <br>*Cause:* An operator-precedence error in the KPI calculation.  <br>*Fix:* Corrected the precedence so the KPI computes a real percentage.
 - [ ] **Worker chunking not byte-safe and header auth broken** `logic`
   *Symptom:* Worker request chunking and header-based auth were faulty.  <br>*Cause:* Chunking split on characters rather than bytes and auth headers were mishandled.  <br>*Fix:* Reworked the worker for byte-safe chunking and correct header auth.
+- [ ] **Add-expense modal locked to 7 hardcoded categories** `ui`
+  *Symptom:* The add-expense modal offered only a hardcoded list of 7 categories with no way to enter a custom one.  <br>*Cause:* The add-expense modal hardcoded a 7-item category list with no custom-entry option.  <br>*Fix:* Expanded the category list and added a type-your-own custom option.
 - [ ] **AI status stuck on 'Checking…' when API unreachable** `ui`
   *Symptom:* The AI buttons showed a perpetual 'Checking…' state and failed silently when the API was not reachable locally.  <br>*Cause:* The unreachable-API case was not handled with a clear state.  <br>*Fix:* Made the buttons report exactly what is missing instead of hanging or failing silently.
 - [ ] **Ava assistant invisible on mobile/dark** `ui`
@@ -406,14 +420,18 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Confetti outlived its welcome, lingering after it should have cleared.  <br>*Cause:* The confetti animation was not cleaned up when the browser throttled the background tab.  <br>*Fix:* Cleared the confetti so it no longer outlives its animation.
 - [ ] **Contact card not full width** `ui`
   *Symptom:* The rich-contact card rendered narrower than the container.  <br>*Cause:* A helper constrained the card width.  <br>*Fix:* Fixed the helper; card is now full width (689px).
+- [ ] **Dark-mode hero/aurora + a dozen surfaces stay light (invisible text)** `ui`
+  *Symptom:* In dark mode the hero/aurora card and many other surfaces stayed white, making their text invisible.  <br>*Cause:* .hero had a hardcoded background:#fff and only .card/.modal/.sheet had dark overrides — .hero/.profile-hero/.pstats/.call-stage/.rolo-card/.cmdk/.drawer/.onb had none.  <br>*Fix:* Added dark-mode overrides for all the uncovered surfaces so every card is readable in dark mode.
 - [ ] **Demo portraits mismatch names and gender** `ui`
   *Symptom:* Demo lead photos didn't match the leads' names or gender.  <br>*Cause:* Photos used random `i.pravatar.cc/?u=` URLs.  <br>*Fix:* Replaced with gender-inferred `randomuser.me` portraits via name-set heuristics.
 - [ ] **Header buttons overflow, blocking Add to-do** `ui`
   *Symptom:* On a phone the 'Add to-do' button was clipped off the right edge, so users couldn't add a goal/to-do.  <br>*Cause:* `.topbar` had no `flex-wrap`, so the action buttons overflowed on narrow screens.  <br>*Fix:* Added flex-wrap to `.topbar`, fixing every view that uses the pattern.
-- [ ] **Landing hero/aurora card invisible in dark mode** `ui`
-  *Symptom:* In dark mode the hero/aurora card stayed light, making its text invisible.  <br>*Cause:* `.hero` had a hardcoded background:#fff with no dark override, and as a stylesheet rule it wasn't caught by the inline-style dark-mode catch-all.  <br>*Fix:* Added a dark-mode override for the .hero/aurora surface so its text is readable.
 - [ ] **Microphone icon not centered in inputs** `ui`
   *Symptom:* The mic sat near the top line instead of centered in goal, to-do and other fields.  <br>*Cause:* The mic was centered on the combined label+field height instead of just the field.  <br>*Fix:* Re-centered every mic in the app so each measures 0px off-center.
+- [ ] **Mobile FAB overlaps the 5-tab bottom bar** `ui`
+  *Symptom:* On mobile the floating action button sat over the taller 5-tab bottom bar and the tab labels wrapped.  <br>*Cause:* The FAB wasn't raised above the taller 5-tab bar and the tab labels were too long to fit on one line.  <br>*Fix:* Raised the FAB to a 23px gap above the bar, made it slightly smaller, and switched to short single-word tab labels.
+- [ ] **Start screen mic oversized and off-centre** `ui`
+  *Symptom:* The onboarding Start screen's record mic rendered too large and not centred.  <br>*Cause:* The Start screen mic was unsized/mispositioned instead of a single centred control.  <br>*Fix:* Rebuilt it as a single, smaller, centred mic.
 - [ ] **Tax page not findable in the nav** `ui`
   *Symptom:* The Tax page existed but users couldn't find or reach it.  <br>*Cause:* Tax wasn't surfaced as a real, navigable page in the nav.  <br>*Fix:* Made Tax a real, findable page in the nav (and expanded the spend categories).
 - [ ] **Timezone widget falls off screen** `ui`
@@ -713,6 +731,11 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Profiles created before new features crashed on load.  <br>*Cause:* normalize() did not backfill newly added state fields.  <br>*Fix:* Backfilled the new state fields in normalize() so old profiles load.
 - [ ] **To-do done button crash** `crash`
   *Symptom:* Clicking a to-do's done button threw undefined.split.  <br>*Cause:* The attribute was written as data-tododone but read as dataset.todoDone (case mismatch).  <br>*Fix:* Aligned the dataset key naming so the done button reads correctly.
+
+## Hallalu Bookings  ·  1 fixed
+
+- [ ] **Orphaned dead whitespace in FAQ + Policies section** `ui`
+  *Symptom:* The FAQ and Policies cards sat only in the right column while the left column ended at the testimonials card, leaving a dead bottom-left quadrant.  <br>*Cause:* The section used a 5fr/7fr split where the short left column (About + Testimonials) ended early while the long right column (Gallery + FAQ + Policies) ran on, orphaning the bottom-left quadrant.  <br>*Fix:* Restructured the section into a balanced editorial layout — a full-width gallery strip then a 2x2 equal-height card grid (About / Testimonials / FAQ / Policies) so rows align and nothing is orphaned.
 
 ## Unknown  ·  1 fixed
 

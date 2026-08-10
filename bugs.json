@@ -11,6 +11,16 @@
   {
     "app": "Finished.",
     "category": "security",
+    "title": "Anthropic API key survived account switch (next user bills previous)",
+    "symptom": "After switching accounts on a shared device, the previous user's saved Anthropic API key persisted, so the next user's AI actions would silently bill the previous user.",
+    "root_cause": "The stored API key was not scoped or cleared on account switch, unlike other per-account local content.",
+    "fix": "Cleared/scoped the API key on account switch so it no longer survives into the next user's session.",
+    "session": "d42b1fb3",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Finished.",
+    "category": "security",
     "title": "Could not post multiple / photo stories",
     "symptom": "Posting more than one story (specifically photo stories) failed with 'new row violates row-level security policy'.",
     "root_cause": "A storage RLS issue on the media bucket blocked the upsert for photo stories (text-only worked).",
@@ -695,6 +705,16 @@
   {
     "app": "Finished.",
     "category": "performance",
+    "title": "Screen recordings smeared and dropped frames from low bitrate and oversized canvas",
+    "symptom": "1080p+ screen text looked smeared in recordings, and frames were silently dropped on 4K/5K screens.",
+    "root_cause": "The recorder used the browser default ~2.5 Mbps bitrate regardless of resolution and multiplied the compositor canvas by devicePixelRatio, so VP9 couldn't keep up in realtime above ~1080p.",
+    "fix": "Raised the bitrate from 2.5 to 8 Mbps and capped the compositor canvas at ~1080p so the encoder keeps up and text stays sharp.",
+    "session": "eae12f03",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Finished.",
+    "category": "performance",
     "title": "Tracker Edit did nothing then lagged ~1s before opening",
     "symptom": "Clicking Edit on a tracker appeared to do nothing, then the edit screen opened after a lag.",
     "root_cause": "Tracker groups recomputed on each render causing ~1s open latency.",
@@ -1208,6 +1228,16 @@
   {
     "app": "Finished.",
     "category": "other",
+    "title": "Shared-Supabase table collision broke the Stripe-entitlements migration",
+    "symptom": "Wiring Stripe entitlements failed with 'column email doesn't exist on existing profiles'.",
+    "root_cause": "Finished. shared its Supabase project with other apps, colliding with a pre-existing profiles table that lacked the expected column.",
+    "fix": "Namespaced Finished.'s tables as finished_* so they no longer collide with the shared schema.",
+    "session": "0b6b99f5",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Finished.",
+    "category": "other",
     "title": "Stale cached JavaScript made features appear broken",
     "symptom": "Write templates, the Homework + button, and AI features all did nothing even though the code was correct.",
     "root_cause": "The deployed app was serving stale JavaScript from the service worker cache.",
@@ -1285,6 +1315,26 @@
     "symptom": "The billing/pricing view still displayed the old Solo/Studio tiers with a £19 price even for the free plan (the 'free 19 pounds' bug).",
     "root_cause": "The billing view rendered a stale pricing model instead of the current flat tiers.",
     "fix": "Rewrote the billing view to USD flat pricing with free=$0 and stripped the pricing promises.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
+    "title": "Call recap invents bullets and ignores the transcript",
+    "symptom": "The grounded-outreach call recap showed hardcoded bullets (e.g. 'Friday'/'mockup') instead of anything from the actual call.",
+    "root_cause": "extractPoints invented 4 hardcoded bullets when the transcript was short and showRecap never sent the transcript to the AI, rendering static templates.",
+    "fix": "Grounded the recap in the real transcript with a non-inventing fallback so the key points come from the user's own words.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
+    "title": "Currency search fails on plurals and place names",
+    "symptom": "Typing terms like 'dollars', 'trinidad' or 'america' into the currency search returned no match.",
+    "root_cause": "curSearch didn't stem trailing plurals (or map related place terms), so 'dollars' never matched 'dollar'.",
+    "fix": "Made curSearch stem trailing plurals so plural and related terms resolve to the right currency.",
     "session": "215ee275",
     "source": "conversation-2026-08-10"
   },
@@ -1429,6 +1479,16 @@
   {
     "app": "Hallalu CRM",
     "category": "logic",
+    "title": "Sign-out always prompts a confirm, breaking auto-forget",
+    "symptom": "signOut always showed a confirmation dialog, which is wrong for the auto-forget (ephemeral 'keep me signed in') flow.",
+    "root_cause": "The sign-out path unconditionally showed a confirm dialog regardless of the ephemeral/auto-forget session mode.",
+    "fix": "Made the ephemeral auto-forget sign-out skip the confirm dialog.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
     "title": "Trial→paid KPI shows NaN%",
     "symptom": "The admin dashboard's 'Trial→paid' KPI rendered NaN%.",
     "root_cause": "An operator-precedence error in the KPI calculation.",
@@ -1444,6 +1504,16 @@
     "root_cause": "Chunking split on characters rather than bytes and auth headers were mishandled.",
     "fix": "Reworked the worker for byte-safe chunking and correct header auth.",
     "session": "9033ea59"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ui",
+    "title": "Add-expense modal locked to 7 hardcoded categories",
+    "symptom": "The add-expense modal offered only a hardcoded list of 7 categories with no way to enter a custom one.",
+    "root_cause": "The add-expense modal hardcoded a 7-item category list with no custom-entry option.",
+    "fix": "Expanded the category list and added a type-your-own custom option.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
   },
   {
     "app": "Hallalu CRM",
@@ -1502,6 +1572,16 @@
   {
     "app": "Hallalu CRM",
     "category": "ui",
+    "title": "Dark-mode hero/aurora + a dozen surfaces stay light (invisible text)",
+    "symptom": "In dark mode the hero/aurora card and many other surfaces stayed white, making their text invisible.",
+    "root_cause": ".hero had a hardcoded background:#fff and only .card/.modal/.sheet had dark overrides — .hero/.profile-hero/.pstats/.call-stage/.rolo-card/.cmdk/.drawer/.onb had none.",
+    "fix": "Added dark-mode overrides for all the uncovered surfaces so every card is readable in dark mode.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ui",
     "title": "Demo portraits mismatch names and gender",
     "symptom": "Demo lead photos didn't match the leads' names or gender.",
     "root_cause": "Photos used random `i.pravatar.cc/?u=` URLs.",
@@ -1520,21 +1600,31 @@
   {
     "app": "Hallalu CRM",
     "category": "ui",
-    "title": "Landing hero/aurora card invisible in dark mode",
-    "symptom": "In dark mode the hero/aurora card stayed light, making its text invisible.",
-    "root_cause": "`.hero` had a hardcoded background:#fff with no dark override, and as a stylesheet rule it wasn't caught by the inline-style dark-mode catch-all.",
-    "fix": "Added a dark-mode override for the .hero/aurora surface so its text is readable.",
+    "title": "Microphone icon not centered in inputs",
+    "symptom": "The mic sat near the top line instead of centered in goal, to-do and other fields.",
+    "root_cause": "The mic was centered on the combined label+field height instead of just the field.",
+    "fix": "Re-centered every mic in the app so each measures 0px off-center.",
+    "session": "9033ea59"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ui",
+    "title": "Mobile FAB overlaps the 5-tab bottom bar",
+    "symptom": "On mobile the floating action button sat over the taller 5-tab bottom bar and the tab labels wrapped.",
+    "root_cause": "The FAB wasn't raised above the taller 5-tab bar and the tab labels were too long to fit on one line.",
+    "fix": "Raised the FAB to a 23px gap above the bar, made it slightly smaller, and switched to short single-word tab labels.",
     "session": "215ee275",
     "source": "conversation-2026-08-10"
   },
   {
     "app": "Hallalu CRM",
     "category": "ui",
-    "title": "Microphone icon not centered in inputs",
-    "symptom": "The mic sat near the top line instead of centered in goal, to-do and other fields.",
-    "root_cause": "The mic was centered on the combined label+field height instead of just the field.",
-    "fix": "Re-centered every mic in the app so each measures 0px off-center.",
-    "session": "9033ea59"
+    "title": "Start screen mic oversized and off-centre",
+    "symptom": "The onboarding Start screen's record mic rendered too large and not centred.",
+    "root_cause": "The Start screen mic was unsized/mispositioned instead of a single centred control.",
+    "fix": "Rebuilt it as a single, smaller, centred mic.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
   },
   {
     "app": "Hallalu CRM",
@@ -2740,6 +2830,16 @@
     "root_cause": "The attribute was written as data-tododone but read as dataset.todoDone (case mismatch).",
     "fix": "Aligned the dataset key naming so the done button reads correctly.",
     "session": "a1ee807a"
+  },
+  {
+    "app": "Hallalu Bookings",
+    "category": "ui",
+    "title": "Orphaned dead whitespace in FAQ + Policies section",
+    "symptom": "The FAQ and Policies cards sat only in the right column while the left column ended at the testimonials card, leaving a dead bottom-left quadrant.",
+    "root_cause": "The section used a 5fr/7fr split where the short left column (About + Testimonials) ended early while the long right column (Gallery + FAQ + Policies) ran on, orphaning the bottom-left quadrant.",
+    "fix": "Restructured the section into a balanced editorial layout — a full-width gallery strip then a 2x2 equal-height card grid (About / Testimonials / FAQ / Policies) so rows align and nothing is orphaned.",
+    "session": "6c59c3ad",
+    "source": "conversation-2026-08-10"
   },
   {
     "app": "Unknown",
