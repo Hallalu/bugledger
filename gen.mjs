@@ -12,6 +12,37 @@ const GEN = "2026-08-10";
 const CATLABEL = { crash:"crash","data-loss":"data-loss",logic:"logic",ui:"ui",security:"security",
   performance:"perf",race:"race",sync:"sync",auth:"auth",other:"other" };
 const SEV = { security:0,"data-loss":1,crash:2,auth:3,sync:4,race:5,logic:6,performance:7,ui:8,other:9 };
+const CAT2SEV = { "data-loss":"critical",security:"high",crash:"high",auth:"high",sync:"high",race:"medium",logic:"medium",performance:"low",ui:"low",other:"low" };
+const sevOf = b => b.severity || CAT2SEV[b.category] || "low";
+
+// cross-app recurring classes + scanner detectors (kept in sync with scan.mjs) — for agents
+const RECURRING = [
+  "Stale service-worker cache pinning users to an old build (bump cache name / network-first HTML).",
+  "Cross-account data leak: localStorage/IndexedDB not scoped to the signed-in owner; wipe on switch.",
+  "Deletions resurrect after sync (missing tombstones / stale-device overwrite).",
+  "toISOString() date off-by-one for calendar Y-M-D.",
+  "esc()/innerHTML not escaping quotes -> attribute-injection XSS.",
+  "Template ${...} placeholder rendered literally inside a quoted string.",
+  "Duplicate DOM ids after a redesign wiring events to the wrong element.",
+  "API key/secret saved with a trailing space silently breaking AI calls.",
+  "Vault/PIN low-entropy + publicly-addressable ciphertext (see Security Sweep).",
+];
+const DETECTORS = [
+  "XSS-INNERHTML (HTML sinks built with interpolation/concat)",
+  "ESC-QUOTES (esc() that does not escape \" or ')",
+  "SECRET (committed api keys / private keys)",
+  "PBKDF2-WEAK (<600k iterations)",
+  "STATIC-SALT (constant KDF salt)",
+  "SSRF-GOTO (unvalidated page.goto/fetch target)",
+  "NATIVE-DIALOG (prompt/alert used for UX)",
+  "LOCALSTORAGE-GLOBAL (unscoped localStorage key -> cross-account leak)",
+  "DATE-TOISO (toISOString timezone off-by-one)",
+  "ARGUMENTS-CALLEE (breaks in ES modules/strict)",
+  "FIND-DEREF (deref of a maybe-undefined find()/match())",
+  "SW-CACHE-FIRST (stale-build service worker)",
+  "DUP-DOM-ID (duplicate DOM ids)",
+  "NO-CSP (no Content-Security-Policy on served HTML)",
+];
 
 const bugs = JSON.parse(fs.readFileSync(p("bugs.json"), "utf8"));
 
@@ -155,4 +186,112 @@ if (fs.existsSync(p("harvested.json"))) {
   }
 }
 
-console.log(`gen: ${bugs.length} bugs, ${appOrder.length} apps${sec?`, ${sec.findings.length} security`:""}${scanCount?`, ${scanCount} scanner`:""}${harvCount?`, ${harvCount} harvested`:""} -> data.js, data-sec.js${scanCount?", data-scan.js":""}${harvCount?", data-harvest.js":""}, BUGS.md, CHECKLIST.md`);
+// ---- agent-facing endpoints & docs (served as static assets) ----
+// machine-readable data
+fs.writeFileSync(p("public","bugs.json"), JSON.stringify(bugs));
+if (sec) fs.writeFileSync(p("public","security.json"), JSON.stringify(sec));
+
+// compact per-app checklist for agents
+const checklist = { generated: GEN, base: "https://bugledger.coconvo.workers.dev",
+  totals: { bugs: bugs.length, apps: appOrder.length, security: sec ? sec.findings.length : 0 },
+  apps: {}, recurring: RECURRING, detectors: DETECTORS,
+  security: sec ? sec.findings.map(f => ({ id: f.id, severity: f.severity, status: f.status, app: f.app, title: f.title })) : [] };
+for (const app of appOrder)
+  checklist.apps[app] = byApp[app].slice()
+    .sort((a,b)=>(SEV[a.category]-SEV[b.category])||a.title.localeCompare(b.title))
+    .map(b => ({ title: b.title, category: b.category, severity: sevOf(b), symptom: b.symptom || "", fix: b.fix || "" }));
+fs.writeFileSync(p("public","checklist.json"), JSON.stringify(checklist));
+
+// llms.txt — root index for AI agents (llmstxt.org convention)
+const llms = `# Bug Ledger
+
+> A catalogue of ${bugs.length} bugs fixed across ${appOrder.length} apps, plus a security audit and a code scanner. Use it to debug and security-check a project by checking it against every bug we've hit before, then log what you checked.
+
+Agent instructions: fetch /AGENT.md and follow the protocol. Report back with POST /api/checks.
+
+## Data (JSON)
+- [All bugs](https://bugledger.coconvo.workers.dev/bugs.json): every known bug {app,title,category,severity,symptom,root_cause,fix}
+- [Per-app checklist](https://bugledger.coconvo.workers.dev/checklist.json): bugs grouped by app + recurring classes + scanner detectors + security findings
+- [Security audit](https://bugledger.coconvo.workers.dev/security.json): the full severity-ranked security sweep
+
+## Protocol
+- [AGENT.md](https://bugledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
+- POST https://bugledger.coconvo.workers.dev/api/checks : record that you checked an app (needs header x-ledger-key)
+- GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
+
+## Human pages
+- [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, and Check-log panels
+`;
+fs.writeFileSync(p("public","llms.txt"), llms);
+
+// AGENT.md — the protocol an AI coding agent follows
+const appListMd = appOrder.map(a => `\`${a}\` (${count[a]})`).join(" · ");
+const agent = `# Bug Ledger — Agent Protocol
+
+You are a coding agent working inside a project. This ledger is your regression + security
+memory: **${bugs.length} bugs across ${appOrder.length} apps**, a security audit (${sec ? sec.findings.length : 0} findings),
+and ${DETECTORS.length} static detectors. Use it to debug the current project against every bug we've
+hit before, then **log what you checked** so there's a record.
+
+Base URL: \`https://bugledger.coconvo.workers.dev\`
+
+## Apps in the ledger
+${appListMd}
+
+## Step 1 — Get the checklist for this project's app
+Pick the app name (ask the user, or infer from the repo). Then either:
+
+- **Preferred (local, also scans code):**
+  \`\`\`bash
+  node ~/BugLedger/scan.mjs . --app "APP NAME" --catalog --json
+  \`\`\`
+  This prints auto-detected findings (file:line), the app's full known-bug checklist, the
+  cross-app recurring classes, and the entire catalog. If the repo isn't at ~/BugLedger, clone
+  https://github.com/Hallalu/bugledger first.
+- **Or fetch the data over HTTP:**
+  \`\`\`bash
+  curl -s https://bugledger.coconvo.workers.dev/checklist.json     # per-app bugs + recurring + detectors + security
+  curl -s https://bugledger.coconvo.workers.dev/bugs.json          # every bug, full detail
+  \`\`\`
+  Use \`.apps["APP NAME"]\` for that app's bugs; always also check \`.recurring\` and \`.detectors\`.
+
+## Step 2 — Actually check each item against the code
+For every known bug for that app (and every recurring class + detector), look at the real code and
+decide: **present**, **not present**, or **n/a**. Don't guess — grep/read the relevant files. Fix any
+you find (or report them). Track two lists: \`notFound\` (checked & clean) and \`found\` ({title,file,note}).
+
+For security, run the detectors (the scanner does most automatically) and note \`securityChecked\`
+(what you looked for) and \`securityFindings\` ({severity,title,file}). Set \`securityStatus\` to
+"clean" or "issues".
+
+## Step 3 — Log that you checked (this is the record the user asked for)
+POST a summary so the ledger records this pass. Read the token from \`~/.bugledger.json\`:
+\`\`\`bash
+KEY=$(node -e "console.log(require(process.env.HOME+'/.bugledger.json').token)")
+curl -s -X POST https://bugledger.coconvo.workers.dev/api/checks \\
+  -H "content-type: application/json" -H "x-ledger-key: $KEY" \\
+  -d '{
+    "app": "Hallalu CRM",
+    "project": "hallalu",
+    "checkedBy": "claude-code",
+    "scanned": 44,
+    "checkedCount": 42,
+    "foundCount": 1,
+    "securityStatus": "clean",
+    "notFound": ["Billing view shows outdated Solo/Studio/£19 pricing", "Dark-mode hero/aurora + a dozen surfaces stay light"],
+    "found": [{"title":"Currency search fails on plurals","file":"public/app.js:210","note":"still reproduces"}],
+    "securityChecked": ["XSS-INNERHTML","SECRET","SSRF-GOTO","LOCALSTORAGE-GLOBAL"],
+    "securityFindings": [],
+    "notes": "Checked the whole Hallalu CRM list; only the plurals bug remained."
+  }'
+\`\`\`
+Or, to log the scanner's own findings automatically: \`node ~/BugLedger/scan.mjs . --app "Hallalu CRM" --log\`.
+
+## Step 4 — Tell the user
+Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the
+security status, and confirm the log was posted (the response includes an \`id\`). The log shows up
+on the site's **Check-log** panel and at GET /api/checks.
+`;
+fs.writeFileSync(p("public","AGENT.md"), agent);
+
+console.log(`gen: ${bugs.length} bugs, ${appOrder.length} apps${sec?`, ${sec.findings.length} security`:""}${scanCount?`, ${scanCount} scanner`:""}${harvCount?`, ${harvCount} harvested`:""} -> data.js, bugs.json, checklist.json, AGENT.md, llms.txt, docs`);
