@@ -1,0 +1,320 @@
+# BUG REGRESSION CHECKLIST — 289 known bugs across 14 apps
+# Paste this into any build session and re-check each item (bugs recur).
+# Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
+
+## Finished. (135)
+- [ ] Anon could enumerate every user's media files — A signed-out user could list('') the media bucket and enumerate all users' folders and files.
+- [ ] Could not post multiple / photo stories — Posting more than one story (specifically photo stories) failed with 'new row violates row-lev…
+- [ ] Cross-account local data leak on shared device — Signing into a second account on the same device exposed the first account's countdowns, notes…
+- [ ] Cross-user data leak on account switch — After switching accounts locally, a user saw another user's celebration countdowns.
+- [ ] Dangerous RPCs callable from client — Privileged operations read_vault_secret and add_credits were reachable from the client.
+- [ ] Database SECURITY DEFINER / search_path hardening — SECURITY DEFINER views bypassed RLS and could re-leak protected tables, and functions had muta…
+- [ ] Deleting posts/stories orphaned uploaded media — Deleting a post or story left its photo/video fetchable by URL forever, and avatar changes orp…
+- [ ] Email column readable via profiles — The profiles table exposed users' email addresses.
+- [ ] email_for_handle revoke left a silent PUBLIC ACL hole — A Postgres function remained accessible to PUBLIC despite a revoke.
+- [ ] Missing CSP and security headers — The app shipped with no Content-Security-Policy or security headers.
+- [ ] Private 'Only me' posts leaked to friends — Posts set to private were visible to friends.
+- [ ] Source files leaked over HTTP — `/package.json`, `/vite.config.ts`, `/src/*` and other repo files were served as real files.
+- [ ] Stale tab survives account switch and re-uploads data — A second open tab that survived an account switch could re-save and re-upload the previous use…
+- [ ] Stripe webhook rejected all payments (Verify JWT on) — Billing was dead; every paying customer got no credits or subscription.
+- [ ] Unauthenticated translate endpoint abuse — Anyone could hammer the pre-login translate endpoint with 640K chars per request, risking runa…
+- [ ] Deleted celebrations resurrect — Deleted celebrations could reappear after the new sync engine ran.
+- [ ] Deleting a recording did not unshare or remove the file — Deleting a recording left the shared row and cloud file fetchable.
+- [ ] Deletions resurrect in synced IndexedDB stores — Deletions across seven synced IndexedDB stores (docs, flashcards, memos, homework, trackers, s…
+- [ ] Recording lost on crash or full disk — When the disk filled or the tab crashed/OOMed, the entire recording was lost.
+- [ ] Recordings local-only by default risked loss — A lost device meant lost video because recordings stayed local.
+- [ ] Seed calendar has self-overlapping event — A conflict flagged 'Standup overlaps Standup'.
+- [ ] Stale device overwrites newer cloud journal notes — A stale device could silently overwrite newer journal notes in the cloud, and concurrent syncs…
+- [ ] Broken main build referencing SignInLoader before it existed — App.tsx referenced SignInLoader which was never created, leaving main with a broken build.
+- [ ] Calendar crashes on unrecognised event kind — Any event kind the calendar did not recognise took down the whole calendar view.
+- [ ] Deployed app stuck on blank/loading screen on Cloudflare — The Cloudflare-hosted app and custom domain showed only a blank/continuous loading screen; loc…
+- [ ] Library crash on malformed record — Library.tsx crashed calling .slice on undefined while mapping records missing a title.
+- [ ] PDF cover render hang — Loading a PDF whose fonts can't render to canvas hung the app on cover generation.
+- [ ] Split React import — A split/duplicated React import broke the build for the new UI bits.
+- [ ] Study page missing i18n import — The Study page failed because a required i18n import was missing.
+- [ ] White screen — app never mounts — Production showed a white screen (later a stuck splash) because the deployed JS never mounted…
+- [ ] Cannot add posts, photos, stories, or profile photos — Post/photo/story/profile-photo uploads all failed.
+- [ ] Profile can't add photos or posts — Users couldn't add new profile photos or posts.
+- [ ] Signed-in users saw 'Sign in' and no credits after reload — Returning users (page reload with an existing session) saw 'Sign in' and dashes instead of the…
+- [ ] Signup blocked by email confirmation — Signup was completely blocked, requiring email confirmation that often failed.
+- [ ] Signup email rate-limit trap — Signup failed with "Email rate limit exceeded" after a user corrected a mistyped email and ret…
+- [ ] Social actions silently fail on a lapsed token — Stories, profile photo, adding posts and follow/unfollow appeared not to work with no error.
+- [ ] Stale auth session causes RLS write failures — Posting failed with "new row violates row-level security policy" and profile-photo updates sil…
+- [ ] Celebrations don't sync across devices — Celebrations added on one device didn't appear on the same account on another device.
+- [ ] Home tools grid needs a reload to show Calendar/Bookings/Task Manager — Users had to reload the whole app before Calendar, Bookings and Task Manager appeared in the t…
+- [ ] Sync pulls truncated at 1,000 rows — Cloud pulls were capped at 1,000 rows, dropping data beyond that.
+- [ ] Camera stayed on after closing the recorder — The device camera remained active after the user exited the journal recorder.
+- [ ] Loading splash kept randomly reappearing — After adding the splash, the loading splash kept popping up randomly.
+- [ ] PIN pad rapid-tap race — Fast typing on the PIN pad could drop a digit.
+- [ ] Rapid taps overwrite previous setting — Rapidly tapping a setting lost the previous value.
+- [ ] Read-aloud voice was monotone then kept switching voices — Pressing play started with a robotic/monotone voice then switched to a different voice on each…
+- [ ] Same-tick taps cancel each other — Two same-instant taps could cancel each other out.
+- [ ] Sync race causing three sync defects — Three sync defects surfaced during testing.
+- [ ] 'See Plus' button was a dead-end — Clicking 'See Plus' did nothing.
+- [ ] Assistant claims success for no-op actions on Pro — On Pro, asking the assistant to add a milestone, start a timer or invite a teammate created no…
+- [ ] Celebration inline edits not saving — Editing celebrations directly on the main screen didn't work.
+- [ ] Could sign up without choosing a plan/price — Signup completed without the user selecting a price.
+- [ ] Countdown count-up broken — Birthday/anniversary countdowns didn't count down or up correctly.
+- [ ] Credit price mismatch between display and checkout — The app showed $19 for 100 credits while checkout charged $50, and two credit tiles 404'd.
+- [ ] Day/Night toggle did not actually flip themes — Switching the Day/Night toggle did not reliably change modes.
+- [ ] Duplicate SlotEditor block in Scheduler edit — Scheduler edit rendered a duplicated slot editor.
+- [ ] Empty Clipboard click did nothing — Clicking the Clipboard section when it was empty produced no response.
+- [ ] Google Translate silently returned untranslated text — Live Google Translate did not actually translate in the UI.
+- [ ] Handle-availability indicator showed a stale result — The username handle checker showed a stale ✓ available against a name that was actually taken.
+- [ ] Insert-table button could not add rows or columns — In docs, the insert-table feature didn't let users add rows and columns.
+- [ ] Mic re-captures tab audio (echo) — Recordings had echo from the mic picking up the tab's own audio.
+- [ ] New accounts got the 'Close friends' circle added twice — A new account had two 'Close friends' circles seeded.
+- [ ] NLP leaves attendee name in event title — 'Priya' stayed in the event title instead of becoming a guest chip.
+- [ ] Page doesn't translate on language change — Switching the language didn't translate the page.
+- [ ] PDF cover-title letter-spacing extraction — Letter-spaced PDF cover lines were mangled (e.g. "H A L L A L U / I N T E L L I G E N C E") an…
+- [ ] Six milestone module bugs — Six reported milestone bugs affected the milestones feature.
+- [ ] Split translation strings produced garbled copy — Translated sign-in copy came out garbled, e.g. 'Choisissez un 5Code PIN à 8 chiffres', and a c…
+- [ ] Tracker empty-state showed 'under a minute' instead of '0 min' — With zero tracked time, the Tracker showed 'under a minute' (x3) rather than 0 min.
+- [ ] Transcription not in the user's language — Voice transcription didn't produce text in the user's selected language.
+- [ ] Translate batch cap regression dropped half of each batch — Legitimate localization batches would silently lose half their strings.
+- [ ] UI strings (toasts, doc names) stayed in English when translating — After switching language, many words stayed in English including toast messages and document n…
+- [ ] Vault API key saved with trailing space — AI features would silently break after wiring up the key.
+- [ ] Word/character count differed between header and footer — The same doc showed 57 words in the header and 117 in the footer.
+- [ ] 52 RLS initplan performance warnings — RLS policies re-evaluated auth.uid() per row, flagged by 52 auth_rls_initplan advisories.
+- [ ] Celebrations milliseconds re-render jank — Opening celebrations glitched when many cards ran with milliseconds.
+- [ ] Every-boot cache purge re-downloaded Whisper model — Each visit forced a ~40MB Whisper model re-download.
+- [ ] Redundant duplicate profile fetches — 250+ duplicate profile fetches were issued per session.
+- [ ] Screen recording freezes in a background tab — Recordings froze whenever the tab was hidden or backgrounded.
+- [ ] Tracker Edit did nothing then lagged ~1s before opening — Clicking Edit on a tracker appeared to do nothing, then the edit screen opened after a lag.
+- [ ] '20 free' credits wording was incorrect — Copy said accounts start with 20 free when they actually start with 5.
+- [ ] 'Add another tracker' button disappeared when trackers existed — The tracker builder hid the add button once trackers already existed.
+- [ ] 'Add homework' line too dark to see in dark mode — In homework, the add-homework line was too dark to read in dark mode.
+- [ ] 'Attach from library' opens an empty modal that does nothing — Attaching from the library opened an empty modal where nothing happened.
+- [ ] 'Finished' wordmark rendered black in dark mode — The 'Finished' wordmark (and every 'X.' header) turned black and vanished in dark mode.
+- [ ] Add-to-story modal stuck and oversized — Tapping "add to story" opened a modal that was stuck, too big, and falling off the page.
+- [ ] App renders faded/flash on refresh — The app randomly showed up faded when refreshed or reopened.
+- [ ] Archived section header looked broken/cramped — The Archived section title rendered cramped/broken.
+- [ ] Beautify blurred overlay unreadable — The Beautify screen used a translucent blurred overlay that was hard to read.
+- [ ] Candy theme celebration tile text not readable — In the Candy theme, the celebrations tile numbers/text were hard to see against the gradient.
+- [ ] Coloured-card titles low contrast — Titles on coloured cards rendered muted and hard to read.
+- [ ] Confirm dialog used wrong verb for soft-cancel — The Confirm dialog's action button read 'Delete' for a soft-cancel action.
+- [ ] Countdown numbers too small — Countdown/count-up numbers were tiny and wrapped onto multiple lines.
+- [ ] Cover-flow peek clicks closed the modal — Clicking to peek in the cover-flow closed the whole modal.
+- [ ] CTA button end rendered dark like it was cut off — The end of the primary blue button looked dark/cut off, as if not fully rendered.
+- [ ] Doc-editor header overcrowded and unclear — The doc editor's top bar was a confusing strip where it wasn't clear what was on top vs bottom.
+- [ ] Emoji picker didn't close on outside click — Clicking outside the emoji picker left it open.
+- [ ] Emoji picker horizontal overflow — The emoji picker slid sideways and emojis didn't fit inside the box.
+- [ ] File menu dropdown rendered behind the toolbar — Opening the File menu showed a glitch where the dropdown painted behind the editor toolbar.
+- [ ] Freeze-count copy missing a separator — The tracker copy read '3 freezes left this month keep it safe' with no separator.
+- [ ] Frozen blank screen while generating in 'Write it for me' modal — The Write-it modal appeared frozen with no feedback while content was being generated.
+- [ ] Header logo circle-inside-a-circle — The header logo rendered as a nested circle-inside-a-circle instead of the intended mark.
+- [ ] Home loads scrolled down with logo above the fold — The home page loaded already scrolled down.
+- [ ] Imprecise crop preview — The crop preview implied the image wouldn't fit, yet the full image appeared once posted.
+- [ ] Invalid hex color in boot splash CSS — The boot splash background color was malformed.
+- [ ] Launch-checklist checkmark rendered as a tiny square tick — The launch checklist checkmark was a tiny tick in a square, not a big white tick in a circle l…
+- [ ] Library star ratings render as huge dashed 'cylinder' boxes — Book star ratings appeared as tall dashed boxes overlapping cards.
+- [ ] Light-hardcoded surfaces stranded dark text in dark mode — The 'JUMP BACK IN' card and other surfaces stayed light in dark mode, leaving text unreadable.
+- [ ] Loading splash flickers in a self-heal reload loop — The loading animation kept randomly reappearing.
+- [ ] Logo dot not aligned inline with wordmark — The brand logo dot sat out of line with the wordmark.
+- [ ] Memoriser cut off on mobile — The memoriser was cut off on mobile in Study.
+- [ ] Memoriser white-box text invisible in dark mode — In the Memoriser, text in the white box was barely visible in dark mode.
+- [ ] Milestones card layout shifts with content — Milestones cards had buttons and progress bars in different positions depending on whether a c…
+- [ ] Mobile CSS rule leaking to desktop — Layout overlap appeared on non-mobile viewports.
+- [ ] Mobile sticky CTA overlap on booking page — The mobile sticky CTA overlapped the Style/Edit buttons.
+- [ ] Orphan word 'bed' wrapped alone in onboarding tour card — The onboarding tour body text left the word 'bed' stranded on its own line.
+- [ ] Oversized /help and doc toolbar buttons — The AI-artifact buttons were bulky full-width pills and the '/help' button was oversized and w…
+- [ ] Planner copy says morning for afternoon slots — The planner said 'protected in the morning' even for afternoon slots.
+- [ ] Privacy/Terms links returned 404 — The Privacy and Terms redirects did not work.
+- [ ] Progress ring percentage unreadable in dark/Midnight theme — The number inside the progress wheel and some text was hard to see at midnight/dark mode.
+- [ ] Rainbow splash animation keeps regressing — The moving rainbow colour-splash first-load animation had reverted to static.
+- [ ] Re-picking the same story photo doesn't fire — Selecting the same photo again for a story did nothing.
+- [ ] Screen Studio scenes stretched in resized window — A half-sized window stretched scenes blurry/stocky instead of scaling cleanly.
+- [ ] Sign-in / sign-up screens cut off at the top — The auth screens were clipped at the top on short viewports.
+- [ ] Sign-in splash rendered broken — The sign-in splash would have rendered broken.
+- [ ] Story black-flash before photo — Opening a story showed a black screen before the photo loaded.
+- [ ] Time page horizontal scroll — The Time page scrolled sideways.
+- [ ] Timezone label shows underscores — A timezone displayed as 'Port_of_Spain'.
+- [ ] Timezone picker truncates country names — The timezone picker button truncated long country names.
+- [ ] Two bugs in the photo crop dialog — The photo crop dialog misbehaved.
+- [ ] Typo in classic theme CSS — A typo had slipped into the classic theme's CSS.
+- [ ] Ugly native prompt() used in Work feature — The Work feature used a raw browser prompt() dialog.
+- [ ] All AI silently ran on Gemini fallback instead of Claude — AI features silently used the degraded Gemini fallback rather than Claude.
+- [ ] Downloaded webm has infinite/no duration — Downloaded recordings had no duration header and wouldn't seek.
+- [ ] fix-webm-duration dependency dropped from package.json — The Cloudflare deploy would have broken even though local builds passed.
+- [ ] Password-reset emails sent from an unverified domain — The send-reset function would have its emails rejected by Resend.
+- [ ] Stale cached JavaScript made features appear broken — Write templates, the Homework + button, and AI features all did nothing even though the code w…
+
+## Hallalu CRM (34)
+- [ ] Business-plan /pitch gate bypassable via path tricks — The gated /pitch content could be reached with two path tricks despite the gate.
+- [ ] Invoice builder wipes line items on every repaint — 'Add a line' did nothing and invoices could not be saved.
+- [ ] /api/track throws TDZ from duplicate — The `/api/track` endpoint threw a temporal-dead-zone error.
+- [ ] Admin check crashes for signed-out users — The app would crash for signed-out visitors.
+- [ ] Hallucinated Stripe checkout APIs — Checkout would have failed the instant real keys were added.
+- [ ] Stale HTML shell served from cache — The browser kept serving a stale index.html, making fixes look broken for testers and real use…
+- [ ] Date handling produced the wrong year — Goal/close dates resolved to the wrong year (e.g. 2024, and 'next Tuesday' became 2027).
+- [ ] Dead route after creating a project while viewing a client — Creating a project while viewing a client left the user on a dead route.
+- [ ] Delete actions silently do nothing — Several delete controls appeared to work but deleted nothing.
+- [ ] Demo shows wrong base currency — The UK demo displayed USD instead of GBP.
+- [ ] Editing a lead can't set Google/Maps source — Google/Maps couldn't be chosen when editing a lead, and demo leads were mislabeled call/email.
+- [ ] Hardcoded '3.1×' caption — A '3.1×' caption was displayed as if computed but was hardcoded.
+- [ ] Local 'pct' variable shadows global pct() function — A percentage calculation misbehaved due to name collision.
+- [ ] NaN% reply rate and non-zero outreach on empty project — An empty project showed NaN% for reply rate and a fresh project did not start its outreach cou…
+- [ ] Paste importer mis-parses co.uk domains — Pasted leads with `.co.uk` sites and business domains were parsed wrong (domain treated as ema…
+- [ ] Phone-number parser misreads across lines — Phone parsing failed on multi-line input and numbers with a leading parenthesis.
+- [ ] Read-aloud reply and button do nothing — The assistant's reply did not speak and the read-aloud button after the fact did nothing.
+- [ ] Rolodex cards show fields with no way to enter them — Contact cards displayed fields (e.g. in influencers) that had no corresponding input path.
+- [ ] Worker chunking not byte-safe and header auth broken — Worker request chunking and header-based auth were faulty.
+- [ ] AI status stuck on 'Checking…' when API unreachable — The AI buttons showed a perpetual 'Checking…' state and failed silently when the API was not r…
+- [ ] Ava assistant invisible on mobile/dark — The Ava assistant was white-on-white and unreadable in dark mode on phones.
+- [ ] Broken Followers/Following/Photo grid — The Followers/Following and Photo layout was mis-arranged.
+- [ ] Clients-signed ring misaligned — Ring numerals sat on different baselines and the 'clients signed' label was small and off-cent…
+- [ ] Confetti persists under tab throttling — Confetti outlived its welcome, lingering after it should have cleared.
+- [ ] Contact card not full width — The rich-contact card rendered narrower than the container.
+- [ ] Demo portraits mismatch names and gender — Demo lead photos didn't match the leads' names or gender.
+- [ ] Header buttons overflow, blocking Add to-do — On a phone the 'Add to-do' button was clipped off the right edge, so users couldn't add a goal…
+- [ ] Microphone icon not centered in inputs — The mic sat near the top line instead of centered in goal, to-do and other fields.
+- [ ] Timezone widget falls off screen — Swapping timezones pushed the widget off-screen at mid widths.
+- [ ] Unsized SVG renders oversized — An SVG rendered giant on screen.
+- [ ] ANTHROPIC_API_KEY saved with a leading space — AI features silently did not work.
+- [ ] Cloudflare env-var blocker (no worker script) — Cloudflare rejected env vars with 'Variables cannot be added to a Worker that only has static…
+- [ ] extras.js not loading — The extras.js script failed to load.
+- [ ] Legally wrong review-gating claims in shipped copy — The app told users incorrect legal facts about review gating (e.g. 'illegal in the UK', 'FTC r…
+
+## Stitchhooky (33)
+- [ ] Co-stitch rooms and theme leak across accounts — The next person on the device auto-joined your live co-stitch room and kept your theme.
+- [ ] Security headers silently ignored — Security/CSP headers added in the worker did nothing.
+- [ ] Stored-XSS vectors in user content — Multiple stored-XSS injection points, including an unescaped server value reaching an HTML att…
+- [ ] 'Reset everything' resurrects data on reload — Resetting everything did not stick; data came back on the next reload.
+- [ ] Cross-account data leak on shared device — A second person signing up on the same device saw the first user's projects and streak.
+- [ ] Duplicate chart projects on every reload — Reloading created a brand-new duplicate of the same chart project (three identically-named one…
+- [ ] Projects view wiped by a single corrupt save — The projects view went blank with no warning.
+- [ ] Resize wipes the canvas artwork — Resizing the grid erased the user's drawing.
+- [ ] Sign-up orphans or clobbers pre-account data — Signing up could vanish pre-account projects or clobber an existing local store for a handle.
+- [ ] Boot crash from temporal dead zone — The entire app died on first load with no console error.
+- [ ] HUD crash on second render — Every count after the first would crash.
+- [ ] LS_BAK temporal dead zone crash — The app refused to boot.
+- [ ] Passcode lockout with no escape hatch — User was asked for a passcode they never set and could not get in.
+- [ ] Cell-click runs past end of row — Clicking a cell could advance past the last stitch of a row into the next one.
+- [ ] Chart collapses to a tiny thumbnail — The chart shrank to a thumbnail inside a huge empty page card.
+- [ ] Chart-grow message flow miscounts — The chart stage didn't repaint per message, the prompt offered to add skips instead of stitche…
+- [ ] Community tab is a dead end — Community refused with a toast telling the user to sign in via Settings.
+- [ ] Competing writers miscount home tiles — The home tile still counted 13 stitches from a stale value.
+- [ ] Dictation mic leak into counting view — After dictating rows then hitting Save & start counting, speech kept appending rows to a stale…
+- [ ] Learn-to-read-charts modal silently fails — Opening 'Learn to read charts' did nothing visible.
+- [ ] Notation parser undercounts stitches ('7 vs 18') — Stitch totals came out far too low, e.g. reporting 7 when it should be 18.
+- [ ] Billing panel invisible at 0x0 — The billing panel had content but measured 0x0 and never showed.
+- [ ] Dead hero photo on landing page — The landing hero image 404'd, showing a broken tile.
+- [ ] Duplicate DOM ids after bento redesign — Nine duplicate DOM ids made home-tile buttons behave unpredictably.
+- [ ] iOS text too close to phone edge — In the iOS simulator, words sat too close to the edge of the phone.
+- [ ] Menu hidden behind next card — The project menu rendered behind the following card instead of on top.
+- [ ] Mic control runs off screen on real devices — The mic control ran off the edge of the screen on real devices.
+- [ ] Mislabeled +n count bubble — The +n increment bubble showed the wrong number.
+- [ ] Settings button opened nothing — The Settings control was genuinely broken and didn't open the panel.
+- [ ] Stale CSS rule squishes knit cells — Knit grid cells rendered square despite correct code.
+- [ ] Tile colour clashes with theme accent — Tile colours (e.g. purple) did not match the theme the user picked.
+- [ ] CSP blocks YouTube thumbnails and embeds — The new CSP would have broken YouTube thumbnails and video embeds.
+- [ ] Users served stale app version — Returning users silently ran old JavaScript/HTML, making just-added features look missing.
+
+## Hopefil (22)
+- [ ] Proprietary pricing/cost information leaking in the app — The app displayed confidential proprietary information such as per-credit cost and margins.
+- [ ] Preview freezes at an outdated state — The visual preview froze at an outdated state (preview sync bug).
+- [ ] Stale-closure loses rapid goal/checklist clicks — Rapid goal clicks used stale state (Income got overwritten by Community) and rapid checklist c…
+- [ ] Dead landing CTA buttons — Landing page CTA buttons did nothing (user-blocking).
+- [ ] Generated files stamped with year 1996 — Generated files were timestamped 1996 instead of 2026.
+- [ ] Greeting rotation regression — The per-visit greeting rotation regressed during a change.
+- [ ] Kotlin extension properties fail through fully-qualified chains — Every exported Kotlin app would fail to compile on certain property access.
+- [ ] Android FAB not to Material 3 spec — The Android floating action button had the wrong spec and clearance.
+- [ ] Barber app shows a wrong photo — The barber demo app rendered a wrong/mismatched photo.
+- [ ] Composer bar shows giant gradient pills — The dashboard composer bar rendered giant gradient pills instead of a compact input/mic/button.
+- [ ] Desktop/Mac/Web preview renders as a banner and single column — Desktop, Mac and Web previews showed a lone phone column / banner and one name instead of a fu…
+- [ ] Empty-prompt CTA silently does nothing — Clicking 'New app' or 'Start building' with an empty prompt box did nothing — no builder, erro…
+- [ ] Mobile nav wrap and file-list truncation — In the narrow panel view the mobile nav wrapped and the file list truncated.
+- [ ] Pitch deck low contrast and overlapping footnotes — Grey text on slides 7/8/9 was hard to read and footnotes overlapped the content.
+- [ ] Pitch deck nav arrows un-positioned and wrong start slide — The pitch deck did not start at slide 1 and the nav arrows were not centered at the sides.
+- [ ] READY tiles stay dark on the light theme — Some cards showed as black while others were white (READY tiles dark on the light theme).
+- [ ] Review-phase placeholder shows 'Building…' while awaiting approval — The review phase displayed a 'Building…' placeholder while it was actually awaiting user appro…
+- [ ] Six preview render/display complaints — Category leak on a booking app, barber photo reading as a living room, toy-like toggle proport…
+- [ ] Stat numbers spilling over and jumbled — Numbers in stat chips spilled over and looked jumbled.
+- [ ] Wrong hue value on the render wall — The render wall used a wrong hue.
+- [ ] Dev-server port mismatch in launch.json — The preview tooling couldn't attach to the dev server.
+- [ ] Exported Android build fails: missing gradle.properties useAndroidX — The exported Android project failed its first-run compile in the farm.
+
+## Budget LevelUp (13)
+- [ ] TOTP QR service leaked 2FA secret — Enabling 2FA sent the TOTP secret to a third-party QR service.
+- [ ] Excel month selector wrote to the wrong cell — Changing the month in the Social Tracker workbook did not affect the formulas' results.
+- [ ] note() call destroyed the month selector cell — A merged note silently wiped the month selector cell in the workbook.
+- [ ] Celebrate tab crashes on saved payment card — The Celebrate tab crashed for a fresh guest and whenever a payment card existed.
+- [ ] Vault C1 brute-force / no per-account retrieval token — The encrypted vault was brute-forceable and lacked per-account isolation.
+- [ ] Broken social link handling — Pasting a social URL produced a dead link, and bad image URLs showed a broken icon.
+- [ ] Invoice button silently added an investment — Clicking the Business invoice button silently created an investment instead.
+- [ ] Merged-cell collision in pillars card — Merged cells in the pillars card collided, corrupting the layout/values.
+- [ ] toISOString() shifted calendar events a day early — Calendar events appeared one day earlier than the chosen date.
+- [ ] Untranslated card titles and chart labels — Card titles and chart row labels stayed in English after switching language.
+- [ ] Calendar alignment assignment typo — The calendar rendered with broken alignment.
+- [ ] Jumbled platform-mix card in summary band — The platform-mix card layout appeared jumbled in the planner summary band.
+- [ ] recalc.py crashed on Python 3.9 — The recalc verification script threw a TypeError.
+
+## Planner Studio (11)
+- [ ] arguments.callee ReferenceError breaks task ticking — To-do items wouldn't tick off; the first render's refresh callback threw silently.
+- [ ] Gradient theme crash from id mismatch — The gradient theme never applied because its checks never matched.
+- [ ] Service worker cached a 404 for a later-added file — A vendor file added after first cache stayed permanently broken.
+- [ ] Monochrome theme hue not updating — Changing the mono hue had no effect.
+- [ ] Schedule data-model change regression — After changing schedule data from string to an object, consumers still reading it as a string…
+- [ ] '0/0' task counter not updating live — The task counter stayed at 0/0 instead of reflecting progress.
+- [ ] Both modal dialogs render on load — Two modal sheets both showed on first boot.
+- [ ] Duplicate calmBtn DOM id — Two elements shared the `calmBtn` id.
+- [ ] Kawaii theme buttons unreadable — Kawaii-theme buttons used white ink that failed contrast.
+- [ ] Meal grid misaligns below 860px — The meal grid broke below 860px, silently misaligning days against meals.
+- [ ] PDF cover text overlapping — Cover words overlaid each other on the planner's first page/PDF cover.
+
+## Prompt Vault (8)
+- [ ] Beauty-mark descriptor produced a lip piercing — Subject prompts rendered an unwanted lip piercing.
+- [ ] Ebook hyperlinks not rendered inline — PDF link annotations weren't appearing, undercutting the 'fully hyperlinked' claim.
+- [ ] Mirror-reversed, garbled on-image timestamp — Generated mirror-selfie images produced a flipped, broken timestamp.
+- [ ] Prompts produced generic, non-model subjects — Users got a generic subject instead of a model-grade one.
+- [ ] Search returned zero results — Search returned 0 results despite the 'find anything you've ever written' claim.
+- [ ] Text-fix clause injected inside the --oref placeholder — The orientation-fix clause landed inside the [your model … --oref …] placeholder, breaking it.
+- [ ] Transparent card background over content — A card used a transparent background causing a visual glitch.
+- [ ] Incorrect flat '696 pages' label — All files were labeled '696 pages' but the 2028 files are actually 697-701 pages.
+
+## Hello Baby (7)
+- [ ] Weak recovery keys and unescaped attribute sinks — Recovery keys were brute-forceable and some attributes were unescaped (XSS risk now that space…
+- [ ] Entities deleted without confirmation — Five places deleted data without asking.
+- [ ] Arrival without due date routed to wrong screen — A baby with no due date fell into the wrong screen.
+- [ ] App showed Happy Travel nav instead of baby app — The brand said Hello Baby but the nav showed Happy Travel's 'My Trips / Journey / Passport'.
+- [ ] Blurry, hard-to-read wording — Text looked fuzzy and dark numbers collided with the dark silhouette.
+- [ ] Budget edits buried and unfindable — The user couldn't find budget edits because they were buried at the bottom of the Events tab.
+- [ ] Literal \n rendering escaped — A literal `\n` was showing instead of a line break.
+
+## Wedding Planner (6)
+- [ ] openpyxl StyleProxy crash on font copy — xlsx generation failed when copying fonts.
+- [ ] Analysis donut rendered incorrectly — The analysis donut chart displayed wrong.
+- [ ] Duplicated block in wedding-party view — The wedding party showed a duplicated half-block.
+- [ ] Filler images not loading (naturalWidth 0) — Filler/Unsplash images failed to load (naturalWidth 0).
+- [ ] Seating flow dead-ends after adding a table — Adding a table left an empty table with no way forward.
+- [ ] Nested git repo leaked into monorepo commit — A wedding-planner gitlink was committed into the BUDGETLEVELUP monorepo.
+
+## Breadcrumb (5)
+- [ ] +feature truncation swallows text and skips redaction — The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and th…
+- [ ] Recovery codes hashed inconsistently — Valid recovery codes could fail because hashing was inconsistent.
+- [ ] Docs not synced — Docs weren't reliably persisted/synced.
+- [ ] Inconsistent text normalization — Normalization behaved inconsistently across paths.
+- [ ] srcdoc iframe thumbnails render blank — Prompt thumbnails showed blank.
+
+## Ever After (5)
+- [ ] Service worker pins returning users to old build — Returning visitors saw stale builds — old splash rings, white space under content, and a mis-s…
+- [ ] Join boot race gives joiners the wrong cloud key — Users joining a shared space were given their own cloud key and shown the wrong 'your key' pop…
+- [ ] Choose-a-photo box shows literal ${imgIconSVG(34)} — The photo-picker box displayed the literal text `${imgIconSVG(34)}` (plus a fallback clock gly…
+- [ ] tvPhoto icon printed as literal text — `${IMG_ICON(32)}` showed as literal text in tvPhoto instead of the icon.
+- [ ] Corrupted emoji entry — One corrupted emoji entry had slipped into the data.
+
+## Listing Lab Pro (5)
+- [ ] SSRF via /api/open and /api/fetch — Server-side fetch endpoints could be pointed at arbitrary internal hosts.
+- [ ] XSS in Listing Lab render path — Untrusted content could execute script in Listing Lab.
+- [ ] AI misattributed quotes between listings — The analyzer attributed one listing's quote to a different listing.
+- [ ] Digit confusion when reading listing images — Digits were misread from images.
+- [ ] Scraper pulled related-item ads and foreign shops — Analyses were polluted by related-item ads and other shops' listings, which would have produce…
+
+## Social LevelUp (4)
+- [ ] XSS via paste into contenteditable notes editor — Pasting HTML into the notes editor could inject script.
+- [ ] cur0 is not defined crash on post save — Saving a post with income entered crashed the app.
+- [ ] Older profiles crash on missing state fields — Profiles created before new features crashed on load.
+- [ ] To-do done button crash — Clicking a to-do's done button threw undefined.split.
+
+## Unknown (1)
+- [ ] Screenshot box completely unstyled — A box looked cheap because it had no styling at all.
