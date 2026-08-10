@@ -80,6 +80,30 @@
   .empty{color:var(--muted);text-align:center;padding:40px}
   footer{color:var(--muted);font-size:13px;text-align:center;margin-top:30px}
   mark{background:color-mix(in srgb,var(--accent) 35%,transparent);color:inherit;border-radius:3px}
+
+  /* security sweep */
+  details.sweep{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 18px;overflow:hidden}
+  details.sweep > summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px;font-weight:700}
+  details.sweep > summary::-webkit-details-marker{display:none}
+  details.sweep[open] summary .chev{transform:rotate(90deg)}
+  .sweep .sec-head{padding:0 18px 14px;color:var(--muted);font-size:13.5px}
+  .sweep .tally{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 4px}
+  .sev{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:99px;color:#fff}
+  .sev.critical{background:#b4227a}.sev.high{background:#e5484d}.sev.medium{background:#d1620a}.sev.low{background:#6b7280}
+  .st{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--line)}
+  .st.fixed{color:#12a150;border-color:#12a150}.st.partial{color:#d1620a;border-color:#d1620a}
+  .st.open{color:#e5484d;border-color:#e5484d}.st.accepted{color:var(--muted)}
+  ul.finds{list-style:none;margin:0;padding:4px 8px 10px}
+  li.find{padding:12px 10px;border-top:1px solid var(--line)}
+  li.find:first-child{border-top:none}
+  .find .f-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:5px}
+  .find .fid{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .find .f-title{font-weight:650}
+  .find .f-body{color:var(--muted);font-size:13.5px;display:grid;gap:3px}
+  .find .f-body b{color:var(--ink);font-weight:600}
+  .find code,.f-files{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted)}
+  .clean{padding:8px 18px 16px;color:var(--muted);font-size:13px}
+  .clean b{color:var(--done, #12a150)}
   @media print{
     .controls,.progress,.kpis,.btn{display:none!important}
     details.app{break-inside:avoid;box-shadow:none;border-color:#ccc}
@@ -118,10 +142,14 @@
     </div>
   </div>
 
+  <section id="secsweep"></section>
+  <section id="scanpanel"></section>
   <main id="list"></main>
   <footer id="foot"></footer>
 </div>
 
+<script src="data-sec.js"></script>
+<script src="data-scan.js"></script>
 <script src="data.js"></script>
 <script>
 (function(){
@@ -241,6 +269,66 @@
 
   $('#foot').innerHTML='Bug Ledger · '+BUGS.length+' fixes across '+appOrder.length+' apps'+(GENERATED?(' · generated '+esc(GENERATED)):'')+' · state saved locally in your browser';
   render();
+
+  // ---- Security Sweep panel ----
+  var SEC = window.SECURITY;
+  if(SEC && SEC.findings && SEC.findings.length){
+    var t = SEC.tally||{};
+    var open = SEC.findings.filter(function(f){return f.status==='open'}).length;
+    kpi.appendChild(kpiEl(SEC.findings.length,'audit findings'));
+    var host=$('#secsweep');
+    var d=document.createElement('details'); d.className='sweep'; d.open=false;
+    var badges=['critical','high','medium','low'].filter(function(k){return t[k]}).map(function(k){return '<span class="sev '+k+'">'+t[k]+' '+k+'</span>'}).join('');
+    var order={critical:0,high:1,medium:2,low:3};
+    var finds=SEC.findings.slice().sort(function(a,b){return (order[a.severity]-order[b.severity])||a.id.localeCompare(b.id)});
+    var lis=finds.map(function(f){
+      var body='';
+      if(f.detail) body+='<div>'+esc(f.detail)+'</div>';
+      if(f.fix) body+='<div><b>Fix:</b> '+esc(f.fix)+'</div>';
+      if(f.files) body+='<div class="f-files">'+esc(f.files)+'</div>';
+      return '<li class="find"><div class="f-top"><span class="fid">'+esc(f.id)+'</span>'+
+        '<span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
+        '<span class="st '+esc(f.status)+'">'+esc(f.status)+'</span>'+
+        '<span class="tag">'+esc(f.app||'')+'</span></div>'+
+        '<div class="f-title">'+esc(f.title)+'</div>'+
+        '<div class="f-body">'+body+'</div></li>';
+    }).join('');
+    var clean=(SEC.verified_clean||[]).map(function(c){return '✓ '+esc(c)}).join('<br>');
+    d.innerHTML='<summary><span class="chev">▶</span><span class="appname">🔒 '+esc(SEC.title||'Security Sweep')+'</span>'+
+        '<span class="count">'+open+' open · '+SEC.findings.length+' total</span></summary>'+
+      '<div class="sec-head"><div class="tally">'+badges+'</div>'+esc(SEC.method||'')+
+        ' &middot; <a href="SECURITY-AUDIT.md">full report</a></div>'+
+      '<ul class="finds">'+lis+'</ul>'+
+      (clean?'<div class="clean"><b>Verified clean:</b><br>'+clean+'</div>':'');
+    host.appendChild(d);
+  }
+
+  // ---- Scanner Findings panel ----
+  var SCAN = window.SCAN;
+  if(SCAN && SCAN.findings && SCAN.findings.length){
+    kpi.appendChild(kpiEl(SCAN.findings.length,'scanner leads'));
+    var svo={critical:0,high:1,medium:2,low:3};
+    var host2=$('#scanpanel');
+    var d2=document.createElement('details'); d2.className='sweep'; d2.open=false;
+    var apps2=SCAN.apps||Object.keys(SCAN.findings.reduce(function(a,f){a[f.app]=1;return a},{}));
+    var groups=apps2.map(function(app){
+      var items=SCAN.findings.filter(function(f){return f.app===app}).sort(function(a,b){return (svo[a.severity]-svo[b.severity])||String(a.file).localeCompare(b.file)});
+      var lis=items.map(function(f){
+        return '<li class="find"><div class="f-top"><span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
+          '<span class="fid">'+esc(f.detector)+'</span><span class="f-title">'+esc(f.title)+'</span></div>'+
+          '<div class="f-body"><div class="f-files">'+esc(f.file)+':'+esc(String(f.line))+'</div>'+
+          '<div><code>'+esc((f.excerpt||'').slice(0,140))+'</code></div>'+
+          '<div><b>Fix:</b> '+esc(f.advice)+'</div></div></li>';
+      }).join('');
+      return '<div style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
+    }).join('');
+    d2.innerHTML='<summary><span class="chev">▶</span><span class="appname">🔎 Scanner findings</span>'+
+        '<span class="count">'+SCAN.findings.length+' leads · '+apps2.length+' app'+(apps2.length>1?'s':'')+'</span></summary>'+
+      '<div class="sec-head">Static-analysis leads from <code>scan.mjs</code> — code-smell matches to verify, not confirmed bugs. '+
+        'Run <code>node scan.mjs &lt;app&gt; --write</code> to refresh. &middot; <a href="SCAN-FINDINGS.md">full list</a></div>'+
+      groups;
+    host2.appendChild(d2);
+  }
 })();
 </script>
 </body>

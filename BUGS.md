@@ -1,6 +1,6 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**289 bugs fixed** across **14 apps**, mined from the full AI-assisted build history. Live interactive version: **https://bugledger.coconvo.workers.dev**
+**289 bugs fixed** across **14 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
@@ -9,10 +9,63 @@
 | Security fixes | 26 |
 | Data-loss / sync fixes | 25 |
 | Crashes fixed | 21 |
+| Security-audit findings | 15 (9 open) |
 
 ### By category
 
 `ui: 107` `logic: 68` `security: 26` `crash: 21` `data-loss: 17` `other: 17` `auth: 10` `race: 9` `sync: 8` `perf: 6`
+
+---
+
+## 🔒 Security Sweep — Budget LevelUp / Listing Lab — Full AI Security Audit
+
+_Source-read audit (no live exploitation). Scope: budget-levelup worker + public/*.js and listing-lab worker + public/app.js._  ·  Full report: [SECURITY-AUDIT.md](./SECURITY-AUDIT.md)
+
+- [ ] **C1 · Cloud vault brute-forceable — ciphertext fetchable by public handle, protected only by a 6-digit PIN** `critical` · _fixed_ · Budget LevelUp
+  vaultId = SHA-256("blu-vault:"+handle) is derived from the public handle, and /api/backup GET serves the ciphertext to any unauthenticated caller. The only secret left is a 20-bit PIN, exhaustible offline in ~1 minute.
+  <br>*Fix:* Vault id is now SHA-256(handle+":"+randomToken); dual-read migrates legacy accounts with zero lockout; optional passphrase raises KDF entropy; 2FA mandatory for new accounts; writes/deletes carry a proof-of-possession token.
+- [ ] **H1 · Anyone can overwrite or delete any user's cloud vault (no proof-of-possession)** `high` · _fixed_ · Budget LevelUp
+  /api/backup POST/DELETE validate only the 64-hex id shape. Since the id derives from the public handle, a stranger can DELETE a victim's backup or POST garbage, locking them out with a misleading 'wrong PIN'.
+  <br>*Fix:* Mutations now require the retrieval-secret / proof-of-possession token introduced in C1.
+- [ ] **H2 · Stored XSS via shared 'study' link — esc() does not escape quotes** `high` · _fixed_ · Listing Lab Pro
+  esc() escaped only & < > (not " or '), yet was used inside double-quoted src/href attributes fed by a stored ?study= blob. A crafted thumb value closes the attribute and auto-fires onerror, no click needed.
+  <br>*Fix:* esc() now escapes " and '; image/link sinks go through safeImg()/safeHref() so a shared link cannot inject onerror or a javascript: href.
+- [ ] **H3 · Unauthenticated, unthrottled access to billable compute (Browser Rendering + Workers AI + Google Translate)** `high` · _partial_ · Listing Lab Pro
+  /api/translate (owner's paid Google key), /api/open (billable browser sessions, 12 URLs/req), /api/analyze (~5+ LLM gens), /api/vision (70B model) had no auth, origin check, Turnstile, or rate limit — a direct financial-DoS / open-proxy surface.
+  <br>*Fix:* Per-IP rate limits added (open 6/min, analyze 10/min, lookup 20/min, backup 40/5min). Turnstile/auth-gating still recommended for full coverage.
+- [ ] **M1 · SSRF / open proxy in /api/open and /api/fetch (no host allowlist)** `medium` · _fixed_ · Listing Lab Pro
+  /api/open passed user URLs straight into page.goto() and returned text + screenshot; /api/fetch checked https only on the initial URL then followed redirects, so an https→internal 302 slipped past. Full render-and-exfiltrate primitive laundered through the origin.
+  <br>*Fix:* Both endpoints enforce a marketplace host allowlist; /api/fetch uses redirect:'manual' so a redirect can't smuggle past the scheme check.
+- [ ] **M2 · Fixed global KDF salt (all users share one salt)** `medium` · _open_ · Budget LevelUp
+  salt is a compile-time constant identical for every user, allowing precomputed PIN→key tables for a known handle; violates per-record-salt rule and compounds C1.
+  <br>*Fix:* Recommended: generate a random 16-byte salt at account creation, store alongside the vault, feed to PBKDF2.
+- [ ] **M3 · PBKDF2 iteration count below 2026 guidance** `medium` · _open_ · Budget LevelUp
+  OWASP 2024+ guidance for PBKDF2-HMAC-SHA256 is ~600k. Auth path uses 250k, sync path 100k. Hardening item; the real fix for the auth path is C1's retrieval-secret, not more rounds.
+  <br>*Fix:* Recommended: raise to >=600k as defense-in-depth.
+- [ ] **M4 · Two apps share one KV namespace** `medium` · _open_ · Budget LevelUp
+  Budget vault backups, revocation list and Stripe session codes share a namespace with Listing Lab studies. Prefixes isolate them today, but a future key-handling bug in either worker puts the other app's data (incl. encrypted vaults) in blast radius.
+  <br>*Fix:* Recommended: give Listing Lab its own KV namespace.
+- [ ] **L1 · Notes editor is a self-XSS sink (per-user only)** `low` · _open_ · Budget LevelUp
+  Stores ed.innerHTML and re-injects it raw into a contenteditable; crafted markup executes, but only in the same user's own session (notes live in that user's vault).
+  <br>*Fix:* Optional: sanitize on save or strip event handlers/<script> on load.
+- [ ] **L2 · TOTP is UI-only, not a cryptographic factor; compare is not constant-time** `low` · _open_ · Budget LevelUp
+  The vault decrypts from the PIN alone, so an attacker with ciphertext+PIN never invokes the TOTP gate — 2FA adds no cryptographic protection to the data. Compare uses === (not constant-time; not remotely exploitable here).
+  <br>*Fix:* Recommended: mix the TOTP secret into key derivation, or present 2FA honestly as a UI lock only.
+- [ ] **L3 · Recovery kit writes the PIN to disk in plaintext** `low` · _accepted_ · Budget LevelUp
+  Recovery kit download contains handle + PIN in cleartext — a 20-bit secret left in Downloads. Deliberate UX tradeoff (no reset possible).
+  <br>*Fix:* Recommended: add a one-line in-product warning.
+- [ ] **L4 · Decrypted profile lingers in memory after a profile switch** `low` · _open_ · Budget LevelUp
+  _pendingProfile holds the full decrypted profile during 2FA and is never cleared; after switching accounts, profile A's plaintext can remain referenced. Not persisted or rendered elsewhere.
+  <br>*Fix:* Recommended: clear it after openProfile.
+- [ ] **L5 · Guest plaintext store not cleared when creating an account without 'bring my data'** `low` · _open_ · Budget LevelUp
+  createAccount only removes the guest key when bringGuestData is true; decline it and the guest budget stays in localStorage in cleartext for the next person on a shared device.
+  <br>*Fix:* Recommended: offer to wipe guest data on first real sign-in.
+- [ ] **L6 · Unlock codes are 64-bit-tag bearer tokens with no expiry** `low` · _open_ · Budget LevelUp
+  mintCode appends only the first 8 HMAC bytes; verifyCode never checks the embedded issue-day for expiry; /api/redeem has no rate limit. Online forgery infeasible at 2^64 — a licensing weakness (codes share infinitely) rather than a break.
+  <br>*Fix:* Recommended: bind a code to a device/account on first redeem.
+- [ ] **L7 · Dead code webapp/public/app.js with weaker save()/esc()** `low` · _open_ · Budget LevelUp
+  Not referenced by index.html; defines a weaker save() that writes state to the plaintext guest key unconditionally and a duplicate esc(). Harmless while unloaded, a footgun if wired up later.
+  <br>*Fix:* Recommended: delete it or fold it in.
 
 ---
 
