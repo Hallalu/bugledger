@@ -1,4 +1,4 @@
-# BUG REGRESSION CHECKLIST — 314 known bugs across 15 apps
+# BUG REGRESSION CHECKLIST — 315 known bugs across 16 apps
 # Paste this into any build session and re-check each item (bugs recur).
 # Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
 
@@ -356,6 +356,9 @@
 - [ ] cur0 is not defined crash on post save — Saving a post with income entered crashed the app.
 - [ ] Older profiles crash on missing state fields — Profiles created before new features crashed on load.
 - [ ] To-do done button crash — Clicking a to-do's done button threw undefined.split.
+
+## Aprizely (1)
+- [ ] Unlock keypad numbers float high and misalign — On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up wit…
 
 ## Hallalu Bookings (1)
 - [ ] Orphaned dead whitespace in FAQ + Policies section — The FAQ and Policies cards sat only in the right column while the left column ended at the tes…

@@ -1,14 +1,14 @@
 # Bug Ledger — Agent Protocol
 
 You are a coding agent working inside a project. This ledger is your regression + security
-memory: **314 bugs across 15 apps**, a security audit (15 findings),
+memory: **315 bugs across 16 apps**, a security audit (15 findings),
 and 14 static detectors. Use it to debug the current project against every bug we've
 hit before, then **log what you checked** so there's a record.
 
 Base URL: `https://bugledger.coconvo.workers.dev`
 
 ## Apps in the ledger
-`Finished.` (138) · `Hallalu CRM` (48) · `Stitchhooky` (33) · `Hopefil` (22) · `Budget LevelUp` (13) · `Breadcrumb` (12) · `Planner Studio` (11) · `Prompt Vault` (8) · `Hello Baby` (7) · `Wedding Planner` (6) · `Ever After` (5) · `Listing Lab Pro` (5) · `Social LevelUp` (4) · `Hallalu Bookings` (1) · `Unknown` (1)
+`Finished.` (138) · `Hallalu CRM` (48) · `Stitchhooky` (33) · `Hopefil` (22) · `Budget LevelUp` (13) · `Breadcrumb` (12) · `Planner Studio` (11) · `Prompt Vault` (8) · `Hello Baby` (7) · `Wedding Planner` (6) · `Ever After` (5) · `Listing Lab Pro` (5) · `Social LevelUp` (4) · `Aprizely` (1) · `Hallalu Bookings` (1) · `Unknown` (1)
 
 ## Step 1 — Get the checklist for this project's app
 Pick the app name (ask the user, or infer from the repo). Then either:

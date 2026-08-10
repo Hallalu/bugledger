@@ -90,6 +90,61 @@ export default {
       }
     }
 
+    // ---- GET /api/sessions?active=&limit= : live worklog sessions ----
+    if (pathname === "/api/sessions" && request.method === "GET") {
+      const limit = Math.min(50, Math.max(1, num(url.searchParams.get("limit")) || 12));
+      const activeOnly = url.searchParams.get("active") === "1";
+      try {
+        const { results } = await env.DB
+          .prepare("SELECT * FROM sessions ORDER BY updated DESC LIMIT ?").bind(limit).all();
+        let rows = (results || []).map(mapSession);
+        // "live" = active and touched within 90s; keep done sessions from the last hour for context
+        const now = Date.now();
+        rows = rows.map((s) => ({ ...s, live: s.status === "active" && now - s.updated < 90_000 }));
+        if (activeOnly) rows = rows.filter((s) => s.live || (s.status === "active" && now - s.updated < 10 * 60_000));
+        return json({ ok: true, now, count: rows.length, sessions: rows });
+      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+    }
+    if (pathname === "/api/session" && request.method === "GET") {
+      const id = url.searchParams.get("id");
+      if (!id) return json({ ok: false, error: "id required" }, 400);
+      try {
+        const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
+        return row ? json({ ok: true, session: mapSession(row) }) : json({ ok: false, error: "not found" }, 404);
+      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+    }
+
+    // ---- POST /api/session : upsert a live worklog session ----
+    if (pathname === "/api/session" && request.method === "POST") {
+      if (env.LEDGER_WRITE_TOKEN && request.headers.get("x-ledger-key") !== env.LEDGER_WRITE_TOKEN)
+        return json({ ok: false, error: "unauthorized" }, 401);
+      let body;
+      try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
+      const id = str(body.id, 60) || crypto.randomUUID();
+      const now = Date.now();
+      const tasks = arr(body.tasks, 60, (t) => ({
+        text: str(t && t.text, 200),
+        status: ["pending", "active", "done"].includes(t && t.status) ? t.status : "pending",
+      }));
+      const done = tasks.filter((t) => t.status === "done").length;
+      const status = body.status === "done" ? "done" : "active";
+      try {
+        const existing = await env.DB.prepare("SELECT started FROM sessions WHERE id = ?").bind(id).first();
+        const started = existing ? existing.started : now;
+        await env.DB.prepare(
+          `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET updated=?,app=?,project=?,title=?,agent=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?`
+        ).bind(
+          id, started, now, str(body.app, 80), str(body.project, 200), str(body.title, 200), str(body.agent || "claude-code", 60),
+          status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500),
+          now, str(body.app, 80), str(body.project, 200), str(body.title, 200), str(body.agent || "claude-code", 60),
+          status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500)
+        ).run();
+        return json({ ok: true, id, url: "https://bugledger.coconvo.workers.dev/live", done, total: tasks.length });
+      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+    }
+
     if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);
 
     // everything else → static assets
@@ -98,3 +153,11 @@ export default {
 };
 
 function safeParse(s, dflt) { try { return JSON.parse(s); } catch { return dflt; } }
+
+function mapSession(r) {
+  return {
+    id: r.id, started: r.started, updated: r.updated, app: r.app, project: r.project,
+    title: r.title, agent: r.agent, status: r.status, current: r.current,
+    tasks: safeParse(r.tasks, []), done: r.done_count, total: r.total_count, note: r.note,
+  };
+}
