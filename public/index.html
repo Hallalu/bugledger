@@ -134,6 +134,13 @@
       <input id="q" type="search" placeholder="Search bugs, symptoms, fixes…" autocomplete="off">
       <select id="fApp"><option value="">All apps</option></select>
       <select id="fCat"><option value="">All types</option></select>
+      <select id="fSev" title="Severity is derived from impact category">
+        <option value="">All severities</option>
+        <option value="critical">Critical</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
       <label class="toggle"><input type="checkbox" id="onlyOpen"> Only unchecked</label>
       <button class="btn" id="expand">Expand all</button>
       <button class="btn" id="collapse">Collapse all</button>
@@ -144,18 +151,23 @@
 
   <section id="secsweep"></section>
   <section id="scanpanel"></section>
+  <section id="harvestpanel"></section>
   <main id="list"></main>
   <footer id="foot"></footer>
 </div>
 
 <script src="data-sec.js"></script>
 <script src="data-scan.js"></script>
+<script src="data-harvest.js"></script>
 <script src="data.js"></script>
 <script>
 (function(){
   var BUGS = (window.BUGS||[]).map(function(b,i){ b._id = b.session+'-'+i; return b; });
   var GENERATED = window.GENERATED || '';
   var CATLABEL = {crash:'crash','data-loss':'data loss',logic:'logic',ui:'ui',security:'security',performance:'perf',race:'race',sync:'sync',auth:'auth',other:'other'};
+  // severity derived from impact category (critical/high/medium/low)
+  var CAT2SEV = {'data-loss':'critical',security:'high',crash:'high',auth:'high',sync:'high',race:'medium',logic:'medium',performance:'low',ui:'low',other:'low'};
+  var sevOf = function(b){ return b.severity || CAT2SEV[b.category] || 'low'; };
   var KEY='bugledger.checked.v1';
   var checked = {};
   try{ checked = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
@@ -188,7 +200,7 @@
 
   function render(){
     var q=$('#q').value.trim().toLowerCase();
-    var fa=$('#fApp').value, fc=$('#fCat').value, only=$('#onlyOpen').checked;
+    var fa=$('#fApp').value, fc=$('#fCat').value, fsv=$('#fSev').value, only=$('#onlyOpen').checked;
     list.innerHTML='';
     var shown=0, totalDone=0;
     BUGS.forEach(function(b){ if(isDone(b)) totalDone++; });
@@ -198,6 +210,7 @@
       var items=BUGS.filter(function(b){
         if(b.app!==app) return false;
         if(fc && b.category!==fc) return false;
+        if(fsv && sevOf(b)!==fsv) return false;
         if(only && isDone(b)) return false;
         if(q){
           var hay=(b.title+' '+b.symptom+' '+b.root_cause+' '+b.fix+' '+b.category).toLowerCase();
@@ -208,7 +221,7 @@
       if(!items.length) return;
       var done=BUGS.filter(function(b){return b.app===app && isDone(b)}).length;
       var tot=apps[app];
-      var d=document.createElement('details'); d.className='app'; d.open = !!(q||fc||fa||only) || openState[app]!==false;
+      var d=document.createElement('details'); d.className='app'; d.open = !!(q||fc||fa||fsv||only) || openState[app]!==false;
       d.addEventListener('toggle',function(){ openState[app]=d.open; });
       var pctApp=Math.round(done/tot*100);
       var s=document.createElement('summary');
@@ -227,7 +240,8 @@
         if(b.fix) body+='<div><b>Fix:</b> '+hl(b.fix,q)+'</div>';
         li.innerHTML='<input class="cbx" type="checkbox" '+(isDone(b)?'checked':'')+'>'+
           '<div class="b-main"><div class="b-title">'+hl(b.title,q)+'</div>'+
-          '<div class="b-meta"><span class="badge" style="background:'+col+'">'+CATLABEL[b.category]+'</span>'+
+          '<div class="b-meta"><span class="sev '+sevOf(b)+'">'+sevOf(b)+'</span>'+
+          '<span class="badge" style="background:'+col+'">'+CATLABEL[b.category]+'</span>'+
           '<span class="tag">#'+esc(b.session)+'</span></div>'+
           '<div class="b-body">'+body+'</div></div>';
         var cb=li.querySelector('.cbx');
@@ -258,9 +272,26 @@
     $('#progline').textContent=done+' of '+BUGS.length+' checked';
   }
 
+  function applyPanelSev(){
+    var sv=$('#fSev').value;
+    document.querySelectorAll('#secsweep li.find, #scanpanel li.find, #harvestpanel li.find').forEach(function(li){
+      li.style.display = (!sv || li.getAttribute('data-sev')===sv) ? '' : 'none';
+    });
+    // hide a panel's app-subgroup / whole panel when it has no visible rows
+    document.querySelectorAll('#scanpanel .scan-appgroup, #harvestpanel .scan-appgroup').forEach(function(g){
+      var any=[].some.call(g.querySelectorAll('li.find'),function(li){return li.style.display!=='none'});
+      g.style.display=any?'':'none';
+    });
+    ['#secsweep','#scanpanel','#harvestpanel'].forEach(function(sel){
+      var d=document.querySelector(sel+' details'); if(!d) return;
+      var any=[].some.call(d.querySelectorAll('li.find'),function(li){return li.style.display!=='none'});
+      d.style.display=any?'':'none';
+    });
+  }
   $('#q').addEventListener('input',render);
   $('#fApp').addEventListener('change',render);
   $('#fCat').addEventListener('change',render);
+  $('#fSev').addEventListener('change',function(){ render(); applyPanelSev(); });
   $('#onlyOpen').addEventListener('change',render);
   $('#expand').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=true; openState[d.querySelector('.appname').textContent]=true;}); });
   $('#collapse').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=false; openState[d.querySelector('.appname').textContent]=false;}); });
@@ -286,7 +317,7 @@
       if(f.detail) body+='<div>'+esc(f.detail)+'</div>';
       if(f.fix) body+='<div><b>Fix:</b> '+esc(f.fix)+'</div>';
       if(f.files) body+='<div class="f-files">'+esc(f.files)+'</div>';
-      return '<li class="find"><div class="f-top"><span class="fid">'+esc(f.id)+'</span>'+
+      return '<li class="find" data-sev="'+esc(f.severity)+'"><div class="f-top"><span class="fid">'+esc(f.id)+'</span>'+
         '<span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
         '<span class="st '+esc(f.status)+'">'+esc(f.status)+'</span>'+
         '<span class="tag">'+esc(f.app||'')+'</span></div>'+
@@ -314,13 +345,13 @@
     var groups=apps2.map(function(app){
       var items=SCAN.findings.filter(function(f){return f.app===app}).sort(function(a,b){return (svo[a.severity]-svo[b.severity])||String(a.file).localeCompare(b.file)});
       var lis=items.map(function(f){
-        return '<li class="find"><div class="f-top"><span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
+        return '<li class="find" data-sev="'+esc(f.severity)+'"><div class="f-top"><span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
           '<span class="fid">'+esc(f.detector)+'</span><span class="f-title">'+esc(f.title)+'</span></div>'+
           '<div class="f-body"><div class="f-files">'+esc(f.file)+':'+esc(String(f.line))+'</div>'+
           '<div><code>'+esc((f.excerpt||'').slice(0,140))+'</code></div>'+
           '<div><b>Fix:</b> '+esc(f.advice)+'</div></div></li>';
       }).join('');
-      return '<div style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
+      return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
     }).join('');
     d2.innerHTML='<summary><span class="chev">▶</span><span class="appname">🔎 Scanner findings</span>'+
         '<span class="count">'+SCAN.findings.length+' leads · '+apps2.length+' app'+(apps2.length>1?'s':'')+'</span></summary>'+
@@ -328,6 +359,31 @@
         'Run <code>node scan.mjs &lt;app&gt; --write</code> to refresh. &middot; <a href="SCAN-FINDINGS.md">full list</a></div>'+
       groups;
     host2.appendChild(d2);
+  }
+
+  // ---- Auto-harvested panel ----
+  var HARV = window.HARVEST;
+  if(HARV && HARV.findings && HARV.findings.length){
+    kpi.appendChild(kpiEl(HARV.findings.length,'auto-harvested'));
+    var hvo={critical:0,high:1,medium:2,low:3};
+    var host3=$('#harvestpanel');
+    var d3=document.createElement('details'); d3.className='sweep'; d3.open=false;
+    var happs=HARV.apps||Object.keys(HARV.findings.reduce(function(a,f){a[f.app]=1;return a},{}));
+    var hgroups=happs.map(function(app){
+      var items=HARV.findings.filter(function(f){return f.app===app}).sort(function(a,b){return (hvo[a.severity]-hvo[b.severity])});
+      var lis=items.map(function(f){
+        return '<li class="find" data-sev="'+esc(f.severity)+'"><div class="f-top"><span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
+          '<span class="fid">'+esc(f.category)+'</span><span class="tag">'+esc(f.found||'')+' · #'+esc(f.session||'')+'</span></div>'+
+          '<div class="f-title" style="font-weight:550">'+esc(f.title)+'</div></li>';
+      }).join('');
+      return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
+    }).join('');
+    d3.innerHTML='<summary><span class="chev">▶</span><span class="appname">🌱 Auto-harvested</span>'+
+        '<span class="count">'+HARV.findings.length+' unverified · '+happs.length+' app'+(happs.length>1?'s':'')+'</span></summary>'+
+      '<div class="sec-head"><b>Unverified.</b> Auto-mined from conversation transcripts by <code>harvest.mjs</code> (runs hourly). '+
+        'Promote good ones into the curated ledger. &middot; <a href="HARVESTED.md">full list</a></div>'+
+      hgroups;
+    host3.appendChild(d3);
   }
 })();
 </script>

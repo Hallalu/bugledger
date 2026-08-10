@@ -125,9 +125,34 @@ if (fs.existsSync(p("scan-findings.json"))) {
     S.push("");
   }
   fs.writeFileSync(p("SCAN-FINDINGS.md"), S.join("\n"));
+  fs.writeFileSync(p("public","SCAN-FINDINGS.md"), S.join("\n"));
 } else {
   // clear stale artifacts if the findings file was removed
   for (const f of ["public/data-scan.js"]) { try { fs.rmSync(p(...f.split("/"))); } catch {} }
 }
 
-console.log(`gen: ${bugs.length} bugs, ${appOrder.length} apps${sec?`, ${sec.findings.length} security findings`:""}${scanCount?`, ${scanCount} scanner leads`:""} -> data.js, data-sec.js${scanCount?", data-scan.js":""}, BUGS.md, CHECKLIST.md${scanCount?", SCAN-FINDINGS.md":""}`);
+// ---- auto-harvested tier (public/data-harvest.js + HARVESTED.md) ----
+let harvCount = 0;
+if (fs.existsSync(p("harvested.json"))) {
+  const harv = JSON.parse(fs.readFileSync(p("harvested.json"),"utf8"));
+  harvCount = harv.length;
+  if (harvCount) {
+    const apps = {}; for (const f of harv) (apps[f.app] ||= []).push(f);
+    const appList = Object.keys(apps).sort((a,b)=>apps[b].length-apps[a].length);
+    fs.writeFileSync(p("public","data-harvest.js"),
+      `window.HARVEST=${JSON.stringify({ generated:GEN, count:harv.length, apps:appList, findings:harv })};\n`);
+    const svo = { critical:0, high:1, medium:2, low:3 };
+    let H = [`# 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations\n`,
+      `${harv.length} lead(s) auto-extracted by \`harvest.mjs\` from the local Claude transcripts. **Unverified** — promote good ones into \`bugs.json\`. Runs hourly via launchd.\n`];
+    for (const app of appList) {
+      H.push(`## ${app} (${apps[app].length})\n`);
+      for (const f of apps[app].slice().sort((a,b)=>(svo[a.severity]-svo[b.severity])))
+        H.push(`- [ ] \`${f.severity}\` \`${f.category}\` (${f.found}, #${f.session}) — ${f.title}`);
+      H.push("");
+    }
+    fs.writeFileSync(p("HARVESTED.md"), H.join("\n"));
+    fs.writeFileSync(p("public","HARVESTED.md"), H.join("\n"));
+  }
+}
+
+console.log(`gen: ${bugs.length} bugs, ${appOrder.length} apps${sec?`, ${sec.findings.length} security`:""}${scanCount?`, ${scanCount} scanner`:""}${harvCount?`, ${harvCount} harvested`:""} -> data.js, data-sec.js${scanCount?", data-scan.js":""}${harvCount?", data-harvest.js":""}, BUGS.md, CHECKLIST.md`);
