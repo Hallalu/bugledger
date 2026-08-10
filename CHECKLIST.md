@@ -1,4 +1,4 @@
-# BUG REGRESSION CHECKLIST — 289 known bugs across 14 apps
+# BUG REGRESSION CHECKLIST — 304 known bugs across 14 apps
 # Paste this into any build session and re-check each item (bugs recur).
 # Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
 
@@ -156,25 +156,31 @@
 - [ ] Password-reset emails sent from an unverified domain — The send-reset function would have its emails rejected by Resend.
 - [ ] Stale cached JavaScript made features appear broken — Write templates, the Homework + button, and AI features all did nothing even though the code w…
 
-## Hallalu CRM (34)
+## Hallalu CRM (42)
 - [ ] Business-plan /pitch gate bypassable via path tricks — The gated /pitch content could be reached with two path tricks despite the gate.
+- [ ] Owner email exposed client-side in admin.js — The admin owner email was shipped in the client-side admin.js bundle.
 - [ ] Invoice builder wipes line items on every repaint — 'Add a line' did nothing and invoices could not be saved.
 - [ ] /api/track throws TDZ from duplicate — The `/api/track` endpoint threw a temporal-dead-zone error.
 - [ ] Admin check crashes for signed-out users — The app would crash for signed-out visitors.
 - [ ] Hallucinated Stripe checkout APIs — Checkout would have failed the instant real keys were added.
 - [ ] Stale HTML shell served from cache — The browser kept serving a stale index.html, making fixes look broken for testers and real use…
+- [ ] Billing view shows outdated Solo/Studio/£19 pricing — The billing/pricing view still displayed the old Solo/Studio tiers with a £19 price even for t…
 - [ ] Date handling produced the wrong year — Goal/close dates resolved to the wrong year (e.g. 2024, and 'next Tuesday' became 2027).
 - [ ] Dead route after creating a project while viewing a client — Creating a project while viewing a client left the user on a dead route.
 - [ ] Delete actions silently do nothing — Several delete controls appeared to work but deleted nothing.
+- [ ] Demo comms/leads didn't seed — The demo's communications/leads didn't appear because they were never seeded.
 - [ ] Demo shows wrong base currency — The UK demo displayed USD instead of GBP.
 - [ ] Editing a lead can't set Google/Maps source — Google/Maps couldn't be chosen when editing a lead, and demo leads were mislabeled call/email.
 - [ ] Hardcoded '3.1×' caption — A '3.1×' caption was displayed as if computed but was hardcoded.
+- [ ] Landing page silently redirects onboarded users to /app — The deployed landing page at / was never visible to onboarded users because it silently bounce…
 - [ ] Local 'pct' variable shadows global pct() function — A percentage calculation misbehaved due to name collision.
 - [ ] NaN% reply rate and non-zero outreach on empty project — An empty project showed NaN% for reply rate and a fresh project did not start its outreach cou…
 - [ ] Paste importer mis-parses co.uk domains — Pasted leads with `.co.uk` sites and business domains were parsed wrong (domain treated as ema…
+- [ ] Paste importer treats a whole Google Maps paste as one lead — Pasting Google Maps results imported only 'found 1 lead' and used the first line 'Sponsored' a…
 - [ ] Phone-number parser misreads across lines — Phone parsing failed on multi-line input and numbers with a leading parenthesis.
 - [ ] Read-aloud reply and button do nothing — The assistant's reply did not speak and the read-aloud button after the fact did nothing.
 - [ ] Rolodex cards show fields with no way to enter them — Contact cards displayed fields (e.g. in influencers) that had no corresponding input path.
+- [ ] Trial→paid KPI shows NaN% — The admin dashboard's 'Trial→paid' KPI rendered NaN%.
 - [ ] Worker chunking not byte-safe and header auth broken — Worker request chunking and header-based auth were faulty.
 - [ ] AI status stuck on 'Checking…' when API unreachable — The AI buttons showed a perpetual 'Checking…' state and failed silently when the API was not r…
 - [ ] Ava assistant invisible on mobile/dark — The Ava assistant was white-on-white and unreadable in dark mode on phones.
@@ -184,7 +190,9 @@
 - [ ] Contact card not full width — The rich-contact card rendered narrower than the container.
 - [ ] Demo portraits mismatch names and gender — Demo lead photos didn't match the leads' names or gender.
 - [ ] Header buttons overflow, blocking Add to-do — On a phone the 'Add to-do' button was clipped off the right edge, so users couldn't add a goal…
+- [ ] Landing hero/aurora card invisible in dark mode — In dark mode the hero/aurora card stayed light, making its text invisible.
 - [ ] Microphone icon not centered in inputs — The mic sat near the top line instead of centered in goal, to-do and other fields.
+- [ ] Tax page not findable in the nav — The Tax page existed but users couldn't find or reach it.
 - [ ] Timezone widget falls off screen — Swapping timezones pushed the widget off-screen at mid widths.
 - [ ] Unsized SVG renders oversized — An SVG rendered giant on screen.
 - [ ] ANTHROPIC_API_KEY saved with a leading space — AI features silently did not work.
@@ -266,6 +274,20 @@
 - [ ] Jumbled platform-mix card in summary band — The platform-mix card layout appeared jumbled in the planner summary band.
 - [ ] recalc.py crashed on Python 3.9 — The recalc verification script threw a TypeError.
 
+## Breadcrumb (12)
+- [ ] +feature truncation swallows text and skips redaction — The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and th…
+- [ ] Recovery codes hashed inconsistently — Valid recovery codes could fail because hashing was inconsistent.
+- [ ] Docs not synced — Docs weren't reliably persisted/synced.
+- [ ] `>cursor` builder-switch token silently discarded — A `>cursor` builder switch inside a captured prompt was silently dropped.
+- [ ] Capture-bar quick chips don't update the prompt placeholder — Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X fo…
+- [ ] Inconsistent text normalization — Normalization behaved inconsistently across paths.
+- [ ] Settings card can't read subscription periodEnd — The settings card read periodEnd but received nothing.
+- [ ] Trail outcome filter is a dead control — Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.
+- [ ] Forget-device button lacked a confirmation — The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the…
+- [ ] Insights dashboard grid misrendered — The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) di…
+- [ ] srcdoc iframe thumbnails render blank — Prompt thumbnails showed blank.
+- [ ] i18n script not included in index.html — The i18n script wasn't loaded, so localization wouldn't run.
+
 ## Planner Studio (11)
 - [ ] arguments.callee ReferenceError breaks task ticking — To-do items wouldn't tick off; the first render's refresh callback threw silently.
 - [ ] Gradient theme crash from id mismatch — The gradient theme never applied because its checks never matched.
@@ -305,13 +327,6 @@
 - [ ] Filler images not loading (naturalWidth 0) — Filler/Unsplash images failed to load (naturalWidth 0).
 - [ ] Seating flow dead-ends after adding a table — Adding a table left an empty table with no way forward.
 - [ ] Nested git repo leaked into monorepo commit — A wedding-planner gitlink was committed into the BUDGETLEVELUP monorepo.
-
-## Breadcrumb (5)
-- [ ] +feature truncation swallows text and skips redaction — The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and th…
-- [ ] Recovery codes hashed inconsistently — Valid recovery codes could fail because hashing was inconsistent.
-- [ ] Docs not synced — Docs weren't reliably persisted/synced.
-- [ ] Inconsistent text normalization — Normalization behaved inconsistently across paths.
-- [ ] srcdoc iframe thumbnails render blank — Prompt thumbnails showed blank.
 
 ## Ever After (5)
 - [ ] Service worker pins returning users to old build — Returning visitors saw stale builds — old splash rings, white space under content, and a mis-s…

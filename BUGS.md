@@ -1,19 +1,19 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**289 bugs fixed** across **14 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**304 bugs fixed** across **14 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 289 |
+| Total bugs fixed | 304 |
 | Apps | 14 |
-| Security fixes | 26 |
+| Security fixes | 27 |
 | Data-loss / sync fixes | 25 |
 | Crashes fixed | 21 |
 | Security-audit findings | 15 (9 open) |
 
 ### By category
 
-`ui: 107` `logic: 68` `security: 26` `crash: 21` `data-loss: 17` `other: 17` `auth: 10` `race: 9` `sync: 8` `perf: 6`
+`ui: 111` `logic: 77` `security: 27` `crash: 21` `other: 18` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 6`
 
 ---
 
@@ -342,10 +342,12 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Stale cached JavaScript made features appear broken** `other`
   *Symptom:* Write templates, the Homework + button, and AI features all did nothing even though the code was correct.  <br>*Cause:* The deployed app was serving stale JavaScript from the service worker cache.  <br>*Fix:* Fixed the service worker so every deploy arrives instantly (with a one-time hard-refresh to clear the old bundle).
 
-## Hallalu CRM  ·  34 fixed
+## Hallalu CRM  ·  42 fixed
 
 - [ ] **Business-plan /pitch gate bypassable via path tricks** `security`
   *Symptom:* The gated /pitch content could be reached with two path tricks despite the gate.  <br>*Cause:* The gate only guarded the route while the protected content still shipped in the static asset bundle.  <br>*Fix:* Removed the protected content from the asset bundle entirely so the gate actually holds.
+- [ ] **Owner email exposed client-side in admin.js** `security`
+  *Symptom:* The admin owner email was shipped in the client-side admin.js bundle.  <br>*Cause:* The owner-email/admin check lived in client code instead of on the server.  <br>*Fix:* Moved the owner email/admin check server-side.
 - [ ] **Invoice builder wipes line items on every repaint** `data-loss`
   *Symptom:* 'Add a line' did nothing and invoices could not be saved.  <br>*Cause:* invoiceBuilder() re-initialised the line items on every repaint, wiping typed input.  <br>*Fix:* Separated initialization from repaint so line items persist, and corrected the maths.
 - [ ] **/api/track throws TDZ from duplicate** `crash`
@@ -356,30 +358,40 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Checkout would have failed the instant real keys were added.  <br>*Cause:* A previous session used non-existent Stripe APIs (a fake 'Dahlia' Stripe.js, `createEmbeddedCheckoutPage`, and a fabricated `API_VERSION='2026-07-29.dahlia'`).  <br>*Fix:* Rewrote to the real Embedded Checkout API and correct version header (four fixes).
 - [ ] **Stale HTML shell served from cache** `sync`
   *Symptom:* The browser kept serving a stale index.html, making fixes look broken for testers and real users.  <br>*Cause:* The HTML shell was being cached even though versioned assets already handle caching.  <br>*Fix:* Made the shell never cache so deploys are picked up immediately.
+- [ ] **Billing view shows outdated Solo/Studio/£19 pricing** `logic`
+  *Symptom:* The billing/pricing view still displayed the old Solo/Studio tiers with a £19 price even for the free plan (the 'free 19 pounds' bug).  <br>*Cause:* The billing view rendered a stale pricing model instead of the current flat tiers.  <br>*Fix:* Rewrote the billing view to USD flat pricing with free=$0 and stripped the pricing promises.
 - [ ] **Date handling produced the wrong year** `logic`
   *Symptom:* Goal/close dates resolved to the wrong year (e.g. 2024, and 'next Tuesday' became 2027).  <br>*Cause:* Date arithmetic was wrong and the first guard only blocked past dates, pushing them to 2027.  <br>*Fix:* Fixed date computation generally so relative dates resolve to the correct year.
 - [ ] **Dead route after creating a project while viewing a client** `logic`
   *Symptom:* Creating a project while viewing a client left the user on a dead route.  <br>*Cause:* Navigation state after project creation resolved to an invalid route.  <br>*Fix:* Corrected the post-creation navigation so it lands on a valid view.
 - [ ] **Delete actions silently do nothing** `logic`
   *Symptom:* Several delete controls appeared to work but deleted nothing.  <br>*Cause:* The delete handlers were not wired to actually remove the item.  <br>*Fix:* Fixed the deletes and added delete-confirmations everywhere.
+- [ ] **Demo comms/leads didn't seed** `logic`
+  *Symptom:* The demo's communications/leads didn't appear because they were never seeded.  <br>*Cause:* Leads live in per-project data, but the demo seeded to st.leads (the wrong data path).  <br>*Fix:* Fixed the demo seed path so demo leads/comms populate.
 - [ ] **Demo shows wrong base currency** `logic`
   *Symptom:* The UK demo displayed USD instead of GBP.  <br>*Cause:* A stale demo from before currency settings existed left USD hard-coded.  <br>*Fix:* Set `st.settings.baseCurrency='GBP'` in decorateDemo.
 - [ ] **Editing a lead can't set Google/Maps source** `logic`
   *Symptom:* Google/Maps couldn't be chosen when editing a lead, and demo leads were mislabeled call/email.  <br>*Cause:* The edit form offered only 4 sources instead of the full source picker.  <br>*Fix:* Switched the edit form to the full source picker and corrected the demo leads.
 - [ ] **Hardcoded '3.1×' caption** `logic`
   *Symptom:* A '3.1×' caption was displayed as if computed but was hardcoded.  <br>*Cause:* The multiplier was a static string rather than derived from data.  <br>*Fix:* Corrected the caption for honesty rather than hardcoding it.
+- [ ] **Landing page silently redirects onboarded users to /app** `logic`
+  *Symptom:* The deployed landing page at / was never visible to onboarded users because it silently bounced them to /app.  <br>*Cause:* An onboarded-user redirect fired unconditionally at the root route.  <br>*Fix:* Fixed the redirect (adding an ?app override) so the landing page is reachable.
 - [ ] **Local 'pct' variable shadows global pct() function** `logic`
   *Symptom:* A percentage calculation misbehaved due to name collision.  <br>*Cause:* A local variable named pct shadowed the global pct() function.  <br>*Fix:* Renamed the shadowing local variable to remove the collision.
 - [ ] **NaN% reply rate and non-zero outreach on empty project** `logic`
   *Symptom:* An empty project showed NaN% for reply rate and a fresh project did not start its outreach count at 0.  <br>*Cause:* Metrics divided by zero / lacked initialization for empty projects.  <br>*Fix:* Removed the NaN and made a fresh project start outreach count at 0.
 - [ ] **Paste importer mis-parses co.uk domains** `logic`
   *Symptom:* Pasted leads with `.co.uk` sites and business domains were parsed wrong (domain treated as email).  <br>*Cause:* TLD ordering matched `co` before `co.uk`, and business-domain-vs-email wasn't distinguished.  <br>*Fix:* Fixed TLD ordering so `co.uk` matches first and separated business domain from email.
+- [ ] **Paste importer treats a whole Google Maps paste as one lead** `logic`
+  *Symptom:* Pasting Google Maps results imported only 'found 1 lead' and used the first line 'Sponsored' as the lead's name.  <br>*Cause:* The importer split leads on blank lines, but Google Maps pastes have none, so the entire block parsed as a single lead.  <br>*Fix:* Reworked the importer so a run-together paste splits into individual leads (via the AI-split path) instead of one block.
 - [ ] **Phone-number parser misreads across lines** `logic`
   *Symptom:* Phone parsing failed on multi-line input and numbers with a leading parenthesis.  <br>*Cause:* The phone regex crossed line boundaries and didn't allow a leading paren.  <br>*Fix:* Rewrote the phone pattern to stay on one line and allow a leading paren.
 - [ ] **Read-aloud reply and button do nothing** `logic`
   *Symptom:* The assistant's reply did not speak and the read-aloud button after the fact did nothing.  <br>*Cause:* The speak-on-reply path and the manual read-aloud handler were both broken.  <br>*Fix:* Fixed both halves so replies speak and the button works.
 - [ ] **Rolodex cards show fields with no way to enter them** `logic`
   *Symptom:* Contact cards displayed fields (e.g. in influencers) that had no corresponding input path.  <br>*Cause:* Card display and the entry form were driven by different definitions.  <br>*Fix:* Refactored so one schema drives both the card and the entry form.
+- [ ] **Trial→paid KPI shows NaN%** `logic`
+  *Symptom:* The admin dashboard's 'Trial→paid' KPI rendered NaN%.  <br>*Cause:* An operator-precedence error in the KPI calculation.  <br>*Fix:* Corrected the precedence so the KPI computes a real percentage.
 - [ ] **Worker chunking not byte-safe and header auth broken** `logic`
   *Symptom:* Worker request chunking and header-based auth were faulty.  <br>*Cause:* Chunking split on characters rather than bytes and auth headers were mishandled.  <br>*Fix:* Reworked the worker for byte-safe chunking and correct header auth.
 - [ ] **AI status stuck on 'Checking…' when API unreachable** `ui`
@@ -398,8 +410,12 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Demo lead photos didn't match the leads' names or gender.  <br>*Cause:* Photos used random `i.pravatar.cc/?u=` URLs.  <br>*Fix:* Replaced with gender-inferred `randomuser.me` portraits via name-set heuristics.
 - [ ] **Header buttons overflow, blocking Add to-do** `ui`
   *Symptom:* On a phone the 'Add to-do' button was clipped off the right edge, so users couldn't add a goal/to-do.  <br>*Cause:* `.topbar` had no `flex-wrap`, so the action buttons overflowed on narrow screens.  <br>*Fix:* Added flex-wrap to `.topbar`, fixing every view that uses the pattern.
+- [ ] **Landing hero/aurora card invisible in dark mode** `ui`
+  *Symptom:* In dark mode the hero/aurora card stayed light, making its text invisible.  <br>*Cause:* `.hero` had a hardcoded background:#fff with no dark override, and as a stylesheet rule it wasn't caught by the inline-style dark-mode catch-all.  <br>*Fix:* Added a dark-mode override for the .hero/aurora surface so its text is readable.
 - [ ] **Microphone icon not centered in inputs** `ui`
   *Symptom:* The mic sat near the top line instead of centered in goal, to-do and other fields.  <br>*Cause:* The mic was centered on the combined label+field height instead of just the field.  <br>*Fix:* Re-centered every mic in the app so each measures 0px off-center.
+- [ ] **Tax page not findable in the nav** `ui`
+  *Symptom:* The Tax page existed but users couldn't find or reach it.  <br>*Cause:* Tax wasn't surfaced as a real, navigable page in the nav.  <br>*Fix:* Made Tax a real, findable page in the nav (and expanded the spend categories).
 - [ ] **Timezone widget falls off screen** `ui`
   *Symptom:* Swapping timezones pushed the widget off-screen at mid widths.  <br>*Cause:* The timezone inputs didn't shrink or stack on narrow layouts.  <br>*Fix:* Made the inputs shrinkable and stack earlier; verified no overflow at any width.
 - [ ] **Unsized SVG renders oversized** `ui`
@@ -558,6 +574,33 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **recalc.py crashed on Python 3.9** `other`
   *Symptom:* The recalc verification script threw a TypeError.  <br>*Cause:* ignore_cleanup_errors is unsupported on Python 3.9.  <br>*Fix:* Replaced it with an AppleScript-driven Excel recalc harness.
 
+## Breadcrumb  ·  12 fixed
+
+- [ ] **+feature truncation swallows text and skips redaction** `security`
+  *Symptom:* The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).  <br>*Cause:* A fixed 60-char read plus the swallowed remainder never passing through the redactor.  <br>*Fix:* Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.
+- [ ] **Recovery codes hashed inconsistently** `auth`
+  *Symptom:* Valid recovery codes could fail because hashing was inconsistent.  <br>*Cause:* Recovery codes were hashed inconsistently between generation and verification.  <br>*Fix:* Hash recovery codes consistently.
+- [ ] **Docs not synced** `sync`
+  *Symptom:* Docs weren't reliably persisted/synced.  <br>*Cause:* There was no synced docs store.  <br>*Fix:* Added a proper synced `docs` table and fixed the size cap.
+- [ ] **`>cursor` builder-switch token silently discarded** `logic`
+  *Symptom:* A `>cursor` builder switch inside a captured prompt was silently dropped.  <br>*Cause:* An undefined template-literal segment (rendering as `undefined}`) discarded the `>cursor` token.  <br>*Fix:* Fixed the parsing so the builder-switch token is preserved.
+- [ ] **Capture-bar quick chips don't update the prompt placeholder** `logic`
+  *Symptom:* Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X for?' message or switch the builder; only opening 'More' did.  <br>*Cause:* The quick chips lacked the handler that updates the placeholder and sets the active builder.  <br>*Fix:* Added selectCaptureBuilder() so a chip updates the placeholder in place (preserving typed text) and sets the builder.
+- [ ] **Inconsistent text normalization** `logic`
+  *Symptom:* Normalization behaved inconsistently across paths.  <br>*Cause:* Normalization logic differed between code paths.  <br>*Fix:* Made normalization consistent.
+- [ ] **Settings card can't read subscription periodEnd** `logic`
+  *Symptom:* The settings card read periodEnd but received nothing.  <br>*Cause:* publicUser didn't expose periodEnd.  <br>*Fix:* Exposed periodEnd on publicUser so the settings card can show the subscription period.
+- [ ] **Trail outcome filter is a dead control** `logic`
+  *Symptom:* Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.  <br>*Cause:* `trail-filter` had no handler at all.  <br>*Fix:* Wired the outcome filter so it actually filters the trail.
+- [ ] **Forget-device button lacked a confirmation** `ui`
+  *Symptom:* The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the every-destructive-action-confirms rule.  <br>*Cause:* The button had no confirm dialog.  <br>*Fix:* Added a confirmation before forgetting the device.
+- [ ] **Insights dashboard grid misrendered** `ui`
+  *Symptom:* The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) didn't lay out correctly.  <br>*Cause:* An Insights grid class bug broke the layout.  <br>*Fix:* Fixed the grid class (v24) so the stat-tile row and charts render properly.
+- [ ] **srcdoc iframe thumbnails render blank** `ui`
+  *Symptom:* Prompt thumbnails showed blank.  <br>*Cause:* `loading="lazy"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.  <br>*Fix:* Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.
+- [ ] **i18n script not included in index.html** `other`
+  *Symptom:* The i18n script wasn't loaded, so localization wouldn't run.  <br>*Cause:* The i18n script tag was never added to index.html (only security.js had a bumped version).  <br>*Fix:* Added the i18n script to index.html.
+
 ## Planner Studio  ·  11 fixed
 
 - [ ] **arguments.callee ReferenceError breaks task ticking** `crash`
@@ -633,19 +676,6 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Adding a table left an empty table with no way forward.  <br>*Cause:* There was no way to seat guests into a newly added table.  <br>*Fix:* Added capacity meters, per-table '+ Seat a guest here' dropdowns, meal tallies, auto-seat and a 'still to seat' pool.
 - [ ] **Nested git repo leaked into monorepo commit** `other`
   *Symptom:* A wedding-planner gitlink was committed into the BUDGETLEVELUP monorepo.  <br>*Cause:* wedding-planner has its own repo and was added as a gitlink.  <br>*Fix:* Removed the leaked gitlink from the monorepo commit.
-
-## Breadcrumb  ·  5 fixed
-
-- [ ] **+feature truncation swallows text and skips redaction** `security`
-  *Symptom:* The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).  <br>*Cause:* A fixed 60-char read plus the swallowed remainder never passing through the redactor.  <br>*Fix:* Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.
-- [ ] **Recovery codes hashed inconsistently** `auth`
-  *Symptom:* Valid recovery codes could fail because hashing was inconsistent.  <br>*Cause:* Recovery codes were hashed inconsistently between generation and verification.  <br>*Fix:* Hash recovery codes consistently.
-- [ ] **Docs not synced** `sync`
-  *Symptom:* Docs weren't reliably persisted/synced.  <br>*Cause:* There was no synced docs store.  <br>*Fix:* Added a proper synced `docs` table and fixed the size cap.
-- [ ] **Inconsistent text normalization** `logic`
-  *Symptom:* Normalization behaved inconsistently across paths.  <br>*Cause:* Normalization logic differed between code paths.  <br>*Fix:* Made normalization consistent.
-- [ ] **srcdoc iframe thumbnails render blank** `ui`
-  *Symptom:* Prompt thumbnails showed blank.  <br>*Cause:* `loading="lazy"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.  <br>*Fix:* Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.
 
 ## Ever After  ·  5 fixed
 

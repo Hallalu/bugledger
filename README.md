@@ -1,24 +1,31 @@
 # Bug Ledger
 
 An interactive, comprehensive record of **every bug fixed** across the app portfolio
-(289 bugs across 14 apps), a **full AI security audit**, and a **code scanner** that
-checks whatever app you're working on against every known bug class and records new leads.
+(304 bugs across 14 apps), a **full AI security audit**, a **code scanner** that checks
+whatever app you're working on against every known bug class, and an **hourly harvester**
+that keeps mining new conversations for fresh bugs.
 
 🔗 **Live:** https://bugledger.coconvo.workers.dev
 📋 **Flat checklist:** [CHECKLIST.md](./CHECKLIST.md) · **Detailed:** [BUGS.md](./BUGS.md) · **Raw:** [bugs.json](./bugs.json)
 🔒 **Security sweep:** [SECURITY-AUDIT.md](./SECURITY-AUDIT.md) · [security.json](./security.json)
 🔎 **Scanner leads:** [SCAN-FINDINGS.md](./SCAN-FINDINGS.md) · [scan-findings.json](./scan-findings.json)
+🌱 **Auto-harvested:** [HARVESTED.md](./HARVESTED.md) · [harvested.json](./harvested.json)
 
-## The three layers
+Every list on the site filters by **app**, **type**, and **severity** (critical / high / medium / low)
+— the severity filter applies to the bugs, the security findings, and the scanner leads at once.
 
-1. **Fixed-bug ledger** — 289 distinct bugs mined from the full session history, grouped by app,
-   each with symptom → cause → fix. Interactive: filter by app/type, full-text search, tick to
-   re-verify (saved in your browser), per-app progress bars, print/export.
+## The four layers
+
+1. **Fixed-bug ledger** — 304 distinct bugs mined from the full session history, grouped by app,
+   each with symptom → cause → fix and a derived severity. Interactive: filter by app/type/severity,
+   full-text search, tick to re-verify (saved in your browser), per-app progress bars, print/export.
 2. **Security sweep** — the full AI security audit of Budget LevelUp / Listing Lab
    (1 critical, 3 high, 4 medium, 7 low + verified-clean checks), severity-ranked with fix + status.
-3. **Scanner** — `scan.mjs` statically checks an app's source for regressions of the known bug
-   classes and likely new bugs, prints a per-app manual checklist, and (with `--write`) appends
-   new leads to the ledger.
+3. **Scanner** — `scan.mjs` statically checks *any* app's source for regressions of the known bug
+   classes, prints its full manual checklist + the whole known-bug catalog, and (with `--write`)
+   records new leads.
+4. **Harvester** — `harvest.mjs` incrementally mines the local Claude transcripts every hour for
+   newly-described bug fixes and appends the unverified ones to a separate "auto-harvested" tier.
 
 ## Scanner — check the app you're working on
 
@@ -32,12 +39,37 @@ node ~/BugLedger/scan.mjs . --write --deploy    # …then wrangler deploy + git 
 node ~/BugLedger/scan.mjs . --json              # machine-readable output
 ```
 
-Every run prints three things:
-- **Auto-detected findings** (file:line + which known bug class + how to fix),
-- the **full manual checklist** of every known bug for that app (things static analysis can't catch — visual/layout/sync semantics), and
-- **cross-app recurring classes** that bit multiple apps and should always be re-checked.
+Every run prints:
+- **Auto-detected findings** (file:line + which known bug class + how to fix) — the detectors run on *any* project,
+- the **full manual checklist** of every known bug for that app (things static analysis can't catch — visual/layout/sync semantics),
+- **cross-app recurring classes** that bit multiple apps, and
+- for a new/unknown project (or with `--catalog`), the **entire known-bug catalog** — all 304 bugs + 15 security findings — so a brand-new project is checked against everything.
 
 It reads files only — it never runs the app. Treat findings as leads to verify, not proof.
+
+## Harvester — keep the ledger current automatically
+
+`harvest.mjs` mines the local Claude transcripts for newly-described bug fixes and appends the
+unverified ones to `harvested.json` (a separate tier — the curated `bugs.json` is never touched).
+It's incremental: a saved byte-offset per transcript means each run only reads what was appended
+since last time.
+
+```bash
+node harvest.mjs                # scan new transcript content, update the auto-harvested tier
+node harvest.mjs --deploy       # …and redeploy + push only if something new was found
+node harvest.mjs --baseline     # set the watermark to "now" without harvesting
+node harvest.mjs --full         # re-scan every transcript from the start
+```
+
+**Scheduled hourly** via a launchd agent (`~/Library/LaunchAgents/com.hallalu.bugledger-harvest.plist`
+→ `harvest-cron.sh` → `harvest.mjs --deploy --quiet`, logging to `harvest.log`). It no-ops when
+nothing new is found, so it only commits/deploys on real changes, and it skips meta-conversation
+about the ledger itself. Manage it with:
+
+```bash
+launchctl bootout gui/$(id -u)/com.hallalu.bugledger-harvest    # stop
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.hallalu.bugledger-harvest.plist  # start
+```
 
 ### What it detects (13 detectors, mapped to real past bugs)
 `XSS-INNERHTML` (interpolated HTML sinks) · `ESC-QUOTES` (esc() that misses `"`/`'`) ·

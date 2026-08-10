@@ -108,6 +108,9 @@ perLine("SSRF-GOTO","high","security","SSRF / open proxy (unvalidated navigation
 perLine("NATIVE-DIALOG","low","ui","Native browser dialog used for UX",
   "Replace prompt()/alert()/confirm() with in-app UI (native dialogs look broken and block).",
   isCode, /(^|[^.\w])(prompt|alert)\s*\(/);
+perLine("LOCALSTORAGE-GLOBAL","low","security","Global localStorage key — verify per-account scoping (cross-account leak class)",
+  "Stamp the signed-in owner into the key (or wipe on account switch) so a second account on the same device can't read the first's data.",
+  isCode, /localStorage\.setItem\s*\(\s*["'`][a-zA-Z0-9_.:-]+["'`]/);
 
 // --- logic / crash ---
 perLine("DATE-TOISO","medium","logic","Date via toISOString() can shift a day across timezones",
@@ -258,6 +261,23 @@ if (AS_JSON) {
     "API key/secret saved with a trailing space silently breaking AI calls.",
     "Vault/PIN low-entropy + publicly-addressable ciphertext (see Security Sweep).",
   ]) console.log(`  [ ] ${r}`);
+  // full catalog — check this project against EVERY known bug type (default for new/unknown apps)
+  let secF = []; try { secF = (JSON.parse(fs.readFileSync(path.join(LEDGER,"security.json"),"utf8")).findings)||[]; } catch {}
+  const totalTypes = ledger.length + secF.length;
+  const showCatalog = flags.has("--catalog") || flags.has("--full") || appBugs.length === 0;
+  if (showCatalog) {
+    const so = { critical:0, high:1, medium:2, low:3 };
+    console.log(`\n${bar}\n📚 FULL KNOWN-BUG CATALOG — verify this project against all ${totalTypes} known types (${ledger.length} bugs + ${secF.length} security):\n${bar}`);
+    for (const f of secF.slice().sort((a,b)=>so[a.severity]-so[b.severity]))
+      console.log(`  [ ] (security/${f.severity}) ${f.title}`);
+    const byCat = {}; for (const b of ledger) (byCat[b.category] ||= []).push(b);
+    for (const cat of Object.keys(byCat).sort((a,b)=>(SEV2[a]??9)-(SEV2[b]??9))) {
+      console.log(`  —— ${cat} (${byCat[cat].length}) ——`);
+      for (const b of byCat[cat]) console.log(`  [ ] [${b.app}] ${b.title}`);
+    }
+  } else {
+    console.log(`\n  ▸ Run with --catalog to check this project against ALL ${totalTypes} known bug types (${ledger.length} bugs + ${secF.length} security findings), not just ${APP}'s.`);
+  }
   console.log("");
 }
 

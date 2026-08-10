@@ -1,3 +1,6 @@
 node_modules/
 .wrangler/
-.DS_Store
+.harvest-state.json
+harvest.log
+harvest.launchd.out.log
+harvest.launchd.err.log

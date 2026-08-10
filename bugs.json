@@ -1225,6 +1225,16 @@
   },
   {
     "app": "Hallalu CRM",
+    "category": "security",
+    "title": "Owner email exposed client-side in admin.js",
+    "symptom": "The admin owner email was shipped in the client-side admin.js bundle.",
+    "root_cause": "The owner-email/admin check lived in client code instead of on the server.",
+    "fix": "Moved the owner email/admin check server-side.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
     "category": "data-loss",
     "title": "Invoice builder wipes line items on every repaint",
     "symptom": "'Add a line' did nothing and invoices could not be saved.",
@@ -1271,6 +1281,16 @@
   {
     "app": "Hallalu CRM",
     "category": "logic",
+    "title": "Billing view shows outdated Solo/Studio/£19 pricing",
+    "symptom": "The billing/pricing view still displayed the old Solo/Studio tiers with a £19 price even for the free plan (the 'free 19 pounds' bug).",
+    "root_cause": "The billing view rendered a stale pricing model instead of the current flat tiers.",
+    "fix": "Rewrote the billing view to USD flat pricing with free=$0 and stripped the pricing promises.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
     "title": "Date handling produced the wrong year",
     "symptom": "Goal/close dates resolved to the wrong year (e.g. 2024, and 'next Tuesday' became 2027).",
     "root_cause": "Date arithmetic was wrong and the first guard only blocked past dates, pushing them to 2027.",
@@ -1294,6 +1314,16 @@
     "root_cause": "The delete handlers were not wired to actually remove the item.",
     "fix": "Fixed the deletes and added delete-confirmations everywhere.",
     "session": "215ee275"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
+    "title": "Demo comms/leads didn't seed",
+    "symptom": "The demo's communications/leads didn't appear because they were never seeded.",
+    "root_cause": "Leads live in per-project data, but the demo seeded to st.leads (the wrong data path).",
+    "fix": "Fixed the demo seed path so demo leads/comms populate.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
   },
   {
     "app": "Hallalu CRM",
@@ -1325,6 +1355,16 @@
   {
     "app": "Hallalu CRM",
     "category": "logic",
+    "title": "Landing page silently redirects onboarded users to /app",
+    "symptom": "The deployed landing page at / was never visible to onboarded users because it silently bounced them to /app.",
+    "root_cause": "An onboarded-user redirect fired unconditionally at the root route.",
+    "fix": "Fixed the redirect (adding an ?app override) so the landing page is reachable.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
     "title": "Local 'pct' variable shadows global pct() function",
     "symptom": "A percentage calculation misbehaved due to name collision.",
     "root_cause": "A local variable named pct shadowed the global pct() function.",
@@ -1352,6 +1392,16 @@
   {
     "app": "Hallalu CRM",
     "category": "logic",
+    "title": "Paste importer treats a whole Google Maps paste as one lead",
+    "symptom": "Pasting Google Maps results imported only 'found 1 lead' and used the first line 'Sponsored' as the lead's name.",
+    "root_cause": "The importer split leads on blank lines, but Google Maps pastes have none, so the entire block parsed as a single lead.",
+    "fix": "Reworked the importer so a run-together paste splits into individual leads (via the AI-split path) instead of one block.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
     "title": "Phone-number parser misreads across lines",
     "symptom": "Phone parsing failed on multi-line input and numbers with a leading parenthesis.",
     "root_cause": "The phone regex crossed line boundaries and didn't allow a leading paren.",
@@ -1375,6 +1425,16 @@
     "root_cause": "Card display and the entry form were driven by different definitions.",
     "fix": "Refactored so one schema drives both the card and the entry form.",
     "session": "9033ea59"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "logic",
+    "title": "Trial→paid KPI shows NaN%",
+    "symptom": "The admin dashboard's 'Trial→paid' KPI rendered NaN%.",
+    "root_cause": "An operator-precedence error in the KPI calculation.",
+    "fix": "Corrected the precedence so the KPI computes a real percentage.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
   },
   {
     "app": "Hallalu CRM",
@@ -1460,11 +1520,31 @@
   {
     "app": "Hallalu CRM",
     "category": "ui",
+    "title": "Landing hero/aurora card invisible in dark mode",
+    "symptom": "In dark mode the hero/aurora card stayed light, making its text invisible.",
+    "root_cause": "`.hero` had a hardcoded background:#fff with no dark override, and as a stylesheet rule it wasn't caught by the inline-style dark-mode catch-all.",
+    "fix": "Added a dark-mode override for the .hero/aurora surface so its text is readable.",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ui",
     "title": "Microphone icon not centered in inputs",
     "symptom": "The mic sat near the top line instead of centered in goal, to-do and other fields.",
     "root_cause": "The mic was centered on the combined label+field height instead of just the field.",
     "fix": "Re-centered every mic in the app so each measures 0px off-center.",
     "session": "9033ea59"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ui",
+    "title": "Tax page not findable in the nav",
+    "symptom": "The Tax page existed but users couldn't find or reach it.",
+    "root_cause": "Tax wasn't surfaced as a real, navigable page in the nav.",
+    "fix": "Made Tax a real, findable page in the nav (and expanded the spend categories).",
+    "session": "215ee275",
+    "source": "conversation-2026-08-10"
   },
   {
     "app": "Hallalu CRM",
@@ -2133,6 +2213,121 @@
     "session": "a1ee807a"
   },
   {
+    "app": "Breadcrumb",
+    "category": "security",
+    "title": "+feature truncation swallows text and skips redaction",
+    "symptom": "The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).",
+    "root_cause": "A fixed 60-char read plus the swallowed remainder never passing through the redactor.",
+    "fix": "Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "auth",
+    "title": "Recovery codes hashed inconsistently",
+    "symptom": "Valid recovery codes could fail because hashing was inconsistent.",
+    "root_cause": "Recovery codes were hashed inconsistently between generation and verification.",
+    "fix": "Hash recovery codes consistently.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "sync",
+    "title": "Docs not synced",
+    "symptom": "Docs weren't reliably persisted/synced.",
+    "root_cause": "There was no synced docs store.",
+    "fix": "Added a proper synced `docs` table and fixed the size cap.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "`>cursor` builder-switch token silently discarded",
+    "symptom": "A `>cursor` builder switch inside a captured prompt was silently dropped.",
+    "root_cause": "An undefined template-literal segment (rendering as `undefined}`) discarded the `>cursor` token.",
+    "fix": "Fixed the parsing so the builder-switch token is preserved.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Capture-bar quick chips don't update the prompt placeholder",
+    "symptom": "Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X for?' message or switch the builder; only opening 'More' did.",
+    "root_cause": "The quick chips lacked the handler that updates the placeholder and sets the active builder.",
+    "fix": "Added selectCaptureBuilder() so a chip updates the placeholder in place (preserving typed text) and sets the builder.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Inconsistent text normalization",
+    "symptom": "Normalization behaved inconsistently across paths.",
+    "root_cause": "Normalization logic differed between code paths.",
+    "fix": "Made normalization consistent.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Settings card can't read subscription periodEnd",
+    "symptom": "The settings card read periodEnd but received nothing.",
+    "root_cause": "publicUser didn't expose periodEnd.",
+    "fix": "Exposed periodEnd on publicUser so the settings card can show the subscription period.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Trail outcome filter is a dead control",
+    "symptom": "Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.",
+    "root_cause": "`trail-filter` had no handler at all.",
+    "fix": "Wired the outcome filter so it actually filters the trail.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "ui",
+    "title": "Forget-device button lacked a confirmation",
+    "symptom": "The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the every-destructive-action-confirms rule.",
+    "root_cause": "The button had no confirm dialog.",
+    "fix": "Added a confirmation before forgetting the device.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "ui",
+    "title": "Insights dashboard grid misrendered",
+    "symptom": "The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) didn't lay out correctly.",
+    "root_cause": "An Insights grid class bug broke the layout.",
+    "fix": "Fixed the grid class (v24) so the stat-tile row and charts render properly.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "ui",
+    "title": "srcdoc iframe thumbnails render blank",
+    "symptom": "Prompt thumbnails showed blank.",
+    "root_cause": "`loading=\"lazy\"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.",
+    "fix": "Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "other",
+    "title": "i18n script not included in index.html",
+    "symptom": "The i18n script wasn't loaded, so localization wouldn't run.",
+    "root_cause": "The i18n script tag was never added to index.html (only security.js had a bumped version).",
+    "fix": "Added the i18n script to index.html.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
     "app": "Planner Studio",
     "category": "crash",
     "title": "arguments.callee ReferenceError breaks task ticking",
@@ -2419,51 +2614,6 @@
     "root_cause": "wedding-planner has its own repo and was added as a gitlink.",
     "fix": "Removed the leaked gitlink from the monorepo commit.",
     "session": "a1ee807a"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "security",
-    "title": "+feature truncation swallows text and skips redaction",
-    "symptom": "The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).",
-    "root_cause": "A fixed 60-char read plus the swallowed remainder never passing through the redactor.",
-    "fix": "Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "auth",
-    "title": "Recovery codes hashed inconsistently",
-    "symptom": "Valid recovery codes could fail because hashing was inconsistent.",
-    "root_cause": "Recovery codes were hashed inconsistently between generation and verification.",
-    "fix": "Hash recovery codes consistently.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "sync",
-    "title": "Docs not synced",
-    "symptom": "Docs weren't reliably persisted/synced.",
-    "root_cause": "There was no synced docs store.",
-    "fix": "Added a proper synced `docs` table and fixed the size cap.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "logic",
-    "title": "Inconsistent text normalization",
-    "symptom": "Normalization behaved inconsistently across paths.",
-    "root_cause": "Normalization logic differed between code paths.",
-    "fix": "Made normalization consistent.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "ui",
-    "title": "srcdoc iframe thumbnails render blank",
-    "symptom": "Prompt thumbnails showed blank.",
-    "root_cause": "`loading=\"lazy\"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.",
-    "fix": "Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.",
-    "session": "1d8ee789"
   },
   {
     "app": "Ever After",
