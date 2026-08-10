@@ -307,3 +307,33 @@ if (flags.has("--write")) {
     } catch(e) { console.error("deploy/push failed:", e.message); }
   }
 }
+
+// ---------- --log : POST this scan as a check-log to the ledger ----------
+if (flags.has("--log")) {
+  let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(path.join(process.env.HOME, ".bugledger.json"),"utf8")); } catch {}
+  const base = process.env.BUGLEDGER_BASE || cfg.base || "https://bugledger.coconvo.workers.dev";
+  const token = process.env.BUGLEDGER_TOKEN || cfg.token || "";
+  const secDet = new Set(D.filter(d=>d.cat==="security").map(d=>d.id));
+  const firedDet = new Set(findings.map(f=>f.detector));
+  const cleanDet = D.map(d=>d.id).filter(id=>!firedDet.has(id));
+  const secFindings = findings.filter(f=>f.category==="security")
+    .map(f=>({ severity:f.severity, title:`${f.detector}: ${f.bug}`, file:`${f.file}:${f.line}` }));
+  const payload = {
+    app: APP, project: path.basename(TARGET), checkedBy: "scan.mjs",
+    scanned: files.length, checkedCount: D.length + appBugs.length, foundCount: findings.length,
+    securityStatus: secFindings.length ? "issues" : "clean",
+    notFound: cleanDet.map(id=>`${id} (static check clean)`),
+    found: findings.map(f=>({ title:`${f.detector}: ${f.bug}`, file:`${f.file}:${f.line}`, note:f.excerpt })).slice(0,200),
+    securityChecked: [...secDet],
+    securityFindings: secFindings,
+    notes: `Static scan via scan.mjs (${D.length} detectors, ${files.length} files). Auto-detected leads only — not a full manual pass.`,
+  };
+  try {
+    const res = await fetch(base + "/api/checks", { method:"POST",
+      headers: { "content-type":"application/json", "x-ledger-key": token },
+      body: JSON.stringify(payload) });
+    const out = await res.json().catch(()=>({}));
+    if (out.ok) console.log(`\n✅ --log: recorded check for ${APP} (id ${out.id}). See ${base}/#checks`);
+    else console.error(`\n--log failed: ${res.status} ${out.error||""}${token?"":" (no token — set ~/.bugledger.json)"}`);
+  } catch(e) { console.error("--log failed:", e.message); }
+}

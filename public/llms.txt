@@ -1,0 +1,18 @@
+# Bug Ledger
+
+> A catalogue of 314 bugs fixed across 15 apps, plus a security audit and a code scanner. Use it to debug and security-check a project by checking it against every bug we've hit before, then log what you checked.
+
+Agent instructions: fetch /AGENT.md and follow the protocol. Report back with POST /api/checks.
+
+## Data (JSON)
+- [All bugs](https://bugledger.coconvo.workers.dev/bugs.json): every known bug {app,title,category,severity,symptom,root_cause,fix}
+- [Per-app checklist](https://bugledger.coconvo.workers.dev/checklist.json): bugs grouped by app + recurring classes + scanner detectors + security findings
+- [Security audit](https://bugledger.coconvo.workers.dev/security.json): the full severity-ranked security sweep
+
+## Protocol
+- [AGENT.md](https://bugledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
+- POST https://bugledger.coconvo.workers.dev/api/checks : record that you checked an app (needs header x-ledger-key)
+- GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
+
+## Human pages
+- [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, and Check-log panels

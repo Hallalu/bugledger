@@ -79,6 +79,34 @@ launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.hallalu.bugledger-ha
 find/match) · `SW-CACHE-FIRST` (stale-build service worker) · `DUP-DOM-ID` · `NO-CSP`.
 On the Budget/Listing-Lab monorepo it independently re-discovers the audit's SSRF (M1) and weak-PBKDF2 (M3).
 
+## Use it from any project — the agent API
+
+Any Claude Code agent (in any repo) can debug + security-check its project against the whole ledger and
+**log that it did so**.
+
+**Easiest:** run the global slash command in the project — `/bugcheck Hallalu CRM` (the app name is
+optional; it's inferred otherwise). The command (`~/.claude/commands/bugcheck.md`) pulls the app's
+checklist, checks each known bug + recurring class + security detector against the real code, fixes or
+reports, then posts a check-log.
+
+**Under the hood** (also usable by hand / other agents — see `/AGENT.md`):
+
+| Purpose | Endpoint |
+|---|---|
+| Agent protocol (what to do) | `GET /AGENT.md` · `GET /llms.txt` |
+| Per-app checklist + recurring + detectors + security | `GET /checklist.json` |
+| Every bug, full detail | `GET /bugs.json` · `GET /security.json` |
+| Record a check | `POST /api/checks` (header `x-ledger-key`) |
+| Recent checks | `GET /api/checks?app=` |
+
+```bash
+# fetch what to check, scan the code, and log the pass:
+node ~/BugLedger/scan.mjs . --app "Hallalu CRM" --catalog --log
+```
+Check-logs are stored in D1 (`bugledger-checks`) and render on the site's **✅ Agent check-log** panel.
+The write token + base URL live in `~/.bugledger.json` (machine-local); the worker holds the matching
+`LEDGER_WRITE_TOKEN` secret so random callers can't write.
+
 ## Rebuild the site data
 
 `public/data.js`, `public/data-sec.js`, `public/data-scan.js`, `BUGS.md`, `CHECKLIST.md` and
