@@ -1,11 +1,11 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**314 bugs fixed** across **15 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**315 bugs fixed** across **16 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 314 |
-| Apps | 15 |
+| Total bugs fixed | 315 |
+| Apps | 16 |
 | Security fixes | 28 |
 | Data-loss / sync fixes | 25 |
 | Crashes fixed | 21 |
@@ -13,7 +13,7 @@
 
 ### By category
 
-`ui: 115` `logic: 80` `security: 28` `crash: 21` `other: 19` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 7`
+`ui: 116` `logic: 80` `security: 28` `crash: 21` `other: 19` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 7`
 
 ---
 
@@ -731,6 +731,11 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Profiles created before new features crashed on load.  <br>*Cause:* normalize() did not backfill newly added state fields.  <br>*Fix:* Backfilled the new state fields in normalize() so old profiles load.
 - [ ] **To-do done button crash** `crash`
   *Symptom:* Clicking a to-do's done button threw undefined.split.  <br>*Cause:* The attribute was written as data-tododone but read as dataset.todoDone (case mismatch).  <br>*Fix:* Aligned the dataset key naming so the done button reads correctly.
+
+## Aprizely  ·  1 fixed
+
+- [ ] **Unlock keypad numbers float high and misalign** `ui`
+  *Symptom:* On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up with the lettered keys — it still looked off after a first tidy pass.  <br>*Cause:* Each key reserved a letter row (ABC/DEF/…), which pushed the number upward instead of centering it; the digit wasn't positioned independently of the letters.  <br>*Fix:* Centered each number dead-centre in the key and absolute-positioned the letters tucked at the bottom; added a hairline border + subtle fill, tighter spacing and a smoother press state; also relabeled 'Create a studio' → 'Create account' on the unlock screen.
 
 ## Hallalu Bookings  ·  1 fixed
 

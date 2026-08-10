@@ -2832,6 +2832,16 @@
     "session": "a1ee807a"
   },
   {
+    "app": "Aprizely",
+    "title": "Unlock keypad numbers float high and misalign",
+    "category": "ui",
+    "symptom": "On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up with the lettered keys — it still looked off after a first tidy pass.",
+    "root_cause": "Each key reserved a letter row (ABC/DEF/…), which pushed the number upward instead of centering it; the digit wasn't positioned independently of the letters.",
+    "fix": "Centered each number dead-centre in the key and absolute-positioned the letters tucked at the bottom; added a hairline border + subtle fill, tighter spacing and a smoother press state; also relabeled 'Create a studio' → 'Create account' on the unlock screen.",
+    "session": "cd37da75",
+    "source": "conversation-2026-08-10"
+  },
+  {
     "app": "Hallalu Bookings",
     "category": "ui",
     "title": "Orphaned dead whitespace in FAQ + Policies section",
