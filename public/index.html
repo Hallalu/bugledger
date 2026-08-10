@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bug Ledger — every bug fixed</title>
+<meta name="description" content="A comprehensive, interactive checklist of every bug fixed across the app portfolio.">
+<style>
+  :root{
+    --bg:#f6f7fb; --panel:#ffffff; --ink:#141726; --muted:#5b6178; --line:#e7e9f2;
+    --accent:#6b5cff; --accent2:#00b4a6; --chip:#f0f1f8; --shadow:0 1px 2px rgba(20,23,38,.06),0 8px 24px rgba(20,23,38,.06);
+    --done:#12a150; --ok:#e8f7ee;
+    --c-crash:#e5484d; --c-data-loss:#d1620a; --c-logic:#6b5cff; --c-ui:#2f6feb; --c-security:#b4227a;
+    --c-performance:#0e8a6e; --c-race:#8a5cf6; --c-sync:#0a7ea4; --c-auth:#c0392b; --c-other:#6b7280;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0d0f18; --panel:#151826; --ink:#eef0fa; --muted:#9aa1bd; --line:#242940;
+      --chip:#1d2135; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35); --ok:#12291d;
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent)}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+
+  header.hero{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+  .title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .title h1{font-size:30px;letter-spacing:-.02em;margin:0;font-weight:800}
+  .title .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+  .sub{color:var(--muted);max-width:70ch}
+  .kpis{display:flex;gap:10px;flex-wrap:wrap}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow);min-width:120px}
+  .kpi .n{font-size:24px;font-weight:800;letter-spacing:-.02em}
+  .kpi .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+
+  .progress{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);margin:6px 0 20px}
+  .progress .row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+  .bar{height:12px;border-radius:99px;background:var(--chip);overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .35s ease}
+  .progress small{color:var(--muted)}
+
+  .controls{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);padding:12px 0;margin-bottom:14px;border-bottom:1px solid var(--line)}
+  .controls .line{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  input[type=search],select{font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;outline:none}
+  input[type=search]{flex:1;min-width:180px}
+  input[type=search]:focus,select:focus{border-color:var(--accent)}
+  .btn{font:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:inherit;display:inline-flex;gap:7px;align-items:center}
+  .btn:hover{border-color:var(--accent)}
+  .btn.solid{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
+  .toggle{display:inline-flex;gap:7px;align-items:center;color:var(--muted);user-select:none;cursor:pointer;padding:9px 4px}
+
+  details.app{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 14px;overflow:hidden}
+  details.app > summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px;font-weight:700}
+  details.app > summary::-webkit-details-marker{display:none}
+  summary .chev{transition:transform .2s;color:var(--muted)}
+  details.app[open] summary .chev{transform:rotate(90deg)}
+  summary .appname{font-size:17px;letter-spacing:-.01em}
+  summary .count{margin-left:auto;color:var(--muted);font-weight:600;font-size:13px}
+  summary .mini{width:120px;height:8px;border-radius:99px;background:var(--chip);overflow:hidden;flex:0 0 auto}
+  summary .mini > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+  ul.bugs{list-style:none;margin:0;padding:4px 8px 12px}
+  li.bug{display:flex;gap:12px;padding:12px 10px;border-top:1px solid var(--line);align-items:flex-start}
+  li.bug:first-child{border-top:none}
+  li.bug.done .b-title{text-decoration:line-through;color:var(--muted)}
+  li.bug.done{opacity:.72}
+  .cbx{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:2px solid var(--line);border-radius:7px;flex:0 0 auto;cursor:pointer;position:relative;margin-top:1px;transition:.15s}
+  .cbx:hover{border-color:var(--accent)}
+  .cbx:checked{background:var(--done);border-color:var(--done)}
+  .cbx:checked::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  .b-main{flex:1;min-width:0}
+  .b-title{font-weight:650;letter-spacing:-.01em}
+  .b-meta{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;color:#fff}
+  .tag{font-size:11px;color:var(--muted);background:var(--chip);border-radius:99px;padding:2px 8px}
+  .b-body{color:var(--muted);font-size:13.5px;display:grid;gap:3px;margin-top:2px}
+  .b-body b{color:var(--ink);font-weight:600}
+  .empty{color:var(--muted);text-align:center;padding:40px}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:30px}
+  mark{background:color-mix(in srgb,var(--accent) 35%,transparent);color:inherit;border-radius:3px}
+  @media print{
+    .controls,.progress,.kpis,.btn{display:none!important}
+    details.app{break-inside:avoid;box-shadow:none;border-color:#ccc}
+    details.app[open] ul.bugs{display:block}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="title">
+      <span class="dot"></span>
+      <h1>Bug Ledger</h1>
+    </div>
+    <p class="sub">Every bug fixed across the portfolio — mined from the full conversation history and organized into one comprehensive checklist. Tick items as you re-verify them; progress is saved in your browser.</p>
+    <div class="kpis" id="kpis"></div>
+  </header>
+
+  <div class="progress">
+    <div class="row"><strong>Re-verification progress</strong><small id="pct">0%</small></div>
+    <div class="bar"><i id="barfill"></i></div>
+    <div class="row" style="margin:10px 0 0"><small id="progline">0 of 0 checked</small></div>
+  </div>
+
+  <div class="controls">
+    <div class="line">
+      <input id="q" type="search" placeholder="Search bugs, symptoms, fixes…" autocomplete="off">
+      <select id="fApp"><option value="">All apps</option></select>
+      <select id="fCat"><option value="">All types</option></select>
+      <label class="toggle"><input type="checkbox" id="onlyOpen"> Only unchecked</label>
+      <button class="btn" id="expand">Expand all</button>
+      <button class="btn" id="collapse">Collapse all</button>
+      <button class="btn" id="print">🖨 Print</button>
+      <button class="btn" id="reset">Reset ticks</button>
+    </div>
+  </div>
+
+  <main id="list"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  var BUGS = (window.BUGS||[]).map(function(b,i){ b._id = b.session+'-'+i; return b; });
+  var GENERATED = window.GENERATED || '';
+  var CATLABEL = {crash:'crash','data-loss':'data loss',logic:'logic',ui:'ui',security:'security',performance:'perf',race:'race',sync:'sync',auth:'auth',other:'other'};
+  var KEY='bugledger.checked.v1';
+  var checked = {};
+  try{ checked = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var list=$('#list');
+
+  // populate app + cat filters
+  var apps={}, cats={};
+  BUGS.forEach(function(b){ apps[b.app]=(apps[b.app]||0)+1; cats[b.category]=(cats[b.category]||0)+1; });
+  var appOrder=Object.keys(apps).sort(function(a,b){return apps[b]-apps[a]});
+  appOrder.forEach(function(a){ var o=document.createElement('option'); o.value=a; o.textContent=a+' ('+apps[a]+')'; $('#fApp').appendChild(o); });
+  Object.keys(cats).sort().forEach(function(c){ var o=document.createElement('option'); o.value=c; o.textContent=CATLABEL[c]+' ('+cats[c]+')'; $('#fCat').appendChild(o); });
+
+  // KPIs
+  var kpi=$('#kpis');
+  function kpiEl(n,l){ var d=document.createElement('div'); d.className='kpi'; d.innerHTML='<div class="n">'+n+'</div><div class="l">'+l+'</div>'; return d; }
+  kpi.appendChild(kpiEl(BUGS.length,'bugs fixed'));
+  kpi.appendChild(kpiEl(appOrder.length,'apps'));
+  var sec=BUGS.filter(function(b){return b.category==='security'}).length;
+  var dl=BUGS.filter(function(b){return b.category==='data-loss'||b.category==='sync'}).length;
+  kpi.appendChild(kpiEl(sec,'security'));
+  kpi.appendChild(kpiEl(dl,'data / sync'));
+
+  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
+  function hl(s,q){ s=esc(s); if(!q) return s; try{ return s.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>'); }catch(e){ return s; } }
+
+  function save(){ localStorage.setItem(KEY, JSON.stringify(checked)); }
+  function isDone(b){ return !!checked[b._id]; }
+
+  function render(){
+    var q=$('#q').value.trim().toLowerCase();
+    var fa=$('#fApp').value, fc=$('#fCat').value, only=$('#onlyOpen').checked;
+    list.innerHTML='';
+    var shown=0, totalDone=0;
+    BUGS.forEach(function(b){ if(isDone(b)) totalDone++; });
+
+    appOrder.forEach(function(app){
+      if(fa && app!==fa) return;
+      var items=BUGS.filter(function(b){
+        if(b.app!==app) return false;
+        if(fc && b.category!==fc) return false;
+        if(only && isDone(b)) return false;
+        if(q){
+          var hay=(b.title+' '+b.symptom+' '+b.root_cause+' '+b.fix+' '+b.category).toLowerCase();
+          if(hay.indexOf(q)<0) return false;
+        }
+        return true;
+      });
+      if(!items.length) return;
+      var done=BUGS.filter(function(b){return b.app===app && isDone(b)}).length;
+      var tot=apps[app];
+      var d=document.createElement('details'); d.className='app'; d.open = !!(q||fc||fa||only) || openState[app]!==false;
+      d.addEventListener('toggle',function(){ openState[app]=d.open; });
+      var pctApp=Math.round(done/tot*100);
+      var s=document.createElement('summary');
+      s.innerHTML='<span class="chev">▶</span><span class="appname">'+esc(app)+'</span>'+
+        '<span class="mini"><i style="width:'+pctApp+'%"></i></span>'+
+        '<span class="count">'+done+'/'+tot+'</span>';
+      d.appendChild(s);
+      var ul=document.createElement('ul'); ul.className='bugs';
+      items.forEach(function(b){
+        shown++;
+        var li=document.createElement('li'); li.className='bug'+(isDone(b)?' done':'');
+        var col='var(--c-'+b.category+')';
+        var body='';
+        if(b.symptom) body+='<div><b>Symptom:</b> '+hl(b.symptom,q)+'</div>';
+        if(b.root_cause) body+='<div><b>Cause:</b> '+hl(b.root_cause,q)+'</div>';
+        if(b.fix) body+='<div><b>Fix:</b> '+hl(b.fix,q)+'</div>';
+        li.innerHTML='<input class="cbx" type="checkbox" '+(isDone(b)?'checked':'')+'>'+
+          '<div class="b-main"><div class="b-title">'+hl(b.title,q)+'</div>'+
+          '<div class="b-meta"><span class="badge" style="background:'+col+'">'+CATLABEL[b.category]+'</span>'+
+          '<span class="tag">#'+esc(b.session)+'</span></div>'+
+          '<div class="b-body">'+body+'</div></div>';
+        var cb=li.querySelector('.cbx');
+        cb.addEventListener('change',function(){
+          checked[b._id]=cb.checked; if(!cb.checked) delete checked[b._id];
+          save(); li.classList.toggle('done',cb.checked); updateProgress();
+          // update the app mini bar + count without full re-render
+          var nd=BUGS.filter(function(x){return x.app===app && isDone(x)}).length;
+          s.querySelector('.count').textContent=nd+'/'+tot;
+          s.querySelector('.mini > i').style.width=Math.round(nd/tot*100)+'%';
+        });
+        ul.appendChild(li);
+      });
+      d.appendChild(ul);
+      list.appendChild(d);
+    });
+
+    if(!shown){ list.innerHTML='<div class="empty">No bugs match your filters.</div>'; }
+    updateProgress();
+  }
+
+  var openState={};
+  function updateProgress(){
+    var done=0; BUGS.forEach(function(b){ if(isDone(b)) done++; });
+    var pct=BUGS.length?Math.round(done/BUGS.length*100):0;
+    $('#barfill').style.width=pct+'%';
+    $('#pct').textContent=pct+'%';
+    $('#progline').textContent=done+' of '+BUGS.length+' checked';
+  }
+
+  $('#q').addEventListener('input',render);
+  $('#fApp').addEventListener('change',render);
+  $('#fCat').addEventListener('change',render);
+  $('#onlyOpen').addEventListener('change',render);
+  $('#expand').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=true; openState[d.querySelector('.appname').textContent]=true;}); });
+  $('#collapse').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=false; openState[d.querySelector('.appname').textContent]=false;}); });
+  $('#print').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=true;}); window.print(); });
+  $('#reset').addEventListener('click',function(){ if(confirm('Clear all ticks?')){ checked={}; save(); render(); } });
+
+  $('#foot').innerHTML='Bug Ledger · '+BUGS.length+' fixes across '+appOrder.length+' apps'+(GENERATED?(' · generated '+esc(GENERATED)):'')+' · state saved locally in your browser';
+  render();
+})();
+</script>
+</body>
+</html>
