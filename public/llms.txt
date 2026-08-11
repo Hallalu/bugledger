@@ -1,6 +1,6 @@
 # Bug Ledger
 
-> A catalogue of 335 bugs fixed across 18 apps, plus a security audit and a code scanner. Use it to debug and security-check a project by checking it against every bug we've hit before, then log what you checked.
+> A catalogue of 336 bugs fixed across 18 apps, plus a security audit and a code scanner. Use it to debug and security-check a project by checking it against every bug we've hit before, then log what you checked.
 
 Agent instructions: fetch /AGENT.md and follow the protocol. Report back with POST /api/checks.
 

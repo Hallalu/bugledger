@@ -110,6 +110,27 @@
   .find code,.f-files{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted)}
   .optchip{font-size:11px;font-weight:800;text-transform:capitalize;padding:2px 9px;border-radius:99px;
     color:#7c5cff;background:color-mix(in srgb,#7c5cff 13%,transparent);white-space:nowrap}
+  .kpi{position:relative;cursor:pointer;transition:transform .12s}
+  .kpi:hover{transform:translateY(-2px)}
+  .kpi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .kpi-hint{position:absolute;top:9px;right:11px;width:17px;height:17px;border-radius:50%;border:1.5px solid var(--line);
+    color:var(--muted);font-size:10.5px;font-weight:800;display:grid;place-items:center;opacity:.45}
+  .kpi:hover .kpi-hint{opacity:1;border-color:var(--muted)}
+  #kpimodal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;
+    background:color-mix(in srgb,#0b0d15 52%,transparent);backdrop-filter:blur(4px)}
+  #kpimodal.show{display:flex;animation:kmfade .2s ease both}
+  @keyframes kmfade{from{opacity:0}to{opacity:1}}
+  #kpimodal .km-card{position:relative;max-width:440px;width:100%;background:var(--panel);border:1px solid var(--line);
+    border-radius:20px;box-shadow:0 30px 80px -20px rgba(20,15,40,.6);padding:24px;animation:kmrise .28s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes kmrise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+  .km-x{position:absolute;top:10px;right:14px;border:none;background:none;font-size:26px;line-height:1;color:var(--muted);cursor:pointer}
+  .km-h{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+  .km-ic{font-size:34px;line-height:1}
+  .km-n{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .km-t{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+  .km-what{font-size:16px;font-weight:650;margin:4px 0 8px}
+  .km-detail{color:var(--muted);font-size:14px;margin:0 0 16px}
+  .km-go{display:inline-block;text-decoration:none;font-weight:800;color:#fff;background:var(--accent);padding:9px 16px;border-radius:11px}
   .clean{padding:8px 18px 16px;color:var(--muted);font-size:13px}
   .clean b{color:var(--done, #12a150)}
   ul.mini{list-style:none;margin:4px 0;padding:0;display:grid;gap:3px;font-size:13px}
@@ -173,6 +194,8 @@
   <footer id="foot"></footer>
 </div>
 
+<div id="kpimodal" onclick="if(event.target===this)this.classList.remove('show')"><div class="km-card"></div></div>
+<script>document.addEventListener('keydown',function(e){if(e.key==='Escape'){var m=document.getElementById('kpimodal');if(m)m.classList.remove('show');}});</script>
 <script src="data-sec.js"></script>
 <script src="data-opt.js"></script>
 <script src="data-scan.js"></script>
@@ -202,7 +225,36 @@
 
   // KPIs
   var kpi=$('#kpis');
-  function kpiEl(n,l){ var d=document.createElement('div'); d.className='kpi'; d.innerHTML='<div class="n">'+n+'</div><div class="l">'+l+'</div>'; return d; }
+  var KPI_INFO={
+    'bugs fixed':{icon:'🐛',title:'Bugs fixed',what:'Every distinct bug we’ve fixed across all apps, mined from the full build history.',detail:'Each entry has a symptom → root cause → fix and an app + severity. This is the master catalogue every scan checks a project against.',go:null},
+    'apps':{icon:'📦',title:'Apps',what:'How many distinct apps these bugs span.',detail:'Finished., Hallalu CRM, Stitchhooky, Aprizely, Breadcrumb and more — plus “cross-cutting” for issues that apply everywhere.',go:null},
+    'security':{icon:'🛡',title:'Security bugs',what:'Bugs in the security category — auth, XSS, SSRF, secrets, injection, isolation, rate-limiting.',detail:'A subset of “bugs fixed”. A /securitysweep checks a project against every one of these (plus the audit findings).',go:null},
+    'data / sync':{icon:'💾',title:'Data & sync bugs',what:'Bugs about losing or mis-syncing user data.',detail:'Data-loss (wiped/overwritten content) + sync issues (tombstones, deletions resurrecting, cross-device merges).',go:null},
+    'audit findings':{icon:'🔍',title:'Security audit findings',what:'Findings from the full AI security audit of Budget LevelUp / Listing Lab.',detail:'1 critical, 3 high, 4 medium, 7 low, plus verified-clean checks — shown in the 🔒 Security Sweep panel, each with fix + status.',go:'#secsweep'},
+    'optimisers':{icon:'✨',title:'Optimisers',what:'Reusable elevations — not bugs, things that made an app better.',detail:'Design polish, UX, performance and workflow patterns worth repeating (e.g. aurora-glass, one-shot animations, onboarding 1–2 fields/screen), grouped by category.',go:'#optpanel'},
+    'scanner leads':{icon:'🔦',title:'Scanner leads',what:'Static-analysis hits from scan.mjs across scanned apps.',detail:'Code-smell matches (14 detectors) to verify — leads, not confirmed bugs. Seen in the 🔎 Scanner findings panel.',go:'#scanpanel'},
+    'auto-harvested':{icon:'🌱',title:'Auto-harvested',what:'Unverified bugs auto-mined from your conversation transcripts by the hourly harvester.',detail:'A triage queue — promote the good ones into the curated ledger. Shown in the 🌱 Auto-harvested panel.',go:'#harvestpanel'},
+    'agent checks':{icon:'✅',title:'Agent checks',what:'Recorded /bugcheck, /deepscan or /securitysweep passes.',detail:'Each time an agent checks a project against the ledger it logs coverage (N/N) + findings here — open the 📊 full report on any of them.',go:'#checks'},
+    'agent-submitted':{icon:'🧫',title:'Agent-submitted',what:'New bugs / security issues / optimisers agents discovered and appended to the ledger.',detail:'Append-only proposals — permanent, so every future project is checked for them too. Shown in the 🧫 Agent-submitted panel.',go:'#submitpanel'},
+  };
+  function openKpi(l,n){
+    var i=KPI_INFO[l]; if(!i) return;
+    var m=document.getElementById('kpimodal');
+    m.querySelector('.km-card').innerHTML=
+      '<button class="km-x" aria-label="Close">×</button>'+
+      '<div class="km-h"><span class="km-ic">'+i.icon+'</span><div><div class="km-n">'+n+'</div><div class="km-t">'+esc(i.title)+'</div></div></div>'+
+      '<p class="km-what">'+esc(i.what)+'</p>'+
+      '<p class="km-detail">'+esc(i.detail)+'</p>'+
+      (i.go?'<a class="km-go" href="'+i.go+'">Show me →</a>':'');
+    m.classList.add('show');
+    m.querySelector('.km-x').onclick=function(){m.classList.remove('show');};
+    var go=m.querySelector('.km-go'); if(go) go.onclick=function(){m.classList.remove('show');};
+  }
+  function kpiEl(n,l){ var d=document.createElement('div'); d.className='kpi'; d.tabIndex=0; d.setAttribute('role','button');
+    d.innerHTML='<div class="n">'+n+'</div><div class="l">'+l+'</div><div class="kpi-hint">?</div>';
+    d.addEventListener('click',function(){openKpi(l,n);});
+    d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openKpi(l,n);}});
+    return d; }
   kpi.appendChild(kpiEl(BUGS.length,'bugs fixed'));
   kpi.appendChild(kpiEl(appOrder.length,'apps'));
   var sec=BUGS.filter(function(b){return b.category==='security'}).length;

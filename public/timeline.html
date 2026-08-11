@@ -51,6 +51,8 @@
   .ev-check .node{background:var(--good)}
   .ev-check.full .node{background:var(--violet)}
   .ev-check.sec .node{background:#e5484d}
+  .ev-add .node{background:#7c5cff;width:11px;height:11px}
+  .kind.add{color:#7c5cff;background:color-mix(in srgb,#7c5cff 13%,transparent)}
   .ev.live .node{background:var(--coral);animation:beat2 1.4s ease-out infinite}
   @keyframes beat2{0%{box-shadow:0 0 0 0 rgba(255,106,90,.6)}70%{box-shadow:0 0 0 8px rgba(255,106,90,0)}100%{box-shadow:0 0 0 0 rgba(255,106,90,0)}}
 
@@ -151,6 +153,14 @@
   }
 
   var lastSig=null;
+  function additionCard(e){
+    var sk=e.subkind==='optimiser'?'optimiser':(e.subkind==='security'?'security':'bug');
+    var chip=sk==='optimiser'?'✨ optimiser':(sk==='security'?'🛡 security':'🐛 bug');
+    return '<div class="card"><div class="row1"><span class="kind add">➕ added · '+chip+'</span>'+
+      '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
+      '<span class="when" title="'+fullts(e.ts)+'">'+fullts(e.ts)+'</span></div>'+
+      '<div class="title" style="font-weight:600;margin-bottom:0">'+esc(e.title)+'</div></div>';
+  }
   function render(data){
     var feed=document.getElementById('feed');
     var evs=(data&&data.events)||[];
@@ -159,6 +169,7 @@
     // animation replays every poll and the timeline flickers (stable fields only, no volatile ts)
     var sig=evs.map(function(e){ return e.kind==='session'
       ? 's'+e.started+e.status+(e.done||0)+'/'+(e.total||0)+(e.progress?e.progress.done+'/'+e.progress.total:'')+(e.live?'L':'')+(e.current||'')
+      : e.kind==='addition' ? 'a'+e.id
       : 'c'+e.id+(e.foundCount||0)+(e.coverage?e.coverage.matched+'/'+e.coverage.total:''); }).join('|');
     if(sig===lastSig) return;
     lastSig=sig;
@@ -170,8 +181,9 @@
     evs.forEach(function(e){
       var dl=dayLabel(e.ts);
       if(dl!==lastDay){ if(lastDay!==null) html+='</div>'; html+='<div class="day">'+esc(dl)+'</div><div class="tl">'; lastDay=dl; }
-      var cls='ev '+(e.kind==='session'?'ev-session':'ev-check')+(e.kind==='check'&&e.scope==='all'?' full':'')+(e.kind==='check'&&e.scope==='security'?' sec':'')+(e.live?' live':'');
-      html+='<div class="'+cls+'"><span class="node"></span>'+(e.kind==='session'?sessionCard(e):checkCard(e))+'</div>';
+      var cls='ev '+(e.kind==='session'?'ev-session':e.kind==='addition'?'ev-add':'ev-check')+(e.kind==='check'&&e.scope==='all'?' full':'')+(e.kind==='check'&&e.scope==='security'?' sec':'')+(e.live?' live':'');
+      var inner = e.kind==='session'?sessionCard(e):e.kind==='addition'?additionCard(e):checkCard(e);
+      html+='<div class="'+cls+'"><span class="node"></span>'+inner+'</div>';
     });
     html+='</div>';
     feed.innerHTML=html;
