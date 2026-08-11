@@ -302,7 +302,8 @@ if (flags.has("--write")) {
   if (flags.has("--deploy")) {
     try {
       execSync("npx wrangler deploy", { cwd:LEDGER, stdio:"inherit" });
-      execSync("git add -A && git -c user.email=rhemajking@gmail.com -c user.name=Hallalu commit -q -m "+JSON.stringify(`scan: +${added} findings for ${APP}`)+" && git push -q origin main", { cwd:LEDGER, stdio:"inherit" });
+      // stage only the scanner's own outputs, never `git add -A` (co-editing safety)
+      execSync("git add scan-findings.json public/data-scan.js SCAN-FINDINGS.md public/SCAN-FINDINGS.md 2>/dev/null; git -c user.email=rhemajking@gmail.com -c user.name=Hallalu commit -q -m "+JSON.stringify(`scan: +${added} findings for ${APP}`)+" && git push -q origin main", { cwd:LEDGER, stdio:"inherit" });
       console.log("🚀 deployed + pushed.");
     } catch(e) { console.error("deploy/push failed:", e.message); }
   }
