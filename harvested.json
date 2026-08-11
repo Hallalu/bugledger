@@ -514,5 +514,17 @@
     "status": "unverified",
     "session": "cd37da75",
     "found": "2026-08-10"
+  },
+  {
+    "key": "1d8ee789:telltheagenttheonelineitshowsyoukindlyupdatebreadcrumbasyouw",
+    "app": "Breadcrumb",
+    "title": "Tell the agent the one line it shows you: \"Kindly update Breadcrumb as you work on this…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Tell the agent the one line it shows you: > *\"Kindly update Breadcrumb as you work on this project — show your progress live and log the features, queue, bug fixes and insights as you go.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1d8ee789",
+    "found": "2026-08-11"
   }
 ]

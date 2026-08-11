@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-43 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+44 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Finished. (16)
 
@@ -37,7 +37,7 @@
 - [ ] `low` `other` (2026-08-10, #cd37da75) — .pad span{width:60px;height:60px} (meant for the blank placeholder cell) is also…
 - [ ] `low` `other` (2026-08-10, #cd37da75) — Scoping it to .pad span (direct children only) so it targets just the blank cell fixed it.
 
-## Breadcrumb (6)
+## Breadcrumb (7)
 
 - [ ] `high` `sync` (2026-08-10, #1d8ee789) — Honest split you'd want: - GitHub is a real sync. Add a username your public repos come…
 - [ ] `medium` `logic` (2026-08-10, #1d8ee789) — Bug-fix list correctly merges prompt-derived fixes ("Fix the timezone in the email",…
@@ -45,6 +45,7 @@
 - [ ] `low` `other` (2026-08-10, #1d8ee789) — Tested it adversarially — three planted keys, all caught, nothing leaked into body,…
 - [ ] `low` `other` (2026-08-10, #1d8ee789) — I18n script wasn't added to index.html (the security.js line already had a bumped…
 - [ ] `low` `other` (2026-08-10, #1d8ee789) — Per-project Insights tab — exactly your three asks: - Short, sweet, stat-backed…
+- [ ] `low` `other` (2026-08-11, #1d8ee789) — Tell the agent the one line it shows you: "Kindly update Breadcrumb as you work on this…
 
 ## Stitchhooky (3)
 
