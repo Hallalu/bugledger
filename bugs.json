@@ -2186,6 +2186,143 @@
     "session": "f5cf1ca6"
   },
   {
+    "app": "Breadcrumb",
+    "category": "security",
+    "title": "+feature truncation swallows text and skips redaction",
+    "symptom": "The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).",
+    "root_cause": "A fixed 60-char read plus the swallowed remainder never passing through the redactor.",
+    "fix": "Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "auth",
+    "title": "Recovery codes hashed inconsistently",
+    "symptom": "Valid recovery codes could fail because hashing was inconsistent.",
+    "root_cause": "Recovery codes were hashed inconsistently between generation and verification.",
+    "fix": "Hash recovery codes consistently.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "sync",
+    "title": "Docs not synced",
+    "symptom": "Docs weren't reliably persisted/synced.",
+    "root_cause": "There was no synced docs store.",
+    "fix": "Added a proper synced `docs` table and fixed the size cap.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "`>cursor` builder-switch token silently discarded",
+    "symptom": "A `>cursor` builder switch inside a captured prompt was silently dropped.",
+    "root_cause": "An undefined template-literal segment (rendering as `undefined}`) discarded the `>cursor` token.",
+    "fix": "Fixed the parsing so the builder-switch token is preserved.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Capture-bar quick chips don't update the prompt placeholder",
+    "symptom": "Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X for?' message or switch the builder; only opening 'More' did.",
+    "root_cause": "The quick chips lacked the handler that updates the placeholder and sets the active builder.",
+    "fix": "Added selectCaptureBuilder() so a chip updates the placeholder in place (preserving typed text) and sets the builder.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Inconsistent text normalization",
+    "symptom": "Normalization behaved inconsistently across paths.",
+    "root_cause": "Normalization logic differed between code paths.",
+    "fix": "Made normalization consistent.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Settings card can't read subscription periodEnd",
+    "symptom": "The settings card read periodEnd but received nothing.",
+    "root_cause": "publicUser didn't expose periodEnd.",
+    "fix": "Exposed periodEnd on publicUser so the settings card can show the subscription period.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "logic",
+    "title": "Trail outcome filter is a dead control",
+    "symptom": "Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.",
+    "root_cause": "`trail-filter` had no handler at all.",
+    "fix": "Wired the outcome filter so it actually filters the trail.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "ui",
+    "title": "Forget-device button lacked a confirmation",
+    "symptom": "The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the every-destructive-action-confirms rule.",
+    "root_cause": "The button had no confirm dialog.",
+    "fix": "Added a confirmation before forgetting the device.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "ui",
+    "title": "Insights dashboard grid misrendered",
+    "symptom": "The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) didn't lay out correctly.",
+    "root_cause": "An Insights grid class bug broke the layout.",
+    "fix": "Fixed the grid class (v24) so the stat-tile row and charts render properly.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "ui",
+    "title": "srcdoc iframe thumbnails render blank",
+    "symptom": "Prompt thumbnails showed blank.",
+    "root_cause": "`loading=\"lazy\"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.",
+    "fix": "Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.",
+    "session": "1d8ee789"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "other",
+    "title": "i18n script not included in index.html",
+    "symptom": "The i18n script wasn't loaded, so localization wouldn't run.",
+    "root_cause": "The i18n script tag was never added to index.html (only security.js had a bumped version).",
+    "fix": "Added the i18n script to index.html.",
+    "session": "1d8ee789",
+    "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "other",
+    "severity": "high",
+    "title": "NUL bytes in worker.js source make grep/file treat it as binary",
+    "symptom": "A plain grep silently matched nothing in a 1568-line source file, so an agent wrongly concluded the /api/log, /api/worklog and /worklog.mjs endpoints didn't exist and was about to recreate the client; `file` reported the source as data, not text.",
+    "root_cause": "translateRoute's cache key used a literal NUL (0x00) as a delimiter (tgt + '\\0' + s), embedding raw NUL bytes at lines 525/542 — which makes grep/file classify the whole file as binary and match nothing.",
+    "fix": "Replaced the literal NULs with the \\u0000 escape (byte-identical runtime string, cache unchanged) so the source stays plain UTF-8 text and grep/file work; use grep -a as a fallback. (Same trap hit BugLedger's own scan.mjs earlier.)",
+    "session": "breadcrumb",
+    "source": "conversation-2026-08-11"
+  },
+  {
+    "app": "Breadcrumb",
+    "category": "other",
+    "severity": "medium",
+    "title": "Worklog CLI prompt assumed ~/.breadcrumb/worklog.mjs was already installed",
+    "symptom": "The agent couldn't find ~/.breadcrumb/worklog.mjs because the one-time install had never been run — the prompt assumed the CLI already existed, so the flow failed at the first step.",
+    "root_cause": "No install step; the CLI wasn't served anywhere and the key depended on a shell-profile variable.",
+    "fix": "Serve the CLI from a public /worklog.mjs route so it installs with a single curl (self-healing in the prompt), and read the key from a small key file (~/.breadcrumb/key) instead of a shell-profile dependency.",
+    "session": "breadcrumb",
+    "source": "conversation-2026-08-11"
+  },
+  {
     "app": "Budget LevelUp",
     "category": "security",
     "title": "TOTP QR service leaked 2FA secret",
@@ -2301,121 +2438,6 @@
     "root_cause": "ignore_cleanup_errors is unsupported on Python 3.9.",
     "fix": "Replaced it with an AppleScript-driven Excel recalc harness.",
     "session": "a1ee807a"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "security",
-    "title": "+feature truncation swallows text and skips redaction",
-    "symptom": "The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).",
-    "root_cause": "A fixed 60-char read plus the swallowed remainder never passing through the redactor.",
-    "fix": "Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "auth",
-    "title": "Recovery codes hashed inconsistently",
-    "symptom": "Valid recovery codes could fail because hashing was inconsistent.",
-    "root_cause": "Recovery codes were hashed inconsistently between generation and verification.",
-    "fix": "Hash recovery codes consistently.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "sync",
-    "title": "Docs not synced",
-    "symptom": "Docs weren't reliably persisted/synced.",
-    "root_cause": "There was no synced docs store.",
-    "fix": "Added a proper synced `docs` table and fixed the size cap.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "logic",
-    "title": "`>cursor` builder-switch token silently discarded",
-    "symptom": "A `>cursor` builder switch inside a captured prompt was silently dropped.",
-    "root_cause": "An undefined template-literal segment (rendering as `undefined}`) discarded the `>cursor` token.",
-    "fix": "Fixed the parsing so the builder-switch token is preserved.",
-    "session": "1d8ee789",
-    "source": "conversation-2026-08-10"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "logic",
-    "title": "Capture-bar quick chips don't update the prompt placeholder",
-    "symptom": "Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X for?' message or switch the builder; only opening 'More' did.",
-    "root_cause": "The quick chips lacked the handler that updates the placeholder and sets the active builder.",
-    "fix": "Added selectCaptureBuilder() so a chip updates the placeholder in place (preserving typed text) and sets the builder.",
-    "session": "1d8ee789",
-    "source": "conversation-2026-08-10"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "logic",
-    "title": "Inconsistent text normalization",
-    "symptom": "Normalization behaved inconsistently across paths.",
-    "root_cause": "Normalization logic differed between code paths.",
-    "fix": "Made normalization consistent.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "logic",
-    "title": "Settings card can't read subscription periodEnd",
-    "symptom": "The settings card read periodEnd but received nothing.",
-    "root_cause": "publicUser didn't expose periodEnd.",
-    "fix": "Exposed periodEnd on publicUser so the settings card can show the subscription period.",
-    "session": "1d8ee789",
-    "source": "conversation-2026-08-10"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "logic",
-    "title": "Trail outcome filter is a dead control",
-    "symptom": "Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.",
-    "root_cause": "`trail-filter` had no handler at all.",
-    "fix": "Wired the outcome filter so it actually filters the trail.",
-    "session": "1d8ee789",
-    "source": "conversation-2026-08-10"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "ui",
-    "title": "Forget-device button lacked a confirmation",
-    "symptom": "The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the every-destructive-action-confirms rule.",
-    "root_cause": "The button had no confirm dialog.",
-    "fix": "Added a confirmation before forgetting the device.",
-    "session": "1d8ee789",
-    "source": "conversation-2026-08-10"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "ui",
-    "title": "Insights dashboard grid misrendered",
-    "symptom": "The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) didn't lay out correctly.",
-    "root_cause": "An Insights grid class bug broke the layout.",
-    "fix": "Fixed the grid class (v24) so the stat-tile row and charts render properly.",
-    "session": "1d8ee789",
-    "source": "conversation-2026-08-10"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "ui",
-    "title": "srcdoc iframe thumbnails render blank",
-    "symptom": "Prompt thumbnails showed blank.",
-    "root_cause": "`loading=\"lazy\"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.",
-    "fix": "Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.",
-    "session": "1d8ee789"
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "other",
-    "title": "i18n script not included in index.html",
-    "symptom": "The i18n script wasn't loaded, so localization wouldn't run.",
-    "root_cause": "The i18n script tag was never added to index.html (only security.js had a bumped version).",
-    "fix": "Added the i18n script to index.html.",
-    "session": "1d8ee789",
-    "source": "conversation-2026-08-10"
   },
   {
     "app": "Planner Studio",

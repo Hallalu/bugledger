@@ -103,10 +103,10 @@ export default {
       };
       // server-verified coverage: match reported titles against the app catalog — or the WHOLE
       // catalog (all apps) when scope:"all", so a full scan is confirmed N/315.
-      const scope = body.scope === "all" ? "all" : "app";
+      const scope = ["all", "security"].includes(body.scope) ? body.scope : "app";
       const cat = await catalog(env, request);
-      const appTitles = scope === "all"
-        ? allTitles(cat)
+      const appTitles = scope === "all" ? allTitles(cat)
+        : scope === "security" ? securityTitles(cat)
         : ((cat.apps && cat.apps[rec.app]) ? cat.apps[rec.app].map((b) => b.title) : []);
       const reported = new Set([
         ...arr(body.notFound, 4000, (x) => str(x, 200)),
@@ -278,5 +278,13 @@ function allTitles(cat) {
   const m = new Map();
   for (const app of Object.keys(cat.apps || {}))
     for (const b of cat.apps[app]) { const k = norm(b.title); if (!m.has(k)) m.set(k, b.title); }
+  return [...m.values()];
+}
+// every distinct SECURITY item across all apps: security-category bugs + the security-sweep findings
+function securityTitles(cat) {
+  const m = new Map();
+  for (const app of Object.keys(cat.apps || {}))
+    for (const b of cat.apps[app]) if (b.category === "security") { const k = norm(b.title); if (!m.has(k)) m.set(k, b.title); }
+  for (const f of (cat.security || [])) { const k = norm(f.title); if (!m.has(k)) m.set(k, f.title); }
   return [...m.values()];
 }

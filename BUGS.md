@@ -1,10 +1,10 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**315 bugs fixed** across **16 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**317 bugs fixed** across **16 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 315 |
+| Total bugs fixed | 317 |
 | Apps | 16 |
 | Security fixes | 28 |
 | Data-loss / sync fixes | 25 |
@@ -13,7 +13,7 @@
 
 ### By category
 
-`ui: 116` `logic: 80` `security: 28` `crash: 21` `other: 19` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 7`
+`ui: 116` `logic: 80` `security: 28` `crash: 21` `other: 21` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 7`
 
 ---
 
@@ -563,6 +563,37 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Exported Android build fails: missing gradle.properties useAndroidX** `other`
   *Symptom:* The exported Android project failed its first-run compile in the farm.  <br>*Cause:* gradle.properties lacked android.useAndroidX=true.  <br>*Fix:* Added the one-line android.useAndroidX=true to gradle.properties and rebuilt.
 
+## Breadcrumb  ·  14 fixed
+
+- [ ] **+feature truncation swallows text and skips redaction** `security`
+  *Symptom:* The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).  <br>*Cause:* A fixed 60-char read plus the swallowed remainder never passing through the redactor.  <br>*Fix:* Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.
+- [ ] **Recovery codes hashed inconsistently** `auth`
+  *Symptom:* Valid recovery codes could fail because hashing was inconsistent.  <br>*Cause:* Recovery codes were hashed inconsistently between generation and verification.  <br>*Fix:* Hash recovery codes consistently.
+- [ ] **Docs not synced** `sync`
+  *Symptom:* Docs weren't reliably persisted/synced.  <br>*Cause:* There was no synced docs store.  <br>*Fix:* Added a proper synced `docs` table and fixed the size cap.
+- [ ] **`>cursor` builder-switch token silently discarded** `logic`
+  *Symptom:* A `>cursor` builder switch inside a captured prompt was silently dropped.  <br>*Cause:* An undefined template-literal segment (rendering as `undefined}`) discarded the `>cursor` token.  <br>*Fix:* Fixed the parsing so the builder-switch token is preserved.
+- [ ] **Capture-bar quick chips don't update the prompt placeholder** `logic`
+  *Symptom:* Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X for?' message or switch the builder; only opening 'More' did.  <br>*Cause:* The quick chips lacked the handler that updates the placeholder and sets the active builder.  <br>*Fix:* Added selectCaptureBuilder() so a chip updates the placeholder in place (preserving typed text) and sets the builder.
+- [ ] **Inconsistent text normalization** `logic`
+  *Symptom:* Normalization behaved inconsistently across paths.  <br>*Cause:* Normalization logic differed between code paths.  <br>*Fix:* Made normalization consistent.
+- [ ] **Settings card can't read subscription periodEnd** `logic`
+  *Symptom:* The settings card read periodEnd but received nothing.  <br>*Cause:* publicUser didn't expose periodEnd.  <br>*Fix:* Exposed periodEnd on publicUser so the settings card can show the subscription period.
+- [ ] **Trail outcome filter is a dead control** `logic`
+  *Symptom:* Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.  <br>*Cause:* `trail-filter` had no handler at all.  <br>*Fix:* Wired the outcome filter so it actually filters the trail.
+- [ ] **Forget-device button lacked a confirmation** `ui`
+  *Symptom:* The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the every-destructive-action-confirms rule.  <br>*Cause:* The button had no confirm dialog.  <br>*Fix:* Added a confirmation before forgetting the device.
+- [ ] **Insights dashboard grid misrendered** `ui`
+  *Symptom:* The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) didn't lay out correctly.  <br>*Cause:* An Insights grid class bug broke the layout.  <br>*Fix:* Fixed the grid class (v24) so the stat-tile row and charts render properly.
+- [ ] **srcdoc iframe thumbnails render blank** `ui`
+  *Symptom:* Prompt thumbnails showed blank.  <br>*Cause:* `loading="lazy"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.  <br>*Fix:* Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.
+- [ ] **i18n script not included in index.html** `other`
+  *Symptom:* The i18n script wasn't loaded, so localization wouldn't run.  <br>*Cause:* The i18n script tag was never added to index.html (only security.js had a bumped version).  <br>*Fix:* Added the i18n script to index.html.
+- [ ] **NUL bytes in worker.js source make grep/file treat it as binary** `other`
+  *Symptom:* A plain grep silently matched nothing in a 1568-line source file, so an agent wrongly concluded the /api/log, /api/worklog and /worklog.mjs endpoints didn't exist and was about to recreate the client; `file` reported the source as data, not text.  <br>*Cause:* translateRoute's cache key used a literal NUL (0x00) as a delimiter (tgt + '\0' + s), embedding raw NUL bytes at lines 525/542 — which makes grep/file classify the whole file as binary and match nothing.  <br>*Fix:* Replaced the literal NULs with the \u0000 escape (byte-identical runtime string, cache unchanged) so the source stays plain UTF-8 text and grep/file work; use grep -a as a fallback. (Same trap hit BugLedger's own scan.mjs earlier.)
+- [ ] **Worklog CLI prompt assumed ~/.breadcrumb/worklog.mjs was already installed** `other`
+  *Symptom:* The agent couldn't find ~/.breadcrumb/worklog.mjs because the one-time install had never been run — the prompt assumed the CLI already existed, so the flow failed at the first step.  <br>*Cause:* No install step; the CLI wasn't served anywhere and the key depended on a shell-profile variable.  <br>*Fix:* Serve the CLI from a public /worklog.mjs route so it installs with a single curl (self-healing in the prompt), and read the key from a small key file (~/.breadcrumb/key) instead of a shell-profile dependency.
+
 ## Budget LevelUp  ·  13 fixed
 
 - [ ] **TOTP QR service leaked 2FA secret** `security`
@@ -591,33 +622,6 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The platform-mix card layout appeared jumbled in the planner summary band.  <br>*Fix:* Reworked the platform-mix card layout in the summary band.
 - [ ] **recalc.py crashed on Python 3.9** `other`
   *Symptom:* The recalc verification script threw a TypeError.  <br>*Cause:* ignore_cleanup_errors is unsupported on Python 3.9.  <br>*Fix:* Replaced it with an AppleScript-driven Excel recalc harness.
-
-## Breadcrumb  ·  12 fixed
-
-- [ ] **+feature truncation swallows text and skips redaction** `security`
-  *Symptom:* The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).  <br>*Cause:* A fixed 60-char read plus the swallowed remainder never passing through the redactor.  <br>*Fix:* Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.
-- [ ] **Recovery codes hashed inconsistently** `auth`
-  *Symptom:* Valid recovery codes could fail because hashing was inconsistent.  <br>*Cause:* Recovery codes were hashed inconsistently between generation and verification.  <br>*Fix:* Hash recovery codes consistently.
-- [ ] **Docs not synced** `sync`
-  *Symptom:* Docs weren't reliably persisted/synced.  <br>*Cause:* There was no synced docs store.  <br>*Fix:* Added a proper synced `docs` table and fixed the size cap.
-- [ ] **`>cursor` builder-switch token silently discarded** `logic`
-  *Symptom:* A `>cursor` builder switch inside a captured prompt was silently dropped.  <br>*Cause:* An undefined template-literal segment (rendering as `undefined}`) discarded the `>cursor` token.  <br>*Fix:* Fixed the parsing so the builder-switch token is preserved.
-- [ ] **Capture-bar quick chips don't update the prompt placeholder** `logic`
-  *Symptom:* Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X for?' message or switch the builder; only opening 'More' did.  <br>*Cause:* The quick chips lacked the handler that updates the placeholder and sets the active builder.  <br>*Fix:* Added selectCaptureBuilder() so a chip updates the placeholder in place (preserving typed text) and sets the builder.
-- [ ] **Inconsistent text normalization** `logic`
-  *Symptom:* Normalization behaved inconsistently across paths.  <br>*Cause:* Normalization logic differed between code paths.  <br>*Fix:* Made normalization consistent.
-- [ ] **Settings card can't read subscription periodEnd** `logic`
-  *Symptom:* The settings card read periodEnd but received nothing.  <br>*Cause:* publicUser didn't expose periodEnd.  <br>*Fix:* Exposed periodEnd on publicUser so the settings card can show the subscription period.
-- [ ] **Trail outcome filter is a dead control** `logic`
-  *Symptom:* Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.  <br>*Cause:* `trail-filter` had no handler at all.  <br>*Fix:* Wired the outcome filter so it actually filters the trail.
-- [ ] **Forget-device button lacked a confirmation** `ui`
-  *Symptom:* The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the every-destructive-action-confirms rule.  <br>*Cause:* The button had no confirm dialog.  <br>*Fix:* Added a confirmation before forgetting the device.
-- [ ] **Insights dashboard grid misrendered** `ui`
-  *Symptom:* The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) didn't lay out correctly.  <br>*Cause:* An Insights grid class bug broke the layout.  <br>*Fix:* Fixed the grid class (v24) so the stat-tile row and charts render properly.
-- [ ] **srcdoc iframe thumbnails render blank** `ui`
-  *Symptom:* Prompt thumbnails showed blank.  <br>*Cause:* `loading="lazy"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.  <br>*Fix:* Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.
-- [ ] **i18n script not included in index.html** `other`
-  *Symptom:* The i18n script wasn't loaded, so localization wouldn't run.  <br>*Cause:* The i18n script tag was never added to index.html (only security.js had a bumped version).  <br>*Fix:* Added the i18n script to index.html.
 
 ## Planner Studio  ·  11 fixed
 

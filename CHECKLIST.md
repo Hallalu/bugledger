@@ -1,4 +1,4 @@
-# BUG REGRESSION CHECKLIST — 315 known bugs across 16 apps
+# BUG REGRESSION CHECKLIST — 317 known bugs across 16 apps
 # Paste this into any build session and re-check each item (bugs recur).
 # Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
 
@@ -268,6 +268,22 @@
 - [ ] Dev-server port mismatch in launch.json — The preview tooling couldn't attach to the dev server.
 - [ ] Exported Android build fails: missing gradle.properties useAndroidX — The exported Android project failed its first-run compile in the farm.
 
+## Breadcrumb (14)
+- [ ] +feature truncation swallows text and skips redaction — The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and th…
+- [ ] Recovery codes hashed inconsistently — Valid recovery codes could fail because hashing was inconsistent.
+- [ ] Docs not synced — Docs weren't reliably persisted/synced.
+- [ ] `>cursor` builder-switch token silently discarded — A `>cursor` builder switch inside a captured prompt was silently dropped.
+- [ ] Capture-bar quick chips don't update the prompt placeholder — Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X fo…
+- [ ] Inconsistent text normalization — Normalization behaved inconsistently across paths.
+- [ ] Settings card can't read subscription periodEnd — The settings card read periodEnd but received nothing.
+- [ ] Trail outcome filter is a dead control — Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.
+- [ ] Forget-device button lacked a confirmation — The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the…
+- [ ] Insights dashboard grid misrendered — The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) di…
+- [ ] srcdoc iframe thumbnails render blank — Prompt thumbnails showed blank.
+- [ ] i18n script not included in index.html — The i18n script wasn't loaded, so localization wouldn't run.
+- [ ] NUL bytes in worker.js source make grep/file treat it as binary — A plain grep silently matched nothing in a 1568-line source file, so an agent wrongly conclude…
+- [ ] Worklog CLI prompt assumed ~/.breadcrumb/worklog.mjs was already installed — The agent couldn't find ~/.breadcrumb/worklog.mjs because the one-time install had never been…
+
 ## Budget LevelUp (13)
 - [ ] TOTP QR service leaked 2FA secret — Enabling 2FA sent the TOTP secret to a third-party QR service.
 - [ ] Excel month selector wrote to the wrong cell — Changing the month in the Social Tracker workbook did not affect the formulas' results.
@@ -282,20 +298,6 @@
 - [ ] Calendar alignment assignment typo — The calendar rendered with broken alignment.
 - [ ] Jumbled platform-mix card in summary band — The platform-mix card layout appeared jumbled in the planner summary band.
 - [ ] recalc.py crashed on Python 3.9 — The recalc verification script threw a TypeError.
-
-## Breadcrumb (12)
-- [ ] +feature truncation swallows text and skips redaction — The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and th…
-- [ ] Recovery codes hashed inconsistently — Valid recovery codes could fail because hashing was inconsistent.
-- [ ] Docs not synced — Docs weren't reliably persisted/synced.
-- [ ] `>cursor` builder-switch token silently discarded — A `>cursor` builder switch inside a captured prompt was silently dropped.
-- [ ] Capture-bar quick chips don't update the prompt placeholder — Clicking a quick builder chip in the capture bar didn't update the 'What did you just ask X fo…
-- [ ] Inconsistent text normalization — Normalization behaved inconsistently across paths.
-- [ ] Settings card can't read subscription periodEnd — The settings card read periodEnd but received nothing.
-- [ ] Trail outcome filter is a dead control — Clicking the trail's outcome filter (All/worked/almost/didn't-work) did nothing.
-- [ ] Forget-device button lacked a confirmation — The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the…
-- [ ] Insights dashboard grid misrendered — The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) di…
-- [ ] srcdoc iframe thumbnails render blank — Prompt thumbnails showed blank.
-- [ ] i18n script not included in index.html — The i18n script wasn't loaded, so localization wouldn't run.
 
 ## Planner Studio (11)
 - [ ] arguments.callee ReferenceError breaks task ticking — To-do items wouldn't tick off; the first render's refresh callback threw silently.
