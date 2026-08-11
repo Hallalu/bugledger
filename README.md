@@ -146,6 +146,19 @@ them" is verified, not claimed. New bugs an agent discovers go to **`POST /api/b
 appear in the **🧫 Agent-submitted** panel as proposals to promote. Mechanical `scan.mjs` logs are
 labelled **🔍 detector scan** (not a full-coverage claim).
 
+## Daily routine — the ledger compounds every day
+
+Two scheduled jobs keep it growing on its own:
+- **Hourly** (`com.hallalu.bugledger-harvest`) — incremental heuristic harvest of new conversation
+  content for bugs (append-only, auto-deploy when something's new).
+- **Twice daily at 00:05 (midnight) and 05:30 (dawn)** (`com.hallalu.bugledger-daily` → `daily-cron.sh`) —
+  runs the harvest, and optionally a **deep AI pass** (`/dailyledger`) that reads the day's conversations
+  in full, deep-researches common new AI bugs / security / design patterns, and appends across **all
+  aspects** (bugs, security, optimisers). The deep pass is **opt-in**: `touch ~/.bugledger-auto-daily`
+  (needs the `claude` CLI) to run it headless, otherwise run **`/dailyledger`** yourself at day's edges.
+
+Manage: `launchctl bootout|bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.hallalu.bugledger-daily.plist`.
+
 ## Sweep reports — evidence, charts, comparisons
 
 Every sweep produces a **beautiful interactive report** at `/report?id=<checkId>` — auto-generated from

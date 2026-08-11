@@ -4,5 +4,8 @@ node_modules/
 harvest.log
 harvest.launchd.out.log
 harvest.launchd.err.log
+daily.log
+daily.launchd.out.log
+daily.launchd.err.log
 .worklog.json
 .worklog-history.jsonl
