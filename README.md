@@ -126,6 +126,16 @@ node ~/BugLedger/worklog.mjs finish
 Each call POSTs to `/api/session` (D1 `sessions` table, token-gated). `GET /api/sessions?active=1` powers
 the board. Per-repo state lives in `./.worklog.json`.
 
+## Optimisers — elevations worth reusing
+
+Beyond bugs and security, the ledger collects **optimisers**: reusable *elevations* — design polish, UX,
+performance, and workflow patterns — mined from the whole build history (not fixes; things that made an
+app **better**). Browse them in the **✨ Optimisers** panel, grouped by category
+(`design-elevation`, `ux`, `performance`, `workflow`, `architecture`, `accessibility`, `copy`,
+`conversion`, `dx`, `integrity`). Source: [optimisers.json](./optimisers.json) · [OPTIMISERS.md](./OPTIMISERS.md).
+Each entry is a principle with *what / why / how* (e.g. "One-shot entrance animations (never re-animate on
+refresh)", "Aurora-glass design language", "Paste-and-go, zero-question agent prompts").
+
 ## Full-coverage confirmation
 
 `/bugcheck [App]` runs a complete security + bug scan and proves it. `POST /api/checks` returns

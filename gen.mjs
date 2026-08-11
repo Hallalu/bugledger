@@ -186,6 +186,35 @@ if (fs.existsSync(p("harvested.json"))) {
   }
 }
 
+// ---- optimisers (elevations worth reusing) → data-opt.js + OPTIMISERS.md ----
+let optCount = 0, optimisers = [];
+if (fs.existsSync(p("optimisers.json"))) {
+  optimisers = JSON.parse(fs.readFileSync(p("optimisers.json"), "utf8"));
+  optCount = optimisers.length;
+  const OPT_ORDER = ["design-elevation","ux","performance","workflow","architecture","accessibility","copy","conversion","dx","integrity"];
+  const OPT_LABEL = { "design-elevation":"design elevation", ux:"UX", performance:"performance", workflow:"workflow",
+    architecture:"architecture", accessibility:"accessibility", copy:"copy", conversion:"conversion", dx:"dev-experience", integrity:"integrity" };
+  const oi = (c) => { const i = OPT_ORDER.indexOf(c); return i < 0 ? 99 : i; };
+  const byCat = {}; for (const o of optimisers) (byCat[o.category] ||= []).push(o);
+  const cats = Object.keys(byCat).sort((a,b)=>oi(a)-oi(b));
+  fs.writeFileSync(p("public","data-opt.js"),
+    `window.OPTIMISERS=${JSON.stringify({ generated:GEN, count:optCount, cats, labels:OPT_LABEL, items:optimisers })};\n`);
+  let O = [`# ✨ Optimisers — elevations worth reusing\n`,
+    `${optCount} reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.\n`];
+  for (const c of cats) {
+    O.push(`## ${OPT_LABEL[c]||c} (${byCat[c].length})\n`);
+    for (const o of byCat[c]) {
+      O.push(`- **${o.title}** _(${o.app})_`);
+      if (o.detail) O.push(`  ${o.detail}`);
+      if (o.why) O.push(`  <br>*Why:* ${o.why}`);
+      if (o.how) O.push(`  <br>*How:* ${o.how}`);
+    }
+    O.push("");
+  }
+  fs.writeFileSync(p("OPTIMISERS.md"), O.join("\n"));
+  fs.writeFileSync(p("public","OPTIMISERS.md"), O.join("\n"));
+}
+
 // ---- agent-facing endpoints & docs (served as static assets) ----
 // machine-readable data
 fs.writeFileSync(p("public","bugs.json"), JSON.stringify(bugs));
@@ -195,7 +224,8 @@ if (sec) fs.writeFileSync(p("public","security.json"), JSON.stringify(sec));
 const checklist = { generated: GEN, base: "https://bugledger.coconvo.workers.dev",
   totals: { bugs: bugs.length, apps: appOrder.length, security: sec ? sec.findings.length : 0 },
   apps: {}, recurring: RECURRING, detectors: DETECTORS,
-  security: sec ? sec.findings.map(f => ({ id: f.id, severity: f.severity, status: f.status, app: f.app, title: f.title })) : [] };
+  security: sec ? sec.findings.map(f => ({ id: f.id, severity: f.severity, status: f.status, app: f.app, title: f.title })) : [],
+  optimisers: optimisers.map(o => ({ title: o.title, category: o.category, app: o.app })) };
 for (const app of appOrder)
   checklist.apps[app] = byApp[app].slice()
     .sort((a,b)=>(SEV[a.category]-SEV[b.category])||a.title.localeCompare(b.title))

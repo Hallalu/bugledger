@@ -108,6 +108,8 @@
   .find .f-body{color:var(--muted);font-size:13.5px;display:grid;gap:3px}
   .find .f-body b{color:var(--ink);font-weight:600}
   .find code,.f-files{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted)}
+  .optchip{font-size:11px;font-weight:800;text-transform:capitalize;padding:2px 9px;border-radius:99px;
+    color:#7c5cff;background:color-mix(in srgb,#7c5cff 13%,transparent);white-space:nowrap}
   .clean{padding:8px 18px 16px;color:var(--muted);font-size:13px}
   .clean b{color:var(--done, #12a150)}
   ul.mini{list-style:none;margin:4px 0;padding:0;display:grid;gap:3px;font-size:13px}
@@ -164,6 +166,7 @@
   <section id="checkpanel"></section>
   <section id="submitpanel"></section>
   <section id="secsweep"></section>
+  <section id="optpanel"></section>
   <section id="scanpanel"></section>
   <section id="harvestpanel"></section>
   <main id="list"></main>
@@ -171,6 +174,7 @@
 </div>
 
 <script src="data-sec.js"></script>
+<script src="data-opt.js"></script>
 <script src="data-scan.js"></script>
 <script src="data-harvest.js"></script>
 <script src="data.js"></script>
@@ -346,6 +350,33 @@
       '<ul class="finds">'+lis+'</ul>'+
       (clean?'<div class="clean"><b>Verified clean:</b><br>'+clean+'</div>':'');
     host.appendChild(d);
+  }
+
+  // ---- Optimisers panel (elevations worth reusing) ----
+  var OPT = window.OPTIMISERS;
+  if(OPT && OPT.items && OPT.items.length){
+    kpi.appendChild(kpiEl(OPT.items.length,'optimisers'));
+    var oLabels=OPT.labels||{};
+    var oHost=$('#optpanel');
+    var od=document.createElement('details'); od.className='sweep'; od.open=false;
+    var byCat={}; OPT.items.forEach(function(o){(byCat[o.category]=byCat[o.category]||[]).push(o)});
+    var cats=OPT.cats||Object.keys(byCat);
+    var groups=cats.filter(function(c){return byCat[c]}).map(function(c){
+      var items=byCat[c];
+      var lis=items.map(function(o){
+        return '<li class="find"><div class="f-top"><span class="optchip">'+esc(oLabels[c]||c)+'</span>'+
+          '<span class="f-title">'+esc(o.title)+'</span><span class="tag">'+esc(o.app||'')+'</span></div>'+
+          '<div class="f-body">'+(o.detail?'<div>'+esc(o.detail)+'</div>':'')+
+          (o.why?'<div><b>Why:</b> '+esc(o.why)+'</div>':'')+
+          (o.how?'<div><b>How:</b> '+esc(o.how)+'</div>':'')+'</div></li>';
+      }).join('');
+      return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px;text-transform:capitalize">'+esc(oLabels[c]||c)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
+    }).join('');
+    od.innerHTML='<summary><span class="chev">▶</span><span class="appname">✨ Optimisers</span>'+
+        '<span class="count">'+OPT.items.length+' · '+cats.length+' categories</span></summary>'+
+      '<div class="sec-head"><b>Elevations worth reusing</b> — design polish, UX, performance and workflow patterns mined from the build history (not bugs — things that made an app <i>better</i>). &middot; <a href="OPTIMISERS.md">full list</a></div>'+
+      groups;
+    oHost.appendChild(od);
   }
 
   // ---- Scanner Findings panel ----
