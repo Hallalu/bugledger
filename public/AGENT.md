@@ -76,6 +76,12 @@ node ~/BugLedger/worklog.mjs finish
 ```
 Each call posts to `POST /api/session`; the board polls every ~1.5s and ticks tasks off as you go.
 
+## Coverage is server-verified
+The `POST /api/checks` response includes `coverage: {total, matched, pct, complete, missed[]}` — the
+worker matches your `notFound`+`found` titles against the app's catalog. If `complete` is false, the
+`missed` array names the exact bugs you didn't address; check those and re-post until it's true. New
+bugs you find go to `POST /api/bugs` (append-only).
+
 ## Step 4 — Tell the user
 Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the
 security status, and confirm the log was posted (the response includes an `id`). The log shows up

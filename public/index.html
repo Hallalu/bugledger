@@ -155,6 +155,7 @@
   </div>
 
   <section id="checkpanel"></section>
+  <section id="submitpanel"></section>
   <section id="secsweep"></section>
   <section id="scanpanel"></section>
   <section id="harvestpanel"></section>
@@ -280,15 +281,15 @@
 
   function applyPanelSev(){
     var sv=$('#fSev').value;
-    document.querySelectorAll('#secsweep li.find, #scanpanel li.find, #harvestpanel li.find').forEach(function(li){
+    document.querySelectorAll('#secsweep li.find, #scanpanel li.find, #harvestpanel li.find, #submitpanel li.find').forEach(function(li){
       li.style.display = (!sv || li.getAttribute('data-sev')===sv) ? '' : 'none';
     });
     // hide a panel's app-subgroup / whole panel when it has no visible rows
-    document.querySelectorAll('#scanpanel .scan-appgroup, #harvestpanel .scan-appgroup').forEach(function(g){
+    document.querySelectorAll('#scanpanel .scan-appgroup, #harvestpanel .scan-appgroup, #submitpanel .scan-appgroup').forEach(function(g){
       var any=[].some.call(g.querySelectorAll('li.find'),function(li){return li.style.display!=='none'});
       g.style.display=any?'':'none';
     });
-    ['#secsweep','#scanpanel','#harvestpanel'].forEach(function(sel){
+    ['#secsweep','#scanpanel','#harvestpanel','#submitpanel'].forEach(function(sel){
       var d=document.querySelector(sel+' details'); if(!d) return;
       var any=[].some.call(d.querySelectorAll('li.find'),function(li){return li.style.display!=='none'});
       d.style.display=any?'':'none';
@@ -406,12 +407,22 @@
         var secList=(c.securityFindings||[]).map(function(f){return '<li><span class="sev '+esc(f.severity||'low')+'">'+esc(f.severity||'')+'</span> '+esc(f.title)+(f.file?' <span class="f-files">'+esc(f.file)+'</span>':'')+'</li>'}).join('');
         var cleanN=(c.notFound||[]).length;
         var cleanList=(c.notFound||[]).slice(0,60).map(function(t){return '<li>✓ '+esc(t)+'</li>'}).join('');
+        var cov=c.coverage;
+        var isScan=(c.checkedBy||'').indexOf('scan')>=0;
+        var covBadge = isScan ? '<span class="st accepted">🔍 detector scan</span>' :
+          (cov && cov.total) ? '<span class="st '+(cov.complete?'fixed':'partial')+'">'+
+          (cov.complete?'✓ full coverage ':'⚠ ')+cov.matched+'/'+cov.total+' bugs</span>' :
+          (cov?'<span class="st accepted">no catalog bugs</span>':'');
+        var missedBlock = (!isScan && cov && cov.missed && cov.missed.length) ?
+          '<details class="clean-more" open><summary style="color:#e5484d">⚠ '+cov.missed.length+' known bug'+(cov.missed.length>1?'s':'')+' NOT addressed</summary><ul class="mini">'+
+          cov.missed.map(function(t){return '<li>○ '+esc(t)+'</li>'}).join('')+'</ul></details>' : '';
         return '<li class="find"><div class="f-top">'+
-            '<span class="appname">'+esc(c.app)+'</span>'+
+            '<span class="appname">'+esc(c.app)+'</span>'+covBadge+
             '<span class="st '+stCls+'">security: '+esc(c.securityStatus||'n/a')+'</span>'+
             '<span class="tag">'+esc(fmt(c.ts))+' · '+esc(c.checkedBy||'')+(c.project?' · '+esc(c.project):'')+'</span></div>'+
           '<div class="f-body">'+
             '<div><b>'+ (c.checkedCount||0) +'</b> checked · <b>'+(c.foundCount||0)+'</b> found · <b>'+(c.scanned||0)+'</b> files scanned</div>'+
+            missedBlock+
             (foundList?'<div><b>Found:</b><ul class="mini">'+foundList+'</ul></div>':'<div style="color:var(--done,#12a150)">No known bugs found present.</div>')+
             (secList?'<div><b>Security findings:</b><ul class="mini">'+secList+'</ul></div>':'')+
             (c.notes?'<div style="color:var(--muted)">'+esc(c.notes)+'</div>':'')+
@@ -427,6 +438,38 @@
         '<ul class="finds">'+rows+'</ul>';
       host.appendChild(det);
       if(location.hash==='#checks') det.scrollIntoView();
+    }).catch(function(){});
+  })();
+
+  // ---- Agent-submitted new bugs (fetched live from /api/bugs) ----
+  (function(){
+    var host=$('#submitpanel'); if(!host) return;
+    fetch('/api/bugs?limit=200').then(function(r){return r.json()}).then(function(d){
+      if(!d || !d.ok || !d.submitted || !d.submitted.length) return;
+      var subs=d.submitted;
+      kpi.appendChild(kpiEl(subs.length,'agent-submitted'));
+      var svo={critical:0,high:1,medium:2,low:3};
+      var apps={}; subs.forEach(function(b){(apps[b.app]=apps[b.app]||[]).push(b)});
+      var groups=Object.keys(apps).sort(function(a,b){return apps[b].length-apps[a].length}).map(function(app){
+        var items=apps[app].sort(function(a,b){return (svo[a.severity]-svo[b.severity])});
+        var lis=items.map(function(b){
+          return '<li class="find" data-sev="'+esc(b.severity||'medium')+'"><div class="f-top">'+
+            '<span class="sev '+esc(b.severity||'medium')+'">'+esc(b.severity||'')+'</span>'+
+            '<span class="fid">'+esc(b.kind||'bug')+'/'+esc(b.category||'')+'</span>'+
+            '<span class="f-title">'+esc(b.title)+'</span></div>'+
+            '<div class="f-body">'+(b.symptom?'<div>'+esc(b.symptom)+'</div>':'')+
+            (b.file?'<div class="f-files">'+esc(b.file)+'</div>':'')+
+            (b.fix?'<div><b>Fix:</b> '+esc(b.fix)+'</div>':'')+
+            (b.project?'<div class="tag">'+esc(b.project)+'</div>':'')+'</div></li>';
+        }).join('');
+        return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
+      }).join('');
+      var det=document.createElement('details'); det.className='sweep';
+      det.innerHTML='<summary><span class="chev">▶</span><span class="appname">🧫 Agent-submitted</span>'+
+          '<span class="count">'+subs.length+' new · unverified</span></summary>'+
+        '<div class="sec-head"><b>New bugs agents found while scanning</b> — proposals to promote into the curated ledger (append-only, never auto-merged).</div>'+
+        groups;
+      host.appendChild(det);
     }).catch(function(){});
   })();
 })();
