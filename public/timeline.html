@@ -63,6 +63,8 @@
   .kind.full{color:var(--violet);background:color-mix(in srgb,var(--violet) 16%,transparent)}
   .kind.sec{color:#e5484d;background:color-mix(in srgb,#e5484d 14%,transparent)}
   .chip.sec{color:#e5484d;border-color:color-mix(in srgb,#e5484d 55%,transparent)}
+  a.chip.report{text-decoration:none;color:var(--coral);border-color:color-mix(in srgb,var(--coral) 50%,transparent);font-weight:800}
+  a.chip.report:hover{background:color-mix(in srgb,var(--coral) 12%,transparent)}
   .app{font-weight:700}.proj{color:var(--muted);font-weight:500}
   .when{margin-left:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
   .title{font-weight:650;margin:6px 0 2px}
@@ -144,6 +146,7 @@
       '<div class="chips">'+covChip+
         '<span class="chip '+(secOk?'ok':(e.securityStatus==='issues'?'warn':''))+'">security: '+esc(e.securityStatus||'n/a')+'</span>'+
         (e.foundCount?'<span class="chip warn">'+e.foundCount+' present</span>':'')+
+        (e.id?'<a class="chip report" href="/report?id='+esc(e.id)+'">📊 Full report →</a>':'')+
       '</div></div>';
   }
 

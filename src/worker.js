@@ -212,7 +212,7 @@ export default {
             progress: m.progress, agent: m.agent, live: m.status === "active" && now - m.updated < 90_000 };
         });
         const checks = (c.results || []).map((r) => ({
-          kind: "check", ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by, scope: r.scope || "app",
+          kind: "check", id: r.id, ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by, scope: r.scope || "app",
           foundCount: r.found_count, securityStatus: r.security_status,
           coverage: r.cov_total != null ? { total: r.cov_total, matched: r.cov_matched,
             pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,

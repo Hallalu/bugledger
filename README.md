@@ -146,6 +146,19 @@ them" is verified, not claimed. New bugs an agent discovers go to **`POST /api/b
 appear in the **🧫 Agent-submitted** panel as proposals to promote. Mechanical `scan.mjs` logs are
 labelled **🔍 detector scan** (not a full-coverage claim).
 
+## Sweep reports — evidence, charts, comparisons
+
+Every sweep produces a **beautiful interactive report** at `/report?id=<checkId>` — auto-generated from
+the check-log, no agent work needed. It shows a coverage donut, KPI tiles (checked / present / fixed /
+added-to-ledger / clean / coverage%), the findings with `file:line` and a **✓ fixed** marker, a
+severity/category bar chart, a **comparison to the last sweep** (resolved vs new, with a trend line so
+you watch it improve each day), and an **"added to the ledger"** section listing the new bugs/security
+issues this sweep appended (permanent, append-only — every future project is then checked for them too).
+
+You reach it three ways: a **📊 Full report →** link on each timeline card and each check-log row, and a
+pulsing **"open the full report →"** button on the live board the moment a sweep completes. A deep scan
+posts two check-logs (bugs + security), so you get **one report card per sweep**.
+
 ## Integrity — the ledger is append-only
 
 Agents can **add** to the ledger but never modify or delete it:
