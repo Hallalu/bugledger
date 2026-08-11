@@ -5,3 +5,4 @@ harvest.log
 harvest.launchd.out.log
 harvest.launchd.err.log
 .worklog.json
+.worklog-history.jsonl

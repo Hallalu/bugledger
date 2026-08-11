@@ -221,8 +221,12 @@ Agent instructions: fetch /AGENT.md and follow the protocol. Report back with PO
 - POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
 - Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
 
+## Live + history
+- Stream progress (watch): POST /api/session · board https://bugledger.coconvo.workers.dev/live · helper ~/BugLedger/worklog.mjs
+- Activity timeline (permanent record of every session + scan): https://bugledger.coconvo.workers.dev/timeline · GET /api/activity
+
 ## Human pages
-- [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, and Check-log panels
+- [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, Agent-submitted, and Check-log panels
 `;
 fs.writeFileSync(p("public","llms.txt"), llms);
 
@@ -310,7 +314,9 @@ Each call posts to \`POST /api/session\`; the board polls every ~1.5s and ticks 
 The \`POST /api/checks\` response includes \`coverage: {total, matched, pct, complete, missed[]}\` — the
 worker matches your \`notFound\`+\`found\` titles against the app's catalog. If \`complete\` is false, the
 \`missed\` array names the exact bugs you didn't address; check those and re-post until it's true. New
-bugs you find go to \`POST /api/bugs\` (append-only).
+bugs you find go to \`POST /api/bugs\` (append-only). To scan against **every bug across ALL apps**
+(the whole catalog, e.g. 315/315), send \`"scope":"all"\` — coverage is then computed against the full
+catalog. Stream a live \`N/total\` counter with \`worklog.mjs progress <done> <total>\`.
 
 ## Step 4 — Tell the user
 Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the

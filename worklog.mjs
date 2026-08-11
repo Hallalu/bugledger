@@ -37,7 +37,7 @@ const saveState = (s) => fs.writeFileSync(STATE, JSON.stringify(s, null, 2) + "\
 
 async function post(s) {
   const body = { id: s.id, app: s.app, project: s.project, title: s.title, agent: s.agent,
-    status: s.status, current: s.current, note: s.note, tasks: s.tasks };
+    status: s.status, current: s.current, note: s.note, tasks: s.tasks, progress: s.progress || null };
   const res = await fetch(BASE + "/api/session", {
     method: "POST", headers: { "content-type": "application/json", "x-ledger-key": TOKEN },
     body: JSON.stringify(body),
@@ -63,9 +63,15 @@ if (cmd === "start") {
   const out = await post(s);
   s.id = out.id; saveState(s);
   console.log(`▶ live: ${BASE}/live   (session ${s.id.slice(0, 8)}, ${tasks.length} tasks)`);
-} else if (["step", "done", "current", "add", "note", "finish", "status"].includes(cmd)) {
+} else if (["step", "done", "current", "add", "note", "finish", "status", "progress"].includes(cmd)) {
   const s = loadState();
   if (!s) die("no ./.worklog.json — run `worklog.mjs start` first.");
+  if (cmd === "progress") {
+    const d = parseInt(positional[0], 10), t = parseInt(positional[1], 10);
+    if (Number.isNaN(d) || Number.isNaN(t)) die("progress <done> <total>  e.g. progress 100 315");
+    s.progress = { done: d, total: t, label: flag("label") || (s.progress && s.progress.label) || "bugs" };
+    if (flag("current")) s.current = flag("current");
+  }
   if (cmd === "step") {
     const i = parseInt(positional[0], 10);
     if (Number.isNaN(i) || !s.tasks[i]) die("step <index> out of range");
@@ -90,8 +96,12 @@ if (cmd === "start") {
     console.log(JSON.stringify(s, null, 2)); process.exit(0);
   }
   await post(s); saveState(s);
+  if (cmd === "finish") {                       // keep a permanent local record in the project too
+    try { fs.appendFileSync(path.join(process.cwd(), ".worklog-history.jsonl"), JSON.stringify(s) + "\n"); } catch {}
+  }
   const dn = s.tasks.filter((t) => t.status === "done").length;
-  console.log(`✓ ${cmd} → ${dn}/${s.tasks.length} · "${s.current}"`);
+  const prog = s.progress ? ` · ${s.progress.done}/${s.progress.total} ${s.progress.label}` : "";
+  console.log(`✓ ${cmd} → ${dn}/${s.tasks.length} tasks${prog} · "${s.current}"`);
 } else {
   console.log("usage: worklog.mjs start|step <i>|done <i>|current \"…\"|add \"…\"|note \"…\"|finish   (see file header)");
   process.exit(cmd ? 1 : 0);

@@ -80,7 +80,9 @@ Each call posts to `POST /api/session`; the board polls every ~1.5s and ticks ta
 The `POST /api/checks` response includes `coverage: {total, matched, pct, complete, missed[]}` — the
 worker matches your `notFound`+`found` titles against the app's catalog. If `complete` is false, the
 `missed` array names the exact bugs you didn't address; check those and re-post until it's true. New
-bugs you find go to `POST /api/bugs` (append-only).
+bugs you find go to `POST /api/bugs` (append-only). To scan against **every bug across ALL apps**
+(the whole catalog, e.g. 315/315), send `"scope":"all"` — coverage is then computed against the full
+catalog. Stream a live `N/total` counter with `worklog.mjs progress <done> <total>`.
 
 ## Step 4 — Tell the user
 Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the
