@@ -682,5 +682,29 @@
     "status": "unverified",
     "session": "55c985af",
     "found": "2026-08-11"
+  },
+  {
+    "key": "55c985af:caughtseveralthingsincludingarealbuginyourscreenshotcouldntl",
+    "app": "Hallalu CRM",
+    "title": "Caught several things — including a real bug in your screenshot (\"Couldn't load —…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Caught several things — including a real bug in your screenshot (\"Couldn't load — Failed to fetch\" on the report).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "55c985af",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "55c985af:thereportbugfromyourscreenshotisfixednowletmeaddittotheledge",
+    "app": "Hallalu CRM",
+    "title": "Report bug (from your screenshot) is fixed — now let me add it to the ledger and give…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The report bug (from your screenshot) is fixed — now let me add it to the ledger and give agents a standing instruction to log bugs as they work.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "55c985af",
+    "found": "2026-08-11"
   }
 ]

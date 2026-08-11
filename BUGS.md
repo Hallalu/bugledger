@@ -1,10 +1,10 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**335 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**336 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 335 |
+| Total bugs fixed | 336 |
 | Apps | 18 |
 | Security fixes | 39 |
 | Data-loss / sync fixes | 25 |
@@ -13,7 +13,7 @@
 
 ### By category
 
-`ui: 118` `logic: 83` `security: 39` `crash: 22` `other: 21` `data-loss: 17` `auth: 10` `race: 10` `sync: 8` `perf: 7`
+`ui: 118` `logic: 84` `security: 39` `crash: 22` `other: 21` `data-loss: 17` `auth: 10` `race: 10` `sync: 8` `perf: 7`
 
 ---
 
@@ -778,8 +778,10 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Unlock keypad numbers float high and misalign** `ui`
   *Symptom:* On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up with the lettered keys — it still looked off after a first tidy pass.  <br>*Cause:* Each key reserved a letter row (ABC/DEF/…), which pushed the number upward instead of centering it; the digit wasn't positioned independently of the letters.  <br>*Fix:* Centered each number dead-centre in the key and absolute-positioned the letters tucked at the bottom; added a hairline border + subtle fill, tighter spacing and a smoother press state; also relabeled 'Create a studio' → 'Create account' on the unlock screen.
 
-## Bug Ledger  ·  1 fixed
+## Bug Ledger  ·  2 fixed
 
+- [ ] **Report page dies on a transient fetch failure ('Couldn't load — Failed to fetch')** `logic`
+  *Symptom:* Opening a sweep report during a network blip or mid-deploy showed 'Couldn't load — TypeError: Failed to fetch' and never recovered.  <br>*Cause:* The report did Promise.all of three fetches; /api/checks had no .catch, so any one rejecting failed the whole load, with no retry.  <br>*Fix:* Wrapped each fetch in a retrying getJSON() (2 retries + backoff) that returns a fallback instead of rejecting; on empty data show a friendly 'connection dropped' + a Retry link instead of a raw error.
 - [ ] **Activity timeline re-renders every poll, replaying entrance animations (flicker)** `ui`
   *Symptom:* The /timeline feed rebuilt its whole innerHTML on every 4s poll even when nothing changed, so every card replayed its 'rise' entrance animation and the page visibly flickered.  <br>*Cause:* render() unconditionally set feed.innerHTML each poll; recreated DOM nodes re-run their CSS entrance animation. (Same class as the earlier /live blink, but the timeline was missed.)  <br>*Fix:* Compute a content signature from stable fields (event ids/status/coverage/progress) and skip the re-render when it's unchanged; only rebuild when content actually changes.
 

@@ -103,10 +103,11 @@ export default {
       };
       // server-verified coverage: match reported titles against the app catalog — or the WHOLE
       // catalog (all apps) when scope:"all", so a full scan is confirmed N/315.
-      const scope = ["all", "security"].includes(body.scope) ? body.scope : "app";
+      const scope = ["all", "security", "optimisers"].includes(body.scope) ? body.scope : "app";
       const cat = await catalog(env, request);
       const appTitles = scope === "all" ? allTitles(cat)
         : scope === "security" ? securityTitles(cat)
+        : scope === "optimisers" ? optimiserTitles(cat)
         : ((cat.apps && cat.apps[rec.app]) ? cat.apps[rec.app].map((b) => b.title) : []);
       const reported = new Set([
         ...arr(body.notFound, 4000, (x) => str(x, 200)),
@@ -200,9 +201,10 @@ export default {
     if (pathname === "/api/activity" && request.method === "GET") {
       const limit = Math.min(200, Math.max(1, num(url.searchParams.get("limit")) || 80));
       try {
-        const [s, c] = await Promise.all([
+        const [s, c, sub] = await Promise.all([
           env.DB.prepare("SELECT * FROM sessions ORDER BY updated DESC LIMIT ?").bind(limit).all(),
           env.DB.prepare("SELECT * FROM checks ORDER BY ts DESC LIMIT ?").bind(limit).all(),
+          env.DB.prepare("SELECT * FROM submitted ORDER BY ts DESC LIMIT ?").bind(limit).all(),
         ]);
         const now = Date.now();
         const sessions = (s.results || []).map((r) => {
@@ -218,7 +220,11 @@ export default {
             pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,
             complete: r.cov_total === r.cov_matched } : null,
         }));
-        const events = sessions.concat(checks).sort((a, b) => b.ts - a.ts).slice(0, limit);
+        const additions = (sub.results || []).map((r) => ({
+          kind: "addition", id: r.id, ts: r.ts, subkind: r.kind, app: r.app, project: r.project,
+          title: r.title, severity: r.severity, category: r.category,
+        }));
+        const events = sessions.concat(checks).concat(additions).sort((a, b) => b.ts - a.ts).slice(0, limit);
         return json({ ok: true, now, count: events.length, events });
       } catch (e) { return json({ ok: false, error: String(e) }, 500); }
     }
@@ -244,7 +250,7 @@ export default {
       try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
       if (!body || !body.title || !body.app) return json({ ok: false, error: "fields 'app' and 'title' are required" }, 400);
       const id = crypto.randomUUID(), ts = Date.now();
-      const kind = body.kind === "security" ? "security" : "bug";
+      const kind = ["security", "optimiser"].includes(body.kind) ? body.kind : "bug";
       try {
         await env.DB.prepare(
           `INSERT INTO submitted (id,ts,app,project,kind,title,category,severity,symptom,fix,file,submitted_by)
@@ -286,5 +292,11 @@ function securityTitles(cat) {
   for (const app of Object.keys(cat.apps || {}))
     for (const b of cat.apps[app]) if (b.category === "security") { const k = norm(b.title); if (!m.has(k)) m.set(k, b.title); }
   for (const f of (cat.security || [])) { const k = norm(f.title); if (!m.has(k)) m.set(k, f.title); }
+  return [...m.values()];
+}
+// every distinct OPTIMISER (reusable elevation) title
+function optimiserTitles(cat) {
+  const m = new Map();
+  for (const o of (cat.optimisers || [])) { const k = norm(o.title); if (!m.has(k)) m.set(k, o.title); }
   return [...m.values()];
 }

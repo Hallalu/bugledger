@@ -1,4 +1,4 @@
-# BUG REGRESSION CHECKLIST — 335 known bugs across 18 apps
+# BUG REGRESSION CHECKLIST — 336 known bugs across 18 apps
 # Paste this into any build session and re-check each item (bugs recur).
 # Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
 
@@ -381,7 +381,8 @@
 - [ ] Bulk rename introduced a grammar slip ('a account') — A bulk find-replace of 'studio' → 'account' produced 'a account' where the article should agre…
 - [ ] Unlock keypad numbers float high and misalign — On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up wit…
 
-## Bug Ledger (1)
+## Bug Ledger (2)
+- [ ] Report page dies on a transient fetch failure ('Couldn't load — Failed to fetch') — Opening a sweep report during a network blip or mid-deploy showed 'Couldn't load — TypeError:…
 - [ ] Activity timeline re-renders every poll, replaying entrance animations (flicker) — The /timeline feed rebuilt its whole innerHTML on every 4s poll even when nothing changed, so…
 
 ## Hallalu Bookings (1)

@@ -3052,6 +3052,17 @@
   },
   {
     "app": "Bug Ledger",
+    "category": "logic",
+    "severity": "medium",
+    "title": "Report page dies on a transient fetch failure ('Couldn't load — Failed to fetch')",
+    "symptom": "Opening a sweep report during a network blip or mid-deploy showed 'Couldn't load — TypeError: Failed to fetch' and never recovered.",
+    "root_cause": "The report did Promise.all of three fetches; /api/checks had no .catch, so any one rejecting failed the whole load, with no retry.",
+    "fix": "Wrapped each fetch in a retrying getJSON() (2 retries + backoff) that returns a fallback instead of rejecting; on empty data show a friendly 'connection dropped' + a Retry link instead of a raw error.",
+    "session": "55c985af",
+    "source": "conversation-2026-08-11"
+  },
+  {
+    "app": "Bug Ledger",
     "category": "ui",
     "severity": "low",
     "title": "Activity timeline re-renders every poll, replaying entrance animations (flicker)",
