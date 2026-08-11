@@ -706,5 +706,41 @@
     "status": "unverified",
     "session": "55c985af",
     "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:stripenowworkswithjustthesecretkeyhostedcheckoutfallback",
+    "app": "Hallalu CRM",
+    "title": "Stripe now works with just the secret key (hosted-checkout fallback).",
+    "category": "security",
+    "severity": "high",
+    "symptom": "Stripe now works with just the secret key (hosted-checkout fallback).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:healthnowshowspksettruethepublishablekeygotaddedsoembeddedch",
+    "app": "Hallalu CRM",
+    "title": "Health now shows pk set: true — the publishable key got added, so embedded checkout is…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Health now shows **pk set: true** — the publishable key got added, so embedded checkout is active again (the empty-string error is resolved), and my hosted fallback stands by if it's ever unset.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:bug1isfixeddraggablefullheight",
+    "app": "Hallalu CRM",
+    "title": "Bug 1 is fixed (draggable full-height).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Bug 1 is fixed (draggable full-height).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
   }
 ]
