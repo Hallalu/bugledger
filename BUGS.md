@@ -1,19 +1,19 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**319 bugs fixed** across **17 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**335 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 319 |
-| Apps | 17 |
-| Security fixes | 28 |
+| Total bugs fixed | 335 |
+| Apps | 18 |
+| Security fixes | 39 |
 | Data-loss / sync fixes | 25 |
-| Crashes fixed | 21 |
+| Crashes fixed | 22 |
 | Security-audit findings | 15 (9 open) |
 
 ### By category
 
-`ui: 118` `logic: 80` `security: 28` `crash: 21` `other: 21` `data-loss: 17` `auth: 10` `race: 9` `sync: 8` `perf: 7`
+`ui: 118` `logic: 83` `security: 39` `crash: 22` `other: 21` `data-loss: 17` `auth: 10` `race: 10` `sync: 8` `perf: 7`
 
 ---
 
@@ -562,6 +562,41 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The preview tooling couldn't attach to the dev server.  <br>*Cause:* The dev server binds 5197 but launch.json specified 5199.  <br>*Fix:* Corrected the port in launch.json.
 - [ ] **Exported Android build fails: missing gradle.properties useAndroidX** `other`
   *Symptom:* The exported Android project failed its first-run compile in the farm.  <br>*Cause:* gradle.properties lacked android.useAndroidX=true.  <br>*Fix:* Added the one-line android.useAndroidX=true to gradle.properties and rebuilt.
+
+## cross-cutting  ·  16 fixed
+
+- [ ] **Excessive agency for AI features** `security`
+  *Symptom:* An AI agent is given more tools, permissions or autonomy than its task needs, and can act without approval.  <br>*Cause:* OWASP LLM: broad tools/permissions = attack surface.  <br>*Fix:* Least-privilege tools, scoped permissions, and human approval before irreversible or outward actions.
+- [ ] **Improper LLM output handling** `security`
+  *Symptom:* Model output rendered or executed without validation, enabling XSS, SSRF, path traversal or code execution downstream.  <br>*Cause:* OWASP LLM: outputs aren't validated before hitting other components.  <br>*Fix:* Validate/sanitize model output before rendering, running, or passing it to another system; treat it as untrusted.
+- [ ] **Insecure or deprecated cryptography** `security`
+  *Symptom:* Weak algorithms (MD5/SHA1 for passwords, ECB mode, hard-coded IV/salt, low KDF iterations).  <br>*Cause:* AI often picks a familiar-but-wrong primitive (CWE-327).  <br>*Fix:* Use a vetted KDF (bcrypt/scrypt/argon2 or PBKDF2 >=600k), random per-record salt/IV, AEAD ciphers.
+- [ ] **Log injection / unsanitized logging** `security`
+  *Symptom:* User input written to logs unescaped (CWE-117), enabling forged log entries or downstream injection.  <br>*Cause:* AI logs raw input for 'debuggability'.  <br>*Fix:* Sanitize/encode values before logging; never log secrets.
+- [ ] **Missing authorization / IDOR (object-level access)** `security`
+  *Symptom:* Endpoints check authentication but not that the caller owns the specific record (broken object-level authorization).  <br>*Cause:* AI wires up CRUD without per-object ownership checks.  <br>*Fix:* Enforce per-object ownership on every read/write; never trust an id from the client as proof of access.
+- [ ] **Missing input sanitization / validation** `security`
+  *Symptom:* The single most common flaw in AI-generated code — inputs used unsanitized in queries, HTML, filesystem or commands.  <br>*Cause:* LLMs default to the happy path and omit validation; ~45% of AI code fails security tests.  <br>*Fix:* Validate + sanitize every external input at the boundary; allow-list, not deny-list.
+- [ ] **No rate limiting on expensive / AI endpoints** `security`
+  *Symptom:* Unauthenticated or unthrottled endpoints that call paid AI / browser-rendering / email can be run up into a billing DoS.  <br>*Cause:* AI scaffolds endpoints without throttles.  <br>*Fix:* Per-IP/user rate limits + auth/turnstile on any endpoint that costs money or compute.
+- [ ] **Prompt injection (direct and indirect)** `security`
+  *Symptom:* Untrusted input (user text or content fetched from a page/doc/email) overrides the model's instructions or drives actions.  <br>*Cause:* OWASP LLM #1; observed content is data, not commands.  <br>*Fix:* Treat all tool/observed content as untrusted; separate instructions from data; confirm side-effectful actions; don't act on instructions found in content.
+- [ ] **Secrets committed / exposed to the client** `security`
+  *Symptom:* API keys, tokens or private keys in source, client bundles or the repo (400+ found across vibe-coded apps).  <br>*Cause:* AI inlines secrets to make examples 'work'.  <br>*Fix:* Keep secrets server-side in env bindings; never ship them to the browser; scan the tree + git history.
+- [ ] **SQL / NoSQL injection from string-built queries** `security`
+  *Symptom:* Queries assembled by concatenating user input instead of parameterized.  <br>*Cause:* Classic CWE-89; common in AI-generated data-access code.  <br>*Fix:* Always use parameterized queries / prepared statements; never string-concatenate user input into a query.
+- [ ] **XSS from unescaped output rendered to HTML** `security`
+  *Symptom:* User/model data written into the DOM without encoding — ~86% of AI-generated samples fail XSS defence.  <br>*Cause:* AI code interpolates strings straight into innerHTML/templates.  <br>*Fix:* Escape on output (incl. quotes) or use textContent; add a Content-Security-Policy as defence-in-depth.
+- [ ] **Happy-path assumption — no null/undefined guards** `crash`
+  *Symptom:* AI code assumes API/optional data is always present and dereferences it, crashing on the empty/error case.  <br>*Fix:* Guard every optional/awaited value before use; handle the empty and error branches explicitly.
+- [ ] **Floating promises / unhandled async errors** `race`
+  *Symptom:* Promises not awaited or lacking catch, so failures are silent and ordering is wrong.  <br>*Fix:* Await or .catch every promise; surface async errors; avoid fire-and-forget for state changes.
+- [ ] **Hard-coded environment-specific values** `logic`
+  *Symptom:* localhost URLs, absolute paths, ports or keys baked in that break outside the author's machine.  <br>*Fix:* Read config from env; no machine-specific literals in shipped code.
+- [ ] **No error handling on network calls** `logic`
+  *Symptom:* fetch/HTTP calls with no try/catch, timeout or retry, so a blip becomes a broken UI.  <br>*Fix:* Wrap network calls with try/catch + timeout + a user-visible fallback; retry idempotent reads.
+- [ ] **Silent catch swallowing errors** `logic`
+  *Symptom:* catch blocks that do nothing, hiding real failures and making bugs invisible.  <br>*Fix:* Handle or surface every caught error; never swallow silently.
 
 ## Breadcrumb  ·  14 fixed
 
