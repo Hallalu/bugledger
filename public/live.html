@@ -43,7 +43,8 @@
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
     backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
-    padding:22px 22px 20px;margin:0 0 18px;animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+    padding:22px 22px 20px;margin:0 0 18px}
+  .card.enter{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}   /* one-shot entrance only */
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   .chead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
   .status{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
@@ -112,7 +113,8 @@
   var skew = 0;        // serverNow - clientNow, so elapsed clocks stay honest between polls
 
   function makeCard(s){
-    var el = document.createElement('section'); el.className='card'; el.dataset.id=s.id;
+    var el = document.createElement('section'); el.className='card enter'; el.dataset.id=s.id;
+    setTimeout(function(){ el.classList.remove('enter'); }, 600);   // strip so moves don't replay it
     el.innerHTML =
       '<div class="chead"><span class="status"></span><div class="meta"></div></div>'+
       '<div class="title"></div>'+
@@ -187,8 +189,11 @@
       update(c, s, now);
     });
     Object.keys(cards).forEach(function(id){ if(!seen[id]){ cards[id].el.remove(); delete cards[id]; } });
-    // keep DOM order = sorted order
-    sessions.forEach(function(s){ board.appendChild(cards[s.id].el); });
+    // keep DOM order = sorted order — but only touch the DOM if the order actually changed
+    var want = sessions.map(function(s){ return cards[s.id].el; });
+    var cur = Array.prototype.slice.call(board.children);
+    var same = want.length===cur.length && want.every(function(n,i){ return n===cur[i]; });
+    if(!same) want.forEach(function(n){ board.appendChild(n); });
     document.getElementById('pollstate').textContent = sessions.some(function(s){return s.live;})?'live':'watching…';
   }
 
