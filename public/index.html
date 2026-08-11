@@ -342,7 +342,7 @@
     d.innerHTML='<summary><span class="chev">▶</span><span class="appname">🔒 '+esc(SEC.title||'Security Sweep')+'</span>'+
         '<span class="count">'+open+' open · '+SEC.findings.length+' total</span></summary>'+
       '<div class="sec-head"><div class="tally">'+badges+'</div>'+esc(SEC.method||'')+
-        ' &middot; <a href="SECURITY-AUDIT.md">full report</a></div>'+
+        (SEC.date?' &middot; audited '+esc(SEC.date):'')+' &middot; <a href="SECURITY-AUDIT.md">full report</a></div>'+
       '<ul class="finds">'+lis+'</ul>'+
       (clean?'<div class="clean"><b>Verified clean:</b><br>'+clean+'</div>':'');
     host.appendChild(d);
@@ -407,7 +407,9 @@
       if(!d || !d.ok || !d.checks || !d.checks.length) return;
       var checks=d.checks;
       kpi.appendChild(kpiEl(checks.length,'agent checks'));
-      var fmt=function(ts){ try{ return new Date(ts).toISOString().slice(0,16).replace('T',' '); }catch(e){ return ''; } };
+      var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var fmt=function(ts){ try{ var d=new Date(ts),p=function(n){return ('0'+n).slice(-2)};
+        return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }catch(e){ return ''; } };
       var rows=checks.map(function(c){
         var stCls = c.securityStatus==='clean'?'fixed':(c.securityStatus==='issues'?'open':'accepted');
         var foundList=(c.found||[]).map(function(f){return '<li>⚠️ '+esc(f.title)+(f.file?' <span class="f-files">'+esc(f.file)+'</span>':'')+(f.note?' — '+esc(f.note):'')+'</li>'}).join('');
@@ -416,9 +418,10 @@
         var cleanList=(c.notFound||[]).slice(0,60).map(function(t){return '<li>✓ '+esc(t)+'</li>'}).join('');
         var cov=c.coverage;
         var isScan=(c.checkedBy||'').indexOf('scan')>=0;
+        var unit=c.scope==='security'?'security':(c.scope==='all'?'catalog':'bugs');
         var covBadge = isScan ? '<span class="st accepted">🔍 detector scan</span>' :
           (cov && cov.total) ? '<span class="st '+(cov.complete?'fixed':'partial')+'">'+
-          (cov.complete?'✓ full coverage ':'⚠ ')+cov.matched+'/'+cov.total+' bugs</span>' :
+          (c.scope==='security'?'🛡 ':c.scope==='all'?'📚 ':'')+(cov.complete?'✓ full coverage ':'⚠ ')+cov.matched+'/'+cov.total+' '+unit+'</span>' :
           (cov?'<span class="st accepted">no catalog bugs</span>':'');
         var missedBlock = (!isScan && cov && cov.missed && cov.missed.length) ?
           '<details class="clean-more" open><summary style="color:#e5484d">⚠ '+cov.missed.length+' known bug'+(cov.missed.length>1?'s':'')+' NOT addressed</summary><ul class="mini">'+

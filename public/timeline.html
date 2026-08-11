@@ -50,6 +50,7 @@
   .ev-session .node{background:var(--coral)}
   .ev-check .node{background:var(--good)}
   .ev-check.full .node{background:var(--violet)}
+  .ev-check.sec .node{background:#e5484d}
   .ev.live .node{background:var(--coral);animation:beat2 1.4s ease-out infinite}
   @keyframes beat2{0%{box-shadow:0 0 0 0 rgba(255,106,90,.6)}70%{box-shadow:0 0 0 8px rgba(255,106,90,0)}100%{box-shadow:0 0 0 0 rgba(255,106,90,0)}}
 
@@ -60,6 +61,8 @@
   .kind.session{color:var(--coral);background:color-mix(in srgb,var(--coral) 13%,transparent)}
   .kind.check{color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
   .kind.full{color:var(--violet);background:color-mix(in srgb,var(--violet) 16%,transparent)}
+  .kind.sec{color:#e5484d;background:color-mix(in srgb,#e5484d 14%,transparent)}
+  .chip.sec{color:#e5484d;border-color:color-mix(in srgb,#e5484d 55%,transparent)}
   .app{font-weight:700}.proj{color:var(--muted);font-weight:500}
   .when{margin-left:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
   .title{font-weight:650;margin:6px 0 2px}
@@ -96,6 +99,9 @@
   var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
   function rel(ms){var s=Math.max(0,Math.floor(ms/1000));if(s<60)return s+'s ago';var m=Math.floor(s/60);if(m<60)return m+'m ago';var h=Math.floor(m/60);if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago';}
   function hhmm(ts){var d=new Date(ts);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fullts(ts){var d=new Date(ts),p=function(n){return ('0'+n).slice(-2)};
+    return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
   function dayKey(ts){var d=new Date(ts);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();}
   function dayLabel(ts){
     var d=new Date(ts), n=new Date(); var td=dayKey(n.getTime());
@@ -114,7 +120,7 @@
       '<div class="row1"><span class="kind session">worklog</span>'+
         '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
         (live?'<span class="live-pill">● LIVE</span>':'')+
-        '<span class="when">'+(live?rel(Date.now()-e.ts):(done?'done ':'')+hhmm(e.ts))+'</span></div>'+
+        '<span class="when" title="'+fullts(e.ts)+'">'+(live?rel(Date.now()-e.ts):fullts(e.ts))+'</span></div>'+
       (e.title?'<div class="title">'+esc(e.title)+'</div>':'')+
       (e.current?'<div class="cur">'+esc(e.current)+'</div>':'')+
       '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
@@ -122,16 +128,18 @@
     '</div>';
   }
   function checkCard(e){
-    var full=e.scope==='all', cov=e.coverage;
-    var covChip = cov ? '<span class="chip '+(full?'full':(cov.complete?'ok':'warn'))+'">'+
-      (cov.complete?'✓ ':'⚠ ')+cov.matched+'/'+cov.total+' bugs</span>' :
+    var full=e.scope==='all', sec=e.scope==='security', cov=e.coverage;
+    var unit = sec?'security':'bugs';
+    var covChip = cov ? '<span class="chip '+(sec?'sec':full?'full':(cov.complete?'ok':'warn'))+'">'+
+      (cov.complete?'✓ ':'⚠ ')+cov.matched+'/'+cov.total+' '+unit+'</span>' :
       ((e.checkedBy||'').indexOf('scan')>=0?'<span class="chip">🔍 detector scan</span>':'');
     var secOk=e.securityStatus==='clean';
     var pct=cov?cov.pct:0;
+    var kindLbl = sec?'full security sweep':full?'full-catalog scan':'bug + security check';
     return '<div class="card">'+
-      '<div class="row1"><span class="kind '+(full?'full':'check')+'">'+(full?'full-catalog scan':'bug + security check')+'</span>'+
+      '<div class="row1"><span class="kind '+(sec?'sec':full?'full':'check')+'">'+(sec?'🛡 ':'')+kindLbl+'</span>'+
         '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
-        '<span class="when">'+hhmm(e.ts)+'</span></div>'+
+        '<span class="when" title="'+fullts(e.ts)+'">'+fullts(e.ts)+'</span></div>'+
       (cov?'<div class="bar"><i style="width:'+pct+'%"></i></div>':'')+
       '<div class="chips">'+covChip+
         '<span class="chip '+(secOk?'ok':(e.securityStatus==='issues'?'warn':''))+'">security: '+esc(e.securityStatus||'n/a')+'</span>'+
@@ -150,7 +158,7 @@
     evs.forEach(function(e){
       var dl=dayLabel(e.ts);
       if(dl!==lastDay){ if(lastDay!==null) html+='</div>'; html+='<div class="day">'+esc(dl)+'</div><div class="tl">'; lastDay=dl; }
-      var cls='ev '+(e.kind==='session'?'ev-session':'ev-check')+(e.kind==='check'&&e.scope==='all'?' full':'')+(e.live?' live':'');
+      var cls='ev '+(e.kind==='session'?'ev-session':'ev-check')+(e.kind==='check'&&e.scope==='all'?' full':'')+(e.kind==='check'&&e.scope==='security'?' sec':'')+(e.live?' live':'');
       html+='<div class="'+cls+'"><span class="node"></span>'+(e.kind==='session'?sessionCard(e):checkCard(e))+'</div>';
     });
     html+='</div>';
