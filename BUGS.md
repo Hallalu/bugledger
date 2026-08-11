@@ -1,10 +1,10 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**336 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**337 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 336 |
+| Total bugs fixed | 337 |
 | Apps | 18 |
 | Security fixes | 39 |
 | Data-loss / sync fixes | 25 |
@@ -13,7 +13,7 @@
 
 ### By category
 
-`ui: 118` `logic: 84` `security: 39` `crash: 22` `other: 21` `data-loss: 17` `auth: 10` `race: 10` `sync: 8` `perf: 7`
+`ui: 118` `logic: 84` `security: 39` `crash: 22` `other: 22` `data-loss: 17` `auth: 10` `race: 10` `sync: 8` `perf: 7`
 
 ---
 
@@ -771,19 +771,21 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **To-do done button crash** `crash`
   *Symptom:* Clicking a to-do's done button threw undefined.split.  <br>*Cause:* The attribute was written as data-tododone but read as dataset.todoDone (case mismatch).  <br>*Fix:* Aligned the dataset key naming so the done button reads correctly.
 
+## Bug Ledger  ·  3 fixed
+
+- [ ] **Report page dies on a transient fetch failure ('Couldn't load — Failed to fetch')** `logic`
+  *Symptom:* Opening a sweep report during a network blip or mid-deploy showed 'Couldn't load — TypeError: Failed to fetch' and never recovered.  <br>*Cause:* The report did Promise.all of three fetches; /api/checks had no .catch, so any one rejecting failed the whole load, with no retry.  <br>*Fix:* Wrapped each fetch in a retrying getJSON() (2 retries + backoff) that returns a fallback instead of rejecting; on empty data show a friendly 'connection dropped' + a Retry link instead of a raw error.
+- [ ] **Activity timeline re-renders every poll, replaying entrance animations (flicker)** `ui`
+  *Symptom:* The /timeline feed rebuilt its whole innerHTML on every 4s poll even when nothing changed, so every card replayed its 'rise' entrance animation and the page visibly flickered.  <br>*Cause:* render() unconditionally set feed.innerHTML each poll; recreated DOM nodes re-run their CSS entrance animation. (Same class as the earlier /live blink, but the timeline was missed.)  <br>*Fix:* Compute a content signature from stable fields (event ids/status/coverage/progress) and skip the re-render when it's unchanged; only rebuild when content actually changes.
+- [ ] **Automated git commit used `git add -A`, sweeping a co-editing session's work** `other`
+  *Symptom:* The hourly harvester's auto-commit ran mid-work and its `git add -A` staged an in-progress session's unrelated edits, committing them under the wrong message.  <br>*Cause:* harvest.mjs/scan.mjs staged everything (`git add -A`) instead of only their own generated files.  <br>*Fix:* Stage an explicit allow-list of the tool's own outputs (harvested.json / scan-findings.json + their gen artefacts), never `git add -A`. (This is the 'stage only files you touched' optimiser.)
+
 ## Aprizely  ·  2 fixed
 
 - [ ] **Bulk rename introduced a grammar slip ('a account')** `ui`
   *Symptom:* A bulk find-replace of 'studio' → 'account' produced 'a account' where the article should agree ('an account').  <br>*Cause:* Blind string replace doesn't fix the preceding article; 'a/an' depends on the following word's sound.  <br>*Fix:* Corrected 'a account' → 'an account' and verified the copy renders live; left the internal importStudio() function name (never user-visible) untouched. Lesson: after a bulk rename, grep for 'a <newword>' article mismatches.
 - [ ] **Unlock keypad numbers float high and misalign** `ui`
   *Symptom:* On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up with the lettered keys — it still looked off after a first tidy pass.  <br>*Cause:* Each key reserved a letter row (ABC/DEF/…), which pushed the number upward instead of centering it; the digit wasn't positioned independently of the letters.  <br>*Fix:* Centered each number dead-centre in the key and absolute-positioned the letters tucked at the bottom; added a hairline border + subtle fill, tighter spacing and a smoother press state; also relabeled 'Create a studio' → 'Create account' on the unlock screen.
-
-## Bug Ledger  ·  2 fixed
-
-- [ ] **Report page dies on a transient fetch failure ('Couldn't load — Failed to fetch')** `logic`
-  *Symptom:* Opening a sweep report during a network blip or mid-deploy showed 'Couldn't load — TypeError: Failed to fetch' and never recovered.  <br>*Cause:* The report did Promise.all of three fetches; /api/checks had no .catch, so any one rejecting failed the whole load, with no retry.  <br>*Fix:* Wrapped each fetch in a retrying getJSON() (2 retries + backoff) that returns a fallback instead of rejecting; on empty data show a friendly 'connection dropped' + a Retry link instead of a raw error.
-- [ ] **Activity timeline re-renders every poll, replaying entrance animations (flicker)** `ui`
-  *Symptom:* The /timeline feed rebuilt its whole innerHTML on every 4s poll even when nothing changed, so every card replayed its 'rise' entrance animation and the page visibly flickered.  <br>*Cause:* render() unconditionally set feed.innerHTML each poll; recreated DOM nodes re-run their CSS entrance animation. (Same class as the earlier /live blink, but the timeline was missed.)  <br>*Fix:* Compute a content signature from stable fields (event ids/status/coverage/progress) and skip the re-render when it's unchanged; only rebuild when content actually changes.
 
 ## Hallalu Bookings  ·  1 fixed
 

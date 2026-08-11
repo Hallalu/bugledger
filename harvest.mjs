@@ -177,7 +177,9 @@ if (added > 0) {
   if (flags.has("--deploy")) {
     try {
       execSync("npx wrangler deploy", { cwd: LEDGER, stdio: QUIET ? "ignore" : "inherit" });
-      execSync(`git add -A && git -c user.email=rhemajking@gmail.com -c user.name=Hallalu commit -q -m ${JSON.stringify(`harvest: +${added} auto-harvested bugs (${today})`)} && git push -q origin main`, { cwd: LEDGER, stdio: QUIET ? "ignore" : "inherit" });
+      // stage ONLY the harvester's own outputs — never `git add -A`, which would sweep a
+      // co-editing session's in-progress work into this automated commit.
+      execSync(`git add harvested.json public/data-harvest.js HARVESTED.md public/HARVESTED.md 2>/dev/null; git -c user.email=rhemajking@gmail.com -c user.name=Hallalu commit -q -m ${JSON.stringify(`harvest: +${added} auto-harvested bugs (${today})`)} && git push -q origin main`, { cwd: LEDGER, stdio: QUIET ? "ignore" : "inherit" });
       log("deployed + pushed.");
     } catch (e) { console.error("deploy/push failed:", e.message); }
   }
