@@ -1,6 +1,6 @@
 # ✨ Optimisers — elevations worth reusing
 
-46 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
+50 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
 
 ## design elevation (15)
 
@@ -146,12 +146,16 @@
   <br>*Why:* Trend-following without counter-evidence ships generic or wrong choices (e.g. 'is glassmorphism still premium in 2026?').
   <br>*How:* A short research pass that cites sources and the case against; then decide.
 
-## architecture (1)
+## architecture (2)
 
 - **Marketing landing at root, app at /app** _(Hallalu CRM)_
   Serve a marketing landing at the root and the app at /app; returning users skip the landing.
   <br>*Why:* New visitors get a pitch; existing users aren't slowed by it.
   <br>*How:* Root = landing; /app = product; redirect onboarded users straight to /app.
+- **Least-privilege + human-in-the-loop for AI agents** _(cross-cutting)_
+  Give AI features only the tools/permissions they need and require approval for irreversible/outward actions.
+  <br>*Why:* Excessive agency is an exploitable attack surface (OWASP LLM).
+  <br>*How:* Scope tokens/tools per task; confirm before send/delete/purchase; log agent actions.
 
 ## accessibility (1)
 
@@ -194,7 +198,7 @@
   <br>*Why:* A blanket 'git add -A' sweeps a parallel agent's in-progress work into your commit.
   <br>*How:* git add specific paths; verify HEAD/diff before committing when co-editing.
 
-## integrity (4)
+## integrity (7)
 
 - **Server-verified completeness, not self-report** _(Bug Ledger)_
   When an agent claims it checked everything, verify it server-side and show N/N plus the exact items missed.
@@ -212,3 +216,15 @@
   A self-heal/crash-recovery path may purge caches and the service worker, never user data.
   <br>*Why:* A recovery that clears storage can destroy the user's content — a worse failure than the crash.
   <br>*How:* Scope resets to SW + caches only; keep user data untouched; audit every self-heal path.
+- **Re-audit security after every AI iteration** _(cross-cutting)_
+  Run a security pass after each round of AI edits, not just at the end.
+  <br>*Why:* Iterative AI generation measurably degrades security — each edit can re-introduce flaws.
+  <br>*How:* A /securitysweep (or quick detector pass) after each significant AI change; treat 'it worked' as separate from 'it's safe'.
+- **Treat all model output as untrusted** _(cross-cutting)_
+  Validate and sanitize anything an LLM returns before rendering, running or forwarding it.
+  <br>*Why:* LLM output can carry XSS/SSRF/command payloads (OWASP: improper output handling).
+  <br>*How:* Encode before HTML, allow-list before navigation/exec, schema-validate structured output.
+- **Parameterize everything, escape on output** _(cross-cutting)_
+  Never build queries or markup by string-concatenating input; parameterize queries and encode at the output sink.
+  <br>*Why:* The two most common AI-code flaws are missing sanitization and XSS.
+  <br>*How:* Prepared statements for data; an esc() that handles quotes + CSP for HTML.

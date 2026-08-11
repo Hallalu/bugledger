@@ -458,5 +458,45 @@
     "detail": "Keep a signature animated splash (e.g. rainbow aurora) animated — don't 'optimize' it to a static image.",
     "why": "The boot moment is a brand signature; making it static quietly cheapens the whole app.",
     "how": "Preserve the keyframes; respect prefers-reduced-motion instead of removing it."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "research",
+    "source": "research-2026-08-11",
+    "title": "Re-audit security after every AI iteration",
+    "detail": "Run a security pass after each round of AI edits, not just at the end.",
+    "why": "Iterative AI generation measurably degrades security — each edit can re-introduce flaws.",
+    "how": "A /securitysweep (or quick detector pass) after each significant AI change; treat 'it worked' as separate from 'it's safe'."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "research",
+    "source": "research-2026-08-11",
+    "title": "Treat all model output as untrusted",
+    "detail": "Validate and sanitize anything an LLM returns before rendering, running or forwarding it.",
+    "why": "LLM output can carry XSS/SSRF/command payloads (OWASP: improper output handling).",
+    "how": "Encode before HTML, allow-list before navigation/exec, schema-validate structured output."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "architecture",
+    "session": "research",
+    "source": "research-2026-08-11",
+    "title": "Least-privilege + human-in-the-loop for AI agents",
+    "detail": "Give AI features only the tools/permissions they need and require approval for irreversible/outward actions.",
+    "why": "Excessive agency is an exploitable attack surface (OWASP LLM).",
+    "how": "Scope tokens/tools per task; confirm before send/delete/purchase; log agent actions."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "research",
+    "source": "research-2026-08-11",
+    "title": "Parameterize everything, escape on output",
+    "detail": "Never build queries or markup by string-concatenating input; parameterize queries and encode at the output sink.",
+    "why": "The two most common AI-code flaws are missing sanitization and XSS.",
+    "how": "Prepared statements for data; an esc() that handles quotes + CSP for HTML."
   }
 ]
