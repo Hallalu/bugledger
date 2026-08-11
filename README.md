@@ -126,6 +126,16 @@ node ~/BugLedger/worklog.mjs finish
 Each call POSTs to `/api/session` (D1 `sessions` table, token-gated). `GET /api/sessions?active=1` powers
 the board. Per-repo state lives in `./.worklog.json`.
 
+## Full-coverage confirmation
+
+`/bugcheck [App]` runs a complete security + bug scan and proves it. `POST /api/checks` returns
+**server-verified coverage** — the worker matches the agent's `notFound`+`found` titles against the app
+catalog and returns `{total, matched, pct, complete, missed[]}`. The check-log panel shows a
+**✓ full coverage N/N** badge (or **⚠ N/M** with the exact bugs not addressed), so "it checked all of
+them" is verified, not claimed. New bugs an agent discovers go to **`POST /api/bugs`** (append-only) and
+appear in the **🧫 Agent-submitted** panel as proposals to promote. Mechanical `scan.mjs` logs are
+labelled **🔍 detector scan** (not a full-coverage claim).
+
 ## Integrity — the ledger is append-only
 
 Agents can **add** to the ledger but never modify or delete it:

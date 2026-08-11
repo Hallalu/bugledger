@@ -19,6 +19,18 @@ const writeErr = (e) => appendOnly(e)
 const str = (v, max) => (typeof v === "string" ? v : v == null ? "" : String(v)).slice(0, max);
 const num = (v) => (Number.isFinite(+v) ? Math.trunc(+v) : 0);
 const arr = (v, max, mapper) => (Array.isArray(v) ? v.slice(0, max).map(mapper) : []);
+const norm = (t) => String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+
+// the app catalog (bug titles per app) — read from the static checklist.json, cached per isolate
+let _catalog = null;
+async function catalog(env, request) {
+  if (_catalog) return _catalog;
+  try {
+    const res = await env.ASSETS.fetch(new Request(new URL("/checklist.json", request.url)));
+    _catalog = await res.json();
+  } catch { _catalog = { apps: {} }; }
+  return _catalog;
+}
 
 export default {
   async fetch(request, env) {
@@ -44,6 +56,11 @@ export default {
           notFound: safeParse(r.not_found, []), found: safeParse(r.found, []),
           securityChecked: safeParse(r.security_checked, []), securityFindings: safeParse(r.security_findings, []),
           notes: r.notes,
+          coverage: r.cov_total != null ? {
+            total: r.cov_total, matched: r.cov_matched,
+            pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,
+            complete: r.cov_total === r.cov_matched, missed: safeParse(r.cov_missed, []),
+          } : null,
         }));
         return json({ ok: true, count: rows.length, checks: rows });
       } catch (e) {
@@ -82,16 +99,28 @@ export default {
         }))),
         notes: str(body.notes, 2000),
       };
+      // server-verified coverage: which of the app's known bugs did the agent actually address?
+      const cat = await catalog(env, request);
+      const appTitles = (cat.apps && cat.apps[rec.app]) ? cat.apps[rec.app].map((b) => b.title) : [];
+      const reported = new Set([
+        ...arr(body.notFound, 400, (x) => str(x, 200)),
+        ...arr(body.found, 200, (x) => str(x && x.title, 200)),
+      ].map(norm));
+      const missed = appTitles.filter((t) => !reported.has(norm(t)));
+      const covTotal = appTitles.length;
+      const covMatched = covTotal - missed.length;
       try {
         await env.DB.prepare(
-          `INSERT INTO checks (id,ts,app,project,checked_by,scanned,checked_count,found_count,security_status,not_found,found,security_checked,security_findings,notes)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+          `INSERT INTO checks (id,ts,app,project,checked_by,scanned,checked_count,found_count,security_status,not_found,found,security_checked,security_findings,notes,cov_total,cov_matched,cov_missed)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
         ).bind(rec.id, rec.ts, rec.app, rec.project, rec.checked_by, rec.scanned, rec.checked_count,
                rec.found_count, rec.security_status, rec.not_found, rec.found, rec.security_checked,
-               rec.security_findings, rec.notes).run();
-        return json({ ok: true, id, ts, app: rec.app, view: "https://bugledger.coconvo.workers.dev/#checks" });
+               rec.security_findings, rec.notes, covTotal, covMatched, JSON.stringify(missed)).run();
+        const pct = covTotal ? Math.round((covMatched / covTotal) * 100) : 100;
+        return json({ ok: true, id, ts, app: rec.app, view: "https://bugledger.coconvo.workers.dev/#checks",
+          coverage: { total: covTotal, matched: covMatched, pct, complete: missed.length === 0, missed: missed.slice(0, 60) } });
       } catch (e) {
-        return json({ ok: false, error: String(e) }, 500);
+        return writeErr(e);
       }
     }
 
@@ -154,6 +183,39 @@ export default {
           now, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500)
         ).run();
         return json({ ok: true, id, url: "https://bugledger.coconvo.workers.dev/live", done, total: tasks.length });
+      } catch (e) { return writeErr(e); }
+    }
+
+    // ---- GET /api/bugs : agent-submitted new bugs (proposals) ----
+    if (pathname === "/api/bugs" && request.method === "GET") {
+      const limit = Math.min(200, Math.max(1, num(url.searchParams.get("limit")) || 100));
+      try {
+        const { results } = await env.DB.prepare("SELECT * FROM submitted ORDER BY ts DESC LIMIT ?").bind(limit).all();
+        const rows = (results || []).map((r) => ({
+          id: r.id, ts: r.ts, app: r.app, project: r.project, kind: r.kind, title: r.title,
+          category: r.category, severity: r.severity, symptom: r.symptom, fix: r.fix, file: r.file, submittedBy: r.submitted_by,
+        }));
+        return json({ ok: true, count: rows.length, submitted: rows });
+      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+    }
+
+    // ---- POST /api/bugs : append a NEW bug/security finding discovered during a scan ----
+    if (pathname === "/api/bugs" && request.method === "POST") {
+      if (env.LEDGER_WRITE_TOKEN && request.headers.get("x-ledger-key") !== env.LEDGER_WRITE_TOKEN)
+        return json({ ok: false, error: "unauthorized" }, 401);
+      let body;
+      try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
+      if (!body || !body.title || !body.app) return json({ ok: false, error: "fields 'app' and 'title' are required" }, 400);
+      const id = crypto.randomUUID(), ts = Date.now();
+      const kind = body.kind === "security" ? "security" : "bug";
+      try {
+        await env.DB.prepare(
+          `INSERT INTO submitted (id,ts,app,project,kind,title,category,severity,symptom,fix,file,submitted_by)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
+        ).bind(id, ts, str(body.app, 80), str(body.project, 200), kind, str(body.title, 200),
+               str(body.category || "other", 20), str(body.severity || "medium", 12),
+               str(body.symptom, 500), str(body.fix, 500), str(body.file, 200), str(body.submittedBy || "claude-code", 60)).run();
+        return json({ ok: true, id, app: str(body.app, 80), title: str(body.title, 200) });
       } catch (e) { return writeErr(e); }
     }
 

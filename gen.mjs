@@ -216,8 +216,9 @@ Agent instructions: fetch /AGENT.md and follow the protocol. Report back with PO
 
 ## Protocol
 - [AGENT.md](https://bugledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
-- POST https://bugledger.coconvo.workers.dev/api/checks : record that you checked an app (needs header x-ledger-key)
+- POST https://bugledger.coconvo.workers.dev/api/checks : record a check — response includes server-verified \`coverage\` (matched/total/missed) vs the app catalog
 - GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
+- POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
 - Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
 
 ## Human pages
@@ -304,6 +305,12 @@ node ~/BugLedger/worklog.mjs done 1
 node ~/BugLedger/worklog.mjs finish
 \`\`\`
 Each call posts to \`POST /api/session\`; the board polls every ~1.5s and ticks tasks off as you go.
+
+## Coverage is server-verified
+The \`POST /api/checks\` response includes \`coverage: {total, matched, pct, complete, missed[]}\` — the
+worker matches your \`notFound\`+\`found\` titles against the app's catalog. If \`complete\` is false, the
+\`missed\` array names the exact bugs you didn't address; check those and re-post until it's true. New
+bugs you find go to \`POST /api/bugs\` (append-only).
 
 ## Step 4 — Tell the user
 Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the
