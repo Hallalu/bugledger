@@ -462,7 +462,8 @@
             '<span class="st '+stCls+'">security: '+esc(c.securityStatus||'n/a')+'</span>'+
             '<span class="tag">'+esc(fmt(c.ts))+' · '+esc(c.checkedBy||'')+(c.project?' · '+esc(c.project):'')+'</span></div>'+
           '<div class="f-body">'+
-            '<div><b>'+ (c.checkedCount||0) +'</b> checked · <b>'+(c.foundCount||0)+'</b> found · <b>'+(c.scanned||0)+'</b> files scanned</div>'+
+            '<div><b>'+ (c.checkedCount||0) +'</b> checked · <b>'+(c.foundCount||0)+'</b> found · <b>'+(c.scanned||0)+'</b> files scanned'+
+              (c.id?' &middot; <a href="/report?id='+esc(c.id)+'" style="color:#ff6a5a;font-weight:700;text-decoration:none">📊 Full report →</a>':'')+'</div>'+
             missedBlock+
             (foundList?'<div><b>Found:</b><ul class="mini">'+foundList+'</ul></div>':'<div style="color:var(--done,#12a150)">No known bugs found present.</div>')+
             (secList?'<div><b>Security findings:</b><ul class="mini">'+secList+'</ul></div>':'')+

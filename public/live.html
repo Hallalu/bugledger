@@ -82,6 +82,11 @@
   li.task.pop .ic{animation:pop .5s cubic-bezier(.2,1.5,.4,1)}
   @keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
   .note{margin-top:12px;color:var(--muted);font-size:13.5px;font-style:italic;border-left:2px solid var(--line);padding-left:10px}
+  a.reportcta{display:inline-block;margin-top:14px;text-decoration:none;font-weight:800;font-size:14px;color:#fff;
+    background:linear-gradient(135deg,var(--coral),var(--coral2));padding:10px 16px;border-radius:12px;
+    box-shadow:0 10px 26px -12px var(--coral);animation:ctaPulse 2s ease-in-out infinite}
+  a.reportcta:hover{filter:brightness(1.05)}
+  @keyframes ctaPulse{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 
   .empty{text-align:center;padding:16vh 20px;color:var(--muted)}
   .empty h1{font-size:26px;color:var(--ink);font-weight:800;margin:0 0 8px;letter-spacing:-.02em}
@@ -122,10 +127,11 @@
       '<div class="bar"><i></i></div>'+
       '<div class="barlbl"><span class="dn"></span><span class="pct"></span></div>'+
       '<ul class="tasks"></ul>'+
-      '<div class="note" hidden></div>';
+      '<div class="note" hidden></div>'+
+      '<a class="reportcta" hidden></a>';
     var refs = { status:el.querySelector('.status'), meta:el.querySelector('.meta'), title:el.querySelector('.title'),
       current:el.querySelector('.current'), bar:el.querySelector('.bar>i'), dn:el.querySelector('.dn'),
-      pct:el.querySelector('.pct'), tasks:el.querySelector('.tasks'), note:el.querySelector('.note') };
+      pct:el.querySelector('.pct'), tasks:el.querySelector('.tasks'), note:el.querySelector('.note'), report:el.querySelector('.reportcta') };
     return { el:el, refs:refs, prevTasks:[], prevCurrent:null, started:s.started };
   }
 
@@ -175,6 +181,12 @@
     }
     renderTasks(c, s.tasks||[]);
     if(s.note){ c.refs.note.hidden=false; c.refs.note.textContent=s.note; } else c.refs.note.hidden=true;
+    // when a sweep completes, prompt the user to open its full report
+    if(done){
+      c.refs.report.hidden=false;
+      c.refs.report.href='/report?app='+encodeURIComponent(s.app||'')+'&project='+encodeURIComponent(s.project||'');
+      c.refs.report.textContent='✅ Complete — 📊 open the full report →';
+    } else c.refs.report.hidden=true;
   }
 
   function render(data){

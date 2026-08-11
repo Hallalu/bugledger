@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bug Ledger · Sweep Report</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
+<style>
+  *{box-sizing:border-box}
+  :root{
+    --bg:#f5f6fb; --ink:#12141c; --muted:#636879; --card:rgba(255,255,255,.74);
+    --line:rgba(18,20,28,.09); --coral:#ff6a5a; --good:#12b886; --violet:#8b7bf0; --amber:#e08a00; --red:#e5484d;
+    --shadow:0 16px 44px -24px rgba(30,25,60,.32);
+    --crit:#b4227a; --high:#e5484d; --med:#d1620a; --low:#6b7280;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0b0d15; --ink:#eef0f7; --muted:#9aa0b4; --card:rgba(255,255,255,.05);
+      --line:rgba(255,255,255,.11); --shadow:0 24px 60px -24px rgba(0,0,0,.7); }
+  }
+  html,body{margin:0;min-height:100%}
+  body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;color:var(--ink);
+    background:var(--bg);overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased}
+  .aurora{position:fixed;inset:-20vh -10vw;z-index:-1;filter:blur(72px) saturate(120%);opacity:.75;pointer-events:none}
+  .aurora span{position:absolute;border-radius:50%;animation:drift 26s ease-in-out infinite}
+  .aurora .a{width:50vw;height:50vw;left:-6vw;top:-8vh;background:radial-gradient(circle at 30% 30%,#ff9a7a,transparent 62%)}
+  .aurora .b{width:46vw;height:46vw;right:-8vw;top:-6vh;background:radial-gradient(circle at 60% 40%,#8ab6ff,transparent 62%);animation-delay:-8s}
+  .aurora .c{width:46vw;height:46vw;left:14vw;bottom:-16vh;background:radial-gradient(circle at 50% 50%,#7ff0cf,transparent 60%);animation-delay:-14s}
+  .aurora .d{width:38vw;height:38vw;right:6vw;bottom:-12vh;background:radial-gradient(circle at 50% 50%,#c9a3ff,transparent 62%);animation-delay:-19s}
+  @media (prefers-color-scheme:dark){.aurora{opacity:.5}}
+  @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(3vw,4vh) scale(1.07)}66%{transform:translate(-3vw,-2vh) scale(.96)}}
+  @media (prefers-reduced-motion:reduce){.aurora span{animation:none}}
+
+  .wrap{max-width:900px;margin:0 auto;padding:26px 20px 90px}
+  .crumbs{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:13px;margin-bottom:14px}
+  .crumbs a{color:inherit;text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:4px 11px}
+  .crumbs a:hover{color:var(--ink)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);padding:20px 22px;margin:0 0 16px;
+    animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .hero{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .kicker{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
+  .kicker.bugs{color:var(--violet);background:color-mix(in srgb,var(--violet) 14%,transparent)}
+  .kicker.sec{color:var(--red);background:color-mix(in srgb,var(--red) 13%,transparent)}
+  h1{font-size:23px;letter-spacing:-.02em;margin:8px 0 4px}
+  .sub{color:var(--muted);font-size:14px}
+  .verdict{font-weight:750;font-size:16px;margin-top:8px}
+  .verdict.ok{color:var(--good)} .verdict.warn{color:var(--coral)}
+  .donut{flex:none}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+  .tile{background:color-mix(in srgb,var(--card) 60%,transparent);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .tile .n{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .tile .l{color:var(--muted);font-size:12px;margin-top:4px}
+  .tile.good .n{color:var(--good)} .tile.warn .n{color:var(--coral)}
+  h2{font-size:15px;margin:2px 0 12px;font-weight:750}
+  .bars{display:grid;gap:8px}
+  .barrow{display:grid;grid-template-columns:120px 1fr 34px;align-items:center;gap:10px;font-size:13px}
+  .barrow .lab{color:var(--muted);text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .track{height:12px;border-radius:99px;background:color-mix(in srgb,var(--muted) 16%,transparent);overflow:hidden}
+  .track>i{display:block;height:100%;border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+  .barrow .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+  ul.finds{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  li.find{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  li.find .ft{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .sev{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;color:#fff}
+  .sev.critical{background:var(--crit)}.sev.high{background:var(--high)}.sev.medium{background:var(--med)}.sev.low{background:var(--low)}
+  li.find .file{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted)}
+  li.find .note{color:var(--muted);font-size:13px;margin-top:3px}
+  li.find .fixed{color:var(--good);font-weight:700}
+  .cmp{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .cmp .big{font-size:30px;font-weight:800}
+  .delta{font-weight:800;padding:3px 10px;border-radius:99px;font-size:13px}
+  .delta.down{color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
+  .delta.up{color:var(--red);background:color-mix(in srgb,var(--red) 13%,transparent)}
+  .delta.flat{color:var(--muted);background:color-mix(in srgb,var(--muted) 12%,transparent)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:620px){.twocol{grid-template-columns:1fr}}
+  .mini{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font-size:13px}
+  .mini li{color:var(--muted)} .mini li b{color:var(--ink);font-weight:600}
+  .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .chip{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+  .chip.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 50%,transparent)}
+  .chip.add{color:var(--violet);border-color:color-mix(in srgb,var(--violet) 50%,transparent)}
+  .muted{color:var(--muted)} .center{text-align:center}
+  .foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:26px}
+  .foot a{color:inherit}
+  .spin{width:26px;height:26px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--coral);animation:sp 1s linear infinite;margin:16vh auto}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="aurora"><span class="a"></span><span class="b"></span><span class="c"></span><span class="d"></span></div>
+<div class="wrap">
+  <div class="crumbs"><a href="/timeline">← Activity</a><a href="/live">Live</a><a href="/">The ledger</a></div>
+  <div id="report"><div class="spin"></div></div>
+  <div class="foot">Append-only sweep report · a permanent record of what was checked, found, fixed and added.</div>
+</div>
+<script>
+  var $=function(s){return document.querySelector(s)};
+  var q=new URLSearchParams(location.search);
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fullts(ts){var d=new Date(ts),p=function(n){return('0'+n).slice(-2)};return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
+  function norm(t){return String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'');}
+
+  // donut SVG (matched vs total)
+  function donut(matched,total,color){
+    var r=52,c=2*Math.PI*r,pct=total?matched/total:1,off=c*(1-pct);
+    var pctTxt=Math.round(pct*100)+'%';
+    return '<svg class="donut" width="132" height="132" viewBox="0 0 132 132">'+
+      '<circle cx="66" cy="66" r="'+r+'" fill="none" stroke="color-mix(in srgb,var(--muted) 18%,transparent)" stroke-width="13"/>'+
+      '<circle cx="66" cy="66" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="13" stroke-linecap="round" '+
+        'stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)"/>'+
+      '<text x="66" y="62" text-anchor="middle" font-size="26" font-weight="800" fill="var(--ink)">'+pctTxt+'</text>'+
+      '<text x="66" y="84" text-anchor="middle" font-size="12" fill="var(--muted)">'+matched+'/'+total+'</text></svg>';
+  }
+  function bars(entries,colorFor){
+    var max=Math.max(1,Math.max.apply(null,entries.map(function(e){return e.v})));
+    return '<div class="bars">'+entries.map(function(e){
+      return '<div class="barrow"><span class="lab">'+esc(e.k)+'</span>'+
+        '<span class="track"><i style="width:'+Math.round(e.v/max*100)+'%;background:'+colorFor(e.k)+'"></i></span>'+
+        '<span class="v">'+e.v+'</span></div>';
+    }).join('')+'</div>';
+  }
+  function trend(points,color){ // points = [{ts,v}]
+    if(points.length<2) return '';
+    var w=560,h=90,pad=8, xs=points.map(function(p){return p.ts}), vs=points.map(function(p){return p.v});
+    var minx=Math.min.apply(null,xs),maxx=Math.max.apply(null,xs),maxv=Math.max(1,Math.max.apply(null,vs));
+    var X=function(t){return maxx===minx?w/2:pad+(t-minx)/(maxx-minx)*(w-2*pad)};
+    var Y=function(v){return h-pad-(v/maxv)*(h-2*pad)};
+    var d=points.map(function(p,i){return (i?'L':'M')+X(p.ts).toFixed(1)+' '+Y(p.v).toFixed(1)}).join(' ');
+    var dots=points.map(function(p){return '<circle cx="'+X(p.ts).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="3.5" fill="'+color+'"/>'}).join('');
+    return '<svg width="100%" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" style="max-width:100%"><path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';
+  }
+  var SEVCOLOR={critical:'var(--crit)',high:'var(--high)',medium:'var(--med)',low:'var(--low)'};
+  function catColor(){return 'linear-gradient(90deg,var(--violet),#b3a3ff)';}
+
+  Promise.all([
+    fetch('/api/checks?limit=200',{cache:'no-store'}).then(function(r){return r.json()}),
+    fetch('/checklist.json',{cache:'no-store'}).then(function(r){return r.json()}).catch(function(){return{apps:{}}}),
+    fetch('/api/bugs?limit=200',{cache:'no-store'}).then(function(r){return r.json()}).catch(function(){return{submitted:[]}})
+  ]).then(function(res){
+    var checks=(res[0].checks)||[], cat=res[1]||{apps:{}}, submitted=(res[2].submitted)||[];
+    var id=q.get('id'), app=q.get('app'), project=q.get('project');
+    var c = id ? checks.find(function(x){return x.id===id})
+      : checks.filter(function(x){return (!app||x.app===app)&&(!project||x.project===project)}).sort(function(a,b){return b.ts-a.ts})[0];
+    if(!c){ $('#report').innerHTML='<div class="card center"><h1>Report not found</h1><p class="muted">This sweep may have been pruned. <a href="/timeline">Back to activity</a></p></div>'; return; }
+    render(c,checks,cat,submitted);
+  }).catch(function(e){ $('#report').innerHTML='<div class="card center"><h1>Couldn\'t load</h1><p class="muted">'+esc(String(e))+'</p></div>'; });
+
+  function catOfTitle(cat,title){
+    var n=norm(title);
+    for(var a in cat.apps){ for(var i=0;i<cat.apps[a].length;i++){ if(norm(cat.apps[a][i].title)===n) return cat.apps[a][i].category; } }
+    return 'other';
+  }
+
+  function render(c,checks,cat,submitted){
+    var sec=c.scope==='security';
+    var cov=c.coverage||{matched:(c.notFound||[]).length+(c.found||[]).length,total:0};
+    var found=c.found||[], notFound=c.notFound||[], secF=c.securityFindings||[];
+    var color= sec?'var(--red)':(c.scope==='all'?'var(--violet)':'var(--good)');
+    var complete=cov.total&&cov.matched===cov.total;
+    // new submissions by this app around this sweep (± 30 min)
+    var newSubs=submitted.filter(function(s){return s.app===c.app && Math.abs(s.ts-c.ts)<30*60000;});
+    var fixedCount=found.filter(function(f){return /fix|fixed|added|removed|patched|resolv|throttl|escap|scoped/i.test(f.note||'')}).length;
+
+    // comparison vs previous sweep of same app + scope
+    var siblings=checks.filter(function(x){return x.app===c.app && (x.scope||'app')===(c.scope||'app') && x.ts<c.ts}).sort(function(a,b){return b.ts-a.ts});
+    var prev=siblings[0];
+    var series=checks.filter(function(x){return x.app===c.app && (x.scope||'app')===(c.scope||'app') && x.ts<=c.ts}).sort(function(a,b){return a.ts-b.ts}).map(function(x){return {ts:x.ts,v:x.foundCount||0}});
+
+    // severity or category distribution
+    var dist=[];
+    if(sec){
+      var bysev={}; secF.forEach(function(f){var s=(f.severity||'low');bysev[s]=(bysev[s]||0)+1});
+      ['critical','high','medium','low'].forEach(function(s){ if(bysev[s]) dist.push({k:s,v:bysev[s]}); });
+    } else {
+      var bycat={}; found.forEach(function(f){var k=catOfTitle(cat,f.title);bycat[k]=(bycat[k]||0)+1});
+      dist=Object.keys(bycat).map(function(k){return {k:k,v:bycat[k]}}).sort(function(a,b){return b.v-a.v});
+    }
+
+    // severity lookup for a found title (from securityFindings)
+    function sevOf(title){var n=norm(title);var m=secF.find(function(f){return norm(f.title)===n});return m?m.severity:null;}
+
+    var kicker= sec?'<span class="kicker sec">🛡 Security Sweep</span>':(c.scope==='all'?'<span class="kicker bugs">📚 Full Bug Scan</span>':'<span class="kicker bugs">🐛 Bug + Security Check</span>');
+    var verdict = complete
+      ? (found.length? '<div class="verdict warn">⚠ '+found.length+' issue'+(found.length>1?'s':'')+' found'+(fixedCount?(' · '+fixedCount+' fixed'):'')+' · '+cov.matched+'/'+cov.total+' checked</div>'
+                     : '<div class="verdict ok">✓ Clean — 0 issues present · full coverage '+cov.matched+'/'+cov.total+'</div>')
+      : '<div class="verdict warn">⚠ Incomplete — '+cov.matched+'/'+cov.total+' checked</div>';
+
+    var html='';
+    // hero
+    html+='<div class="card"><div class="hero">'+donut(cov.matched,cov.total,color)+
+      '<div style="flex:1;min-width:220px">'+kicker+
+        '<h1>'+esc(c.app)+(c.project?' <span class="muted" style="font-weight:600">· '+esc(c.project)+'</span>':'')+'</h1>'+
+        '<div class="sub">'+fullts(c.ts)+' · by '+esc(c.checkedBy||'agent')+' · '+(c.scanned||0)+' files scanned</div>'+
+        verdict+'</div></div></div>';
+
+    // KPI tiles
+    html+='<div class="card"><div class="grid">'+
+      tile(cov.total,'items checked')+
+      tile(found.length,'present',found.length?'warn':'good')+
+      tile(fixedCount,'fixed','good')+
+      tile(newSubs.length,'added to ledger', newSubs.length?'':'')+
+      tile(notFound.length,'clean','good')+
+      tile((cov.total?Math.round(cov.matched/cov.total*100):100)+'%','coverage')+
+    '</div></div>';
+
+    // findings
+    if(found.length){
+      html+='<div class="card"><h2>Findings — present in this project ('+found.length+')</h2><ul class="finds">'+
+        found.map(function(f){var s=sec?sevOf(f.title):null; var fixed=/fix|fixed|added|removed|patched|resolv|throttl|escap|scoped/i.test(f.note||'');
+          return '<li class="find"><div class="ft">'+(s?'<span class="sev '+s+'">'+s+'</span>':'')+
+            '<b>'+esc(f.title)+'</b>'+(f.file?' <span class="file">'+esc(f.file)+'</span>':'')+(fixed?' <span class="fixed">✓ fixed</span>':'')+'</div>'+
+            (f.note?'<div class="note">'+esc(f.note)+'</div>':'')+'</li>';
+        }).join('')+'</ul></div>';
+    } else {
+      html+='<div class="card center"><h2 style="margin:0">✓ No known '+(sec?'security issues':'bugs')+' present in this project</h2><p class="muted" style="margin:6px 0 0">All '+cov.total+' catalog items were checked and none reproduced here.</p></div>';
+    }
+
+    // distribution chart
+    if(dist.length){
+      html+='<div class="card"><h2>'+(sec?'Findings by severity':'Findings by category')+'</h2>'+
+        bars(dist,function(k){return sec?(SEVCOLOR[k]||'var(--low)'):catColor()})+'</div>';
+    }
+
+    // comparison + trend
+    html+='<div class="card"><h2>Compared to the last sweep</h2>';
+    if(prev){
+      var d=found.length-(prev.foundCount||0);
+      var dc=d<0?'down':(d>0?'up':'flat'), dt=d<0?('↓ '+(-d)+' fewer'):(d>0?('↑ '+d+' more'):'no change');
+      var prevTitles=new Set((prev.found||[]).map(function(f){return norm(f.title)}));
+      var nowTitles=new Set(found.map(function(f){return norm(f.title)}));
+      var resolved=(prev.found||[]).filter(function(f){return !nowTitles.has(norm(f.title))});
+      var appeared=found.filter(function(f){return !prevTitles.has(norm(f.title))});
+      html+='<div class="cmp"><div><div class="muted" style="font-size:12px">'+fullts(prev.ts).split(',')[0]+'</div><div class="big muted">'+(prev.foundCount||0)+'</div><div class="muted" style="font-size:12px">then present</div></div>'+
+        '<div style="font-size:22px;color:var(--muted)">→</div>'+
+        '<div><div class="muted" style="font-size:12px">now</div><div class="big">'+found.length+'</div><div class="muted" style="font-size:12px">present</div></div>'+
+        '<div class="delta '+dc+'">'+dt+'</div></div>'+
+        '<div class="twocol" style="margin-top:12px">'+
+          '<div><b>Resolved since last ('+resolved.length+')</b><ul class="mini">'+(resolved.length?resolved.map(function(f){return '<li>✓ '+esc(f.title)+'</li>'}).join(''):'<li>—</li>')+'</ul></div>'+
+          '<div><b>New since last ('+appeared.length+')</b><ul class="mini">'+(appeared.length?appeared.map(function(f){return '<li>⚠ '+esc(f.title)+'</li>'}).join(''):'<li>—</li>')+'</ul></div>'+
+        '</div>';
+    } else {
+      html+='<p class="muted">This is the <b>first sweep</b> for this project + scope. Future sweeps will compare here — resolved vs new — so you can watch it improve each day.</p>';
+    }
+    var tr=trend(series,color);
+    if(tr) html+='<div style="margin-top:14px"><div class="muted" style="font-size:12px;margin-bottom:4px">Present issues over the last '+series.length+' sweeps</div>'+tr+'</div>';
+    html+='</div>';
+
+    // ledger growth (blockchain-style append-only)
+    html+='<div class="card"><h2>Added to the ledger from this sweep</h2>';
+    if(newSubs.length){
+      html+='<p class="muted" style="margin:0 0 8px">These new '+(sec?'security issues':'bugs')+' were discovered here and appended to the shared ledger — permanent, append-only, so every future project is now checked for them too.</p>'+
+        '<ul class="finds">'+newSubs.map(function(s){return '<li class="find"><div class="ft">'+(s.severity?'<span class="sev '+s.severity+'">'+esc(s.severity)+'</span>':'')+'<b>'+esc(s.title)+'</b>'+(s.file?' <span class="file">'+esc(s.file)+'</span>':'')+'</div>'+(s.symptom?'<div class="note">'+esc(s.symptom)+'</div>':'')+'</li>'}).join('')+'</ul>';
+    } else {
+      html+='<p class="muted" style="margin:0">No new items added — everything found was already in the catalogue. <span class="chip ok">nothing new</span></p>';
+    }
+    html+='</div>';
+
+    // clean list (collapsible)
+    if(notFound.length){
+      html+='<details class="card"><summary style="cursor:pointer;font-weight:750">'+notFound.length+' items checked &amp; clean</summary><ul class="mini" style="margin-top:10px;columns:2">'+
+        notFound.slice(0,120).map(function(t){return '<li>✓ '+esc(String(t).replace(/ \(static check clean\)$/,''))+'</li>'}).join('')+'</ul></details>';
+    }
+
+    document.title='Report · '+c.app+' '+(sec?'security':'bugs');
+    $('#report').innerHTML=html;
+  }
+  function tile(n,l,cls){return '<div class="tile '+(cls||'')+'"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
+</script>
+</body>
+</html>
