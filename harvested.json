@@ -526,5 +526,89 @@
     "status": "unverified",
     "session": "1d8ee789",
     "found": "2026-08-11"
+  },
+  {
+    "key": "1d8ee789:noundefinednullcrasheshidingbehindthedemosfullarrays",
+    "app": "Breadcrumb",
+    "title": "No undefined/null crashes hiding behind the demo's full arrays.",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "No `undefined`/null crashes hiding behind the demo's full arrays.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1d8ee789",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "1d8ee789:iusedurlbutliveupdaterequestenvdoesntreceiveit",
+    "app": "Breadcrumb",
+    "title": "Used url but liveUpdate(request, env) doesn't receive it.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I used `url` but `liveUpdate(request, env)` doesn't receive it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1d8ee789",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "1d8ee789:theliveslugboardisexactlythebugledgerstylewatchpageclaudecod",
+    "app": "Breadcrumb",
+    "title": "/live/<slug board is exactly the Bug-Ledger-style watch page — \" CLAUDE-CODE IS WORKING…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The `/live/<slug>` board is exactly the Bug-Ledger-style watch page — \"🟢 CLAUDE-CODE IS WORKING · APRIZELY\", \"De-dupe on email\" in bold, gradient 2/4 bar, and ✓✓›○ tasks — auto-refreshing every 3s.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1d8ee789",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:thekeypaddigitiscenteredwithinset0flexpadbuttondsotheknownnu",
+    "app": "Hallalu CRM",
+    "title": "Keypad digit is centered with inset:0 + flex (.pad button .d) — so the known \"numbers…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The keypad digit is centered with `inset:0` + flex (`.pad button .d`) — so the known \"numbers float high\" bug is **already fixed**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:summaryofthesecuritypicturepbkdf2100kiterationstheworkersrun",
+    "app": "Hallalu CRM",
+    "title": "Summary of the security picture: - PBKDF2: 100k iterations (the Workers runtime…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Summary of the security picture: - **PBKDF2**: 100k iterations (the Workers runtime hard-caps at 100k — more *throws*) + per-user 16-byte salt + HMAC pepper → correct for the platform, not weak.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "cd37da75:onecopybugtofixitsayscovers100whenrevenueisactually152ofcost",
+    "app": "Hallalu CRM",
+    "title": "One copy bug to fix: it says \"covers 100%\" when revenue is actually 152% of costs.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One copy bug to fix: it says \"covers 100%\" when revenue is actually 152% of costs.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cd37da75",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "cd37da75:ialsofixednegativemoneyrenderingitnowreads5917not5917",
+    "app": "Hallalu CRM",
+    "title": "Also fixed negative money rendering — it now reads −$59.17, not $-59.17.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I also fixed negative money rendering — it now reads **−$59.17**, not `$-59.17`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cd37da75",
+    "found": "2026-08-11"
   }
 ]
