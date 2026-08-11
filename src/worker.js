@@ -10,6 +10,11 @@ const JSON_HEADERS = {
   "cache-control": "no-store",
 };
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: JSON_HEADERS });
+// map the append-only DB triggers to a clean response instead of a raw 500
+const appendOnly = (e) => /append-only|immutable|cannot be deleted/i.test(String(e));
+const writeErr = (e) => appendOnly(e)
+  ? json({ ok: false, error: "rejected — the ledger is append-only" }, 403)
+  : json({ ok: false, error: String(e) }, 500);
 
 const str = (v, max) => (typeof v === "string" ? v : v == null ? "" : String(v)).slice(0, max);
 const num = (v) => (Number.isFinite(+v) ? Math.trunc(+v) : 0);
@@ -103,7 +108,7 @@ export default {
         rows = rows.map((s) => ({ ...s, live: s.status === "active" && now - s.updated < 90_000 }));
         if (activeOnly) rows = rows.filter((s) => s.live || (s.status === "active" && now - s.updated < 10 * 60_000));
         return json({ ok: true, now, count: rows.length, sessions: rows });
-      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+      } catch (e) { return writeErr(e); }
     }
     if (pathname === "/api/session" && request.method === "GET") {
       const id = url.searchParams.get("id");
@@ -111,7 +116,7 @@ export default {
       try {
         const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
         return row ? json({ ok: true, session: mapSession(row) }) : json({ ok: false, error: "not found" }, 404);
-      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+      } catch (e) { return writeErr(e); }
     }
 
     // ---- POST /api/session : upsert a live worklog session ----
@@ -129,20 +134,27 @@ export default {
       const done = tasks.filter((t) => t.status === "done").length;
       const status = body.status === "done" ? "done" : "active";
       try {
-        const existing = await env.DB.prepare("SELECT started FROM sessions WHERE id = ?").bind(id).first();
+        const existing = await env.DB.prepare(
+          "SELECT started,status,app,project,title,agent FROM sessions WHERE id = ?").bind(id).first();
+        // a finished session is frozen — you can't rewrite history, only start a new one
+        if (existing && existing.status === "done")
+          return json({ ok: false, error: "session already finished — start a new one" }, 409);
         const started = existing ? existing.started : now;
+        // identity is set once at creation and never overwritten on update (append-only integrity)
+        const app = existing ? existing.app : str(body.app, 80);
+        const project = existing ? existing.project : str(body.project, 200);
+        const title = existing ? existing.title : str(body.title, 200);
+        const agent = existing ? existing.agent : str(body.agent || "claude-code", 60);
         await env.DB.prepare(
           `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note)
            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
-           ON CONFLICT(id) DO UPDATE SET updated=?,app=?,project=?,title=?,agent=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?`
+           ON CONFLICT(id) DO UPDATE SET updated=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?`
         ).bind(
-          id, started, now, str(body.app, 80), str(body.project, 200), str(body.title, 200), str(body.agent || "claude-code", 60),
-          status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500),
-          now, str(body.app, 80), str(body.project, 200), str(body.title, 200), str(body.agent || "claude-code", 60),
-          status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500)
+          id, started, now, app, project, title, agent, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500),
+          now, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500)
         ).run();
         return json({ ok: true, id, url: "https://bugledger.coconvo.workers.dev/live", done, total: tasks.length });
-      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+      } catch (e) { return writeErr(e); }
     }
 
     if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);

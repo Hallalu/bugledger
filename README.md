@@ -126,6 +126,24 @@ node ~/BugLedger/worklog.mjs finish
 Each call POSTs to `/api/session` (D1 `sessions` table, token-gated). `GET /api/sessions?active=1` powers
 the board. Per-repo state lives in `./.worklog.json`.
 
+## Integrity — the ledger is append-only
+
+Agents can **add** to the ledger but never modify or delete it:
+
+- The API exposes **no delete or edit endpoint** — only `POST /api/checks` (append a check-log) and
+  `POST /api/session` (create/advance a live session).
+- **Check-logs are immutable at the database level** — SQLite triggers reject any `UPDATE`/`DELETE` on
+  the `checks` table (even a direct admin query is refused).
+- **Sessions can't be deleted**, a **finished session is frozen**, and its identity fields
+  (app/project/title) are locked after creation — only live progress advances.
+- **Bugs, security findings, and harvested data are static files** (`bugs.json`, `security.json`,
+  `harvested.json`) with **no API write path** — an agent cannot reach them.
+- The `/bugcheck` and `/showwork` commands instruct agents to fix only the *current* project's files and
+  never run `--write`/`--deploy`/`git`/`wrangler` against `~/BugLedger`.
+
+Owner escape hatch (you, not agents): to prune the audit log, drop the triggers in `triggers.sql`, edit,
+then re-apply them.
+
 ## Rebuild the site data
 
 `public/data.js`, `public/data-sec.js`, `public/data-scan.js`, `BUGS.md`, `CHECKLIST.md` and

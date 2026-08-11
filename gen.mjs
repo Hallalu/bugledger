@@ -236,6 +236,12 @@ hit before, then **log what you checked** so there's a record.
 
 Base URL: \`https://bugledger.coconvo.workers.dev\`
 
+## Integrity — you can ADD, never delete or modify
+The ledger is append-only. You may append a check-log (\`POST /api/checks\`) and stream live progress
+(\`POST /api/session\`). There is **no** endpoint to edit or delete bugs, check-logs, or code — check-logs
+are immutable at the database level and finished sessions are frozen. Never run \`--write\`, \`--deploy\`,
+\`git\`, or \`wrangler\` against \`~/BugLedger\`; fix bugs in the CURRENT project's files only.
+
 ## Apps in the ledger
 ${appListMd}
 

@@ -5,4 +5,3 @@ harvest.log
 harvest.launchd.out.log
 harvest.launchd.err.log
 .worklog.json
-schema*.sql
