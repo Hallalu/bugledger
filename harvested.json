@@ -610,5 +610,77 @@
     "status": "unverified",
     "session": "cd37da75",
     "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:milestonesdatetimealreadycompensatesforthetimezoneoffsettsd0",
+    "app": "Hallalu CRM",
+    "title": "- milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- **`milestones` datetime** already compensates for the timezone offset (`ts - d0(ts)`) → not a bug; the DATE-TOISO flags are timestamps/ICS-UTC/offset-corrected → clean.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:realbugunguardedtolowercasederefsinsearchavaaleadwithanundef",
+    "app": "Hallalu CRM",
+    "title": "- Real bug: unguarded .toLowerCase() derefs in search/AVA — a lead with an undefined…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Real bug: unguarded `.toLowerCase()` derefs** in search/AVA — a lead with an undefined `handle`/`title` crashes search.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:nothrowsacrossallintentsprefixmessagezetawouldhavecrashedont",
+    "app": "Hallalu CRM",
+    "title": "No throws across all intents (pre-fix, message zeta would have crashed on the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "No throws across all intents (pre-fix, `message zeta` would have crashed on the handle-less lead).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "55c985af:onehonestcaveatreadeveryconversationinfullfor390mboftranscri",
+    "app": "Hallalu CRM",
+    "title": "One honest caveat: \"read every conversation in full\" for 390 MB of transcripts isn't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One honest caveat: \"read every conversation in full\" for 390 MB of transcripts isn't feasible in one pass, so this was a **keyword sweep across all of them** (design/UX/premium/polish/workflow cues) …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "55c985af",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "55c985af:copyconversionaccessibilitywhenthesessionlimitresetstocatchm",
+    "app": "Hallalu CRM",
+    "title": "Copy, conversion, accessibility) when the session limit resets to catch more.",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "copy, conversion, accessibility) when the session limit resets to catch more.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "55c985af",
+    "found": "2026-08-11"
+  },
+  {
+    "key": "55c985af:themetricsconfirmeverythingrendershero6tiles7findingswithfix",
+    "app": "Hallalu CRM",
+    "title": "Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…",
+    "category": "race",
+    "severity": "medium",
+    "symptom": "The metrics confirm everything renders (hero, 6 tiles, 7 findings with ✓fixed, 3 severity bars, comparison, ledger-growth with 3 new items) — the blank captures were a scroll/paint timing race.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "55c985af",
+    "found": "2026-08-11"
   }
 ]
