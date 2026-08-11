@@ -2855,6 +2855,17 @@
   },
   {
     "app": "Aprizely",
+    "category": "ui",
+    "severity": "low",
+    "title": "Bulk rename introduced a grammar slip ('a account')",
+    "symptom": "A bulk find-replace of 'studio' → 'account' produced 'a account' where the article should agree ('an account').",
+    "root_cause": "Blind string replace doesn't fix the preceding article; 'a/an' depends on the following word's sound.",
+    "fix": "Corrected 'a account' → 'an account' and verified the copy renders live; left the internal importStudio() function name (never user-visible) untouched. Lesson: after a bulk rename, grep for 'a <newword>' article mismatches.",
+    "session": "cd37da75",
+    "source": "conversation-2026-08-11"
+  },
+  {
+    "app": "Aprizely",
     "title": "Unlock keypad numbers float high and misalign",
     "category": "ui",
     "symptom": "On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up with the lettered keys — it still looked off after a first tidy pass.",
@@ -2862,6 +2873,17 @@
     "fix": "Centered each number dead-centre in the key and absolute-positioned the letters tucked at the bottom; added a hairline border + subtle fill, tighter spacing and a smoother press state; also relabeled 'Create a studio' → 'Create account' on the unlock screen.",
     "session": "cd37da75",
     "source": "conversation-2026-08-10"
+  },
+  {
+    "app": "Bug Ledger",
+    "category": "ui",
+    "severity": "low",
+    "title": "Activity timeline re-renders every poll, replaying entrance animations (flicker)",
+    "symptom": "The /timeline feed rebuilt its whole innerHTML on every 4s poll even when nothing changed, so every card replayed its 'rise' entrance animation and the page visibly flickered.",
+    "root_cause": "render() unconditionally set feed.innerHTML each poll; recreated DOM nodes re-run their CSS entrance animation. (Same class as the earlier /live blink, but the timeline was missed.)",
+    "fix": "Compute a content signature from stable fields (event ids/status/coverage/progress) and skip the re-render when it's unchanged; only rebuild when content actually changes.",
+    "session": "55c985af",
+    "source": "conversation-2026-08-11"
   },
   {
     "app": "Hallalu Bookings",

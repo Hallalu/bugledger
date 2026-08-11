@@ -1,4 +1,4 @@
-# BUG REGRESSION CHECKLIST — 317 known bugs across 16 apps
+# BUG REGRESSION CHECKLIST — 319 known bugs across 17 apps
 # Paste this into any build session and re-check each item (bugs recur).
 # Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
 
@@ -359,8 +359,12 @@
 - [ ] Older profiles crash on missing state fields — Profiles created before new features crashed on load.
 - [ ] To-do done button crash — Clicking a to-do's done button threw undefined.split.
 
-## Aprizely (1)
+## Aprizely (2)
+- [ ] Bulk rename introduced a grammar slip ('a account') — A bulk find-replace of 'studio' → 'account' produced 'a account' where the article should agre…
 - [ ] Unlock keypad numbers float high and misalign — On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up wit…
+
+## Bug Ledger (1)
+- [ ] Activity timeline re-renders every poll, replaying entrance animations (flicker) — The /timeline feed rebuilt its whole innerHTML on every 4s poll even when nothing changed, so…
 
 ## Hallalu Bookings (1)
 - [ ] Orphaned dead whitespace in FAQ + Policies section — The FAQ and Policies cards sat only in the right column while the left column ended at the tes…

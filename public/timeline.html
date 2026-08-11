@@ -150,12 +150,21 @@
       '</div></div>';
   }
 
+  var lastSig=null;
   function render(data){
     var feed=document.getElementById('feed');
     var evs=(data&&data.events)||[];
+    document.getElementById('pollstate').textContent = !evs.length?'waiting…':(evs.some(function(e){return e.live;})?'live':'up to date');
+    // only rebuild the DOM when the content actually changes — otherwise the entrance
+    // animation replays every poll and the timeline flickers (stable fields only, no volatile ts)
+    var sig=evs.map(function(e){ return e.kind==='session'
+      ? 's'+e.started+e.status+(e.done||0)+'/'+(e.total||0)+(e.progress?e.progress.done+'/'+e.progress.total:'')+(e.live?'L':'')+(e.current||'')
+      : 'c'+e.id+(e.foundCount||0)+(e.coverage?e.coverage.matched+'/'+e.coverage.total:''); }).join('|');
+    if(sig===lastSig) return;
+    lastSig=sig;
     if(!evs.length){
       feed.innerHTML='<div class="empty"><h1>No activity yet</h1><p>Run <code>/showwork</code> or <code>/bugcheck</code> in a project and it appears here — saved forever.</p></div>';
-      document.getElementById('pollstate').textContent='waiting…'; return;
+      return;
     }
     var html='', lastDay=null;
     evs.forEach(function(e){
