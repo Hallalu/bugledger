@@ -98,7 +98,7 @@
     <div class="sub"><span class="beat"></span><span id="pollstate">watching…</span></div>
   </header>
   <main id="board"></main>
-  <div class="foot">Live worklog · agents stream here with <a href="AGENT.md">worklog.mjs</a> · <a href="/">back to the ledger</a></div>
+  <div class="foot">Live worklog · <a href="/timeline">activity timeline</a> · <a href="/">back to the ledger</a></div>
 </div>
 <script>
   var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
@@ -162,9 +162,17 @@
       setTimeout(function(){ c.refs.current.innerHTML=esc(cur)+(live?'<span class="car"></span>':''); c.refs.current.style.opacity=1; }, 140);
       c.prevCurrent=cur;
     } else if(!c.refs.current.querySelector('.car') && live){ c.refs.current.innerHTML=esc(cur)+'<span class="car"></span>'; }
-    var total=s.total||(s.tasks||[]).length, dn=s.done||0, pct=total?Math.round(dn/total*100):0;
-    c.refs.bar.style.width=pct+'%';
-    c.refs.dn.textContent=dn+' / '+total+' done'; c.refs.pct.textContent=pct+'%';
+    var pg=s.progress;
+    if(pg && pg.total){                              // full-scan counter (e.g. 100 / 315 bugs)
+      var ppct=Math.round(pg.done/pg.total*100);
+      c.refs.bar.style.width=ppct+'%';
+      c.refs.dn.textContent=pg.done+' / '+pg.total+' '+(pg.label||'')+' checked';
+      c.refs.pct.textContent=ppct+'%';
+    } else {
+      var total=s.total||(s.tasks||[]).length, dn=s.done||0, pct=total?Math.round(dn/total*100):0;
+      c.refs.bar.style.width=pct+'%';
+      c.refs.dn.textContent=dn+' / '+total+' done'; c.refs.pct.textContent=pct+'%';
+    }
     renderTasks(c, s.tasks||[]);
     if(s.note){ c.refs.note.hidden=false; c.refs.note.textContent=s.note; } else c.refs.note.hidden=true;
   }

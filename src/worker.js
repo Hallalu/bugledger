@@ -22,14 +22,16 @@ const arr = (v, max, mapper) => (Array.isArray(v) ? v.slice(0, max).map(mapper) 
 const norm = (t) => String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 
 // the app catalog (bug titles per app) — read from the static checklist.json, cached per isolate
+// (never cache a failure/empty, or one bad fetch would poison the isolate forever)
 let _catalog = null;
 async function catalog(env, request) {
-  if (_catalog) return _catalog;
+  if (_catalog && _catalog.apps && Object.keys(_catalog.apps).length) return _catalog;
   try {
     const res = await env.ASSETS.fetch(new Request(new URL("/checklist.json", request.url)));
-    _catalog = await res.json();
-  } catch { _catalog = { apps: {} }; }
-  return _catalog;
+    const j = await res.json();
+    if (j && j.apps && Object.keys(j.apps).length) { _catalog = j; return j; }
+    return { apps: {} };
+  } catch { return { apps: {} }; }
 }
 
 export default {
@@ -55,9 +57,9 @@ export default {
           securityStatus: r.security_status,
           notFound: safeParse(r.not_found, []), found: safeParse(r.found, []),
           securityChecked: safeParse(r.security_checked, []), securityFindings: safeParse(r.security_findings, []),
-          notes: r.notes,
+          notes: r.notes, scope: r.scope || "app",
           coverage: r.cov_total != null ? {
-            total: r.cov_total, matched: r.cov_matched,
+            total: r.cov_total, matched: r.cov_matched, scope: r.scope || "app",
             pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,
             complete: r.cov_total === r.cov_matched, missed: safeParse(r.cov_missed, []),
           } : null,
@@ -89,8 +91,8 @@ export default {
         checked_count: num(body.checkedCount),
         found_count: num(body.foundCount),
         security_status: str(body.securityStatus || "n/a", 20),
-        not_found: JSON.stringify(arr(body.notFound, 400, (x) => str(x, 200))),
-        found: JSON.stringify(arr(body.found, 200, (x) => ({
+        not_found: JSON.stringify(arr(body.notFound, 4000, (x) => str(x, 200))),
+        found: JSON.stringify(arr(body.found, 2000, (x) => ({
           title: str(x && x.title, 200), file: str(x && x.file, 200), note: str(x && x.note, 400),
         }))),
         security_checked: JSON.stringify(arr(body.securityChecked, 100, (x) => str(x, 120))),
@@ -99,23 +101,27 @@ export default {
         }))),
         notes: str(body.notes, 2000),
       };
-      // server-verified coverage: which of the app's known bugs did the agent actually address?
+      // server-verified coverage: match reported titles against the app catalog — or the WHOLE
+      // catalog (all apps) when scope:"all", so a full scan is confirmed N/315.
+      const scope = body.scope === "all" ? "all" : "app";
       const cat = await catalog(env, request);
-      const appTitles = (cat.apps && cat.apps[rec.app]) ? cat.apps[rec.app].map((b) => b.title) : [];
+      const appTitles = scope === "all"
+        ? allTitles(cat)
+        : ((cat.apps && cat.apps[rec.app]) ? cat.apps[rec.app].map((b) => b.title) : []);
       const reported = new Set([
-        ...arr(body.notFound, 400, (x) => str(x, 200)),
-        ...arr(body.found, 200, (x) => str(x && x.title, 200)),
+        ...arr(body.notFound, 4000, (x) => str(x, 200)),
+        ...arr(body.found, 2000, (x) => str(x && x.title, 200)),
       ].map(norm));
       const missed = appTitles.filter((t) => !reported.has(norm(t)));
       const covTotal = appTitles.length;
       const covMatched = covTotal - missed.length;
       try {
         await env.DB.prepare(
-          `INSERT INTO checks (id,ts,app,project,checked_by,scanned,checked_count,found_count,security_status,not_found,found,security_checked,security_findings,notes,cov_total,cov_matched,cov_missed)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+          `INSERT INTO checks (id,ts,app,project,checked_by,scanned,checked_count,found_count,security_status,not_found,found,security_checked,security_findings,notes,cov_total,cov_matched,cov_missed,scope)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
         ).bind(rec.id, rec.ts, rec.app, rec.project, rec.checked_by, rec.scanned, rec.checked_count,
                rec.found_count, rec.security_status, rec.not_found, rec.found, rec.security_checked,
-               rec.security_findings, rec.notes, covTotal, covMatched, JSON.stringify(missed)).run();
+               rec.security_findings, rec.notes, covTotal, covMatched, JSON.stringify(missed), scope).run();
         const pct = covTotal ? Math.round((covMatched / covTotal) * 100) : 100;
         return json({ ok: true, id, ts, app: rec.app, view: "https://bugledger.coconvo.workers.dev/#checks",
           coverage: { total: covTotal, matched: covMatched, pct, complete: missed.length === 0, missed: missed.slice(0, 60) } });
@@ -162,6 +168,8 @@ export default {
       }));
       const done = tasks.filter((t) => t.status === "done").length;
       const status = body.status === "done" ? "done" : "active";
+      const prog = body.progress && Number.isFinite(+body.progress.total) && +body.progress.total > 0
+        ? { done: num(body.progress.done), total: num(body.progress.total), label: str(body.progress.label, 40) } : null;
       try {
         const existing = await env.DB.prepare(
           "SELECT started,status,app,project,title,agent FROM sessions WHERE id = ?").bind(id).first();
@@ -175,15 +183,44 @@ export default {
         const title = existing ? existing.title : str(body.title, 200);
         const agent = existing ? existing.agent : str(body.agent || "claude-code", 60);
         await env.DB.prepare(
-          `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
-           ON CONFLICT(id) DO UPDATE SET updated=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?`
+          `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note,prog_done,prog_total,prog_label)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET updated=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?,prog_done=?,prog_total=?,prog_label=?`
         ).bind(
           id, started, now, app, project, title, agent, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500),
-          now, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500)
+          prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null,
+          now, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500),
+          prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null
         ).run();
         return json({ ok: true, id, url: "https://bugledger.coconvo.workers.dev/live", done, total: tasks.length });
       } catch (e) { return writeErr(e); }
+    }
+
+    // ---- GET /api/activity : merged chronological feed (sessions + checks) for the timeline ----
+    if (pathname === "/api/activity" && request.method === "GET") {
+      const limit = Math.min(200, Math.max(1, num(url.searchParams.get("limit")) || 80));
+      try {
+        const [s, c] = await Promise.all([
+          env.DB.prepare("SELECT * FROM sessions ORDER BY updated DESC LIMIT ?").bind(limit).all(),
+          env.DB.prepare("SELECT * FROM checks ORDER BY ts DESC LIMIT ?").bind(limit).all(),
+        ]);
+        const now = Date.now();
+        const sessions = (s.results || []).map((r) => {
+          const m = mapSession(r);
+          return { kind: "session", ts: m.updated, started: m.started, app: m.app, project: m.project,
+            title: m.title, status: m.status, current: m.current, done: m.done, total: m.total,
+            progress: m.progress, agent: m.agent, live: m.status === "active" && now - m.updated < 90_000 };
+        });
+        const checks = (c.results || []).map((r) => ({
+          kind: "check", ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by, scope: r.scope || "app",
+          foundCount: r.found_count, securityStatus: r.security_status,
+          coverage: r.cov_total != null ? { total: r.cov_total, matched: r.cov_matched,
+            pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,
+            complete: r.cov_total === r.cov_matched } : null,
+        }));
+        const events = sessions.concat(checks).sort((a, b) => b.ts - a.ts).slice(0, limit);
+        return json({ ok: true, now, count: events.length, events });
+      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
     }
 
     // ---- GET /api/bugs : agent-submitted new bugs (proposals) ----
@@ -233,5 +270,13 @@ function mapSession(r) {
     id: r.id, started: r.started, updated: r.updated, app: r.app, project: r.project,
     title: r.title, agent: r.agent, status: r.status, current: r.current,
     tasks: safeParse(r.tasks, []), done: r.done_count, total: r.total_count, note: r.note,
+    progress: r.prog_total ? { done: r.prog_done || 0, total: r.prog_total, label: r.prog_label || "" } : null,
   };
+}
+// every distinct bug title across ALL apps (deduped) — the full-catalog target
+function allTitles(cat) {
+  const m = new Map();
+  for (const app of Object.keys(cat.apps || {}))
+    for (const b of cat.apps[app]) { const k = norm(b.title); if (!m.has(k)) m.set(k, b.title); }
+  return [...m.values()];
 }

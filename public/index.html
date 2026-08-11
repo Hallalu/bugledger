@@ -80,6 +80,12 @@
   .empty{color:var(--muted);text-align:center;padding:40px}
   footer{color:var(--muted);font-size:13px;text-align:center;margin-top:30px}
   mark{background:color-mix(in srgb,var(--accent) 35%,transparent);color:inherit;border-radius:3px}
+  .topnav{margin-left:auto;display:flex;gap:8px}
+  .topnav a{text-decoration:none;font-size:13px;font-weight:650;color:var(--muted);border:1px solid var(--line);
+    border-radius:99px;padding:5px 12px;transition:.15s}
+  .topnav a:hover{color:var(--ink);border-color:var(--muted)}
+  .topnav a:last-child{color:#ff6a5a}
+  .hero .title{display:flex;align-items:center;gap:12px}
 
   /* security sweep */
   details.sweep{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 18px;overflow:hidden}
@@ -123,6 +129,7 @@
     <div class="title">
       <span class="dot"></span>
       <h1>Bug Ledger</h1>
+      <nav class="topnav"><a href="/timeline">🕘 Activity</a><a href="/live">● Live</a></nav>
     </div>
     <p class="sub">Every bug fixed across the portfolio — mined from the full conversation history and organized into one comprehensive checklist. Tick items as you re-verify them; progress is saved in your browser.</p>
     <div class="kpis" id="kpis"></div>
