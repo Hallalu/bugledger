@@ -910,5 +910,53 @@
     "status": "unverified",
     "session": "cd37da75",
     "found": "2026-08-11"
+  },
+  {
+    "key": "215ee275:sidebarcutshortbugtherearetwosiderulesthefirstsetspositionst",
+    "app": "Hallalu CRM",
+    "title": "Sidebar cut-short bug: there are two .side rules — the first sets position:sticky, but…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Sidebar cut-short bug**: there are two `.side` rules — the first sets `position:sticky`, but a later `.side{position:relative}` **overrides** it, so the sidebar scrolls away (only 100dvh tall, rela…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-12"
+  },
+  {
+    "key": "215ee275:notemyv67deployalsobundledthehalffinishedpitchdecktheworkeri",
+    "app": "Hallalu CRM",
+    "title": "Note: my v67 deploy also bundled the half-finished pitch deck (the worker imports it) —…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Note: my v67 deploy also bundled the half-finished pitch deck (the worker imports it) — let me make it consistent: fix the stale Claude/£ figures and add the price-per-customer slide.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-12"
+  },
+  {
+    "key": "cd37da75:wiredintobothsignincountswrongpasscodesandwrong2facodesandfo",
+    "app": "Breadcrumb",
+    "title": "- Wired into both sign-in (counts wrong passcodes and wrong 2FA codes) and…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "- Wired into both **sign-in** (counts wrong passcodes *and* wrong 2FA codes) and **forgot-passcode recovery**; a clean login clears the counter.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cd37da75",
+    "found": "2026-08-12"
+  },
+  {
+    "key": "cd37da75:verifiedlive5wrongpasscodesreturned401the6threturnedhttp429l",
+    "app": "Breadcrumb",
+    "title": "- Verified live: 5 wrong passcodes returned 401, the 6th returned HTTP 429 locked:5 —…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- **Verified live:** 5 wrong passcodes returned 401, the 6th returned **HTTP 429 `locked:5`** — then I cleaned up the test lock rows.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cd37da75",
+    "found": "2026-08-12"
   }
 ]
