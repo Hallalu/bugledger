@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-83 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+84 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (40)
+## Hallalu CRM (41)
 
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
 - [ ] `high` `crash` (2026-08-10, #55c985af) — Two problems: a crash in the report loop and heavy noise (268 medium — almost certainly…
@@ -44,6 +44,7 @@
 - [ ] `low` `other` (2026-08-12, #215ee275) — Note: my v67 deploy also bundled the half-finished pitch deck (the worker imports it) —…
 - [ ] `low` `ui` (2026-08-12, #215ee275) — Key findings that shape the plan: - The cut-off toggle: .side-toggle sits…
 - [ ] `low` `ui` (2026-08-12, #215ee275) — Step 1: sidebar toggle fix — make it position:fixed (like the grip that already works)…
+- [ ] `low` `other` (2026-08-12, #215ee275) — Task 0 — the notif X-close bug:
 
 ## Breadcrumb (19)
 
