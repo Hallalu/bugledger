@@ -994,5 +994,17 @@
     "status": "unverified",
     "session": "cd37da75",
     "found": "2026-08-12"
+  },
+  {
+    "key": "215ee275:task0thenotifxclosebug",
+    "app": "Hallalu CRM",
+    "title": "Task 0 — the notif X-close bug:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Task 0** — the notif X-close bug:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-12"
   }
 ]
