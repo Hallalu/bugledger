@@ -958,5 +958,41 @@
     "status": "unverified",
     "session": "cd37da75",
     "found": "2026-08-12"
+  },
+  {
+    "key": "215ee275:keyfindingsthatshapetheplanthecutofftogglesidetogglesitsposi",
+    "app": "Hallalu CRM",
+    "title": "Key findings that shape the plan: - The cut-off toggle: .side-toggle sits…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Key findings that shape the plan: - **The cut-off toggle**: `.side-toggle` sits `position:absolute; right:-11px` *inside* `.side` — but my earlier sticky-sidebar fix gave `.side` `overflow-y:auto`, w…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-12"
+  },
+  {
+    "key": "215ee275:step1sidebartogglefixmakeitpositionfixedlikethegripthatalrea",
+    "app": "Hallalu CRM",
+    "title": "Step 1: sidebar toggle fix — make it position:fixed (like the grip that already works)…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "**Step 1: sidebar toggle fix** — make it `position:fixed` (like the grip that already works) so the sidebar's `overflow:auto` can't shear it, and give it a more premium look:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-12"
+  },
+  {
+    "key": "cd37da75:freshaccountsdemokeptthelandingdemoisfullyintactandiaddedana",
+    "app": "Breadcrumb",
+    "title": "Fresh accounts, demo kept — the landing demo is fully intact, and I added an auto-heal:…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fresh accounts, demo kept** — the landing demo is fully intact, and I added an **auto-heal**: if the \"Sam\" demo ever leaked into a real account's cloud (detected by the demo's fixed ids), it resets t…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cd37da75",
+    "found": "2026-08-12"
   }
 ]
