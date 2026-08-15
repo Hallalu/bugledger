@@ -1006,5 +1006,17 @@
     "status": "unverified",
     "session": "215ee275",
     "found": "2026-08-12"
+  },
+  {
+    "key": "215ee275:fixbelltotherightstopitcollidingwiththetitletopbarclearance",
+    "app": "Hallalu CRM",
+    "title": "Fix: bell to the right (stop it colliding with the title) + topbar clearance:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Fix: bell to the right (stop it colliding with the title)** + topbar clearance:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "215ee275",
+    "found": "2026-08-15"
   }
 ]
