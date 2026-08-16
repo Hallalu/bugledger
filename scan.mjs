@@ -174,11 +174,158 @@ perFile("NO-CSP","low","security","No Content-Security-Policy found in served HT
     return [];
   });
 
+// --- accessibility (six failure types account for ~96% of detected WCAG errors) ---
+perFile("A11Y-IMG-ALT","medium","accessibility","<img> with no alt attribute (screen readers fall back to the filename)",
+  "Add alt=\"…\" describing the image, or alt=\"\" if it is purely decorative.",
+  (c, fp) => {
+    if (!isHTML(fp)) return [];
+    const out = []; const re = /<img\b[^>]*>/gi; let m;
+    while ((m = re.exec(c))) {
+      if (/\balt\s*=/i.test(m[0])) continue;
+      out.push({ line: c.slice(0, m.index).split("\n").length, excerpt: m[0].slice(0, 90) });
+    }
+    return out;
+  });
+perFile("A11Y-NO-LANG","medium","accessibility","<html> has no lang attribute (screen readers pick the wrong voice)",
+  "Add lang=\"en\" (or the correct language) to the <html> element.",
+  (c, fp) => {
+    if (!/\.html?$/i.test(fp)) return [];
+    const m = /<html\b[^>]*>/i.exec(c);
+    if (!m || /\blang\s*=/i.test(m[0])) return [];
+    return [{ line: c.slice(0, m.index).split("\n").length, excerpt: m[0].slice(0, 80) }];
+  });
+perFile("A11Y-INPUT-NOLABEL","medium","accessibility","Form field with no associated label (a placeholder is not a label)",
+  "Give the field an id plus <label for=…>, or an aria-label. Missing labels are one of the most frequent WCAG failures.",
+  (c, fp) => {
+    if (!isHTML(fp)) return [];
+    const labelFor = new Set(); let lm;
+    const lre = /<label\b[^>]*\bfor\s*=\s*["']([^"']+)["']/gi;
+    while ((lm = lre.exec(c))) labelFor.add(lm[1]);
+    const out = []; const re = /<(input|select|textarea)\b[^>]*>/gi; let m;
+    while ((m = re.exec(c))) {
+      const tag = m[0];
+      if (/\btype\s*=\s*["']?(hidden|submit|button|image|reset)\b/i.test(tag)) continue;
+      if (/\baria-label(?:ledby)?\s*=|\btitle\s*=/i.test(tag)) continue;
+      const idm = /\bid\s*=\s*["']([^"']+)["']/.exec(tag);
+      if (idm && labelFor.has(idm[1])) continue;
+      // already wrapped inside an open <label> …
+      if (/<label\b(?:(?!<\/label>)[\s\S])*$/i.test(c.slice(Math.max(0, m.index - 300), m.index))) continue;
+      out.push({ line: c.slice(0, m.index).split("\n").length, excerpt: tag.slice(0, 90) });
+      if (out.length >= 15) break;
+    }
+    return out;
+  });
+perFile("A11Y-EMPTY-CONTROL","medium","accessibility","Button/link with no accessible name (icon-only control)",
+  "Add aria-label=\"…\" (or visually-hidden text) so the control is announced. Empty links and buttons are top-6 WCAG failures.",
+  (c, fp) => {
+    if (!isHTML(fp)) return [];
+    const out = []; const re = /<(button|a)\b([^>]*)>([\s\S]{0,200}?)<\/\1>/gi; let m;
+    while ((m = re.exec(c))) {
+      const attrs = m[2], inner = m[3];
+      if (/\baria-label(?:ledby)?\s*=|\btitle\s*=/i.test(attrs)) continue;
+      const text = inner.replace(/<[^>]*>/g, "").replace(/&[a-z#0-9]+;/gi, "").replace(/\$\{[^}]*\}/g, "x").trim();
+      if (text.length) continue;
+      if (/<img\b[^>]*\balt\s*=\s*["'][^"']+["']/i.test(inner)) continue;
+      if (/<svg\b[\s\S]*?<title>/i.test(inner)) continue;
+      out.push({ line: c.slice(0, m.index).split("\n").length, excerpt: m[0].slice(0, 90).replace(/\n/g, " ") });
+      if (out.length >= 15) break;
+    }
+    return out;
+  });
+perFile("A11Y-FOCUS-KILLED","medium","accessibility","outline removed with no :focus-visible replacement — keyboard users lose the focus ring",
+  "Pair any outline reset with a high-contrast :focus-visible style; WCAG 2.2 requires a visible focus indicator.",
+  (c, fp) => {
+    if (!/\.(css|html?|vue|svelte)$/i.test(fp)) return [];
+    if (/:focus-visible/i.test(c)) return [];
+    const m = /outline\s*:\s*(?:none|0)\b/i.exec(c);
+    if (!m) return [];
+    return [{ line: c.slice(0, m.index).split("\n").length, excerpt: "outline reset, no :focus-visible in this file" }];
+  });
+perLine("A11Y-POSITIVE-TABINDEX","low","accessibility","tabindex greater than 0 breaks the natural tab order",
+  "Use tabindex=\"0\" (focusable, document order) or \"-1\" (programmatic only) — never a positive value.",
+  isHTML, /\btabindex\s*=\s*["']?[1-9]\d*["']?/);
+perLine("A11Y-CLICK-NONINTERACTIVE","medium","accessibility","Click handler on a non-interactive element (not keyboard reachable)",
+  "Use a real <button>, or add role=\"button\" + tabindex=\"0\" + an Enter/Space keydown handler.",
+  isHTML, /<(?:div|span|li|td)\b[^>]*\bonclick\s*=/i);
+
+// --- claims accuracy / copy integrity ---
+perLine("CLAIM-SUPERLATIVE","medium","claims","Unverifiable superlative claim in user-facing copy",
+  "Verify against a primary source or soften it — unprovable 'first/only/best/guaranteed' claims are a trust and advertising-law risk.",
+  f => /\.(html?|vue|svelte|js|mjs|jsx|tsx)$/i.test(f),
+  /\b(?:world'?s\s+first|first\s+ever|the\s+only\s+(?:app|tool|platform|way|one)|#1\b|no\.?\s?1\s+(?:app|tool|choice)|guaranteed\b|100%\s*(?:secure|private|accurate|safe|free)|never\s+(?:lose|fail)s?\b|always\s+accurate)/i);
+perLine("CLAIM-FAKE-SCARCITY","medium","claims","Manufactured scarcity/urgency in user-facing copy",
+  "Only show scarcity that is literally true. Fabricated countdowns, 'only N left' and 'X people viewing' are unlawful in the UK/EU and an active enforcement target.",
+  f => /\.(html?|vue|svelte|js|mjs|jsx|tsx)$/i.test(f),
+  /\bonly\s+\d+\s+(?:left|remaining|spots?|seats?)\b|\b\d+\s+(?:people|others)\s+(?:are\s+)?(?:viewing|looking)\b|\b(?:hurry|ends\s+(?:soon|tonight)|limited\s+time\s+only|selling\s+fast)\b/i);
+perLine("CLAIM-UNSOURCED-STAT","low","claims","Statistic in user-facing copy — confirm it cites a primary source",
+  "Every published number needs a real, checkable source; drop it if you cannot cite one.",
+  f => /\.(html?|vue|svelte)$/i.test(f), />[^<]{0,80}\b\d{1,3}(?:\.\d+)?%\s+of\s+[a-z]/i);
+perLine("CLAIM-PLACEHOLDER","medium","claims","Placeholder or sample copy shipped to users",
+  "Replace lorem ipsum / TODO / sample testimonials before shipping — fabricated testimonials are also unlawful.",
+  f => /\.(html?|vue|svelte)$/i.test(f),
+  /lorem\s+ipsum|\bTODO\b|\bFIXME\b|\bJohn\s+Doe\b|\bJane\s+Doe\b|sample\s+testimonial|your\s+text\s+here/i);
+
+// --- privacy & legal ---
+perLine("PRIV-3P-TRACKER","high","privacy","Third-party analytics/ad tracker present",
+  "Sensitive data (health, reproductive, financial, precise location) must never pass through third-party ad/analytics SDKs; gate any tracker behind explicit consent.",
+  f => /\.(html?|vue|svelte|js|mjs|jsx|tsx)$/i.test(f),
+  /googletagmanager\.com|google-analytics\.com|\bgtag\s*\(|connect\.facebook\.net|\bfbq\s*\(|hotjar|mixpanel|segment\.(?:com|io)|amplitude\.com|clarity\.ms|doubleclick\.net/i);
+perLine("PRIV-PII-LOG","medium","privacy","Personal data or a credential written to the console/logs",
+  "Never log emails, passwords, tokens or whole records — log an id instead. Logs are retained and often shipped off-box.",
+  isCode,
+  /console\.(?:log|info|warn|error|debug)\s*\([^)]*(?:\.(?:password|passcode|token|apiKey|api_key|secret|email|ssn|creditCard|card_number)\b|\$\{[^}]*\b(?:password|passcode|token|apiKey|api_key|secret|email|ssn|creditCard|card_number)\b)/i);
+perLine("PRIV-PII-IN-URL","high","privacy","Personal data placed in a URL query string",
+  "URLs land in server logs, browser history and Referer headers — send personal data in a POST body instead.",
+  isCode, /[?&](?:email|password|token|ssn|phone|dob|address)=(?:\$\{|["'`+])/i);
+
+// --- testing / regression ---
+const isTestFile = f => /\.(test|spec)\.[jt]sx?$/i.test(f) || /(^|\/)(tests?|__tests__|e2e|cypress|playwright)\//i.test(rel(f));
+perLine("TEST-ONLY","high","testing",".only() left in a suite — every other test silently stops running",
+  "Remove .only before committing and add a lint/CI rule that fails the build on it.",
+  isTestFile, /\b(?:describe|it|test|context)\.only\s*\(/);
+perLine("TEST-SKIPPED","low","testing","Skipped/disabled test",
+  "A permanently skipped test is dead coverage — fix it or delete it so the suite tells the truth.",
+  isTestFile, /\b(?:describe|it|test|context)\.skip\s*\(|\bx(?:it|describe)\s*\(/);
+
+// --- SEO, meta & social sharing ---
+const isPage = (c, fp) => /\.html?$/i.test(fp) && /<html/i.test(c);
+perFile("SEO-NO-TITLE","medium","seo","Page has no <title>",
+  "Add a unique, descriptive <title> — it is the tab name, the search-result headline and the default share text.",
+  (c, fp) => isPage(c, fp) && !/<title[\s>]/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
+perFile("SEO-NO-DESC","low","seo","No meta description",
+  "Add <meta name=\"description\"> — it is the snippet shown under your link in search results.",
+  (c, fp) => isPage(c, fp) && !/<meta[^>]+name\s*=\s*["']description["']/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
+perFile("SEO-NO-OG","medium","seo","No Open Graph/Twitter card — shared links render as a bare URL",
+  "Add og:title, og:description and og:image (1200×630) so the page previews properly wherever it is shared.",
+  (c, fp) => isPage(c, fp) && !/property\s*=\s*["']og:|name\s*=\s*["']twitter:/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
+perFile("SEO-NO-VIEWPORT","high","seo","No viewport meta — the page renders desktop-width on phones",
+  "Add <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">.",
+  (c, fp) => isPage(c, fp) && !/name\s*=\s*["']viewport["']/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
+
+// --- observability / error reporting ---
+perLine("OBS-EMPTY-CATCH","medium","observability","Empty catch block swallows the error",
+  "At minimum log it with context and surface a user-visible failure — silent catches hide real breakage in production.",
+  isCode, /catch\s*(?:\([^)]*\))?\s*\{\s*\}/);
+perFile("OBS-UNHANDLED-PROMISE","medium","observability","Promise chain with no .catch() — rejections vanish as unhandled",
+  "Add .catch() (or wrap in try/await) so failures are logged and surfaced instead of disappearing.",
+  (c, fp) => {
+    if (!isCode(fp)) return [];
+    const out = []; const re = /\.then\s*\(/g; let m;
+    while ((m = re.exec(c))) {
+      if (/\.catch\s*\(|\.finally\s*\(/.test(c.slice(m.index, m.index + 400))) continue;
+      out.push({ line: c.slice(0, m.index).split("\n").length, excerpt: c.slice(m.index, m.index + 70).replace(/\n/g, " ") });
+      if (out.length >= 10) break;
+    }
+    return out;
+  });
+
 // ---------- run detectors ----------
 const findings = [];
+const corpus = [];
 for (const fp of files) {
   let content; try { content = fs.readFileSync(fp, "utf8"); } catch { continue; }
   if (content.includes("\0")) continue; // binary-ish
+  if (corpus.length < 400) corpus.push(content);
   const lines = content.split("\n");
   // skip minified/bundled/generated files — they aren't the app's authored source
   const maxLine = lines.reduce((m,l)=>Math.max(m,l.length),0);
@@ -211,6 +358,49 @@ for (const fp of files) {
   }
 }
 
+// ---------- project-level detectors (only visible across the whole repo) ----------
+const PROJECT_DETECTORS = 5; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-DELETE, OBS-NO-ERROR-HANDLER
+{
+  const all = corpus.join("\n");
+  const proj = (detector, severity, category, bug, advice, file, excerpt) =>
+    findings.push({ detector, severity, category, bug, advice, file, line: 1, excerpt });
+
+  const testFiles = files.filter(isTestFile);
+  if (!testFiles.length) {
+    proj("TEST-NONE","medium","testing","No test files anywhere in the project",
+      "Add at least a smoke test of the core loop (sign in → create → save → reload and it's still there → export) and run it before every deploy. A regression in the primary verb is the fastest way to churn engaged users.",
+      ".", `${files.length} source files scanned, 0 test files`);
+  } else {
+    let hasCI = false;
+    try { hasCI = fs.readdirSync(path.join(TARGET, ".github", "workflows")).some(f => /\.ya?ml$/i.test(f)); } catch {}
+    if (!hasCI)
+      proj("TEST-NO-CI","low","testing","Tests exist but no CI workflow runs them",
+        "Add a CI workflow that runs the suite on every push, so a regression cannot ship unnoticed.",
+        ".github/workflows", `${testFiles.length} test files, no workflow found`);
+  }
+
+  const collectsPII = /type\s*=\s*["']email["']|autocomplete\s*=\s*["'](?:email|tel|name|street-address)/i.test(all);
+  const hasPolicy = files.some(f => /privacy|terms/i.test(rel(f))) || /privacy[\s-]?policy/i.test(all);
+  if (collectsPII && !hasPolicy)
+    proj("PRIV-NO-POLICY","high","privacy","Collects personal data with no privacy policy",
+      "Publish a privacy policy naming what you collect, why, how long you keep it and how to delete it — required under UK/EU GDPR and by both app stores.",
+      ".", "personal-data fields found, no privacy policy in the project");
+
+  const hasAccounts = /sign\s?-?up|signup|createAccount|\bregister\b|passcode|password/i.test(all);
+  const hasDelete = /delete\s+(?:my\s+)?(?:account|data)|deleteAccount|erase\s+(?:my\s+)?data/i.test(all);
+  if (hasAccounts && !hasDelete)
+    proj("PRIV-NO-DELETE","high","privacy","Accounts exist with no delete-my-data path",
+      "Give users a real one-tap 'delete my account and data' that purges server records and backups, and say honestly what it cannot reach. A GDPR right and an app-store requirement.",
+      ".", "account flow found, no account/data deletion path");
+
+  const hasFrontEnd = files.some(f => /\.html?$/i.test(f));
+  const hasErrHandler = /addEventListener\s*\(\s*["'](?:error|unhandledrejection)["']|window\.onerror|Sentry|captureException|reportError\s*\(/i.test(all);
+  if (hasFrontEnd && !hasErrHandler)
+    proj("OBS-NO-ERROR-HANDLER","medium","observability","No global error handler — front-end crashes are invisible",
+      "Add window.addEventListener('error') and ('unhandledrejection') to log/report failures; without them a white screen produces no signal at all.",
+      ".", "no window.onerror / unhandledrejection / error reporter found");
+}
+
 // ---------- classify vs ledger ----------
 let ledger = [];
 try { ledger = JSON.parse(fs.readFileSync(path.join(LEDGER, "bugs.json"), "utf8")); } catch {}
@@ -230,7 +420,7 @@ if (AS_JSON) {
   console.log(`\n🔎 Bug Ledger scan — ${APP}`);
   console.log(bar);
   console.log(`dir:   ${TARGET}`);
-  console.log(`files: ${files.length} scanned   detectors: ${D.length}   findings: ${findings.length}`);
+  console.log(`files: ${files.length} scanned   detectors: ${D.length + PROJECT_DETECTORS}   findings: ${findings.length}`);
   const tally = findings.reduce((a,f)=>(a[f.severity]=(a[f.severity]||0)+1,a),{});
   console.log(`sev:   ${["critical","high","medium","low"].filter(s=>tally[s]).map(s=>`${tally[s]} ${s}`).join("  ·  ")||"none"}`);
   console.log(bar);
@@ -327,7 +517,7 @@ if (flags.has("--log")) {
     found: findings.map(f=>({ title:`${f.detector}: ${f.bug}`, file:`${f.file}:${f.line}`, note:f.excerpt })).slice(0,200),
     securityChecked: [...secDet],
     securityFindings: secFindings,
-    notes: `Static scan via scan.mjs (${D.length} detectors, ${files.length} files). Auto-detected leads only — not a full manual pass.`,
+    notes: `Static scan via scan.mjs (${D.length + PROJECT_DETECTORS} detectors across 9 layers, ${files.length} files). Auto-detected leads only — not a full manual pass.`,
   };
   try {
     const res = await fetch(base + "/api/checks", { method:"POST",

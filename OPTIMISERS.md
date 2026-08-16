@@ -1,6 +1,6 @@
 # ✨ Optimisers — elevations worth reusing
 
-107 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
+115 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
 
 ## design elevation (21)
 
@@ -265,7 +265,7 @@
   <br>*Why:* Serving index.html (200 text/html) for a missing .js chunk turns a routine deploy into a white-screen ChunkLoadError for users with the page already open or a stale service worker.
   <br>*How:* In the Worker, match asset extensions first and return the asset or a real 404; only unknown non-asset paths get the SPA shell. Set Cache-Control: no-cache on the HTML, immutable long max-age on hashed assets, and add a one-time hard-reload recovery on failed dynamic imports.
 
-## accessibility (4)
+## accessibility (5)
 
 - **Reduced-motion + aria-labels on icon buttons** _(Hallalu Bookings)_
   Honor prefers-reduced-motion and label every icon-only button.
@@ -283,6 +283,10 @@
   Apps that ignore the device's font-size setting force low-vision and older users to pinch-zoom or leave; a large majority of surveyed users say accessibility barriers significantly hurt their mobile experience.
   <br>*Why:* Fixed pixel type and hard-coded heights silently exclude a large share of real users (seniors, low vision, situational strain) and invite ADA-style complaints — while costing nothing to get right.
   <br>*How:* Size text in rem/relative units tied to the root, let containers grow with content, and test the whole UI at ~200% zoom / largest system font. No pixel-locked font sizes on body copy, and no clipping when text scales up.
+- **Test the whole UI at 200% zoom and the largest system font** _(cross-cutting)_
+  Size text in relative units tied to the root and let containers grow with content, then verify nothing clips or overlaps at 200% zoom and maximum system font size.
+  <br>*Why:* Pixel-locked type and fixed heights silently exclude seniors, low-vision and situationally-strained users — a large share of the audience for keepsake, baby, wedding and finance products.
+  <br>*How:* rem/em for type and spacing, min-height instead of height, no overflow:hidden on text containers; add a zoom pass to the pre-ship checklist.
 
 ## copy (5)
 
@@ -459,3 +463,46 @@
   When a listing uses AI-generated or AI-assisted images/text, surface a reminder to disclose it per Etsy's current policy, and offer ready disclosure wording.
   <br>*Why:* Non-disclosure of AI-generated images is an active Etsy suspension trigger and appeals are frequently rejected — a compliance landmine an optimizer tool should defend against, not walk sellers into.
   <br>*How:* Detect/flag AI-origin assets in the listing draft, show a non-blocking compliance note with a copy-paste disclosure line, and link the current policy. Keep it advisory and honest — never assert Etsy rules that aren't published.
+
+## privacy & legal (2)
+
+- **Classify data sensitivity before choosing where it lives** _(cross-cutting)_
+  Decide up front which fields are sensitive (health, reproductive, financial, precise location, children's data) and let that classification dictate storage, transport and whether any third party may ever see it.
+  <br>*Why:* Retrofitting privacy is far harder than designing it, and the categories that cause real-world harm and regulatory action are knowable on day one.
+  <br>*How:* Tag each field at schema-design time; route sensitive classes to local-only or end-to-end-encrypted storage; forbid them in logs, URLs and third-party SDKs by lint rule, not by memory.
+- **Ship deletion and export on the same day as signup** _(cross-cutting)_
+  Build 'download everything' and 'delete everything' as part of the account feature itself, not as a later compliance task.
+  <br>*Why:* Both are legal rights and both are trust primitives users increasingly test before committing; adding them late means retrofitting across every table and blob store.
+  <br>*How:* One export endpoint serialising the full object graph including media, and one delete path that purges records, backups and third-party copies — with honest disclosure of anything it cannot reach.
+
+## claims accuracy (1)
+
+- **Verify, don't claim — every assertion needs a primary source** _(cross-cutting)_
+  Treat any factual statement shown to a user (a statistic, a market claim, a comparison, a compliance assurance) as unpublishable until it is traced to a primary source recorded alongside it.
+  <br>*Why:* AI-assisted copy makes confident, plausible, unverified assertions cheap to produce and expensive to retract; a single false 'first/only' claim damages trust more than the claim ever earned.
+  <br>*How:* Keep a claims register mapping each user-facing claim to its source and date; re-check on a schedule; prefer provable framing over superlatives; delete anything you cannot cite.
+
+## testing (1)
+
+- **A core-loop smoke test is the highest-leverage test you can write** _(cross-cutting)_
+  One scripted pass through the primary verb — sign in, create, edit, save, reload and confirm persistence, export — run against the built artifact before every deploy.
+  <br>*Why:* 'An update broke the core feature' is one of the universal one-star patterns; users forgive missing features but not regressions in the thing they rely on.
+  <br>*How:* Automate it against the deployed preview rather than a mock, and make a red result block the deploy even when the change looks unrelated.
+
+## SEO & sharing (1)
+
+- **Treat the share card as part of the product, not an afterthought** _(cross-cutting)_
+  Every shareable page gets a title, description and a 1200×630 og:image, verified in a card validator before launch.
+  <br>*Why:* Links are the primary distribution channel for a small product; a bare URL in a message or post converts far worse than a rendered preview with a title and image.
+  <br>*How:* Add og:/twitter: tags to the page template so new pages inherit them, generate the image from the page's own design language, and validate after every deploy.
+
+## observability (2)
+
+- **Make silent failure impossible by default** _(cross-cutting)_
+  No empty catches, a .catch on every chain, global error and unhandledrejection handlers, and a build stamp attached to every report.
+  <br>*Why:* The worst production bugs are the ones that generate no signal — a swallowed error looks identical to working software until a user complains weeks later.
+  <br>*How:* Centralise error handling in one helper that always logs with context and always surfaces a user-visible state; lint against bare catch blocks; correlate every report to a deploy id.
+- **Errors need a user-visible state, not just a log line** _(cross-cutting)_
+  Every failure path should render something honest to the user — a retry affordance or a plain explanation — in addition to being reported.
+  <br>*Why:* Logging alone leaves the user staring at a spinner or an unchanged screen, which reads as a broken product even when the failure was transient and recoverable.
+  <br>*How:* Pair each catch with both a report and a UI state; prefer 'that didn't save — retry' over a silent revert, and never let a failed write look like a successful one.
