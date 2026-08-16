@@ -1068,5 +1068,85 @@
   "how": "Add a fee-aware profit field to each listing/price suggestion using current rates, flag when a price barely clears fees, note that the Offsite Ads fee only hits attributed sales, and keep rates in one config so they stay current.",
   "session": "research",
   "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "accessibility",
+  "title": "Test the whole UI at 200% zoom and the largest system font",
+  "detail": "Size text in relative units tied to the root and let containers grow with content, then verify nothing clips or overlaps at 200% zoom and maximum system font size.",
+  "why": "Pixel-locked type and fixed heights silently exclude seniors, low-vision and situationally-strained users — a large share of the audience for keepsake, baby, wedding and finance products.",
+  "how": "rem/em for type and spacing, min-height instead of height, no overflow:hidden on text containers; add a zoom pass to the pre-ship checklist.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "claims",
+  "title": "Verify, don't claim — every assertion needs a primary source",
+  "detail": "Treat any factual statement shown to a user (a statistic, a market claim, a comparison, a compliance assurance) as unpublishable until it is traced to a primary source recorded alongside it.",
+  "why": "AI-assisted copy makes confident, plausible, unverified assertions cheap to produce and expensive to retract; a single false 'first/only' claim damages trust more than the claim ever earned.",
+  "how": "Keep a claims register mapping each user-facing claim to its source and date; re-check on a schedule; prefer provable framing over superlatives; delete anything you cannot cite.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "privacy",
+  "title": "Classify data sensitivity before choosing where it lives",
+  "detail": "Decide up front which fields are sensitive (health, reproductive, financial, precise location, children's data) and let that classification dictate storage, transport and whether any third party may ever see it.",
+  "why": "Retrofitting privacy is far harder than designing it, and the categories that cause real-world harm and regulatory action are knowable on day one.",
+  "how": "Tag each field at schema-design time; route sensitive classes to local-only or end-to-end-encrypted storage; forbid them in logs, URLs and third-party SDKs by lint rule, not by memory.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "privacy",
+  "title": "Ship deletion and export on the same day as signup",
+  "detail": "Build 'download everything' and 'delete everything' as part of the account feature itself, not as a later compliance task.",
+  "why": "Both are legal rights and both are trust primitives users increasingly test before committing; adding them late means retrofitting across every table and blob store.",
+  "how": "One export endpoint serialising the full object graph including media, and one delete path that purges records, backups and third-party copies — with honest disclosure of anything it cannot reach.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "testing",
+  "title": "A core-loop smoke test is the highest-leverage test you can write",
+  "detail": "One scripted pass through the primary verb — sign in, create, edit, save, reload and confirm persistence, export — run against the built artifact before every deploy.",
+  "why": "'An update broke the core feature' is one of the universal one-star patterns; users forgive missing features but not regressions in the thing they rely on.",
+  "how": "Automate it against the deployed preview rather than a mock, and make a red result block the deploy even when the change looks unrelated.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "seo",
+  "title": "Treat the share card as part of the product, not an afterthought",
+  "detail": "Every shareable page gets a title, description and a 1200×630 og:image, verified in a card validator before launch.",
+  "why": "Links are the primary distribution channel for a small product; a bare URL in a message or post converts far worse than a rendered preview with a title and image.",
+  "how": "Add og:/twitter: tags to the page template so new pages inherit them, generate the image from the page's own design language, and validate after every deploy.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "observability",
+  "title": "Make silent failure impossible by default",
+  "detail": "No empty catches, a .catch on every chain, global error and unhandledrejection handlers, and a build stamp attached to every report.",
+  "why": "The worst production bugs are the ones that generate no signal — a swallowed error looks identical to working software until a user complains weeks later.",
+  "how": "Centralise error handling in one helper that always logs with context and always surfaces a user-visible state; lint against bare catch blocks; correlate every report to a deploy id.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "observability",
+  "title": "Errors need a user-visible state, not just a log line",
+  "detail": "Every failure path should render something honest to the user — a retry affordance or a plain explanation — in addition to being reported.",
+  "why": "Logging alone leaves the user staring at a spinner or an unchanged screen, which reads as a broken product even when the failure was transient and recoverable.",
+  "how": "Pair each catch with both a report and a UI state; prefer 'that didn't save — retry' over a silent revert, and never let a failed write look like a successful one.",
+  "session": "layers",
+  "source": "dailyledger-2026-08-16"
  }
 ]

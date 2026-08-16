@@ -12,6 +12,7 @@
     --done:#12a150; --ok:#e8f7ee;
     --c-crash:#e5484d; --c-data-loss:#d1620a; --c-logic:#6b5cff; --c-ui:#2f6feb; --c-security:#b4227a;
     --c-performance:#0e8a6e; --c-race:#8a5cf6; --c-sync:#0a7ea4; --c-auth:#c0392b; --c-other:#6b7280;
+    --c-privacy:#a3391f; --c-claims:#9a6700; --c-accessibility:#1f7a8c; --c-observability:#4b5fc7; --c-testing:#5b7a1f; --c-seo:#7a4fbf;
   }
   @media (prefers-color-scheme: dark){
     :root{
@@ -205,9 +206,12 @@
 (function(){
   var BUGS = (window.BUGS||[]).map(function(b,i){ b._id = b.session+'-'+i; return b; });
   var GENERATED = window.GENERATED || '';
-  var CATLABEL = {crash:'crash','data-loss':'data loss',logic:'logic',ui:'ui',security:'security',performance:'perf',race:'race',sync:'sync',auth:'auth',other:'other'};
+  var CATLABEL = {crash:'crash','data-loss':'data loss',logic:'logic',ui:'ui',security:'security',performance:'perf',race:'race',sync:'sync',auth:'auth',
+    privacy:'privacy',claims:'claims',accessibility:'a11y',observability:'observability',testing:'testing',seo:'SEO',other:'other'};
   // severity derived from impact category (critical/high/medium/low)
-  var CAT2SEV = {'data-loss':'critical',security:'high',crash:'high',auth:'high',sync:'high',race:'medium',logic:'medium',performance:'low',ui:'low',other:'low'};
+  var CAT2SEV = {'data-loss':'critical',security:'high',crash:'high',auth:'high',sync:'high',privacy:'high',
+    race:'medium',logic:'medium',claims:'medium',accessibility:'medium',observability:'medium',
+    testing:'low',seo:'low',performance:'low',ui:'low',other:'low'};
   var sevOf = function(b){ return b.severity || CAT2SEV[b.category] || 'low'; };
   var KEY='bugledger.checked.v1';
   var checked = {};

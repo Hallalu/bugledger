@@ -10,9 +10,14 @@ const p = (...a) => path.join(DIR, ...a);
 const GEN = "2026-08-10";
 
 const CATLABEL = { crash:"crash","data-loss":"data-loss",logic:"logic",ui:"ui",security:"security",
-  performance:"perf",race:"race",sync:"sync",auth:"auth",other:"other" };
-const SEV = { security:0,"data-loss":1,crash:2,auth:3,sync:4,race:5,logic:6,performance:7,ui:8,other:9 };
-const CAT2SEV = { "data-loss":"critical",security:"high",crash:"high",auth:"high",sync:"high",race:"medium",logic:"medium",performance:"low",ui:"low",other:"low" };
+  performance:"perf",race:"race",sync:"sync",auth:"auth",
+  privacy:"privacy",claims:"claims",accessibility:"a11y",observability:"observability",testing:"testing",seo:"SEO",
+  other:"other" };
+const SEV = { security:0,"data-loss":1,crash:2,auth:3,privacy:4,sync:5,race:6,logic:7,
+  claims:8,accessibility:9,observability:10,testing:11,performance:12,seo:13,ui:14,other:15 };
+const CAT2SEV = { "data-loss":"critical",security:"high",crash:"high",auth:"high",sync:"high",privacy:"high",
+  race:"medium",logic:"medium",claims:"medium",accessibility:"medium",observability:"medium",
+  testing:"low",seo:"low",performance:"low",ui:"low",other:"low" };
 const sevOf = b => b.severity || CAT2SEV[b.category] || "low";
 
 // cross-app recurring classes + scanner detectors (kept in sync with scan.mjs) — for agents
@@ -42,6 +47,39 @@ const DETECTORS = [
   "SW-CACHE-FIRST (stale-build service worker)",
   "DUP-DOM-ID (duplicate DOM ids)",
   "NO-CSP (no Content-Security-Policy on served HTML)",
+  // --- accessibility layer ---
+  "A11Y-IMG-ALT (<img> with no alt attribute)",
+  "A11Y-NO-LANG (<html> with no lang attribute)",
+  "A11Y-INPUT-NOLABEL (form input with no label/aria-label)",
+  "A11Y-EMPTY-CONTROL (button/link with no accessible name)",
+  "A11Y-FOCUS-KILLED (outline:none with no :focus-visible replacement)",
+  "A11Y-POSITIVE-TABINDEX (tabindex > 0 breaks tab order)",
+  "A11Y-CLICK-NONINTERACTIVE (onclick on div/span with no role+tabindex)",
+  // --- claims-accuracy layer ---
+  "CLAIM-SUPERLATIVE (first/only/best/#1/guaranteed — verify or soften)",
+  "CLAIM-FAKE-SCARCITY (countdown/'only N left'/'X viewing' — legal risk)",
+  "CLAIM-UNSOURCED-STAT (percentage stat in copy with no cited source)",
+  "CLAIM-PLACEHOLDER (lorem/TODO/sample testimonial shipped to users)",
+  // --- privacy & legal layer ---
+  "PRIV-3P-TRACKER (third-party analytics/ad SDK — consent + sensitive data)",
+  "PRIV-PII-LOG (console logging of email/password/token/PII)",
+  "PRIV-PII-IN-URL (personal data placed in a query string)",
+  "PRIV-NO-POLICY (collects personal data with no privacy policy)",
+  "PRIV-NO-DELETE (accounts with no delete-my-data path)",
+  // --- testing layer ---
+  "TEST-NONE (no test files anywhere in the project)",
+  "TEST-NO-CI (no CI workflow to run them)",
+  "TEST-ONLY (.only left in a suite — silently skips the rest)",
+  "TEST-SKIPPED (skipped/disabled tests)",
+  // --- SEO & sharing layer ---
+  "SEO-NO-TITLE (page with no <title>)",
+  "SEO-NO-DESC (no meta description)",
+  "SEO-NO-OG (no Open Graph/Twitter card — links share as a bare URL)",
+  "SEO-NO-VIEWPORT (no viewport meta — breaks mobile)",
+  // --- observability layer ---
+  "OBS-EMPTY-CATCH (catch block swallows the error silently)",
+  "OBS-UNHANDLED-PROMISE (.then with no .catch)",
+  "OBS-NO-ERROR-HANDLER (no window.onerror/unhandledrejection reporting)",
 ];
 
 const bugs = JSON.parse(fs.readFileSync(p("bugs.json"), "utf8"));
@@ -191,9 +229,11 @@ let optCount = 0, optimisers = [];
 if (fs.existsSync(p("optimisers.json"))) {
   optimisers = JSON.parse(fs.readFileSync(p("optimisers.json"), "utf8"));
   optCount = optimisers.length;
-  const OPT_ORDER = ["design-elevation","ux","performance","workflow","architecture","accessibility","copy","conversion","dx","integrity"];
+  const OPT_ORDER = ["design-elevation","ux","performance","workflow","architecture","accessibility","copy","conversion","dx","integrity",
+    "privacy","claims","testing","seo","observability"];
   const OPT_LABEL = { "design-elevation":"design elevation", ux:"UX", performance:"performance", workflow:"workflow",
-    architecture:"architecture", accessibility:"accessibility", copy:"copy", conversion:"conversion", dx:"dev-experience", integrity:"integrity" };
+    architecture:"architecture", accessibility:"accessibility", copy:"copy", conversion:"conversion", dx:"dev-experience", integrity:"integrity",
+    privacy:"privacy & legal", claims:"claims accuracy", testing:"testing", seo:"SEO & sharing", observability:"observability" };
   const oi = (c) => { const i = OPT_ORDER.indexOf(c); return i < 0 ? 99 : i; };
   const byCat = {}; for (const o of optimisers) (byCat[o.category] ||= []).push(o);
   const cats = Object.keys(byCat).sort((a,b)=>oi(a)-oi(b));

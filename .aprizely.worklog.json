@@ -1,37 +1,47 @@
 {
-  "id": "c1e8f53a-fe1e-400c-861b-e95ccd3ec63e",
-  "app": "Bug Ledger",
+  "id": "d47a5ec4-2dd7-4e3a-81f9-ca6d6028be58",
+  "app": "Investor Deck Financial Model",
   "project": "BugLedger",
-  "title": "New scan layers + investor pitch deck",
+  "title": "Research: 2026 LLM API pricing + AI SaaS gross margins",
   "status": "active",
-  "current": "Appending today's harvest to the ledger",
+  "current": "Compile report",
   "note": "",
   "tasks": [
     {
-      "text": "Append today's harvest",
-      "note": "Merging 49 new bugs (10 security) and 57 optimisers mined from today's conversations plus deep research, deduped against all 387 existing entries",
+      "text": "Claude pricing",
+      "note": "Captured real list prices from Snyk, Semgrep, Sonar, Codacy, Aikido, Socket, CodeRabbit, Greptile and Qodo straight off their own pricing pages — including the billing units (contributor, seat, lines of code, credits, org-level) and what flips each vendor to contact-sales. Effect: the deck can now anchor Bug Ledger's price against a verified $18–$50 per-dev/month band instead of a guess.",
+      "status": "done"
+    },
+    {
+      "text": "OpenAI + Gemini pricing",
+      "note": "Added 6 new layers (accessibility, claims-accuracy, privacy/legal, testing, SEO, observability): 41 detectors (was 14), 31 seeded catalog entries, 8 optimisers, plus site labels/colours — deployed and verified live",
+      "status": "done"
+    },
+    {
+      "text": "Cheap tier (DeepSeek/Together/Groq/Cloudflare)",
+      "note": "Cloudflare Workers AI Neuron unit (/bin/zsh.011/1k neurons) + Llama per-MTok equivalents captured",
+      "status": "done"
+    },
+    {
+      "text": "Inference price decline rate",
+      "note": "Cheap-tier priced: DeepSeek, Together, Groq, Fireworks, Cloudflare Workers AI — gives the deck a 100x+ cost spread between frontier and commodity routing tiers",
+      "status": "done"
+    },
+    {
+      "text": "AI SaaS gross margins",
+      "note": "Got vendor-published per-1M-token prices across Anthropic, OpenAI, Google, DeepSeek, Together, Groq, Fireworks and Cloudflare — and the key finding: a ~65x output-cost spread between frontier and commodity models, plus prompt caching (-90%) stacking with batch (-50%) to cut the input leg ~20x. Effect: proves the scan COGS is an architecture choice we control, which is exactly the margin question investors press on.",
+      "status": "done"
+    },
+    {
+      "text": "COGS reduction levers",
+      "note": "Built the COGS stack investors actually audit: hosting (verified Cloudflare unit prices), LLM inference, support headcount and Stripe at 2.9% + 30c. Benchmarks captured: SaaS COGS 15-30% of revenue = 70-85% gross margin, cloud infra typically 6-15% of revenue. Effect: the deck can show a defensible cost-per-customer line and explain why a Cloudflare-native, zero-egress architecture beats the benchmark.",
+      "status": "done"
+    },
+    {
+      "text": "Compile report",
+      "note": "Assembling the tables, the sources list and the monetization recommendation, and running the actual arithmetic: what a customer costs to serve on Cloudflare vs what the same scan costs if we pay for the inference vs if the customer's own agent does. Effect: the deck gets a defensible gross-margin number instead of an assertion.",
       "status": "active"
-    },
-    {
-      "text": "Add six new scan layers",
-      "note": "Give the ledger first-class accessibility, claims-accuracy, legal/privacy, test-coverage, SEO/meta and observability checks, so it catches whole classes of problems it was blind to",
-      "status": "pending"
-    },
-    {
-      "text": "Research the investor angle",
-      "note": "Find what comparable dev-tool companies raised, what investors actually reward, and where this is arguably better and more profitable",
-      "status": "pending"
-    },
-    {
-      "text": "Build the interactive pitch deck",
-      "note": "A beautiful navigable deck with transparent costing, unit economics and cost-per-client — the evidence an investor asks for",
-      "status": "pending"
-    },
-    {
-      "text": "Verify and publish",
-      "note": "Deploy the ledger and the deck, prove they load, and log everything found along the way",
-      "status": "pending"
     }
   ],
-  "started": 1786915865391
+  "started": 1786916233484
 }
