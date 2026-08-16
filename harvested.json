@@ -1090,5 +1090,41 @@
     "status": "unverified",
     "session": "5d4b033a",
     "found": "2026-08-16"
+  },
+  {
+    "key": "074809b3:allthreeresearchsweepsarestillrunningredditappstoreconsumerc",
+    "app": "Hallalu CRM",
+    "title": "All three research sweeps are still running (Reddit/app-store consumer complaints,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "All three research sweeps are still running (Reddit/app-store consumer complaints, SMB/CRM/booking complaints, and AI-codegen/Workers failure modes).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "074809b3",
+    "found": "2026-08-16"
+  },
+  {
+    "key": "074809b3:foundarealbugiintroducedthetypefiltershowsundefined8forthene",
+    "app": "Hallalu CRM",
+    "title": "Found a real bug I introduced — the type filter shows \"undefined (8)\" for the new…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Found a real bug I introduced — the type filter shows **\"undefined (8)\"** for the new categories because the site's own label map doesn't know them.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "074809b3",
+    "found": "2026-08-16"
+  },
+  {
+    "key": "074809b3:oneaccuracyfixthetractionslides581totalisntcleanlyderivable",
+    "app": "Hallalu CRM",
+    "title": "One accuracy fix: the traction slide's \"581 total\" isn't cleanly derivable.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One accuracy fix: the traction slide's \"581 total\" isn't cleanly derivable.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "074809b3",
+    "found": "2026-08-16"
   }
 ]
