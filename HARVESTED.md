@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-91 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+94 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (42)
+## Hallalu CRM (45)
 
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
 - [ ] `high` `crash` (2026-08-10, #55c985af) — Two problems: a crash in the report loop and heavy noise (268 medium — almost certainly…
@@ -46,6 +46,9 @@
 - [ ] `low` `ui` (2026-08-12, #215ee275) — Step 1: sidebar toggle fix — make it position:fixed (like the grip that already works)…
 - [ ] `low` `other` (2026-08-12, #215ee275) — Task 0 — the notif X-close bug:
 - [ ] `low` `other` (2026-08-15, #215ee275) — Fix: bell to the right (stop it colliding with the title) + topbar clearance:
+- [ ] `low` `other` (2026-08-16, #074809b3) — All three research sweeps are still running (Reddit/app-store consumer complaints,…
+- [ ] `low` `other` (2026-08-16, #074809b3) — Found a real bug I introduced — the type filter shows "undefined (8)" for the new…
+- [ ] `low` `other` (2026-08-16, #074809b3) — One accuracy fix: the traction slide's "581 total" isn't cleanly derivable.
 
 ## Breadcrumb (19)
 
