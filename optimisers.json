@@ -1,502 +1,1072 @@
 [
-  {
-    "app": "Breadcrumb",
-    "category": "workflow",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Paste-and-go, zero-question agent prompts (self-install, never interrogate)",
-    "detail": "An agent prompt that self-installs its CLI silently, streams if the key is present, and carries on quietly if not — never stopping to ask the user.",
-    "why": "Interrogation kills the 'automatic' feel. One-time machine setup + paste-and-go everywhere is what made Bug Ledger feel effortless.",
-    "how": "Serve the CLI from a public URL so it installs with a single curl; read the key from a small key file (no shell-profile dependency); tell the agent to self-heal silently and NEVER 'stop and ask' when something is missing."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "design-elevation",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "One-shot entrance animations (never re-animate on refresh)",
-    "detail": "Put entrance animations on a one-shot class that is stripped after it plays, not on the base element.",
-    "why": "Moving or re-inserting a DOM node restarts its CSS animation — so a live board re-fades every poll and 'blinks every second'.",
-    "how": ".card.enter{animation} then removeClass after ~600ms; and only touch the DOM order when the sorted order actually changed."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "performance",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "In-place DOM updates for live views (diff, don't re-render)",
-    "detail": "Update existing nodes field-by-field each poll and animate only what changed, instead of rewriting innerHTML.",
-    "why": "Wholesale re-render flickers, drops scroll/focus, and replays animations.",
-    "how": "Keep a refs map per card; compare to last state; mutate only changed text/classes; add a transient 'pop' class on the item that just completed."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "design-elevation",
-    "session": "conversation-2026-08-10",
-    "source": "seed",
-    "title": "Aurora-glass design language",
-    "detail": "Soft near-white canvas + slowly drifting aurora gradient blobs + frosted-glass cards + a single warm accent (coral) + big rounded type.",
-    "why": "Reads as premium and high-end, and keeps every app in the portfolio visually coherent.",
-    "how": "A fixed, blurred aurora layer of 3–4 radial-gradient blobs with a slow drift keyframe; cards use rgba white + backdrop-filter blur + hairline border + soft shadow."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "design-elevation",
-    "session": "conversation-2026-08-10",
-    "source": "seed",
-    "title": "Theme-aware from the first line",
-    "detail": "Design light and dark together with CSS variables and prefers-color-scheme, not as an afterthought.",
-    "why": "Respects the viewer's system and avoids a jarring bright flash in dark environments.",
-    "how": ":root design tokens + a single @media (prefers-color-scheme: dark) override block; test both before shipping."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "ux",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Live progress counter for long tasks (N / total)",
-    "detail": "Stream a running 'checked N / total' counter for long agent work so the user sees exactly where it reached.",
-    "why": "Transparency and watchability build trust; a silent long task feels stuck.",
-    "how": "Carry progress {done,total,label} on the session; update it every step; show it as a big number + a bar on a live board."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "ux",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Empty states as first-class design",
-    "detail": "Design the 'nothing here yet' state beautifully with a clear next action, not a blank page.",
-    "why": "First impressions and guidance — most people see the empty state first.",
-    "how": "A calm, centered message on the same aurora background, naming the exact command/step that will fill it."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "ux",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Full date + timestamp on records (not just relative time)",
-    "detail": "Show the full date and time to the second on activity and audit entries.",
-    "why": "Auditability — 'when exactly did this run?' matters for a record.",
-    "how": "Format as 'DD Mon YYYY, HH:MM:SS'; keep relative time only for the currently-live item."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "integrity",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Server-verified completeness, not self-report",
-    "detail": "When an agent claims it checked everything, verify it server-side and show N/N plus the exact items missed.",
-    "why": "Proof beats assurance; it stops silent skipping.",
-    "how": "Match the agent's reported titles against the catalog on the server; return {matched,total,missed}; loop until complete."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "integrity",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Append-only records (add, never modify or delete)",
-    "detail": "Make the durable record add-only at the database level so agents can contribute but never corrupt or delete.",
-    "why": "Safe multi-agent contribution and a trustworthy audit trail.",
-    "how": "SQLite BEFORE UPDATE/DELETE triggers that RAISE(ABORT); a documented owner-only escape hatch for pruning."
-  },
-  {
-    "app": "Bug Ledger",
-    "category": "dx",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Never cache a failure",
-    "detail": "Only cache a successful, non-empty fetch; caching a transient failure poisons the isolate until redeploy.",
-    "why": "One bad checklist fetch once silently returned 0/0 coverage for everyone on that isolate.",
-    "how": "Guard the cache assignment on a non-empty result; on failure return a fallback WITHOUT storing it."
-  },
-  {
-    "app": "Breadcrumb",
-    "category": "dx",
-    "session": "conversation-2026-08-11",
-    "source": "seed",
-    "title": "Keep source NUL-free",
-    "detail": "Never embed a literal NUL (0x00) in source — e.g. as a cache-key delimiter.",
-    "why": "It makes grep/file treat the whole file as binary and silently match nothing, so agents wrongly conclude the code is missing.",
-    "how": "Use the \\u0000 escape or a printable delimiter; grep -a as a fallback when a file mysteriously matches nothing."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "performance",
-    "session": "conversation-2026-07-28",
-    "source": "seed",
-    "title": "Network-first HTML in service workers",
-    "detail": "Serve navigations network-first (or bump the cache name every deploy) so shipped fixes aren't masked by a stale cached shell.",
-    "why": "Cache-first service workers pin returning users to an old build — a bug that recurred across many apps.",
-    "how": "Network-first fetch handler for document requests; version the cache name on each release."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "dx",
-    "session": "conversation-2026-07-27",
-    "source": "seed",
-    "title": "Version-stamp assets (?v=) every deploy",
-    "detail": "Append a ?v=N stamp to local script/style URLs each deploy so browsers can't serve stale JS/CSS.",
-    "why": "Stale-CSS/JS bugs where a fix ships but the browser keeps the old file.",
-    "how": "Bump ?v= on every deploy (or hash the asset)."
-  },
-  {
-    "app": "Hallalu Bookings",
-    "category": "integrity",
-    "session": "conversation-2026-08-10",
-    "source": "seed",
-    "title": "Grounded AI that never invents",
-    "detail": "Constrain the assistant to page/transcript context only, with a local fallback, and forbid fabrication.",
-    "why": "Trust — a made-up fact or call detail is worse than 'I don't know'.",
-    "how": "System prompt: answer only from provided context, never invent; local FAQ/summary fallback when the model is unavailable."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "copy",
-    "session": "conversation-2026-08-08",
-    "source": "seed",
-    "title": "Source-verified stats only (ban folklore)",
-    "detail": "Only show a statistic you can cite to a primary source; ban unsourced 'best practice' numbers.",
-    "why": "Credibility — one bogus stat undermines the whole product.",
-    "how": "Keep a small vetted stats bank; no number ships without a citation."
-  },
-  {
-    "app": "Planner Studio",
-    "category": "design-elevation",
-    "session": "conversation-2026-07-27",
-    "source": "seed",
-    "title": "Premium inputs & micro-interactions (no native dialogs)",
-    "detail": "Replace native prompt()/alert()/confirm() with in-app modals; add smooth press states, hairline borders, subtle fills.",
-    "why": "Native browser dialogs look broken and cheap; micro-polish signals quality.",
-    "how": "Custom modal/toast components; :active transitions; consistent radius and spacing tokens."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "ux",
-    "session": "conversation-2026-07-15",
-    "source": "seed",
-    "title": "Confirm-first for destructive or outward actions",
-    "detail": "Deletes, sends, and voice/agent commands confirm before acting.",
-    "why": "Prevents irreversible mistakes and builds trust in automation.",
-    "how": "A confirm step (or undo window) before any send/delete; never auto-fire outward actions."
-  },
-  {
-    "app": "Hallalu Bookings",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Balanced editorial layout — no orphaned whitespace",
-    "detail": "Structure a section as a full-width strip + an aligned card grid so rows line up and nothing is left 'stranded' in one column.",
-    "why": "'Left over, not placed' whitespace is exactly what reads as unfinished/cheap.",
-    "how": "Full-bleed gallery strip (6→3→2 across) then a 2×2 grid (About·Testimonials / FAQ·Policies); a full-bleed strip becomes its own fold."
-  },
-  {
-    "app": "Hopefil",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Editorial typography: serif display + tabular numerals",
-    "detail": "Serif display headlines, ledger/tabular numerals, caps-tracked labels, intentional whitespace, layered depth (soft shadow + blur), restraint over flash.",
-    "why": "This is the consensus 2026 'premium' ingredient list; it reads as considered and expensive.",
-    "how": "Serif for headings/commerce, tabular-nums for figures, 2-line clamps on overlays; restraint, not more effects."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Glassmorphism with restraint (floating chrome only)",
-    "detail": "Use frosted glass selectively — on floating chrome (modals, aha hero), not on every surface.",
-    "why": "Glass everywhere muddies legibility and stops reading premium; restraint is the premium signal.",
-    "how": "A dedicated .glass class for floating elements; opaque premium cards elsewhere."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Premium SVG icons instead of emoji in chrome",
-    "detail": "Replace bright emoji in nav/tools/buttons with a coherent inline-SVG icon set.",
-    "why": "Emoji-as-chrome reads amateur; a stroke-consistent icon set reads like a real product.",
-    "how": "Inline SVG, ~1.6 stroke, currentColor so icons inherit theme; one consistent set across the app."
-  },
-  {
-    "app": "Hopefil",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Real editorial imagery, never stock people",
-    "detail": "Bundle a small in-house image library (no people, no text, one soft-light style) and hide any tile whose image fails.",
-    "why": "Stock-people photos make apps generic; a broken image is worse than none.",
-    "how": "Generate/curate a few consistent images; a broken-image fallback that hides the tile so a 404 never shows."
-  },
-  {
-    "app": "Stitchhooky",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Bento hierarchy + gradient washes + real photography",
-    "detail": "Compose with a bento grid, gentle gradient washes and genuine subject photography for a high-end look.",
-    "why": "This is the '$100k look' — clear hierarchy and real texture instead of flat boxes.",
-    "how": "Bento tiles with varied sizes, soft gradient backgrounds, real photos over placeholder blocks."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Frosted-glass device bezel for previews",
-    "detail": "Frame a live preview in a translucent glass device edge, not a thick black slab.",
-    "why": "The black bezel looks like a placeholder; frosted glass looks designed.",
-    "how": "Translucent edge + soft highlight/shadow + subtle notch + a 'LIVE PREVIEW' caption."
-  },
-  {
-    "app": "Hopefil",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Layout diversity by content type",
-    "detail": "Give different content modes genuinely different anatomies, not one template recolored.",
-    "why": "Two prompts should produce two visibly different products; sameness reads as a wrapper.",
-    "how": "Editorial = quiet grouped rows + stat strip (no hero); imagery-led = photo card grid; commerce = its own."
-  },
-  {
-    "app": "Planner Studio",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Shareable summary cards that market the app",
-    "detail": "Generate a beautiful downloadable month/year card with kind, encouraging analysis and the app URL in the footer.",
-    "why": "It delights the user and markets the app every time it's shared.",
-    "how": "Canvas card: colour ribbon, stat tiles, one warm encouraging line, app URL footer."
-  },
-  {
-    "app": "Finished.",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Uniform pill pickers (avoid flex:1 ballooning)",
-    "detail": "Make a format/segmented picker natural-width uniform pills, not flex:1 chips.",
-    "why": "flex:1 makes buttons stretch and the last wrap-row balloon — visibly broken.",
-    "how": "Non-stretching pills, uniform height, one icon each, a single accent on the selected one."
-  },
-  {
-    "app": "Stitchhooky",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Onboarding: 1–2 fields per screen",
-    "detail": "Ask one or two fields per onboarding screen, never a wall of inputs.",
-    "why": "The first session is where 70–90% of users are lost; density kills completion.",
-    "how": "One question per step; progressive disclosure; the PIN/passcode can double as a later lock code."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Endowed-progress onboarding",
-    "detail": "Show the user already partway along the onboarding path rather than starting at zero.",
-    "why": "Endowed progress lifts completion (34% vs 19%, Nunes & Drèze) and time-to-value under 5 min drives activation.",
-    "how": "Pre-fill/first-step-done state; a progress indicator that starts a notch in."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Blank start + explorable demo (kept separate)",
-    "detail": "New users land in their own empty workspace; a rich demo is a separate, clearly-labelled choice.",
-    "why": "Mixing demo data into a real account confuses ownership and pollutes the user's space.",
-    "how": "'Start my own' → empty studio; 'Explore a demo' loads seeded data in a distinct mode."
-  },
-  {
-    "app": "Hallalu Bookings",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "One-tap row actions; confirm routine, danger card destructive",
-    "detail": "Each row gets one-tap actions; routine actions show a small confirm, destructive ones a distinct danger card that never auto-runs.",
-    "why": "Speed for the common case, a deliberate stop for the irreversible one.",
-    "how": "Danger card for cancel/delete with a match picker when several items fit; never auto-execute."
-  },
-  {
-    "app": "Hallalu Bookings",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "'New since last visit' + repeat-client cues",
-    "detail": "Badge items that arrived since the last visit and flag returning clients.",
-    "why": "Reviewers explicitly want at-a-glance 'what's new' and client history one tap away.",
-    "how": "'New' badges keyed to last-seen timestamp; '2nd visit' chips + one-tap client notes."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Honest labor steps instead of spinners",
-    "detail": "Show the real named steps of a long operation instead of an opaque spinner.",
-    "why": "Itemised 'labour' feels faster and more trustworthy than a mystery spinner.",
-    "how": "Render each step as it runs ('reading transcript… drafting… saving'), not a single loader."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Auto-update bar — never run a stale build",
-    "detail": "Any open tab checks for a newer deploy and offers a one-tap refresh.",
-    "why": "Users otherwise sit on an old bundle after you ship a fix.",
-    "how": "On focus/interval, compare a build stamp; show a 'Refresh' bar when a newer one is live."
-  },
-  {
-    "app": "Stitchhooky",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Cancel symmetry (FTC click-to-cancel)",
-    "detail": "Let users cancel in the same sheet where they signed up, effective at period end.",
-    "why": "It's the FTC click-to-cancel standard and it builds trust; asymmetric cancellation feels like a trap.",
-    "how": "One-tap cancel in the upgrade/billing sheet; confirm effective-at-period-end."
-  },
-  {
-    "app": "Stitchhooky",
-    "category": "ux",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Streaks with mercy (never shame)",
-    "detail": "Reward streaks but never shame a miss.",
-    "why": "The 'abstinence-violation effect' makes people rage-quit after one slip.",
-    "how": "Forgiving streaks/grace days; encouraging copy on a miss, never punitive."
-  },
-  {
-    "app": "Hallalu Bookings",
-    "category": "accessibility",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Reduced-motion + aria-labels on icon buttons",
-    "detail": "Honor prefers-reduced-motion and label every icon-only button.",
-    "why": "Accessibility and polish; motion-sensitive users and screen readers both need it.",
-    "how": "@media (prefers-reduced-motion) to cut animation; aria-label on each icon button."
-  },
-  {
-    "app": "Hallalu Bookings",
-    "category": "copy",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Replace fabricated metrics with honest editable badges",
-    "detail": "Never ship invented performance numbers; use honest, editable placeholders.",
-    "why": "Fake '0.38s load / top 1% conversion' metrics destroy trust the moment they're noticed.",
-    "how": "Editable badge components with truthful defaults; no unverifiable claims baked in."
-  },
-  {
-    "app": "Hopefil",
-    "category": "copy",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Restraint as the premium signal",
-    "detail": "State value with restraint ('plans are simply the better rate') instead of pushy gating.",
-    "why": "Understatement itself reads premium; hard-sell reads cheap.",
-    "how": "Calm, factual value copy; no dark-pattern nudges or fear-based gating."
-  },
-  {
-    "app": "Finished.",
-    "category": "dx",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Stage only the files you touched (concurrent-session safety)",
-    "detail": "When another session may be editing the same repo, commit file-by-file, only the files you changed.",
-    "why": "A blanket 'git add -A' sweeps a parallel agent's in-progress work into your commit.",
-    "how": "git add specific paths; verify HEAD/diff before committing when co-editing."
-  },
-  {
-    "app": "Finished.",
-    "category": "integrity",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Crash-recovery must never wipe user content",
-    "detail": "A self-heal/crash-recovery path may purge caches and the service worker, never user data.",
-    "why": "A recovery that clears storage can destroy the user's content — a worse failure than the crash.",
-    "how": "Scope resets to SW + caches only; keep user data untouched; audit every self-heal path."
-  },
-  {
-    "app": "Hopefil",
-    "category": "workflow",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Write a world-class mandate + house rules into the repo",
-    "detail": "Put the quality bar and build conventions in a repo doc every future feature must meet.",
-    "why": "It keeps standards from drifting across sessions and agents.",
-    "how": "A BUILD.md standing rule (editable-everything, delete-confirm, glass, timestamps, local-first, both themes, verified in-browser)."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "workflow",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Deep-research with counter-evidence before design decisions",
-    "detail": "Research a design/product decision against sources AND actively seek counter-evidence before committing.",
-    "why": "Trend-following without counter-evidence ships generic or wrong choices (e.g. 'is glassmorphism still premium in 2026?').",
-    "how": "A short research pass that cites sources and the case against; then decide."
-  },
-  {
-    "app": "Hallalu CRM",
-    "category": "architecture",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Marketing landing at root, app at /app",
-    "detail": "Serve a marketing landing at the root and the app at /app; returning users skip the landing.",
-    "why": "New visitors get a pitch; existing users aren't slowed by it.",
-    "how": "Root = landing; /app = product; redirect onboarded users straight to /app."
-  },
-  {
-    "app": "Aprizely",
-    "category": "design-elevation",
-    "session": "conversation-2026-08",
-    "source": "mined",
-    "title": "Never flatten a signature boot/splash animation",
-    "detail": "Keep a signature animated splash (e.g. rainbow aurora) animated — don't 'optimize' it to a static image.",
-    "why": "The boot moment is a brand signature; making it static quietly cheapens the whole app.",
-    "how": "Preserve the keyframes; respect prefers-reduced-motion instead of removing it."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "integrity",
-    "session": "research",
-    "source": "research-2026-08-11",
-    "title": "Re-audit security after every AI iteration",
-    "detail": "Run a security pass after each round of AI edits, not just at the end.",
-    "why": "Iterative AI generation measurably degrades security — each edit can re-introduce flaws.",
-    "how": "A /securitysweep (or quick detector pass) after each significant AI change; treat 'it worked' as separate from 'it's safe'."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "integrity",
-    "session": "research",
-    "source": "research-2026-08-11",
-    "title": "Treat all model output as untrusted",
-    "detail": "Validate and sanitize anything an LLM returns before rendering, running or forwarding it.",
-    "why": "LLM output can carry XSS/SSRF/command payloads (OWASP: improper output handling).",
-    "how": "Encode before HTML, allow-list before navigation/exec, schema-validate structured output."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "architecture",
-    "session": "research",
-    "source": "research-2026-08-11",
-    "title": "Least-privilege + human-in-the-loop for AI agents",
-    "detail": "Give AI features only the tools/permissions they need and require approval for irreversible/outward actions.",
-    "why": "Excessive agency is an exploitable attack surface (OWASP LLM).",
-    "how": "Scope tokens/tools per task; confirm before send/delete/purchase; log agent actions."
-  },
-  {
-    "app": "cross-cutting",
-    "category": "integrity",
-    "session": "research",
-    "source": "research-2026-08-11",
-    "title": "Parameterize everything, escape on output",
-    "detail": "Never build queries or markup by string-concatenating input; parameterize queries and encode at the output sink.",
-    "why": "The two most common AI-code flaws are missing sanitization and XSS.",
-    "how": "Prepared statements for data; an esc() that handles quotes + CSP for HTML."
-  }
+ {
+  "app": "Breadcrumb",
+  "category": "workflow",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Paste-and-go, zero-question agent prompts (self-install, never interrogate)",
+  "detail": "An agent prompt that self-installs its CLI silently, streams if the key is present, and carries on quietly if not — never stopping to ask the user.",
+  "why": "Interrogation kills the 'automatic' feel. One-time machine setup + paste-and-go everywhere is what made Bug Ledger feel effortless.",
+  "how": "Serve the CLI from a public URL so it installs with a single curl; read the key from a small key file (no shell-profile dependency); tell the agent to self-heal silently and NEVER 'stop and ask' when something is missing."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "design-elevation",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "One-shot entrance animations (never re-animate on refresh)",
+  "detail": "Put entrance animations on a one-shot class that is stripped after it plays, not on the base element.",
+  "why": "Moving or re-inserting a DOM node restarts its CSS animation — so a live board re-fades every poll and 'blinks every second'.",
+  "how": ".card.enter{animation} then removeClass after ~600ms; and only touch the DOM order when the sorted order actually changed."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "performance",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "In-place DOM updates for live views (diff, don't re-render)",
+  "detail": "Update existing nodes field-by-field each poll and animate only what changed, instead of rewriting innerHTML.",
+  "why": "Wholesale re-render flickers, drops scroll/focus, and replays animations.",
+  "how": "Keep a refs map per card; compare to last state; mutate only changed text/classes; add a transient 'pop' class on the item that just completed."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "design-elevation",
+  "session": "conversation-2026-08-10",
+  "source": "seed",
+  "title": "Aurora-glass design language",
+  "detail": "Soft near-white canvas + slowly drifting aurora gradient blobs + frosted-glass cards + a single warm accent (coral) + big rounded type.",
+  "why": "Reads as premium and high-end, and keeps every app in the portfolio visually coherent.",
+  "how": "A fixed, blurred aurora layer of 3–4 radial-gradient blobs with a slow drift keyframe; cards use rgba white + backdrop-filter blur + hairline border + soft shadow."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "design-elevation",
+  "session": "conversation-2026-08-10",
+  "source": "seed",
+  "title": "Theme-aware from the first line",
+  "detail": "Design light and dark together with CSS variables and prefers-color-scheme, not as an afterthought.",
+  "why": "Respects the viewer's system and avoids a jarring bright flash in dark environments.",
+  "how": ":root design tokens + a single @media (prefers-color-scheme: dark) override block; test both before shipping."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "ux",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Live progress counter for long tasks (N / total)",
+  "detail": "Stream a running 'checked N / total' counter for long agent work so the user sees exactly where it reached.",
+  "why": "Transparency and watchability build trust; a silent long task feels stuck.",
+  "how": "Carry progress {done,total,label} on the session; update it every step; show it as a big number + a bar on a live board."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "ux",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Empty states as first-class design",
+  "detail": "Design the 'nothing here yet' state beautifully with a clear next action, not a blank page.",
+  "why": "First impressions and guidance — most people see the empty state first.",
+  "how": "A calm, centered message on the same aurora background, naming the exact command/step that will fill it."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "ux",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Full date + timestamp on records (not just relative time)",
+  "detail": "Show the full date and time to the second on activity and audit entries.",
+  "why": "Auditability — 'when exactly did this run?' matters for a record.",
+  "how": "Format as 'DD Mon YYYY, HH:MM:SS'; keep relative time only for the currently-live item."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "integrity",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Server-verified completeness, not self-report",
+  "detail": "When an agent claims it checked everything, verify it server-side and show N/N plus the exact items missed.",
+  "why": "Proof beats assurance; it stops silent skipping.",
+  "how": "Match the agent's reported titles against the catalog on the server; return {matched,total,missed}; loop until complete."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "integrity",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Append-only records (add, never modify or delete)",
+  "detail": "Make the durable record add-only at the database level so agents can contribute but never corrupt or delete.",
+  "why": "Safe multi-agent contribution and a trustworthy audit trail.",
+  "how": "SQLite BEFORE UPDATE/DELETE triggers that RAISE(ABORT); a documented owner-only escape hatch for pruning."
+ },
+ {
+  "app": "Bug Ledger",
+  "category": "dx",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Never cache a failure",
+  "detail": "Only cache a successful, non-empty fetch; caching a transient failure poisons the isolate until redeploy.",
+  "why": "One bad checklist fetch once silently returned 0/0 coverage for everyone on that isolate.",
+  "how": "Guard the cache assignment on a non-empty result; on failure return a fallback WITHOUT storing it."
+ },
+ {
+  "app": "Breadcrumb",
+  "category": "dx",
+  "session": "conversation-2026-08-11",
+  "source": "seed",
+  "title": "Keep source NUL-free",
+  "detail": "Never embed a literal NUL (0x00) in source — e.g. as a cache-key delimiter.",
+  "why": "It makes grep/file treat the whole file as binary and silently match nothing, so agents wrongly conclude the code is missing.",
+  "how": "Use the \\u0000 escape or a printable delimiter; grep -a as a fallback when a file mysteriously matches nothing."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "performance",
+  "session": "conversation-2026-07-28",
+  "source": "seed",
+  "title": "Network-first HTML in service workers",
+  "detail": "Serve navigations network-first (or bump the cache name every deploy) so shipped fixes aren't masked by a stale cached shell.",
+  "why": "Cache-first service workers pin returning users to an old build — a bug that recurred across many apps.",
+  "how": "Network-first fetch handler for document requests; version the cache name on each release."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "dx",
+  "session": "conversation-2026-07-27",
+  "source": "seed",
+  "title": "Version-stamp assets (?v=) every deploy",
+  "detail": "Append a ?v=N stamp to local script/style URLs each deploy so browsers can't serve stale JS/CSS.",
+  "why": "Stale-CSS/JS bugs where a fix ships but the browser keeps the old file.",
+  "how": "Bump ?v= on every deploy (or hash the asset)."
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "integrity",
+  "session": "conversation-2026-08-10",
+  "source": "seed",
+  "title": "Grounded AI that never invents",
+  "detail": "Constrain the assistant to page/transcript context only, with a local fallback, and forbid fabrication.",
+  "why": "Trust — a made-up fact or call detail is worse than 'I don't know'.",
+  "how": "System prompt: answer only from provided context, never invent; local FAQ/summary fallback when the model is unavailable."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "copy",
+  "session": "conversation-2026-08-08",
+  "source": "seed",
+  "title": "Source-verified stats only (ban folklore)",
+  "detail": "Only show a statistic you can cite to a primary source; ban unsourced 'best practice' numbers.",
+  "why": "Credibility — one bogus stat undermines the whole product.",
+  "how": "Keep a small vetted stats bank; no number ships without a citation."
+ },
+ {
+  "app": "Planner Studio",
+  "category": "design-elevation",
+  "session": "conversation-2026-07-27",
+  "source": "seed",
+  "title": "Premium inputs & micro-interactions (no native dialogs)",
+  "detail": "Replace native prompt()/alert()/confirm() with in-app modals; add smooth press states, hairline borders, subtle fills.",
+  "why": "Native browser dialogs look broken and cheap; micro-polish signals quality.",
+  "how": "Custom modal/toast components; :active transitions; consistent radius and spacing tokens."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "ux",
+  "session": "conversation-2026-07-15",
+  "source": "seed",
+  "title": "Confirm-first for destructive or outward actions",
+  "detail": "Deletes, sends, and voice/agent commands confirm before acting.",
+  "why": "Prevents irreversible mistakes and builds trust in automation.",
+  "how": "A confirm step (or undo window) before any send/delete; never auto-fire outward actions."
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Balanced editorial layout — no orphaned whitespace",
+  "detail": "Structure a section as a full-width strip + an aligned card grid so rows line up and nothing is left 'stranded' in one column.",
+  "why": "'Left over, not placed' whitespace is exactly what reads as unfinished/cheap.",
+  "how": "Full-bleed gallery strip (6→3→2 across) then a 2×2 grid (About·Testimonials / FAQ·Policies); a full-bleed strip becomes its own fold."
+ },
+ {
+  "app": "Hopefil",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Editorial typography: serif display + tabular numerals",
+  "detail": "Serif display headlines, ledger/tabular numerals, caps-tracked labels, intentional whitespace, layered depth (soft shadow + blur), restraint over flash.",
+  "why": "This is the consensus 2026 'premium' ingredient list; it reads as considered and expensive.",
+  "how": "Serif for headings/commerce, tabular-nums for figures, 2-line clamps on overlays; restraint, not more effects."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Glassmorphism with restraint (floating chrome only)",
+  "detail": "Use frosted glass selectively — on floating chrome (modals, aha hero), not on every surface.",
+  "why": "Glass everywhere muddies legibility and stops reading premium; restraint is the premium signal.",
+  "how": "A dedicated .glass class for floating elements; opaque premium cards elsewhere."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Premium SVG icons instead of emoji in chrome",
+  "detail": "Replace bright emoji in nav/tools/buttons with a coherent inline-SVG icon set.",
+  "why": "Emoji-as-chrome reads amateur; a stroke-consistent icon set reads like a real product.",
+  "how": "Inline SVG, ~1.6 stroke, currentColor so icons inherit theme; one consistent set across the app."
+ },
+ {
+  "app": "Hopefil",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Real editorial imagery, never stock people",
+  "detail": "Bundle a small in-house image library (no people, no text, one soft-light style) and hide any tile whose image fails.",
+  "why": "Stock-people photos make apps generic; a broken image is worse than none.",
+  "how": "Generate/curate a few consistent images; a broken-image fallback that hides the tile so a 404 never shows."
+ },
+ {
+  "app": "Stitchhooky",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Bento hierarchy + gradient washes + real photography",
+  "detail": "Compose with a bento grid, gentle gradient washes and genuine subject photography for a high-end look.",
+  "why": "This is the '$100k look' — clear hierarchy and real texture instead of flat boxes.",
+  "how": "Bento tiles with varied sizes, soft gradient backgrounds, real photos over placeholder blocks."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Frosted-glass device bezel for previews",
+  "detail": "Frame a live preview in a translucent glass device edge, not a thick black slab.",
+  "why": "The black bezel looks like a placeholder; frosted glass looks designed.",
+  "how": "Translucent edge + soft highlight/shadow + subtle notch + a 'LIVE PREVIEW' caption."
+ },
+ {
+  "app": "Hopefil",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Layout diversity by content type",
+  "detail": "Give different content modes genuinely different anatomies, not one template recolored.",
+  "why": "Two prompts should produce two visibly different products; sameness reads as a wrapper.",
+  "how": "Editorial = quiet grouped rows + stat strip (no hero); imagery-led = photo card grid; commerce = its own."
+ },
+ {
+  "app": "Planner Studio",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Shareable summary cards that market the app",
+  "detail": "Generate a beautiful downloadable month/year card with kind, encouraging analysis and the app URL in the footer.",
+  "why": "It delights the user and markets the app every time it's shared.",
+  "how": "Canvas card: colour ribbon, stat tiles, one warm encouraging line, app URL footer."
+ },
+ {
+  "app": "Finished.",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Uniform pill pickers (avoid flex:1 ballooning)",
+  "detail": "Make a format/segmented picker natural-width uniform pills, not flex:1 chips.",
+  "why": "flex:1 makes buttons stretch and the last wrap-row balloon — visibly broken.",
+  "how": "Non-stretching pills, uniform height, one icon each, a single accent on the selected one."
+ },
+ {
+  "app": "Stitchhooky",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Onboarding: 1–2 fields per screen",
+  "detail": "Ask one or two fields per onboarding screen, never a wall of inputs.",
+  "why": "The first session is where 70–90% of users are lost; density kills completion.",
+  "how": "One question per step; progressive disclosure; the PIN/passcode can double as a later lock code."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Endowed-progress onboarding",
+  "detail": "Show the user already partway along the onboarding path rather than starting at zero.",
+  "why": "Endowed progress lifts completion (34% vs 19%, Nunes & Drèze) and time-to-value under 5 min drives activation.",
+  "how": "Pre-fill/first-step-done state; a progress indicator that starts a notch in."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Blank start + explorable demo (kept separate)",
+  "detail": "New users land in their own empty workspace; a rich demo is a separate, clearly-labelled choice.",
+  "why": "Mixing demo data into a real account confuses ownership and pollutes the user's space.",
+  "how": "'Start my own' → empty studio; 'Explore a demo' loads seeded data in a distinct mode."
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "One-tap row actions; confirm routine, danger card destructive",
+  "detail": "Each row gets one-tap actions; routine actions show a small confirm, destructive ones a distinct danger card that never auto-runs.",
+  "why": "Speed for the common case, a deliberate stop for the irreversible one.",
+  "how": "Danger card for cancel/delete with a match picker when several items fit; never auto-execute."
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "'New since last visit' + repeat-client cues",
+  "detail": "Badge items that arrived since the last visit and flag returning clients.",
+  "why": "Reviewers explicitly want at-a-glance 'what's new' and client history one tap away.",
+  "how": "'New' badges keyed to last-seen timestamp; '2nd visit' chips + one-tap client notes."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Honest labor steps instead of spinners",
+  "detail": "Show the real named steps of a long operation instead of an opaque spinner.",
+  "why": "Itemised 'labour' feels faster and more trustworthy than a mystery spinner.",
+  "how": "Render each step as it runs ('reading transcript… drafting… saving'), not a single loader."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Auto-update bar — never run a stale build",
+  "detail": "Any open tab checks for a newer deploy and offers a one-tap refresh.",
+  "why": "Users otherwise sit on an old bundle after you ship a fix.",
+  "how": "On focus/interval, compare a build stamp; show a 'Refresh' bar when a newer one is live."
+ },
+ {
+  "app": "Stitchhooky",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Cancel symmetry (FTC click-to-cancel)",
+  "detail": "Let users cancel in the same sheet where they signed up, effective at period end.",
+  "why": "It's the FTC click-to-cancel standard and it builds trust; asymmetric cancellation feels like a trap.",
+  "how": "One-tap cancel in the upgrade/billing sheet; confirm effective-at-period-end."
+ },
+ {
+  "app": "Stitchhooky",
+  "category": "ux",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Streaks with mercy (never shame)",
+  "detail": "Reward streaks but never shame a miss.",
+  "why": "The 'abstinence-violation effect' makes people rage-quit after one slip.",
+  "how": "Forgiving streaks/grace days; encouraging copy on a miss, never punitive."
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "accessibility",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Reduced-motion + aria-labels on icon buttons",
+  "detail": "Honor prefers-reduced-motion and label every icon-only button.",
+  "why": "Accessibility and polish; motion-sensitive users and screen readers both need it.",
+  "how": "@media (prefers-reduced-motion) to cut animation; aria-label on each icon button."
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "copy",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Replace fabricated metrics with honest editable badges",
+  "detail": "Never ship invented performance numbers; use honest, editable placeholders.",
+  "why": "Fake '0.38s load / top 1% conversion' metrics destroy trust the moment they're noticed.",
+  "how": "Editable badge components with truthful defaults; no unverifiable claims baked in."
+ },
+ {
+  "app": "Hopefil",
+  "category": "copy",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Restraint as the premium signal",
+  "detail": "State value with restraint ('plans are simply the better rate') instead of pushy gating.",
+  "why": "Understatement itself reads premium; hard-sell reads cheap.",
+  "how": "Calm, factual value copy; no dark-pattern nudges or fear-based gating."
+ },
+ {
+  "app": "Finished.",
+  "category": "dx",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Stage only the files you touched (concurrent-session safety)",
+  "detail": "When another session may be editing the same repo, commit file-by-file, only the files you changed.",
+  "why": "A blanket 'git add -A' sweeps a parallel agent's in-progress work into your commit.",
+  "how": "git add specific paths; verify HEAD/diff before committing when co-editing."
+ },
+ {
+  "app": "Finished.",
+  "category": "integrity",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Crash-recovery must never wipe user content",
+  "detail": "A self-heal/crash-recovery path may purge caches and the service worker, never user data.",
+  "why": "A recovery that clears storage can destroy the user's content — a worse failure than the crash.",
+  "how": "Scope resets to SW + caches only; keep user data untouched; audit every self-heal path."
+ },
+ {
+  "app": "Hopefil",
+  "category": "workflow",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Write a world-class mandate + house rules into the repo",
+  "detail": "Put the quality bar and build conventions in a repo doc every future feature must meet.",
+  "why": "It keeps standards from drifting across sessions and agents.",
+  "how": "A BUILD.md standing rule (editable-everything, delete-confirm, glass, timestamps, local-first, both themes, verified in-browser)."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "workflow",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Deep-research with counter-evidence before design decisions",
+  "detail": "Research a design/product decision against sources AND actively seek counter-evidence before committing.",
+  "why": "Trend-following without counter-evidence ships generic or wrong choices (e.g. 'is glassmorphism still premium in 2026?').",
+  "how": "A short research pass that cites sources and the case against; then decide."
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "architecture",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Marketing landing at root, app at /app",
+  "detail": "Serve a marketing landing at the root and the app at /app; returning users skip the landing.",
+  "why": "New visitors get a pitch; existing users aren't slowed by it.",
+  "how": "Root = landing; /app = product; redirect onboarded users straight to /app."
+ },
+ {
+  "app": "Aprizely",
+  "category": "design-elevation",
+  "session": "conversation-2026-08",
+  "source": "mined",
+  "title": "Never flatten a signature boot/splash animation",
+  "detail": "Keep a signature animated splash (e.g. rainbow aurora) animated — don't 'optimize' it to a static image.",
+  "why": "The boot moment is a brand signature; making it static quietly cheapens the whole app.",
+  "how": "Preserve the keyframes; respect prefers-reduced-motion instead of removing it."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "session": "research",
+  "source": "research-2026-08-11",
+  "title": "Re-audit security after every AI iteration",
+  "detail": "Run a security pass after each round of AI edits, not just at the end.",
+  "why": "Iterative AI generation measurably degrades security — each edit can re-introduce flaws.",
+  "how": "A /securitysweep (or quick detector pass) after each significant AI change; treat 'it worked' as separate from 'it's safe'."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "session": "research",
+  "source": "research-2026-08-11",
+  "title": "Treat all model output as untrusted",
+  "detail": "Validate and sanitize anything an LLM returns before rendering, running or forwarding it.",
+  "why": "LLM output can carry XSS/SSRF/command payloads (OWASP: improper output handling).",
+  "how": "Encode before HTML, allow-list before navigation/exec, schema-validate structured output."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "architecture",
+  "session": "research",
+  "source": "research-2026-08-11",
+  "title": "Least-privilege + human-in-the-loop for AI agents",
+  "detail": "Give AI features only the tools/permissions they need and require approval for irreversible/outward actions.",
+  "why": "Excessive agency is an exploitable attack surface (OWASP LLM).",
+  "how": "Scope tokens/tools per task; confirm before send/delete/purchase; log agent actions."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "session": "research",
+  "source": "research-2026-08-11",
+  "title": "Parameterize everything, escape on output",
+  "detail": "Never build queries or markup by string-concatenating input; parameterize queries and encode at the output sink.",
+  "why": "The two most common AI-code flaws are missing sanitization and XSS.",
+  "how": "Prepared statements for data; an esc() that handles quotes + CSP for HTML."
+ },
+ {
+  "app": "cross-cutting",
+  "category": "architecture",
+  "title": "OAuth token never touches the browser — server-side exchange + proxied API calls",
+  "detail": "For third-party sign-in, the Worker swaps the OAuth code for a token using the client secret, stores it server-side per user, and proxies every API call so the page reads private data without holding a credential",
+  "why": "A leaked client-held token exposes the user's private third-party data; server-side + proxy makes leakage structurally impossible",
+  "how": "Worker routes /oauth/start and /oauth/callback (secret in env), a tokens table, and /api/<provider>/* proxy endpoints gated by the session cookie; browser only calls your own proxy",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "workflow",
+  "title": "Device-link key provisioning (no secret pasted into chat/transcript)",
+  "detail": "When an agent CLI has no key, it prints a short Approve link; the signed-in user clicks Approve once and the CLI polls, self-provisions its key to a local file, and starts streaming",
+  "why": "Pasting a raw key into an agent chat leaves the secret in the transcript; a one-click device link is easier and safer",
+  "how": "A device_codes table, a public /link/<code> approval page (401->sign-in-first guard), start/poll endpoints, and a cookie-authed approve; the CLI polls until approved then writes the key locally",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "dx",
+  "title": "CLIs must fail loudly, never silently no-op",
+  "detail": "A served/worklog CLI that silently succeeded on a missing key or unknown verb misled users and agents into thinking work was recorded when nothing happened",
+  "why": "Silent success hides breakage and sends agents down wrong paths (rebuilding clients, 'no key' with no guidance)",
+  "how": "Exit non-zero with a clear message on missing key/unknown command; point the user to the recovery command (login/connect)",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "dx",
+  "title": "Scope CLI/tool state per-repo, never a shared global config path",
+  "detail": "A worklog CLI wrote per-run state to cwd/.aprizely.json, which collided with the global token file at ~/.aprizely.json when run from home — clobbering the auth token",
+  "why": "A shared or ambiguous state path silently overwrites config/tokens and clobbers other projects' runs",
+  "how": "Write per-run state to a distinctly-named, cwd-scoped file, refuse to read a worklog file as config, and gitignore it",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "dx",
+  "title": "Always re-fetch a served CLI each run — 'install only if missing' goes stale",
+  "detail": "A prompt that only re-installed the CLI when the file was absent left agents running an outdated cached copy lacking newer commands, so it printed 'No key' forever",
+  "why": "Because the CLI is served (not versioned in a clone), any server-side change needs a re-fetch or clients silently run old code",
+  "how": "Make the setup step always curl the latest CLI (overwrite), and add an explicit login/connect fallback for parity",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "architecture",
+  "title": "Defensive per-item rendering so one bad record can't blank a whole view",
+  "detail": "A single malformed record (a string where an array was expected) threw and blanked an entire list view",
+  "why": "Lists that render items in one unguarded pass are fragile — one corrupt row takes down everything",
+  "how": "Wrap/guard each item's render independently so a bad record degrades to a skipped/placeholder entry instead of aborting the list",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "dx",
+  "title": "Dependency-free client-side CSV + PDF export",
+  "detail": "Spreadsheet/table data exported to a real .csv (proper quoting) and a genuine .pdf via a ~90-line dependency-free PDF generator",
+  "why": "Reusable export without pulling heavy libraries; keeps bundles small and works offline in the browser",
+  "how": "Build the PDF bytes by hand and validate the xref offsets point to real objects so any viewer accepts the file; verify CSV quoting on values with commas/quotes",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Aprizely",
+  "category": "ux",
+  "title": "User-customizable data grid (reorder, resize, persisted, delete-confirm)",
+  "detail": "A spreadsheet view where users drag to reorder columns, drag borders to resize, edit cells inline, and delete rows with a confirm — layout persisted per user",
+  "why": "Turns a static table into an Airtable/Excel-grade tool people can shape to their own workflow",
+  "how": "Layout-driven column model with a colgroup, drag handles on headers, resize handles on borders, width/order saved per-user, native confirm on row delete",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Breadcrumb",
+  "category": "integrity",
+  "title": "Self-healing demo isolation via a fixed demo fingerprint",
+  "detail": "Detect demo data that leaked into a real account (known ids/nickname) and reset it to a clean state on load, while keeping the landing demo fully intact",
+  "why": "Explorable demos routinely bleed into new accounts; a fingerprint-based auto-heal fixes already-polluted accounts without manual cleanup",
+  "how": "On cloudPull, if state matches the demo fingerprint, reset to a fresh blank state; also reset on signup before adopting the account",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Breadcrumb",
+  "category": "integrity",
+  "title": "Honest usage analytics — predict from user snapshots, never scrape or invent",
+  "detail": "A usage/credits view with burn-rate and upgrade-runway predictions grounded only in user-logged (or agent-posted) snapshots plus the tier multiplier the plan panel already shows",
+  "why": "No API exposes subscription usage, so scraping/guessing would fabricate numbers; logging snapshots keeps analytics truthful",
+  "how": "Ingest usage snapshots via a keyed endpoint or manual entry; compute burn-rate/projection from history and base upgrade math only on the known tier multiplier",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "copy",
+  "title": "Click-to-understand plain-English step notes for agent actions",
+  "detail": "Each agent-logged task/step carries a one-line description of what it does, why, and its effect; users tap a step to read it",
+  "why": "Non-technical users can follow exactly what an agent is doing without reading code or jargon",
+  "how": "CLI accepts Task::description in --tasks and a --desc flag on step/done; the live board, report timeline, and activity items expose an expandable info affordance",
+  "session": "1d8-cd3",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "conversion",
+  "title": "Show-but-lock gated features instead of hiding them",
+  "detail": "Premium (Business-tier) rooms stay visible to every user with a lock badge in the nav/menu; clicking opens an upgrade wall rather than the feature",
+  "why": "Hidden features can't sell themselves — showing the locked feature lets users see exactly what they'd gain",
+  "how": "One BIZ_VIEWS set drives three gates consistently: nav lock badge, mobile-menu lock, and a render-level upgradeWall on the view",
+  "session": "215ee275",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "integrity",
+  "title": "Per-plan AI usage quotas to protect margin",
+  "detail": "Monthly AI call quotas metered in D1 per plan (vision counts triple; anonymous capped by IP)",
+  "why": "Uncapped AI features can be abused and erode margin; per-plan caps keep high gross margin while staying generous",
+  "how": "Mirror the existing TTS quota pattern in the worker; on cap-hit fall back to an on-device result plus a gentle upgrade nudge",
+  "session": "215ee275",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "ux",
+  "title": "In-app device-framed live preview of the real public page",
+  "detail": "A booking Overview tab shows the actual public booking page rendered inside a phone/desktop frame (with a device toggle + QR), driven by the real template and the user's current data",
+  "why": "Users otherwise never see their public-facing page without publishing and opening it in a new tab",
+  "how": "Render the same public template with current state into an iframe/frame; add a device-size toggle and reuse the existing QR helper",
+  "session": "215ee275",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hallalu CRM",
+  "category": "design-elevation",
+  "title": "Graceful filler imagery that vanishes on real upload",
+  "detail": "Cover, portrait, service thumbnails and a photo gallery fall back to tasteful stock images (seeded by the page slug so they stay stable) and adapt to fewer photos than the demo; fully editable",
+  "why": "Empty grey image boxes read as broken; stable placeholders keep the preview presentable and disappear the moment the user adds their own",
+  "how": "Seed placeholder URLs deterministically from the slug; render placeholders only when the user's own field is empty; make the gallery a real add/remove editor",
+  "session": "215ee275",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "dx",
+  "title": "Machine-readable reusable-module hub for agents",
+  "detail": "A dedicated repo + Worker hosting each dependency-free module in its own folder, indexed by a modules.json (raw file URLs, API, usage, deps) plus /llms.txt and /AGENTS.txt",
+  "why": "Lets any coding agent discover and copy a module's full source in two requests, and makes adding a new module one folder + one JSON entry",
+  "how": "public/<slug>/ per module; modules.json as the machine index; llms.txt/AGENTS.txt as the agent contract",
+  "session": "215ee275",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Aprizely",
+  "category": "integrity",
+  "title": "Append-only field-change version history (old-new diffs)",
+  "detail": "Every change to a project's info is archived append-only and shown as a readable old-to-new diff in an 'Activity & version history' panel, capturing edits from both the UI and the agent API",
+  "why": "Gives a tamper-evident audit trail of who changed what and when, with no schema migration and nothing ever modifiable or deletable",
+  "how": "Add an archiveEdit() helper that writes the field diff into the existing append-only logs table at both UPDATE sites (source: user vs claude-code); render as a diff log kind",
+  "session": "215ee275",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hello Baby",
+  "category": "design-elevation",
+  "title": "Heirloom hand-down account (recovery key = ownership transfer)",
+  "detail": "The whole account is designed to be handed to the child later as an 18th-birthday keepsake, made literally true because the cloud data is gated only by a portable recovery key",
+  "why": "Turns a planner into a keepsake, a genuinely novel emotional moat no ad-funded incumbent offers",
+  "how": "Keep all cloud data behind a single transferable recovery key (no email-locked account); surface 'one day, hand them the key' in-app",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hello Baby",
+  "category": "ux",
+  "title": "Loss-sensitive 'quiet pause' path (stop the cheerful nagging)",
+  "detail": "A pause control that halts all weekly prompts/countdowns with an optional private note, shows 'the countdown is resting', and replays the note before resuming, plus a 'close this chapter quietly' option",
+  "why": "Pregnancy/period apps are widely criticised for firing celebratory notifications after a loss; almost nobody designs the graceful exit",
+  "how": "Add a pause state that suppresses time-based prompts, stores an optional user note, and offers a no-fanfare close; keep all data intact",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hello Baby",
+  "category": "design-elevation",
+  "title": "Era-aware app that grows with the user",
+  "detail": "One countdown that rolls itself from due-date to 1st/2nd/3rd birthday and re-labels content by era; setup offers 'expecting' vs 'baby already here' vs 'adopting/arrival day'",
+  "why": "Extends product lifespan far beyond the ~9-month window competitors churn at, and serves adjacent segments",
+  "how": "Drive labels and prompts off a computed life-stage rather than a single fixed mode; branch onboarding into the relevant era",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hello Baby",
+  "category": "conversion",
+  "title": "Time-gated content reveal with an 'unlocks soon' teaser",
+  "detail": "Only arrived weeks appear plus one locked teaser card ('unlocks Saturday - in 4 days')",
+  "why": "Creates a weekly reason to return and an anticipation loop, rather than dumping all content up front",
+  "how": "Compute each entry's unlock date from an anchor; render passed entries, hide future ones, show one next-up locked teaser with countdown",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Happy Travel",
+  "category": "architecture",
+  "title": "Server-enforced role-based share links (no accounts)",
+  "detail": "Collaboration via copyable editor/viewer/admin links backed by worker share-tokens: viewers rejected server-side (403) on writes, only super-admin can grant admin or revoke, revoked links die instantly",
+  "why": "Canva/Docs-style multi-user editing without forcing accounts, with authorization enforced on the server not the client",
+  "how": "Mint role-scoped tokens in a Worker/KV; check role server-side on every mutating endpoint; keep recovery key only with owner",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "design-elevation",
+  "title": "Personal photo as full-bleed wallpaper while themes keep the accents",
+  "detail": "Users set their own photo as a 100%-cover background with an adjustable readability veil, while the theme still drives buttons/nav/accent colours on top",
+  "why": "Deep personalization without sacrificing legibility or the design system",
+  "how": "Fixed background-size:cover layer + themed veil slider; per-section override falling back to global photo; run every url() through a scheme-allowlist sanitizer",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "design-elevation",
+  "title": "Self-building storybook timeline from a single anchor date",
+  "detail": "A dashed spine that auto-generates dated chapters from one date, weaves the user's own photo-moments in chronologically, and floats a pulsing 'you are here' marker; reused across Ever After, Happy Travel, Hello Baby",
+  "why": "Turns flat data into an emotional, anticipatory narrative and is highly reusable",
+  "how": "Derive chapter dates from the anchor, mark past entries done and soften future ones, merge user moments by date, add a live position marker",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hello Baby",
+  "category": "design-elevation",
+  "title": "Concentric closeness rings ('atom') for relationship maps",
+  "detail": "Places the subject at centre and auto-orbits people onto rings by closeness, with rings fading outward, even spacing per ring, staggered spokes, and a legend",
+  "why": "Communicates relationship closeness at a glance far better than a flat grid",
+  "how": "Map each role to a ring radius, distribute members evenly with a per-ring angular offset so nobody stacks, dim guide circles with distance",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "conversion",
+  "title": "One-time purchase over subscription for privacy-first products, with giftable unlock codes",
+  "detail": "A single ~$29.99 unlock instead of a recurring fee, with Stripe promo codes, account-after-paying, and single-use gift codes so it can be gifted",
+  "why": "A recurring charge contradicts a 'no ads, buy once, hand it down' privacy pitch and loses to churn on a short use arc; buy-once matches Etsy expectations and is giftable",
+  "how": "Stripe Checkout -> webhook mints a single-use code -> redeem deep-link flips entitlement; lead the listing with 'Buy Once - No Subscription'",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hello Baby",
+  "category": "integrity",
+  "title": "Data portability as verifiable trust proof",
+  "detail": "One-tap 'Download everything (JSON)' export of the user's entire dataset",
+  "why": "Makes a privacy/no-lock-in promise provable rather than merely claimed",
+  "how": "Serialize all local/cloud state to a single downloadable JSON file from Settings",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "accessibility",
+  "title": "iOS-safe input spec: style :not([type]), 16px font, 44px target",
+  "detail": "Add input:not([type]) so type-less boxes can't fall through to the default grey control, set 16px font on phones to stop iOS tap-to-zoom, enforce 44px min height per Apple HIG",
+  "why": "Type-less inputs silently escaped every input[type=...] rule (a real 'unstyled box' bug), and sub-16px fields trigger auto-zoom on iOS",
+  "how": "Include :not([type]) in the input rule set, bump font-size to 16px at mobile widths, apply min-height:44px, scope dense-view overrides explicitly",
+  "session": "2d2c2119",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "architecture",
+  "title": "Security headers belong in _headers, not the Worker, for static assets",
+  "detail": "On Cloudflare, static assets are served directly at the edge and bypass the Worker's fallback handler, so header injection written in the Worker never runs on asset responses.",
+  "why": "Teams add CSP/security headers in the Worker, verify one JSON route, and ship — while every actual HTML/asset response still goes out bare.",
+  "how": "Put security headers in a public/_headers file (or the assets config); verify with a GET on a real asset URL, not a HEAD on the API.",
+  "session": "mine",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "performance",
+  "title": "INP is now the most-failed Core Web Vital — break up long tasks",
+  "detail": "INP (replacing FID) scores the worst interaction latency; 43% of sites fail the 200ms bar in 2026. Any task >50ms blocks the main thread and delays taps/clicks.",
+  "why": "Heavy synchronous render/parse work on interaction makes the UI feel janky and now directly hurts search ranking.",
+  "how": "Chunk long JS with await/yield (scheduler.yield or setTimeout), debounce/throttle scroll+resize, use passive listeners, move heavy compute to a Web Worker, avoid forced synchronous layout.",
+  "session": "mine",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "accessibility",
+  "title": "Six fixes clear 96% of accessibility failures",
+  "detail": "Low-contrast text (83.9% of pages), missing alt text (53%), missing form labels (51%), empty links (46%), empty buttons (31%), and missing document lang (14%) account for 96% of detected WCAG errors.",
+  "why": "These exclude real users (and drive ADA/EAA lawsuits) yet are all caught by free automated scanners — cheap, high-leverage wins.",
+  "how": "Enforce 4.5:1 text contrast (3:1 large), alt on every meaningful image, a <label> for every input, text/aria-label on every link+button, and <html lang> set.",
+  "session": "mine",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Budget LevelUp",
+  "category": "ux",
+  "title": "Write-in custom categories via datalist beat fixed dropdowns",
+  "detail": "Replaced fixed <select> category pickers (subscription/asset/debt/bank/card) with <input list=...> datalists — suggestions plus free write-in.",
+  "why": "Every user's real-world categories differ; a closed dropdown forces mislabeling into 'Other'.",
+  "how": "One reusable datalist helper feeding an <input list>; keep the common suggestions, allow anything typed.",
+  "session": "mine",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Budget LevelUp",
+  "category": "ux",
+  "title": "New users get a light scaffold, not seeded sample data",
+  "detail": "Defaults ship as empty category templates (zero sample entries); a landing 'Try the demo' button and ?demo=1 load rich example data, with a one-tap 'Start fresh'.",
+  "why": "Seeding fake entries into a real account makes users delete demo data before they can trust their own numbers.",
+  "how": "Keep structural scaffolding in defaults; move all example rows into loadExample(); gate demo behind an explicit action.",
+  "session": "mine",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "title": "Idempotency keys on every mutating / retryable endpoint",
+  "detail": "Any POST that creates or charges (payments, inserts, sends) must accept a client-supplied idempotency key and no-op on replay, returning the original result.",
+  "why": "AI codegen omits idempotency, so a retry, double-tap, or network re-send creates duplicate rows/charges/emails. Edge runtimes and clients retry more than devs expect.",
+  "how": "Client generates a UUID per logical action; server stores it (D1 unique index or KV) with the response and returns the stored result on repeat. Combine with a unique DB constraint so even a race can't double-insert.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "dx",
+  "title": "Verify AI-suggested dependencies before trusting them",
+  "detail": "Treat every package name and API the model emits as unverified until checked against the real registry/docs; pin exact versions and commit a lockfile.",
+  "why": "LLMs hallucinate package names (slopsquatting supply-chain risk) and deprecated/imaginary APIs. Auto-installing or calling them causes build breaks or runs an attacker's squatted package.",
+  "how": "Before adding a dep: confirm the genuine repo, publisher, and download history; pin x.y.z not ^; keep a lockfile; prefer platform-native bindings (D1/KV/Workers AI). Cross-check unfamiliar SDK calls against current official docs, not the model's memory.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "title": "Store timestamps as UTC epoch, format only on display",
+  "detail": "Persist instants as UTC (epoch ms or ISO-with-Z); convert to local wall-clock strictly at render time. Never parse bare 'YYYY-MM-DD' or call toISOString() on a locally-constructed Date to store it.",
+  "why": "new Date('2026-08-16') parses as UTC midnight, and toISOString() on a local Date subtracts the offset — both shift the calendar day by one for anyone west of UTC, and DST transitions move stored times by an hour. A top recurring AI-codegen date bug.",
+  "how": "Store Date.now()/UTC; build local dates with explicit y,m,d fields (month is 0-indexed) or a date lib in a fixed zone; format for the user with Intl.DateTimeFormat and the user's tz. Round-trip through UTC only.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "architecture",
+  "title": "Split static-asset routing from the SPA fallback (and auto-recover)",
+  "detail": "Requests for hashed assets must 404 when missing — never fall through to index.html — and index.html must be served no-cache while assets are immutable-cached.",
+  "why": "Serving index.html (200 text/html) for a missing .js chunk turns a routine deploy into a white-screen ChunkLoadError for users with the page already open or a stale service worker.",
+  "how": "In the Worker, match asset extensions first and return the asset or a real 404; only unknown non-asset paths get the SPA shell. Set Cache-Control: no-cache on the HTML, immutable long max-age on hashed assets, and add a one-time hard-reload recovery on failed dynamic imports.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "performance",
+  "title": "Budget edge-storage access: batch and chunk, never N+1 in a loop",
+  "detail": "Treat every D1/KV/R2/fetch call as a metered subrequest with hard caps (100 bound params per D1 statement, per-invocation subrequest limit). Design writes and reads to stay well under them.",
+  "why": "AI codegen writes per-row queries and giant multi-row inserts that pass on demo data and then hit 'too many SQL variables' or 'too many subrequests' under real volume — a silent scaling cliff.",
+  "how": "Use db.batch([...]) in one transaction; keep (rows x cols) under 100 placeholders per statement and chunk beyond that; replace N+1 loops with a single JOIN or bulk read; cache repeated fetches; push large fan-out to Queues/Workflows.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "conversion",
+  "title": "Honest free tier — don't gate the core loop behind a surprise paywall minutes in",
+  "detail": "Across thousands of 1-3 star reviews the #1 pattern is 'free that turns into a paywall': the listing leads with free, then locks the thing the user opened the app to do within minutes.",
+  "why": "The lowest-rated apps rarely fail on idea — they fail because the way they ask for money doesn't match what users thought they agreed to. Bait-paywalls burn the goodwill you need for retention and reviews.",
+  "how": "Let the core loop (log a habit, write an entry, track a stitch, build a budget) work for free indefinitely. Charge for depth/scale/convenience, never for the primary verb. State the free/paid line plainly on the first screen that hints at cost.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "conversion",
+  "title": "Deliver first value before asking users to sign up or pay",
+  "detail": "Onboarding-abandonment and paywall complaints share a root: apps demand an account (or a card) before the user has felt anything work.",
+  "why": "Time-to-value beats commitment-up-front. A user who has already created something real is far likelier to register to save it than one asked to commit to a stranger.",
+  "how": "Allow a full first session anonymously with local persistence; prompt to create an account at the moment there's something worth saving ('sign up to keep this'), and defer any paywall until after a genuine aha. Migrate the local work into the new account on signup.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "title": "Grandfather existing users through price changes; announce increases in advance",
+  "detail": "A one-time-purchase-to-subscription switch is the canonical resentment story — the app may still be good, but the change breaks the value calculation for people who already paid, and users rage at prices that quietly climb between renewals.",
+  "why": "Silent or retroactive price hikes convert your most loyal, longest-paying users into your loudest detractors.",
+  "how": "When you change pricing, grandfather current subscribers at their existing rate (or give a long honored window), announce any increase before it hits with a clear opt-out, and never let a renewal price rise without an explicit heads-up the user can act on.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "ux",
+  "title": "Request ratings/reviews only after a genuine win — never at friction points",
+  "detail": "Never prompt on first launch, during onboarding, after an error, or in the middle of a paywall. A frustrated user handed a rating prompt gives you the one-star you spend months digging out of.",
+  "why": "Review timing determines review score more than product quality does at the margins; asking at a low-goodwill moment manufactures your own bad ratings.",
+  "how": "Trigger the ask only after a detectable success moment (streak milestone, project completed, export finished), rate-limit it, and suppress it entirely for N days after any crash, failed payment, or support contact.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "workflow",
+  "title": "Per-item reminder scheduling, not one global notification time",
+  "detail": "A top request for habit/tracker apps: different habits need different reminder times. Users want the water reminder hourly and the journaling reminder at 9pm — not both on one global schedule.",
+  "why": "A single app-wide reminder time makes reminders useless for everything except one habit, so users disable notifications entirely and then churn from forgetting.",
+  "how": "Attach an optional schedule to each trackable item (times of day, days of week, frequency), default to sensible per-type suggestions, and let the user mute one item's reminders without silencing the app.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "copy",
+  "title": "Humane notifications — no guilt-trip copy, capped frequency, quiet by default",
+  "detail": "Notifications have drifted from helpful nudges to emotional manipulation ('We miss you! Keep your streak alive'). Users report coming to hate apps that shame them; capping alerts to roughly 3/day reduced stress in research.",
+  "why": "Guilt-based nudges spike short-term opens but drive long-term disengagement and 'this app makes me anxious' reviews — the opposite of intended habit formation.",
+  "how": "Write encouraging, blame-free copy (never 'you failed'). Cap total notifications per day, ship granular per-category toggles, default anything non-essential to off, and offer quiet hours. Frame returns as welcome, not owed.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "title": "Keep sensitive personal data local or E2E-encrypted — no third-party ad/analytics SDKs on it",
+  "detail": "Period/pregnancy apps became a privacy scandal: intimate cycle/pregnancy data leaked to ad platforms, and a 2025 jury held a major platform liable for collecting reproductive-health data via in-app trackers. Users mass-deleted trackers and demanded anonymous mode.",
+  "why": "For pregnancy, baby, period, finance, and location data, a routine ad/analytics SDK turns your app into a liability that can expose users to real-world harm — and into a headline.",
+  "how": "Classify health, reproductive, financial, and precise-location data as sensitive; keep it on-device or end-to-end encrypted; never route it through third-party ad/analytics/attribution SDKs; offer an explicit local-only/anonymous mode; and say plainly in-app what leaves the device.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "title": "Real 'delete my data' + a graceful-sunset export path",
+  "detail": "Users learn that deleting the app does not undo data already collected/shared, and shutdown stories show apps switching off servers with no archive, no restore, no grace period — years of data gone.",
+  "why": "A missing real-delete erodes trust the moment a privacy scare hits; a missing sunset plan turns an eventual wind-down into a betrayal. Both are trust primitives, not edge cases.",
+  "how": "Provide a one-tap 'delete my account and data' that actually purges server records, backups, and third-party copies, and confirm honestly what it can and can't reach. Separately commit to a sunset policy: advance notice plus a full self-serve export before any shutdown.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "accessibility",
+  "title": "Respect system font scaling / Dynamic Type — never cap text size",
+  "detail": "Apps that ignore the device's font-size setting force low-vision and older users to pinch-zoom or leave; a large majority of surveyed users say accessibility barriers significantly hurt their mobile experience.",
+  "why": "Fixed pixel type and hard-coded heights silently exclude a large share of real users (seniors, low vision, situational strain) and invite ADA-style complaints — while costing nothing to get right.",
+  "how": "Size text in rem/relative units tied to the root, let containers grow with content, and test the whole UI at ~200% zoom / largest system font. No pixel-locked font sizes on body copy, and no clipping when text scales up.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "workflow",
+  "title": "Smoke-test the core user loop before every deploy",
+  "detail": "'An update that broke the core feature' is one of the universal 1-star patterns: the one thing people relied on stopped working and the next release didn't bring it back.",
+  "why": "A regression in the primary verb (save an entry, log a habit, check out, count a stitch) churns your most engaged users instantly and floods reviews.",
+  "how": "Keep a tiny checklist/automated smoke test of the core loop (sign in, create, edit, save/sync, reload-and-still-there, export) and run it against the built artifact before shipping. Never deploy a build where the core loop is red.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "workflow",
+  "title": "No-show protection: deposit or card-on-file with a fair policy",
+  "detail": "Let owners require either a partial deposit (deducted from the final bill) or a card-on-file only charged on a late-cancel/no-show, paired with a plain cancellation policy shown before the client confirms.",
+  "why": "No-shows are the top revenue leak for appointment businesses; salons/spas using deposits report large drops. Card-on-file is more palatable because clients don't part with money upfront but know there's a consequence.",
+  "how": "Per-service toggle (deposit amount or card-hold), surface the policy on the confirm step, and support a gradual rollout (new clients and weekend slots first). Never auto-charge without showing the agreed policy.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "workflow",
+  "title": "Automated appointment reminders (24-48h before)",
+  "detail": "Send an automatic reminder 24-48 hours ahead with a one-tap confirm/reschedule link, then optionally a shorter same-day nudge.",
+  "why": "Automated reminders alone cut no-shows substantially — the highest-leverage, lowest-friction lever a booking tool has.",
+  "how": "Schedule reminders on booking creation (email always, SMS/WhatsApp where a number exists), include reschedule and cancel links so a can't-make-it frees the slot, and let the owner edit timing and copy.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Hallalu Bookings",
+  "category": "workflow",
+  "title": "Buffer time between appointments",
+  "detail": "Let owners set a configurable gap (travel, cleanup, notes) before/after each service so the next slot can't be booked back-to-back.",
+  "why": "Back-to-back bookings with no breathing room cause cascading lateness and de-facto double-booking complaints; buffers are frequently demanded and absent from lightweight tools.",
+  "how": "Per-service before/after buffer minutes, subtracted when computing open slots, enforced in the same server-side availability check that prevents conflicts.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "workflow",
+  "title": "Invoice aging + auto-chase + 'viewed' receipts",
+  "detail": "Give every invoice a live status (draft/sent/viewed/due/overdue/paid), group outstanding ones into aging buckets, and send polite automatic reminders on a user-controlled schedule.",
+  "why": "Most freelancers are owed money at any time and describe chasing as a nightmare; they lack a way to see what's paid, due, or lost in a client's inbox.",
+  "how": "Track a viewed timestamp (hosted invoice link open), show an aging dashboard, and let users enable auto-reminders at due-date, +7, +14 days with editable wording.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "title": "Own-your-data: one-click complete export, no lock-in",
+  "detail": "A single always-available 'export everything' producing a complete standard-format archive (JSON + CSVs) of every entity and its history, plus a documented import path back in.",
+  "why": "Buyers increasingly test export before committing, and platforms that make leaving painful earn active rage. For a user-first product, trivially portable data is the honest differentiator.",
+  "how": "Reuse the full object-graph export (contacts + notes + activity + attachments + finance), keep it free and self-serve, print row counts for verification, and state plainly in-app that users can leave any time.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "integrity",
+  "title": "Import/migration reconciliation report",
+  "detail": "After any bulk import or migration, show a reconciliation summary — rows in, rows created, duplicates merged, rows skipped — with a downloadable list of every skipped row and the reason.",
+  "why": "The defining pain of switching tools is silent loss; a visible count is what lets users trust the move.",
+  "how": "Instrument the importer to emit counts and a per-row outcome, render them on a post-import screen, and offer 'download skipped rows'. Recommend keeping source data until counts reconcile.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "cross-cutting",
+  "category": "ux",
+  "title": "Lean core by default, advanced features progressively revealed",
+  "detail": "Ship the everyday jobs (add a contact, log a note, book, invoice) front-and-centre and tuck configuration, custom fields, automations and analytics behind an 'advanced' reveal.",
+  "why": "Most small businesses use less than half their CRM's features and roughly a third abandon within a year over complexity — 'too complicated' is the #1 SMB churn reason. Simplicity is the retention feature.",
+  "how": "Default new accounts to a minimal surface, gate power features behind a clearly labelled toggle/section, and let complexity grow only as the user reaches for it.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Listing Lab Pro",
+  "category": "integrity",
+  "title": "Prompt Etsy AI-content disclosure before publish",
+  "detail": "When a listing uses AI-generated or AI-assisted images/text, surface a reminder to disclose it per Etsy's current policy, and offer ready disclosure wording.",
+  "why": "Non-disclosure of AI-generated images is an active Etsy suspension trigger and appeals are frequently rejected — a compliance landmine an optimizer tool should defend against, not walk sellers into.",
+  "how": "Detect/flag AI-origin assets in the listing draft, show a non-blocking compliance note with a copy-paste disclosure line, and link the current policy. Keep it advisory and honest — never assert Etsy rules that aren't published.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ },
+ {
+  "app": "Listing Lab Pro",
+  "category": "conversion",
+  "title": "True net-profit-after-fees per listing",
+  "detail": "Show the seller what they actually keep: subtract Etsy's stacked fees (listing fee, transaction % on item + shipping + gift wrap, payment processing, and the Offsite Ads fee where it applies) from the sale price, per listing.",
+  "why": "Fee rage is a top Etsy complaint because the fees compound invisibly; sellers routinely misjudge margins. A clear net-take number is decision-grade information.",
+  "how": "Add a fee-aware profit field to each listing/price suggestion using current rates, flag when a price barely clears fees, note that the Offsite Ads fee only hits attributed sales, and keep rates in one config so they stay current.",
+  "session": "research",
+  "source": "dailyledger-2026-08-16"
+ }
 ]
