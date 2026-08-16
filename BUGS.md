@@ -1,19 +1,19 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**337 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**386 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 337 |
+| Total bugs fixed | 386 |
 | Apps | 18 |
-| Security fixes | 39 |
-| Data-loss / sync fixes | 25 |
-| Crashes fixed | 22 |
+| Security fixes | 49 |
+| Data-loss / sync fixes | 36 |
+| Crashes fixed | 27 |
 | Security-audit findings | 15 (9 open) |
 
 ### By category
 
-`ui: 118` `logic: 84` `security: 39` `crash: 22` `other: 22` `data-loss: 17` `auth: 10` `race: 10` `sync: 8` `perf: 7`
+`ui: 128` `logic: 92` `security: 49` `crash: 27` `data-loss: 25` `other: 23` `race: 12` `sync: 11` `auth: 10` `perf: 9`
 
 ---
 
@@ -348,14 +348,20 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Stale cached JavaScript made features appear broken** `other`
   *Symptom:* Write templates, the Homework + button, and AI features all did nothing even though the code was correct.  <br>*Cause:* The deployed app was serving stale JavaScript from the service worker cache.  <br>*Fix:* Fixed the service worker so every deploy arrives instantly (with a one-time hard-refresh to clear the old bundle).
 
-## Hallalu CRM  ·  48 fixed
+## Hallalu CRM  ·  57 fixed
 
 - [ ] **Business-plan /pitch gate bypassable via path tricks** `security`
   *Symptom:* The gated /pitch content could be reached with two path tricks despite the gate.  <br>*Cause:* The gate only guarded the route while the protected content still shipped in the static asset bundle.  <br>*Fix:* Removed the protected content from the asset bundle entirely so the gate actually holds.
+- [ ] **Cross-account data leak: shared localStorage cache not cleared on sign-out** `security`
+  *Symptom:* On a shared device, the next person to sign in loaded the previous user's leads and invoices from cache  <br>*Cause:* State is cached under a single global key 'hallalu_v2' (not owner-scoped), and signOut() called save() — re-writing the departing user's data back into that key and never clearing it  <br>*Fix:* Added wipeLocal() and call it on sign-out and on the ephemeral 'don't keep me signed in' boot path; verified the cached account data is cleared
 - [ ] **Owner email exposed client-side in admin.js** `security`
   *Symptom:* The admin owner email was shipped in the client-side admin.js bundle.  <br>*Cause:* The owner-email/admin check lived in client code instead of on the server.  <br>*Fix:* Moved the owner email/admin check server-side.
+- [ ] **Stored XSS in the public proposal-accept page title** `security`
+  *Symptom:* A proposal titled with </title><script>… executed when a client opened the public /accept link  <br>*Cause:* The public unauthenticated accept page interpolated d.title / d.from raw into the <title> even though the body escaped them  <br>*Fix:* Escaped the title/from values consistently with the body; also added nosniff / X-Frame-Options / Referrer-Policy to the public HTML responses
 - [ ] **Invoice builder wipes line items on every repaint** `data-loss`
   *Symptom:* 'Add a line' did nothing and invoices could not be saved.  <br>*Cause:* invoiceBuilder() re-initialised the line items on every repaint, wiping typed input.  <br>*Fix:* Separated initialization from repaint so line items persist, and corrected the maths.
+- [ ] **Opening a picker modal from inside a form wiped the parent form** `data-loss`
+  *Symptom:* Opening the currency picker from inside New-lead / Settings / Invoice destroyed the parent modal and every value already typed into it  <br>*Cause:* The app uses a single-overlay model — openModal() calls closeOverlays() first — so drawing the picker tore down the form underneath it  <br>*Fix:* Rewrote openCurPick as its own stacked overlay (z-index above the parent modal) that closes only itself, leaving the form intact
 - [ ] **/api/track throws TDZ from duplicate** `crash`
   *Symptom:* The `/api/track` endpoint threw a temporal-dead-zone error.  <br>*Cause:* A leftover duplicate declaration.  <br>*Fix:* Removed the duplicate; endpoint works.
 - [ ] **Admin check crashes for signed-out users** `crash`
@@ -414,6 +420,8 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The Ava assistant was white-on-white and unreadable in dark mode on phones.  <br>*Cause:* Hard-coded #fff surfaces gave zero contrast on the hero stage, reply bubbles, and chips.  <br>*Fix:* Fixed three contrast bugs and added a real mobile layout for the Ava page.
 - [ ] **Broken Followers/Following/Photo grid** `ui`
   *Symptom:* The Followers/Following and Photo layout was mis-arranged.  <br>*Cause:* The grid pairing was wrong.  <br>*Fix:* Made Followers/Following a proper pair with Photo on its own row.
+- [ ] **Business tier badge rendered washed-out and see-through** `ui`
+  *Symptom:* The BUSINESS badge next to the name showed as a pale, blurry, semi-transparent blob with unreadable white text  <br>*Cause:* .tb-biz combined backdrop-filter:blur(4px) with a pale translucent gradient, frosting whatever was behind it and killing text contrast  <br>*Fix:* Removed the backdrop-filter and deepened the gradient to saturated colours with solid white text
 - [ ] **Clients-signed ring misaligned** `ui`
   *Symptom:* Ring numerals sat on different baselines and the 'clients signed' label was small and off-center.  <br>*Cause:* Numerator/denominator and label were not aligned or sized correctly.  <br>*Fix:* Aligned numerals on one baseline with a smaller denominator and centered/enlarged the label.
 - [ ] **Confetti persists under tab throttling** `ui`
@@ -424,12 +432,20 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* In dark mode the hero/aurora card and many other surfaces stayed white, making their text invisible.  <br>*Cause:* .hero had a hardcoded background:#fff and only .card/.modal/.sheet had dark overrides — .hero/.profile-hero/.pstats/.call-stage/.rolo-card/.cmdk/.drawer/.onb had none.  <br>*Fix:* Added dark-mode overrides for all the uncovered surfaces so every card is readable in dark mode.
 - [ ] **Demo portraits mismatch names and gender** `ui`
   *Symptom:* Demo lead photos didn't match the leads' names or gender.  <br>*Cause:* Photos used random `i.pravatar.cc/?u=` URLs.  <br>*Fix:* Replaced with gender-inferred `randomuser.me` portraits via name-set heuristics.
+- [ ] **e-business-card preview collapsed to a 2px sliver** `ui`
+  *Symptom:* The e-card live preview rendered as a 2px strip with its contents out of flow  <br>*Cause:* .ecard has overflow:hidden and, as a flex item in the modal's flex column, that zeroes its auto min-height so it collapses  <br>*Fix:* Set the card to flex:none so it keeps its intrinsic height
 - [ ] **Header buttons overflow, blocking Add to-do** `ui`
   *Symptom:* On a phone the 'Add to-do' button was clipped off the right edge, so users couldn't add a goal/to-do.  <br>*Cause:* `.topbar` had no `flex-wrap`, so the action buttons overflowed on narrow screens.  <br>*Fix:* Added flex-wrap to `.topbar`, fixing every view that uses the pattern.
 - [ ] **Microphone icon not centered in inputs** `ui`
   *Symptom:* The mic sat near the top line instead of centered in goal, to-do and other fields.  <br>*Cause:* The mic was centered on the combined label+field height instead of just the field.  <br>*Fix:* Re-centered every mic in the app so each measures 0px off-center.
 - [ ] **Mobile FAB overlaps the 5-tab bottom bar** `ui`
   *Symptom:* On mobile the floating action button sat over the taller 5-tab bottom bar and the tab labels wrapped.  <br>*Cause:* The FAB wasn't raised above the taller 5-tab bar and the tab labels were too long to fit on one line.  <br>*Fix:* Raised the FAB to a 23px gap above the bar, made it slightly smaller, and switched to short single-word tab labels.
+- [ ] **Notification panel could not be closed with its X** `ui`
+  *Symptom:* Clicking X on the notifications panel set hidden=true but the panel stayed on screen  <br>*Cause:* Author rule .notif-panel{display:flex} beats the browser's built-in [hidden]{display:none}, so the hidden attribute never took effect  <br>*Fix:* Added .notif-panel[hidden]{display:none}
+- [ ] **Sidebar collapse toggle sheared off by the sticky sidebar's overflow** `ui`
+  *Symptom:* The circular collapse chevron rendered clipped/half-cut at the sidebar's right edge  <br>*Cause:* The sticky sidebar was given overflow-y:auto, which also clips the x-axis, cutting off the absolutely-positioned toggle that pokes past the right edge (right:-11px)  <br>*Fix:* Made the toggle position:fixed (like the drag grip) so the sidebar's overflow can't clip it
+- [ ] **Sidebar stopped scrolling partway down long pages** `ui`
+  *Symptom:* On pages taller than one screen the left sidebar cut off (couldn't reach items below 'Calls')  <br>*Cause:* Two .side rules existed; a later .side{position:relative} (left over from the old absolute grip) overrode the base position:sticky, so the sidebar was only 100dvh tall and scrolled away  <br>*Fix:* Removed the stray position:relative, restoring sticky full-height
 - [ ] **Start screen mic oversized and off-centre** `ui`
   *Symptom:* The onboarding Start screen's record mic rendered too large and not centred.  <br>*Cause:* The Start screen mic was unsized/mispositioned instead of a single centred control.  <br>*Fix:* Rebuilt it as a single, smaller, centred mic.
 - [ ] **Tax page not findable in the nav** `ui`
@@ -438,6 +454,8 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Swapping timezones pushed the widget off-screen at mid widths.  <br>*Cause:* The timezone inputs didn't shrink or stack on narrow layouts.  <br>*Fix:* Made the inputs shrinkable and stack earlier; verified no overflow at any width.
 - [ ] **Unsized SVG renders oversized** `ui`
   *Symptom:* An SVG rendered giant on screen.  <br>*Cause:* The SVG had no explicit dimensions.  <br>*Fix:* Sized the SVG so it renders correctly.
+- [ ] **AI outage: hardcoded Gemini model retired by the provider** `other`
+  *Symptom:* All AI features returned errors; /api/ai gave 'gemini-2.0-flash is no longer available' (404)  <br>*Cause:* The default model and the GEMINI_MODEL secret were pinned to gemini-2.0-flash, which Google deprecated (and the key's Cloud project separately returned 403 PERMISSION_DENIED)  <br>*Fix:* Changed the default to the gemini-flash-latest alias and added a Claude/Anthropic fallback so AI recovers when one provider errors
 - [ ] **ANTHROPIC_API_KEY saved with a leading space** `other`
   *Symptom:* AI features silently did not work.  <br>*Cause:* The secret was stored as ' ANTHROPIC_API_KEY' with a leading space, so env.ANTHROPIC_API_KEY was undefined.  <br>*Fix:* Added a whitespace-tolerant secret() resolver so the key resolves regardless of stray whitespace.
 - [ ] **Cloudflare env-var blocker (no worker script)** `other`
@@ -447,7 +465,82 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Legally wrong review-gating claims in shipped copy** `other`
   *Symptom:* The app told users incorrect legal facts about review gating (e.g. 'illegal in the UK', 'FTC rule covers gating', a mischaracterised Yelp rule).  <br>*Cause:* Four shipped legal claims and review-solicitation copy were inaccurate.  <br>*Fix:* Corrected all four claims and replaced the generic 'reviews' source with three platform-specific rule sets.
 
-## Stitchhooky  ·  33 fixed
+## cross-cutting  ·  36 fixed
+
+- [ ] **AI-hallucinated dependency (slopsquatting) pulled into the build** `security`
+  *Symptom:* An install/import references a package that sounds right but isn't the real project; it either 404s the build or, worse, resolves to a squatter's malicious package.  <br>*Cause:* LLMs confidently emit non-existent package names at a meaningful rate; attackers pre-register the popular hallucinations on npm/PyPI. Auto-installing whatever the agent wrote runs attacker code.  <br>*Fix:* Verify every AI-suggested dependency exists as the genuine project (publisher, repo, download history) before install; pin exact versions and commit a lockfile; review install scripts. Prefer platform-native bindings over adding packages at all.
+- [ ] **Excessive agency for AI features** `security`
+  *Symptom:* An AI agent is given more tools, permissions or autonomy than its task needs, and can act without approval.  <br>*Cause:* OWASP LLM: broad tools/permissions = attack surface.  <br>*Fix:* Least-privilege tools, scoped permissions, and human approval before irreversible or outward actions.
+- [ ] **Improper LLM output handling** `security`
+  *Symptom:* Model output rendered or executed without validation, enabling XSS, SSRF, path traversal or code execution downstream.  <br>*Cause:* OWASP LLM: outputs aren't validated before hitting other components.  <br>*Fix:* Validate/sanitize model output before rendering, running, or passing it to another system; treat it as untrusted.
+- [ ] **Insecure or deprecated cryptography** `security`
+  *Symptom:* Weak algorithms (MD5/SHA1 for passwords, ECB mode, hard-coded IV/salt, low KDF iterations).  <br>*Cause:* AI often picks a familiar-but-wrong primitive (CWE-327).  <br>*Fix:* Use a vetted KDF (bcrypt/scrypt/argon2 or PBKDF2 >=600k), random per-record salt/IV, AEAD ciphers.
+- [ ] **Log injection / unsanitized logging** `security`
+  *Symptom:* User input written to logs unescaped (CWE-117), enabling forged log entries or downstream injection.  <br>*Cause:* AI logs raw input for 'debuggability'.  <br>*Fix:* Sanitize/encode values before logging; never log secrets.
+- [ ] **Missing authorization / IDOR (object-level access)** `security`
+  *Symptom:* Endpoints check authentication but not that the caller owns the specific record (broken object-level authorization).  <br>*Cause:* AI wires up CRUD without per-object ownership checks.  <br>*Fix:* Enforce per-object ownership on every read/write; never trust an id from the client as proof of access.
+- [ ] **Missing input sanitization / validation** `security`
+  *Symptom:* The single most common flaw in AI-generated code — inputs used unsanitized in queries, HTML, filesystem or commands.  <br>*Cause:* LLMs default to the happy path and omit validation; ~45% of AI code fails security tests.  <br>*Fix:* Validate + sanitize every external input at the boundary; allow-list, not deny-list.
+- [ ] **No rate limiting on expensive / AI endpoints** `security`
+  *Symptom:* Unauthenticated or unthrottled endpoints that call paid AI / browser-rendering / email can be run up into a billing DoS.  <br>*Cause:* AI scaffolds endpoints without throttles.  <br>*Fix:* Per-IP/user rate limits + auth/turnstile on any endpoint that costs money or compute.
+- [ ] **Prompt injection (direct and indirect)** `security`
+  *Symptom:* Untrusted input (user text or content fetched from a page/doc/email) overrides the model's instructions or drives actions.  <br>*Cause:* OWASP LLM #1; observed content is data, not commands.  <br>*Fix:* Treat all tool/observed content as untrusted; separate instructions from data; confirm side-effectful actions; don't act on instructions found in content.
+- [ ] **Request state stored in Worker module globals leaks across users** `security`
+  *Symptom:* Under load, one user intermittently sees another user's data (auth context, cart, tenant id), or the Worker throws 'Cannot perform I/O on behalf of a different request'.  <br>*Cause:* Workers reuse a V8 isolate across many requests. AI codegen hoists request-scoped data into module-level let/const (current user, db handle, cache object). Because the isolate persists, request B reads request A's leftover value.  <br>*Fix:* Keep zero mutable request state at module scope. Create per-request objects inside fetch() and thread them through function arguments; put shared handles on env bindings. Treat module globals as read-only constants only.
+- [ ] **Secrets committed / exposed to the client** `security`
+  *Symptom:* API keys, tokens or private keys in source, client bundles or the repo (400+ found across vibe-coded apps).  <br>*Cause:* AI inlines secrets to make examples 'work'.  <br>*Fix:* Keep secrets server-side in env bindings; never ship them to the browser; scan the tree + git history.
+- [ ] **SQL / NoSQL injection from string-built queries** `security`
+  *Symptom:* Queries assembled by concatenating user input instead of parameterized.  <br>*Cause:* Classic CWE-89; common in AI-generated data-access code.  <br>*Fix:* Always use parameterized queries / prepared statements; never string-concatenate user input into a query.
+- [ ] **SSRF: allowlist outbound fetch targets (CWE-918, #1 AI-code flaw)** `security`
+  *Symptom:* A server-side fetch/proxy can be pointed at internal metadata endpoints or arbitrary hosts.  <br>*Cause:* AI-generated fetch/proxy handlers commonly forward a user-supplied URL with no destination validation; SSRF is the single most common vuln class in 2026 AI-code studies.  <br>*Fix:* Allowlist schemes+hosts, resolve and block private/link-local IP ranges, disable redirects to new hosts, and never echo raw upstream errors.
+- [ ] **System prompt leakage (OWASP LLM07:2025)** `security`
+  *Symptom:* Internal system-prompt rules, filters, permissions or hidden logic can be extracted by users and used to bypass controls.  <br>*Cause:* Secrets, authorization logic, or trust decisions are placed in the system prompt, which is not a security boundary and can leak.  <br>*Fix:* Never put secrets/keys or the only copy of an access rule in the prompt; enforce authorization server-side; treat any prompt content as potentially public.
+- [ ] **Vector & embedding weaknesses in RAG (OWASP LLM08:2025)** `security`
+  *Symptom:* Retrieved documents poison answers, or one tenant's embeddings leak into another's results.  <br>*Cause:* RAG stores and embedding pipelines are a distinct attack surface from prompt injection — untrusted content is indexed and later trusted, and vector stores often lack per-tenant access control.  <br>*Fix:* Scope/partition the vector store per tenant, sanitize and provenance-tag ingested docs, and treat retrieved text as untrusted input to the model.
+- [ ] **XSS from unescaped output rendered to HTML** `security`
+  *Symptom:* User/model data written into the DOM without encoding — ~86% of AI-generated samples fail XSS defence.  <br>*Cause:* AI code interpolates strings straight into innerHTML/templates.  <br>*Fix:* Escape on output (incl. quotes) or use textContent; add a Content-Security-Policy as defence-in-depth.
+- [ ] **Background work dropped because it wasn't passed to ctx.waitUntil()** `data-loss`
+  *Symptom:* Analytics writes, audit logs, cache warms, or D1 upserts kicked off right before returning a Response land only sometimes; they silently vanish under real traffic with no error.  <br>*Cause:* The isolate stops executing pending promises once the response is returned. A fire-and-forget async call that is neither awaited nor registered is cancelled mid-flight, so the write never completes.  <br>*Fix:* Pass any post-response work to ctx.waitUntil(promise) so the runtime keeps it alive after the response is sent; await it instead if the client must see the result. Never leave a floating promise expecting it to finish on its own.
+- [ ] **Bulk import silently drops rows it can't parse** `data-loss`
+  *Symptom:* A user uploads 200 leads; 170 land, 30 vanish with no message. The loss is invisible until a customer can't be found weeks later.  <br>*Cause:* The importer try/catches per row and continues on parse failure without recording or surfacing which rows were skipped, and never reconciles input count against inserted count.  <br>*Fix:* Count input rows, count inserts, and after import show 'N imported, M skipped, K duplicates' with a downloadable list of the exact skipped rows and why. Never discard an unparseable row silently.
+- [ ] **Data export silently omits notes, activity history and timeline** `data-loss`
+  *Symptom:* Users export 'all my data' to leave or back up and get only the contact/lead rows — call notes, emails, meeting history and timeline events are missing, discovered only after the old tool is gone.  <br>*Cause:* The export function serialises only the primary entity table and does not join or include child records (notes, comms, activity, attachments), so related history is dropped without warning.  <br>*Fix:* Export the full object graph, not just top-level rows: include notes, communications, activity/timeline, attachments and payment history in one archive. Show a per-table row count so users can verify completeness.
+- [ ] **Export is partial or lossy — misses media, one item at a time, or PDF-only** `data-loss`
+  *Symptom:* Users trying to leave or back up find the export omits photos/attachments/voice notes, only exports a single entry at a time, or dumps to a flat PDF that can't be re-imported.  <br>*Cause:* Export was bolted on for text records only and never covered blobs (images, audio, files) or bulk selection; format chosen for looks (PDF) rather than portability.  <br>*Fix:* Ship a one-click 'export everything' that bundles all record types plus their media into an open, re-importable archive (JSON/NDJSON + attachments in a zip). Verify a round-trip re-import. Include derived content (comments, milestones, generated docs), not just raw notes.
+- [ ] **Uncaught QuotaExceededError when writing large blobs to localStorage** `data-loss`
+  *Symptom:* Saving images/base64/large JSON to localStorage throws QuotaExceededError past ~5MB; the write is swallowed so the user's data silently isn't persisted, or the whole save handler crashes.  <br>*Cause:* AI codegen stores growing data (drafts, cached API payloads, base64 media) in localStorage with no size budget or error handling. localStorage is a synchronous ~5MB, string-only store; large/binary data overruns it.  <br>*Fix:* Wrap writes in try/catch and handle QuotaExceededError explicitly (evict, or surface a clear message). Move anything large or binary to IndexedDB; keep localStorage for small primitives only. Cap/prune cached payloads and never dump media into it.
+- [ ] **Unsynced in-memory state wiped on refresh, tab-close, or crash** `data-loss`
+  *Symptom:* Everything the user typed since opening the app is gone after a refresh, an accidental close, or a background-tab eviction.  <br>*Cause:* Working state lives only in JS memory and is persisted only on an explicit save or a periodic remote sync; the browser reclaiming the tab or the user reloading throws it away.  <br>*Fix:* Autosave to local storage on every meaningful change (debounced), rehydrate on boot, and treat the server as a sync target, not the only store. Add a beforeunload flush for anything still pending.
+- [ ] **D1 'too many SQL variables' — 100 bound-parameter limit, not 999** `crash`
+  *Symptom:* Bulk insert/update or a WHERE ... IN (?, ?, ...) over a dynamic array throws 'D1_ERROR: too many SQL variables at offset N'; works with a few rows in dev, blows up on real data.  <br>*Cause:* D1 caps bound parameters at 100 per statement (lower than stock SQLite's 999). AI-generated bulk writes build one big multi-row INSERT or a giant IN() list whose placeholder count exceeds 100.  <br>*Fix:* Chunk writes so (rows x columns) stays under 100 placeholders per statement and run the chunks with db.batch([...]) in a single transaction; for large IN() lists, chunk the array or join against a temp/values table.
+- [ ] **Happy-path assumption — no null/undefined guards** `crash`
+  *Symptom:* AI code assumes API/optional data is always present and dereferences it, crashing on the empty/error case.  <br>*Fix:* Guard every optional/awaited value before use; handle the empty and error branches explicitly.
+- [ ] **typeof does not guard a let/const in its temporal dead zone** `crash`
+  *Symptom:* A defensive `typeof x` guard still threw ReferenceError at runtime.  <br>*Cause:* `typeof` is only safe for truly-undeclared identifiers; for a lexically-declared `let`/`const` referenced before initialization it still throws (TDZ). Common false-safety assumption.  <br>*Fix:* Guard with a try/catch, or move the reference after the declaration / hoist a `var` sentinel.
+- [ ] **White-screen ChunkLoadError after deploy from SPA index.html fallback** `crash`
+  *Symptom:* Users with the tab already open (or a stale service worker) get a blank page or 'ChunkLoadError: Loading chunk failed' after a deploy; a hard refresh fixes it, so it looks intermittent.  <br>*Cause:* The old cached index.html references content-hashed asset filenames that no longer exist post-deploy. The SPA/static fallback answers the missing /assets/*.js with index.html (HTTP 200, text/html) instead of 404, so the browser parses HTML as a module and the app never mounts.  <br>*Fix:* Make asset paths (extensions like .js/.css) return a real 404 instead of the SPA fallback; serve index.html with no-cache and hashed assets with immutable long cache. Add an inline recovery script that catches failed dynamic imports, unregisters service workers, and does a one-time hard reload.
+- [ ] **Failed save/sync silently drops the user's edit (no offline write queue)** `sync`
+  *Symptom:* User adds/edits an entry while offline or on a flaky connection; the network call fails and the change just vanishes with no error and no retry. Widely reported (offline sync halting mid-way; habit/journal users losing entries in tunnels/planes).  <br>*Cause:* Writes go straight to the network as fire-and-forget; on failure there is no local durable queue, so the edit is lost and the UI may even show it briefly before it evaporates on reload.  <br>*Fix:* Local-first: persist every write to IndexedDB/local storage first, render from local, then flush a durable outbox to the server with retry + backoff. Never discard a local write because the remote call failed; surface a 'pending sync' state instead of dropping data.
+- [ ] **KV read-after-write returns stale value (eventual consistency)** `sync`
+  *Symptom:* Code writes a value to Workers KV then reads it back in the same or next request and gets the OLD value (or a cached 'key does not exist' for a just-created key); UI shows stale data for up to ~60s and 'saves that didn't save' reports follow.  <br>*Cause:* KV is eventually consistent: reads are served from edge caches that can lag writes by up to 60s globally. AI codegen treats KV like a synchronous DB and assumes read-your-writes. Negative lookups are cached too, so newly-created keys can read as missing.  <br>*Fix:* Never rely on immediate read-after-write from KV. Return the just-written value from memory instead of re-reading; put anything needing read-your-writes (sessions, counters, dedupe) in D1 or a Durable Object; only use KV for read-mostly config/assets.
+- [ ] **Cache-overwrite race in AI/caching layer corrupts entries** `race`
+  *Symptom:* Under concurrent requests, a cached AI response or computed value gets served for the WRONG input key; passes every test because tests run sequentially, fails only under parallel load.  <br>*Cause:* AI-generated memoization uses a shared mutable cache object plus check-then-set with an await in between. Two concurrent calls with different params interleave, and the later write clobbers the entry keyed to a different input.  <br>*Fix:* Key the cache strictly by a hash of the full input and write atomically (no shared 'current' slot); dedupe in-flight identical requests with a promise map; load-test concurrently before merging anything touching caching.
+- [ ] **Floating promises / unhandled async errors** `race`
+  *Symptom:* Promises not awaited or lacking catch, so failures are silent and ordering is wrong.  <br>*Fix:* Await or .catch every promise; surface async errors; avoid fire-and-forget for state changes.
+- [ ] **Hard-coded environment-specific values** `logic`
+  *Symptom:* localhost URLs, absolute paths, ports or keys baked in that break outside the author's machine.  <br>*Fix:* Read config from env; no machine-specific literals in shipped code.
+- [ ] **No error handling on network calls** `logic`
+  *Symptom:* fetch/HTTP calls with no try/catch, timeout or retry, so a blip becomes a broken UI.  <br>*Fix:* Wrap network calls with try/catch + timeout + a user-visible fallback; retry idempotent reads.
+- [ ] **Silent catch swallowing errors** `logic`
+  *Symptom:* catch blocks that do nothing, hiding real failures and making bugs invisible.  <br>*Fix:* Handle or surface every caught error; never swallow silently.
+- [ ] **Duplicate event listeners stack up on every re-render/re-mount** `perf`
+  *Symptom:* A click/submit/keypress handler fires 2x, 3x, Nx (double submits, doubled network calls, runaway toasts); memory grows the longer the SPA session stays open and the tab gets sluggish.  <br>*Cause:* addEventListener (often on window/document) is called inside a render/mount path that runs repeatedly, with no matching removeEventListener/cleanup. Each pass adds another live listener that closes over stale state and never gets GC'd.  <br>*Fix:* Register global listeners once outside the render path, or in a mount hook with a symmetric removeEventListener cleanup; for dynamic lists use one delegated listener on a stable parent. Use a named function reference (not an inline arrow) so removal actually matches.
+- [ ] **Worker subrequest limit hit by per-row D1/KV/fetch in a loop** `perf`
+  *Symptom:* A request that iterates over a list and does a DB/KV/fetch call per item suddenly throws 'Too many subrequests' (or the CRON/batch job dies partway) once the list grows; fine with small demo data.  <br>*Cause:* Every D1, KV, R2, DO, and fetch() call counts as a subrequest against the per-invocation cap. N+1 loops the AI generated blow through it under real load.  <br>*Fix:* Collapse N calls into one: batch D1 with db.batch()/a single JOIN, use KV bulk/list, cache repeated fetches; move genuinely large fan-out to a Queue or Workflow. Catch the limit exception so the job resumes rather than silently truncating.
+- [ ] **Later same-specificity CSS rule silently overrides mobile media query** `ui`
+  *Symptom:* A mobile-only sizing rule had no effect; the element overflowed off-screen on phones.  <br>*Cause:* A global sizing rule appeared LATER in the stylesheet at equal specificity, so source order won over the earlier @media (max-width) override.  <br>*Fix:* Place responsive/mobile overrides after the global rules they must beat (or raise their specificity); verify computed width, not just that the rule exists.
+
+## Stitchhooky  ·  34 fixed
 
 - [ ] **Co-stitch rooms and theme leak across accounts** `security`
   *Symptom:* The next person on the device auto-joined your live co-stitch room and kept your theme.  <br>*Cause:* Co-stitch room membership and appearance were not scoped per account.  <br>*Fix:* Scoped co-stitch rooms and appearance per account so they no longer leak between users.
@@ -489,6 +582,8 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* After dictating rows then hitting Save & start counting, speech kept appending rows to a stale draft instead of counting.  <br>*Cause:* The mic stayed live with the dictation handler still attached when entering the counting studio.  <br>*Fix:* Mic now hard-stops on entering the counting studio.
 - [ ] **Learn-to-read-charts modal silently fails** `logic`
   *Symptom:* Opening 'Learn to read charts' did nothing visible.  <br>*Cause:* It opened a modal that silently failed.  <br>*Fix:* Fixed the modal so the guide opens correctly.
+- [ ] **Magic-ring foundation stitches collapsed to one cell** `logic`
+  *Symptom:* Round 1 of nearly every amigurumi ('6 sc in magic ring') counted as a single stitch, undercounting the row.  <br>*Cause:* The parser grouped 'N stitch in <target>' as one clustered cell. That is correct for a shell worked INTO one existing stitch, but wrong for a foundation ring where each stitch is individual.  <br>*Fix:* Distinguished ring/foundation targets (expand to N individual cells) from a cluster worked into a single stitch (stays grouped).
 - [ ] **Notation parser undercounts stitches ('7 vs 18')** `logic`
   *Symptom:* Stitch totals came out far too low, e.g. reporting 7 when it should be 18.  <br>*Cause:* Two parser bugs — e.g. '6 sc in magic ring' collapsed to a single count, and many notation variants weren't recognized.  <br>*Fix:* Parser overhaul plus a `normalizeNotation` that folds standing/stacked/foundation/post/Ntog/magic-ring variants into keys.
 - [ ] **Billing panel invisible at 0x0** `ui`
@@ -563,49 +658,20 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Exported Android build fails: missing gradle.properties useAndroidX** `other`
   *Symptom:* The exported Android project failed its first-run compile in the farm.  <br>*Cause:* gradle.properties lacked android.useAndroidX=true.  <br>*Fix:* Added the one-line android.useAndroidX=true to gradle.properties and rebuilt.
 
-## cross-cutting  ·  16 fixed
-
-- [ ] **Excessive agency for AI features** `security`
-  *Symptom:* An AI agent is given more tools, permissions or autonomy than its task needs, and can act without approval.  <br>*Cause:* OWASP LLM: broad tools/permissions = attack surface.  <br>*Fix:* Least-privilege tools, scoped permissions, and human approval before irreversible or outward actions.
-- [ ] **Improper LLM output handling** `security`
-  *Symptom:* Model output rendered or executed without validation, enabling XSS, SSRF, path traversal or code execution downstream.  <br>*Cause:* OWASP LLM: outputs aren't validated before hitting other components.  <br>*Fix:* Validate/sanitize model output before rendering, running, or passing it to another system; treat it as untrusted.
-- [ ] **Insecure or deprecated cryptography** `security`
-  *Symptom:* Weak algorithms (MD5/SHA1 for passwords, ECB mode, hard-coded IV/salt, low KDF iterations).  <br>*Cause:* AI often picks a familiar-but-wrong primitive (CWE-327).  <br>*Fix:* Use a vetted KDF (bcrypt/scrypt/argon2 or PBKDF2 >=600k), random per-record salt/IV, AEAD ciphers.
-- [ ] **Log injection / unsanitized logging** `security`
-  *Symptom:* User input written to logs unescaped (CWE-117), enabling forged log entries or downstream injection.  <br>*Cause:* AI logs raw input for 'debuggability'.  <br>*Fix:* Sanitize/encode values before logging; never log secrets.
-- [ ] **Missing authorization / IDOR (object-level access)** `security`
-  *Symptom:* Endpoints check authentication but not that the caller owns the specific record (broken object-level authorization).  <br>*Cause:* AI wires up CRUD without per-object ownership checks.  <br>*Fix:* Enforce per-object ownership on every read/write; never trust an id from the client as proof of access.
-- [ ] **Missing input sanitization / validation** `security`
-  *Symptom:* The single most common flaw in AI-generated code — inputs used unsanitized in queries, HTML, filesystem or commands.  <br>*Cause:* LLMs default to the happy path and omit validation; ~45% of AI code fails security tests.  <br>*Fix:* Validate + sanitize every external input at the boundary; allow-list, not deny-list.
-- [ ] **No rate limiting on expensive / AI endpoints** `security`
-  *Symptom:* Unauthenticated or unthrottled endpoints that call paid AI / browser-rendering / email can be run up into a billing DoS.  <br>*Cause:* AI scaffolds endpoints without throttles.  <br>*Fix:* Per-IP/user rate limits + auth/turnstile on any endpoint that costs money or compute.
-- [ ] **Prompt injection (direct and indirect)** `security`
-  *Symptom:* Untrusted input (user text or content fetched from a page/doc/email) overrides the model's instructions or drives actions.  <br>*Cause:* OWASP LLM #1; observed content is data, not commands.  <br>*Fix:* Treat all tool/observed content as untrusted; separate instructions from data; confirm side-effectful actions; don't act on instructions found in content.
-- [ ] **Secrets committed / exposed to the client** `security`
-  *Symptom:* API keys, tokens or private keys in source, client bundles or the repo (400+ found across vibe-coded apps).  <br>*Cause:* AI inlines secrets to make examples 'work'.  <br>*Fix:* Keep secrets server-side in env bindings; never ship them to the browser; scan the tree + git history.
-- [ ] **SQL / NoSQL injection from string-built queries** `security`
-  *Symptom:* Queries assembled by concatenating user input instead of parameterized.  <br>*Cause:* Classic CWE-89; common in AI-generated data-access code.  <br>*Fix:* Always use parameterized queries / prepared statements; never string-concatenate user input into a query.
-- [ ] **XSS from unescaped output rendered to HTML** `security`
-  *Symptom:* User/model data written into the DOM without encoding — ~86% of AI-generated samples fail XSS defence.  <br>*Cause:* AI code interpolates strings straight into innerHTML/templates.  <br>*Fix:* Escape on output (incl. quotes) or use textContent; add a Content-Security-Policy as defence-in-depth.
-- [ ] **Happy-path assumption — no null/undefined guards** `crash`
-  *Symptom:* AI code assumes API/optional data is always present and dereferences it, crashing on the empty/error case.  <br>*Fix:* Guard every optional/awaited value before use; handle the empty and error branches explicitly.
-- [ ] **Floating promises / unhandled async errors** `race`
-  *Symptom:* Promises not awaited or lacking catch, so failures are silent and ordering is wrong.  <br>*Fix:* Await or .catch every promise; surface async errors; avoid fire-and-forget for state changes.
-- [ ] **Hard-coded environment-specific values** `logic`
-  *Symptom:* localhost URLs, absolute paths, ports or keys baked in that break outside the author's machine.  <br>*Fix:* Read config from env; no machine-specific literals in shipped code.
-- [ ] **No error handling on network calls** `logic`
-  *Symptom:* fetch/HTTP calls with no try/catch, timeout or retry, so a blip becomes a broken UI.  <br>*Fix:* Wrap network calls with try/catch + timeout + a user-visible fallback; retry idempotent reads.
-- [ ] **Silent catch swallowing errors** `logic`
-  *Symptom:* catch blocks that do nothing, hiding real failures and making bugs invisible.  <br>*Fix:* Handle or surface every caught error; never swallow silently.
-
-## Breadcrumb  ·  14 fixed
+## Breadcrumb  ·  18 fixed
 
 - [ ] **+feature truncation swallows text and skips redaction** `security`
   *Symptom:* The `+feature` command read a fixed 60 characters, swallowing the rest of the sentence, and the swallowed text bypassed redaction (secret-leak risk).  <br>*Cause:* A fixed 60-char read plus the swallowed remainder never passing through the redactor.  <br>*Fix:* Read the full text and route it through redaction, using exact-match so tokens like `#bug` can't be swallowed.
+- [ ] **No brute-force lockout on 5-digit passcode sign-in/recovery** `security`
+  *Symptom:* A 5-digit passcode could be guessed with unlimited attempts on sign-in and forgot-passcode  <br>*Cause:* Auth had no attempt throttling; PBKDF2 is capped at 100k iterations on Workers so an unlimited-guess passcode was the real hole  <br>*Fix:* Added an attempts table with gateCheck/gateFail/gateClear keyed separately by email and device IP, wired into sign-in and recovery; escalating lockouts 5->5min, 8->30min, 12->6h; cleared on success. Verified live: 6th miss returns HTTP 429
+- [ ] **Upsert ON CONFLICT omitted meta, dropping an edited prompt's asks ledger on sync** `data-loss`
+  *Symptom:* Editing a prompt lost its asks/convo/estimated data after cloud sync  <br>*Cause:* The docs/prompts ON CONFLICT update clause did not include the meta column, so edits to meta never persisted on re-sync  <br>*Fix:* Add meta to the ON CONFLICT update set (and fix the size cap) so edited prompt metadata round-trips
 - [ ] **Recovery codes hashed inconsistently** `auth`
   *Symptom:* Valid recovery codes could fail because hashing was inconsistent.  <br>*Cause:* Recovery codes were hashed inconsistently between generation and verification.  <br>*Fix:* Hash recovery codes consistently.
 - [ ] **Docs not synced** `sync`
   *Symptom:* Docs weren't reliably persisted/synced.  <br>*Cause:* There was no synced docs store.  <br>*Fix:* Added a proper synced `docs` table and fixed the size cap.
+- [ ] **Landing-demo 'Sam' data bled into newly created accounts** `sync`
+  *Symptom:* Exploring the landing-page demo, then signing up, produced an account pre-filled with demo projects/prompts and greeted the user as 'Sam'  <br>*Cause:* Signup adopted the in-memory demo state via cloudPush instead of resetting to a blank trail first  <br>*Fix:* Reset state to blank on signup before adopting the account; added a cloudPull auto-heal that resets accounts matching the demo fingerprint
 - [ ] **`>cursor` builder-switch token silently discarded** `logic`
   *Symptom:* A `>cursor` builder switch inside a captured prompt was silently dropped.  <br>*Cause:* An undefined template-literal segment (rendering as `undefined}`) discarded the `>cursor` token.  <br>*Fix:* Fixed the parsing so the builder-switch token is preserved.
 - [ ] **Capture-bar quick chips don't update the prompt placeholder** `logic`
@@ -620,6 +686,8 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The forget-this-device shortcut (a trash/X button) executed with no confirmation, against the every-destructive-action-confirms rule.  <br>*Cause:* The button had no confirm dialog.  <br>*Fix:* Added a confirmation before forgetting the device.
 - [ ] **Insights dashboard grid misrendered** `ui`
   *Symptom:* The Insights dashboard's 4-column stat-tile row (plus donuts, bars, heatmap and comparison) didn't lay out correctly.  <br>*Cause:* An Insights grid class bug broke the layout.  <br>*Fix:* Fixed the grid class (v24) so the stat-tile row and charts render properly.
+- [ ] **Plans feature row wrapped its text below the tick** `ui`
+  *Symptom:* The long 'Automatic capture' feature line wrapped underneath its checkmark instead of beside it  <br>*Cause:* .row used flex-wrap:wrap, letting the label drop to a new line  <br>*Fix:* Prevent the row from wrapping so the label stays inline with its tick
 - [ ] **srcdoc iframe thumbnails render blank** `ui`
   *Symptom:* Prompt thumbnails showed blank.  <br>*Cause:* `loading="lazy"` on srcdoc iframes plus a `height:200%` that never resolved against an aspect-ratio height.  <br>*Fix:* Removed lazy loading, set srcdoc as a property, and deferred one frame so thumbnails render.
 - [ ] **i18n script not included in index.html** `other`
@@ -629,8 +697,45 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Worklog CLI prompt assumed ~/.breadcrumb/worklog.mjs was already installed** `other`
   *Symptom:* The agent couldn't find ~/.breadcrumb/worklog.mjs because the one-time install had never been run — the prompt assumed the CLI already existed, so the flow failed at the first step.  <br>*Cause:* No install step; the CLI wasn't served anywhere and the key depended on a shell-profile variable.  <br>*Fix:* Serve the CLI from a public /worklog.mjs route so it installs with a single curl (self-healing in the prompt), and read the key from a small key file (~/.breadcrumb/key) instead of a shell-profile dependency.
 
-## Budget LevelUp  ·  13 fixed
+## Planner Studio  ·  16 fixed
 
+- [ ] **arguments.callee ReferenceError breaks task ticking** `crash`
+  *Symptom:* To-do items wouldn't tick off; the first render's refresh callback threw silently.  <br>*Cause:* `arguments.callee` used inside an arrow function throws a ReferenceError in strict mode.  <br>*Fix:* Replaced it with a hoisted `refreshTasks` declaration.
+- [ ] **Gradient theme crash from id mismatch** `crash`
+  *Symptom:* The gradient theme never applied because its checks never matched.  <br>*Cause:* Theme objects used `id:'grad'` but code checked `t.grad`.  <br>*Fix:* Changed all references to `t.id === 'grad'`.
+- [ ] **Voice-search mic threw because voiceSearch() was never defined** `crash`
+  *Symptom:* Tapping the voice-search mic did nothing and threw a ReferenceError  <br>*Cause:* The voiceSearch() handler was wired to the button but never actually implemented  <br>*Fix:* Implemented voiceSearch() properly (found during the static + in-browser smoke sweep)
+- [ ] **Service worker cached a 404 for a later-added file** `sync`
+  *Symptom:* A vendor file added after first cache stayed permanently broken.  <br>*Cause:* The service worker had cached a 404 from before the file existed and kept serving it.  <br>*Fix:* Fixed the worker/caching path so all vendor files serve correctly.
+- [ ] **Book-cover auto-fetch hung on a CORS blob fetch** `logic`
+  *Symptom:* Fetching a cover from Open Library hung/failed, so covers never appeared after adding a book  <br>*Cause:* Code did a cross-origin blob fetch of the cover image, which CORS blocked  <br>*Fix:* Store the cover URL directly and render it via <img> (cross-origin <img> loads fine and is lighter to sync) instead of fetching a blob
+- [ ] **Global search returned zero results after new sections were added** `logic`
+  *Symptom:* Search returned 0 hits while the app claimed you could 'find anything you've ever written'  <br>*Cause:* Notes, Books, and Content views were added without extending the search index to include their records  <br>*Fix:* Extended the search index to cover notes, books, content, and journal entries
+- [ ] **Monochrome theme hue not updating** `logic`
+  *Symptom:* Changing the mono hue had no effect.  <br>*Fix:* Fixed the mono hue to update.
+- [ ] **OCR web worker used relative paths that don't resolve in worker scope** `logic`
+  *Symptom:* Tesseract 'Magic Fill' pipeline failed to load its worker/core; status stalled and OCR never ran  <br>*Cause:* Worker and LSTM core assets were referenced by relative URL, which do not resolve inside a Web Worker execution context  <br>*Fix:* Switched the worker/core references to absolute URLs (and copied the missing LSTM core variants so all vendor files serve)
+- [ ] **Schedule data-model change regression** `logic`
+  *Symptom:* After changing schedule data from string to an object, consumers still reading it as a string could break (calm mode, week view, search, celebrate cards).  <br>*Cause:* Schedule model changed from string to `{t,c,done,note}` but readers of `D.sched[h]` weren't updated.  <br>*Fix:* Updated the consumers to the new object model.
+- [ ] **'0/0' task counter not updating live** `ui`
+  *Symptom:* The task counter stayed at 0/0 instead of reflecting progress.  <br>*Cause:* The counter wasn't refreshed after a toggle.  <br>*Fix:* Made the counter update live.
+- [ ] **Bookshelf niche rendered dark in light themes because data-dark=0 still matched [data-dark]** `ui`
+  *Symptom:* In pastel/light themes the bookshelf back-panel niche rendered with the dark-mode material  <br>*Cause:* The attribute selector body[data-dark] matches whenever the attribute is present, and data-dark=0 is always present, so light mode matched the dark rule  <br>*Fix:* Target the explicit value with body[data-dark=1] instead of the bare presence selector
+- [ ] **Both modal dialogs render on load** `ui`
+  *Symptom:* Two modal sheets both showed on first boot.  <br>*Cause:* A `display:grid` CSS rule overrode the `hidden` attribute.  <br>*Fix:* Corrected the CSS so hidden sheets stay hidden and the app boots to Today.
+- [ ] **Duplicate calmBtn DOM id** `ui`
+  *Symptom:* Two elements shared the `calmBtn` id.  <br>*Cause:* The Today hero button reused an existing element id.  <br>*Fix:* Renamed the Today hero button to `calmStart`.
+- [ ] **Kawaii theme buttons unreadable** `ui`
+  *Symptom:* Kawaii-theme buttons used white ink that failed contrast.  <br>*Cause:* Light ink on light buttons.  <br>*Fix:* Applied dark ink to kawaii buttons per the contrast research.
+- [ ] **Meal grid misaligns below 860px** `ui`
+  *Symptom:* The meal grid broke below 860px, silently misaligning days against meals.  <br>*Cause:* Responsive grid layout failed under the 860px breakpoint.  <br>*Fix:* Fixed the grid so days and meals stay aligned at narrow widths.
+- [ ] **PDF cover text overlapping** `ui`
+  *Symptom:* Cover words overlaid each other on the planner's first page/PDF cover.  <br>*Cause:* Insufficient vertical spacing in the cover layout.  <br>*Fix:* Fixed spacing between title, subtitle and year, and rebuilt all 12 PDFs.
+
+## Budget LevelUp  ·  15 fixed
+
+- [ ] **Billable proxy endpoints unthrottled (denial-of-wallet)** `security`
+  *Symptom:* Anyone could call /api/translate and /api/vision in a loop and run up billable third-party compute.  <br>*Cause:* The two endpoints proxied to Google Translate and Workers AI but, unlike /api/backup, had no per-IP rate limit — an unbounded-consumption / denial-of-wallet vector.  <br>*Fix:* Added a shared per-IP rate-limit helper and gated both billable endpoints (verified 429 after 60 calls/IP).
 - [ ] **TOTP QR service leaked 2FA secret** `security`
   *Symptom:* Enabling 2FA sent the TOTP secret to a third-party QR service.  <br>*Cause:* The QR code was generated via an external service, exposing the secret.  <br>*Fix:* Removed the external QR call and replaced it with private manual key entry.
 - [ ] **Excel month selector wrote to the wrong cell** `data-loss`
@@ -643,6 +748,8 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The encrypted vault was brute-forceable and lacked per-account isolation.  <br>*Cause:* No per-account retrieval token; a shared retrieval path was guessable.  <br>*Fix:* Added a per-account retrieval token with a dual-read migration (legacy accounts sign in with zero lockout), first mitigated by a rate limit.
 - [ ] **Broken social link handling** `logic`
   *Symptom:* Pasting a social URL produced a dead link, and bad image URLs showed a broken icon.  <br>*Cause:* Links without an https:// prefix and junk text were not normalized, and image errors were unhandled.  <br>*Fix:* Auto-prefix bare URLs to working links, reject junk text, and degrade broken images to a placeholder.
+- [ ] **Debt payoff projection ignored APR** `logic`
+  *Symptom:* Debt-free date and total-interest figures were wrong — too optimistic.  <br>*Cause:* The old payoff projection computed months by dividing balance by payment with no interest accrual, so it understated both the payoff time and the total interest.  <br>*Fix:* Replaced with an interest-aware payoff engine (snowball + avalanche), giving an accurate debt-free date, total interest, and extra-payment savings.
 - [ ] **Invoice button silently added an investment** `logic`
   *Symptom:* Clicking the Business invoice button silently created an investment instead.  <br>*Cause:* The invoice button shared a DOM element id with the Investments add-holding button.  <br>*Fix:* Gave the buttons unique ids and hardened the wiring; verified invoices and investments now act independently.
 - [ ] **Merged-cell collision in pillars card** `logic`
@@ -657,31 +764,6 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* The platform-mix card layout appeared jumbled in the planner summary band.  <br>*Fix:* Reworked the platform-mix card layout in the summary band.
 - [ ] **recalc.py crashed on Python 3.9** `other`
   *Symptom:* The recalc verification script threw a TypeError.  <br>*Cause:* ignore_cleanup_errors is unsupported on Python 3.9.  <br>*Fix:* Replaced it with an AppleScript-driven Excel recalc harness.
-
-## Planner Studio  ·  11 fixed
-
-- [ ] **arguments.callee ReferenceError breaks task ticking** `crash`
-  *Symptom:* To-do items wouldn't tick off; the first render's refresh callback threw silently.  <br>*Cause:* `arguments.callee` used inside an arrow function throws a ReferenceError in strict mode.  <br>*Fix:* Replaced it with a hoisted `refreshTasks` declaration.
-- [ ] **Gradient theme crash from id mismatch** `crash`
-  *Symptom:* The gradient theme never applied because its checks never matched.  <br>*Cause:* Theme objects used `id:'grad'` but code checked `t.grad`.  <br>*Fix:* Changed all references to `t.id === 'grad'`.
-- [ ] **Service worker cached a 404 for a later-added file** `sync`
-  *Symptom:* A vendor file added after first cache stayed permanently broken.  <br>*Cause:* The service worker had cached a 404 from before the file existed and kept serving it.  <br>*Fix:* Fixed the worker/caching path so all vendor files serve correctly.
-- [ ] **Monochrome theme hue not updating** `logic`
-  *Symptom:* Changing the mono hue had no effect.  <br>*Fix:* Fixed the mono hue to update.
-- [ ] **Schedule data-model change regression** `logic`
-  *Symptom:* After changing schedule data from string to an object, consumers still reading it as a string could break (calm mode, week view, search, celebrate cards).  <br>*Cause:* Schedule model changed from string to `{t,c,done,note}` but readers of `D.sched[h]` weren't updated.  <br>*Fix:* Updated the consumers to the new object model.
-- [ ] **'0/0' task counter not updating live** `ui`
-  *Symptom:* The task counter stayed at 0/0 instead of reflecting progress.  <br>*Cause:* The counter wasn't refreshed after a toggle.  <br>*Fix:* Made the counter update live.
-- [ ] **Both modal dialogs render on load** `ui`
-  *Symptom:* Two modal sheets both showed on first boot.  <br>*Cause:* A `display:grid` CSS rule overrode the `hidden` attribute.  <br>*Fix:* Corrected the CSS so hidden sheets stay hidden and the app boots to Today.
-- [ ] **Duplicate calmBtn DOM id** `ui`
-  *Symptom:* Two elements shared the `calmBtn` id.  <br>*Cause:* The Today hero button reused an existing element id.  <br>*Fix:* Renamed the Today hero button to `calmStart`.
-- [ ] **Kawaii theme buttons unreadable** `ui`
-  *Symptom:* Kawaii-theme buttons used white ink that failed contrast.  <br>*Cause:* Light ink on light buttons.  <br>*Fix:* Applied dark ink to kawaii buttons per the contrast research.
-- [ ] **Meal grid misaligns below 860px** `ui`
-  *Symptom:* The meal grid broke below 860px, silently misaligning days against meals.  <br>*Cause:* Responsive grid layout failed under the 860px breakpoint.  <br>*Fix:* Fixed the grid so days and meals stay aligned at narrow widths.
-- [ ] **PDF cover text overlapping** `ui`
-  *Symptom:* Cover words overlaid each other on the planner's first page/PDF cover.  <br>*Cause:* Insufficient vertical spacing in the cover layout.  <br>*Fix:* Fixed spacing between title, subtitle and year, and rebuilt all 12 PDFs.
 
 ## Prompt Vault  ·  8 fixed
 
@@ -702,6 +784,23 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Incorrect flat '696 pages' label** `other`
   *Symptom:* All files were labeled '696 pages' but the 2028 files are actually 697-701 pages.  <br>*Cause:* A hardcoded page count ignored leap-year and week-alignment variation.  <br>*Fix:* Corrected the per-year page-count labels.
 
+## Aprizely  ·  7 fixed
+
+- [ ] **javascript:/data: URL scheme click-XSS via stored and AI-sourced links** `security`
+  *Symptom:* A live_url/repo_url/pitch_url — or an AI-sourced competitor URL — set to javascript:… became a clickable href that ran script on click  <br>*Cause:* URL fields were rendered into href using esc() only, which escapes quotes but does not validate the URL scheme  <br>*Fix:* Added a safeUrl() guard (http/https only, else '#') applied across all 9 href sites, including AI competitor links
+- [ ] **One malformed report blanked the entire Reports list** `crash`
+  *Symptom:* The whole Reports view rendered blank when a single report had a string (not array) tasks field  <br>*Cause:* reportCard assumed well-formed data; one bad row threw and aborted rendering of the entire list  <br>*Fix:* Make reportCard defensive so a malformed report degrades gracefully and never breaks the list
+- [ ] **Break-even card said 'covers 100%' when revenue was 152% of costs** `logic`
+  *Symptom:* Finance dashboard displayed 'covers 100%' even though MRR was 152% of monthly costs  <br>*Cause:* Coverage copy capped/miscomputed the revenue-to-cost ratio instead of reporting the real percentage  <br>*Fix:* Compute and show the true coverage ratio (e.g. 152%) rather than a hardcoded/clamped 100%
+- [ ] **Activity timeline dumped the entire status_note field** `ui`
+  *Symptom:* status_note edits printed the whole note into the activity timeline, cluttering it  <br>*Cause:* Timeline rendered raw field values with no length cap  <br>*Fix:* Truncate long field values in the activity event builder so entries stay tidy
+- [ ] **Bulk rename introduced a grammar slip ('a account')** `ui`
+  *Symptom:* A bulk find-replace of 'studio' → 'account' produced 'a account' where the article should agree ('an account').  <br>*Cause:* Blind string replace doesn't fix the preceding article; 'a/an' depends on the following word's sound.  <br>*Fix:* Corrected 'a account' → 'an account' and verified the copy renders live; left the internal importStudio() function name (never user-visible) untouched. Lesson: after a bulk rename, grep for 'a <newword>' article mismatches.
+- [ ] **Negative currency rendered as $-59.17 instead of minus-$59.17** `ui`
+  *Symptom:* Negative money values showed the minus sign after the dollar sign  <br>*Cause:* Money formatter prefixed the symbol then let the numeric minus fall inside  <br>*Fix:* Format negatives with the minus before the currency symbol in the shared money formatter
+- [ ] **Unlock keypad numbers float high and misalign** `ui`
+  *Symptom:* On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up with the lettered keys — it still looked off after a first tidy pass.  <br>*Cause:* Each key reserved a letter row (ABC/DEF/…), which pushed the number upward instead of centering it; the digit wasn't positioned independently of the letters.  <br>*Fix:* Centered each number dead-centre in the key and absolute-positioned the letters tucked at the bottom; added a hairline border + subtle fill, tighter spacing and a smoother press state; also relabeled 'Create a studio' → 'Create account' on the unlock screen.
+
 ## Hello Baby  ·  7 fixed
 
 - [ ] **Weak recovery keys and unescaped attribute sinks** `security`
@@ -719,6 +818,21 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Literal \n rendering escaped** `ui`
   *Symptom:* A literal `\n` was showing instead of a line break.  <br>*Cause:* Incorrect newline escaping.  <br>*Fix:* Corrected the escaping.
 
+## Ever After  ·  6 fixed
+
+- [ ] **Service worker pins returning users to old build** `sync`
+  *Symptom:* Returning visitors saw stale builds — old splash rings, white space under content, and a mis-sized rainbow ring.  <br>*Cause:* The root `/` navigation was served cache-first, pinning users to a stale index.html.  <br>*Fix:* Made navigations network-first and bumped the cache version to purge stale caches; the identical bug was also fixed in Planner Studio.
+- [ ] **Join boot race gives joiners the wrong cloud key** `race`
+  *Symptom:* Users joining a shared space were given their own cloud key and shown the wrong 'your key' popup.  <br>*Cause:* Two boot-time races in the share/join flow.  <br>*Fix:* Fixed the boot races so joiners use the correct shared key and popup.
+- [ ] **Wedding voice dictation dumped every spoken item into Guests** `logic`
+  *Symptom:* Speaking a mixed rundown (budget, vendor, song, gift, to-do) routed everything into the Guests list  <br>*Cause:* The wedding dictation parser greedily consumed the whole transcript instead of splitting on command/section boundaries like the planner's parser  <br>*Fix:* Rewrote it to split on command boundaries so items route to guests/budget/vendors/tasks/songs/gifts correctly
+- [ ] **Choose-a-photo box shows literal ${imgIconSVG(34)}** `ui`
+  *Symptom:* The photo-picker box displayed the literal text `${imgIconSVG(34)}` (plus a fallback clock glyph) instead of an image icon.  <br>*Cause:* `imgIconSVG(34)` was inside a single-quoted string (wed-data.js:15), so it wasn't evaluated.  <br>*Fix:* Broke out of the single-quoted string to call imgIconSVG so a real image icon renders.
+- [ ] **tvPhoto icon printed as literal text** `ui`
+  *Symptom:* `${IMG_ICON(32)}` showed as literal text in tvPhoto instead of the icon.  <br>*Cause:* The placeholder sat inside a single-quoted string, so it wasn't interpolated.  <br>*Fix:* Built the string with concatenation so IMG_ICON is actually called.
+- [ ] **Corrupted emoji entry** `other`
+  *Symptom:* One corrupted emoji entry had slipped into the data.  <br>*Cause:* Malformed emoji entry.  <br>*Fix:* Corrected the emoji entry.
+
 ## Wedding Planner  ·  6 fixed
 
 - [ ] **openpyxl StyleProxy crash on font copy** `crash`
@@ -733,19 +847,6 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Adding a table left an empty table with no way forward.  <br>*Cause:* There was no way to seat guests into a newly added table.  <br>*Fix:* Added capacity meters, per-table '+ Seat a guest here' dropdowns, meal tallies, auto-seat and a 'still to seat' pool.
 - [ ] **Nested git repo leaked into monorepo commit** `other`
   *Symptom:* A wedding-planner gitlink was committed into the BUDGETLEVELUP monorepo.  <br>*Cause:* wedding-planner has its own repo and was added as a gitlink.  <br>*Fix:* Removed the leaked gitlink from the monorepo commit.
-
-## Ever After  ·  5 fixed
-
-- [ ] **Service worker pins returning users to old build** `sync`
-  *Symptom:* Returning visitors saw stale builds — old splash rings, white space under content, and a mis-sized rainbow ring.  <br>*Cause:* The root `/` navigation was served cache-first, pinning users to a stale index.html.  <br>*Fix:* Made navigations network-first and bumped the cache version to purge stale caches; the identical bug was also fixed in Planner Studio.
-- [ ] **Join boot race gives joiners the wrong cloud key** `race`
-  *Symptom:* Users joining a shared space were given their own cloud key and shown the wrong 'your key' popup.  <br>*Cause:* Two boot-time races in the share/join flow.  <br>*Fix:* Fixed the boot races so joiners use the correct shared key and popup.
-- [ ] **Choose-a-photo box shows literal ${imgIconSVG(34)}** `ui`
-  *Symptom:* The photo-picker box displayed the literal text `${imgIconSVG(34)}` (plus a fallback clock glyph) instead of an image icon.  <br>*Cause:* `imgIconSVG(34)` was inside a single-quoted string (wed-data.js:15), so it wasn't evaluated.  <br>*Fix:* Broke out of the single-quoted string to call imgIconSVG so a real image icon renders.
-- [ ] **tvPhoto icon printed as literal text** `ui`
-  *Symptom:* `${IMG_ICON(32)}` showed as literal text in tvPhoto instead of the icon.  <br>*Cause:* The placeholder sat inside a single-quoted string, so it wasn't interpolated.  <br>*Fix:* Built the string with concatenation so IMG_ICON is actually called.
-- [ ] **Corrupted emoji entry** `other`
-  *Symptom:* One corrupted emoji entry had slipped into the data.  <br>*Cause:* Malformed emoji entry.  <br>*Fix:* Corrected the emoji entry.
 
 ## Listing Lab Pro  ·  5 fixed
 
@@ -780,15 +881,12 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Automated git commit used `git add -A`, sweeping a co-editing session's work** `other`
   *Symptom:* The hourly harvester's auto-commit ran mid-work and its `git add -A` staged an in-progress session's unrelated edits, committing them under the wrong message.  <br>*Cause:* harvest.mjs/scan.mjs staged everything (`git add -A`) instead of only their own generated files.  <br>*Fix:* Stage an explicit allow-list of the tool's own outputs (harvested.json / scan-findings.json + their gen artefacts), never `git add -A`. (This is the 'stage only files you touched' optimiser.)
 
-## Aprizely  ·  2 fixed
+## Hallalu Bookings  ·  3 fixed
 
-- [ ] **Bulk rename introduced a grammar slip ('a account')** `ui`
-  *Symptom:* A bulk find-replace of 'studio' → 'account' produced 'a account' where the article should agree ('an account').  <br>*Cause:* Blind string replace doesn't fix the preceding article; 'a/an' depends on the following word's sound.  <br>*Fix:* Corrected 'a account' → 'an account' and verified the copy renders live; left the internal importStudio() function name (never user-visible) untouched. Lesson: after a bulk rename, grep for 'a <newword>' article mismatches.
-- [ ] **Unlock keypad numbers float high and misalign** `ui`
-  *Symptom:* On the unlock PIN pad the numbers sat too high inside their circles and 1/0 didn't line up with the lettered keys — it still looked off after a first tidy pass.  <br>*Cause:* Each key reserved a letter row (ABC/DEF/…), which pushed the number upward instead of centering it; the digit wasn't positioned independently of the letters.  <br>*Fix:* Centered each number dead-centre in the key and absolute-positioned the letters tucked at the bottom; added a hairline border + subtle fill, tighter spacing and a smoother press state; also relabeled 'Create a studio' → 'Create account' on the unlock screen.
-
-## Hallalu Bookings  ·  1 fixed
-
+- [ ] **Concurrent bookings claim the same slot (double-booking race)** `race`
+  *Symptom:* Two visitors open the same booking page, both see a slot as free, and both submit within seconds — the app accepts both and the owner is double-booked.  <br>*Cause:* Availability is read once into the client and the final insert does not re-check for a conflicting booking inside the same transaction. No unique constraint on (resource, start_time) and no server-side conflict guard, so simultaneous writes both succeed.  <br>*Fix:* Make the slot the source of truth: add a DB unique constraint / conditional insert on (owner_or_resource, start, end) so the second write fails, re-validate availability server-side at submit time, and on conflict return a friendly 'just taken — pick another time'. Optionally hold a short soft-lock while the visitor fills the form.
+- [ ] **Availability rendered in owner's timezone, not the visitor's** `logic`
+  *Symptom:* Slots show the business's local hours to every visitor regardless of where they are, so an out-of-area client books '2pm' meaning their own 2pm and shows up at the wrong hour.  <br>*Cause:* Times are formatted from stored local/naive datetimes without converting to the visitor's detected timezone, and the page never states which timezone the times are in.  <br>*Fix:* Store all slots in UTC, detect the visitor's timezone (Intl.DateTimeFormat().resolvedOptions().timeZone), render every time converted to it, always print an explicit timezone label plus a picker to override, and spell out both parties' timezones in the confirmation.
 - [ ] **Orphaned dead whitespace in FAQ + Policies section** `ui`
   *Symptom:* The FAQ and Policies cards sat only in the right column while the left column ended at the testimonials card, leaving a dead bottom-left quadrant.  <br>*Cause:* The section used a 5fr/7fr split where the short left column (About + Testimonials) ended early while the long right column (Gallery + FAQ + Policies) ran on, orphaning the bottom-left quadrant.  <br>*Fix:* Restructured the section into a balanced editorial layout — a full-width gallery strip then a 2x2 equal-height card grid (About / Testimonials / FAQ / Policies) so rows align and nothing is orphaned.
 

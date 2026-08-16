@@ -1,0 +1,37 @@
+{
+  "id": "c1e8f53a-fe1e-400c-861b-e95ccd3ec63e",
+  "app": "Bug Ledger",
+  "project": "BugLedger",
+  "title": "New scan layers + investor pitch deck",
+  "status": "active",
+  "current": "Appending today's harvest to the ledger",
+  "note": "",
+  "tasks": [
+    {
+      "text": "Append today's harvest",
+      "note": "Merging 49 new bugs (10 security) and 57 optimisers mined from today's conversations plus deep research, deduped against all 387 existing entries",
+      "status": "active"
+    },
+    {
+      "text": "Add six new scan layers",
+      "note": "Give the ledger first-class accessibility, claims-accuracy, legal/privacy, test-coverage, SEO/meta and observability checks, so it catches whole classes of problems it was blind to",
+      "status": "pending"
+    },
+    {
+      "text": "Research the investor angle",
+      "note": "Find what comparable dev-tool companies raised, what investors actually reward, and where this is arguably better and more profitable",
+      "status": "pending"
+    },
+    {
+      "text": "Build the interactive pitch deck",
+      "note": "A beautiful navigable deck with transparent costing, unit economics and cost-per-client — the evidence an investor asks for",
+      "status": "pending"
+    },
+    {
+      "text": "Verify and publish",
+      "note": "Deploy the ledger and the deck, prove they load, and log everything found along the way",
+      "status": "pending"
+    }
+  ],
+  "started": 1786915865391
+}
