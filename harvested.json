@@ -1018,5 +1018,77 @@
     "status": "unverified",
     "session": "215ee275",
     "found": "2026-08-15"
+  },
+  {
+    "key": "3e50ec98:itsnotthrowawaycacheandheresthecatchitmaybethevmbackinganact",
+    "app": "Wedding Planner",
+    "title": "It's not throwaway cache, and here's the catch: it may be the VM backing an active…",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "It's not throwaway cache, and here's the catch: **it may be the VM backing an active Claude session — possibly this one.** If I delete it while it's in use, I'd kill the session and corrupt the VM.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3e50ec98",
+    "found": "2026-08-16"
+  },
+  {
+    "key": "3e50ec98:thesudoscanisthebiggerprizeanddoesntriskanything",
+    "app": "Wedding Planner",
+    "title": "Sudo scan is the bigger prize and doesn't risk anything.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The sudo scan is the bigger prize and doesn't risk anything.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3e50ec98",
+    "found": "2026-08-16"
+  },
+  {
+    "key": "3e50ec98:sothisismoreperiodicmaintenancethanaonetimefix",
+    "app": "Wedding Planner",
+    "title": "This is more \"periodic maintenance\" than a one-time fix.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "So this is more \"periodic maintenance\" than a one-time fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3e50ec98",
+    "found": "2026-08-16"
+  },
+  {
+    "key": "5d4b033a:mynewcodeiscleannodupidcollisionstheonedebtaddrowalsoinappjs",
+    "app": "Budget LevelUp",
+    "title": "My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "My new code is clean — no dup-id collisions (the one `#debt-add-row` also in `app.js` is dead code; `app.js` isn't loaded by `index.html`), no unescaped innerHTML.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5d4b033a",
+    "found": "2026-08-16"
+  },
+  {
+    "key": "5d4b033a:thescannerflaggedonegenuinetrivialissueinthestaticpitchpaged",
+    "app": "Budget LevelUp",
+    "title": "Scanner flagged one genuine trivial issue in the static pitch page (duplicate id=\"price\").",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The scanner flagged one genuine trivial issue in the static pitch page (duplicate `id=\"price\"`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5d4b033a",
+    "found": "2026-08-16"
+  },
+  {
+    "key": "5d4b033a:the39missedarethecategorysecuritybugstheycounttowardthebugto",
+    "app": "Budget LevelUp",
+    "title": "39 \"missed\" are the category:\"security\" bugs — they count toward the bug total of 337.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The 39 \"missed\" are the `category:\"security\"` bugs — they count toward the bug total of 337.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5d4b033a",
+    "found": "2026-08-16"
   }
 ]

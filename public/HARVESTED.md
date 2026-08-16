@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-85 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+91 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (42)
 
@@ -88,6 +88,14 @@
 - [ ] `low` `other` (2026-08-10, #4e54d91b) — Also caught and fixed a real bug here — rapid taps were losing the previous setting…
 - [ ] `low` `ui` (2026-08-10, #6c59c3ad) — Verified & live Measured on the deployed site at 1280px: gallery = 6 columns, quad = 2…
 
+## Wedding Planner (5)
+
+- [ ] `critical` `data-loss` (2026-08-16, #3e50ec98) — It's not throwaway cache, and here's the catch: it may be the VM backing an active…
+- [ ] `high` `crash` (2026-08-10, #3e50ec98) — If you want to push higher later, the 100 GB in root-owned system dirs is still…
+- [ ] `low` `other` (2026-08-10, #3e50ec98) — - The sudo du one-liner above will reveal the 100 GB of root-owned space I couldn't…
+- [ ] `low` `other` (2026-08-16, #3e50ec98) — Sudo scan is the bigger prize and doesn't risk anything.
+- [ ] `low` `other` (2026-08-16, #3e50ec98) — This is more "periodic maintenance" than a one-time fix.
+
 ## Stitchhooky (3)
 
 - [ ] `high` `crash` (2026-08-10, #236ae80d) — Boot crash (TDZ) — termKey read db while let db = load() was still initializing,…
@@ -100,7 +108,8 @@
 - [ ] `low` `other` (2026-08-10, #2d2c2119) — It needs the LSTM core variants which I didn't copy:
 - [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a real layout bug — the meal grid breaks below 860px, misaligning days and meals.
 
-## Wedding Planner (2)
+## Budget LevelUp (3)
 
-- [ ] `high` `crash` (2026-08-10, #3e50ec98) — If you want to push higher later, the 100 GB in root-owned system dirs is still…
-- [ ] `low` `other` (2026-08-10, #3e50ec98) — - The sudo du one-liner above will reveal the 100 GB of root-owned space I couldn't…
+- [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
+- [ ] `low` `other` (2026-08-16, #5d4b033a) — Scanner flagged one genuine trivial issue in the static pitch page (duplicate id="price").
+- [ ] `low` `other` (2026-08-16, #5d4b033a) — 39 "missed" are the category:"security" bugs — they count toward the bug total of 337.
