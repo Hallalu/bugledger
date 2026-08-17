@@ -1402,5 +1402,113 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-17"
+  },
+  {
+    "key": "6e9b661e:foundtherealculpritanditsagenuinebugthefocuspanelsfocusitema",
+    "app": "Hallalu CRM",
+    "title": "Found the real culprit — and it's a genuine bug: the Focus panel's .focus-item .a text…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Found the real culprit — and it's a genuine bug: the **Focus panel's** `.focus-item .a` text is `white-space:nowrap`, and grid items default to `min-width:auto`, so the long \"Next action\" text (711px…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "6e9b661e:alsomyareachartislosingaspecificityfighttotheglobalsvgnotwid",
+    "app": "Hallalu CRM",
+    "title": "Also, my .area-chart is losing a specificity fight to the global svg:not([width])…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Also, my `.area-chart` is losing a specificity fight to the global `svg:not([width])` reset, so the **momentum chart renders at 16px** on all sizes (I misread the near-empty panel as sparse data).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "6e9b661e:areachartisfixed16316pxandmobileoverflowdroppedfrom791pxto25",
+    "app": "Hallalu CRM",
+    "title": "Area chart is fixed (16316px) and mobile overflow dropped from 791px to 25px — the…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Area chart is fixed (16→316px) and mobile overflow dropped from 791px to 25px — the remaining bit is the pre-existing horizontally-scrolling mobile nav bar (`.side`), not the dashboard content.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:mycreditsgrantsaonetime5welcomebuttheresnomonthlygrantanywhe",
+    "app": "Finished.",
+    "title": "Mycredits() grants a one-time +5 welcome — but there's no monthly grant anywhere…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "`my_credits()` grants a **one-time** +5 `welcome` — but there's no **monthly** grant anywhere (that's the bug), and I need to check whether the welcome branch even updates `balance`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:thatsthebugaftertheinitial5arespentafreeuserisstuckat0foreve",
+    "app": "Finished.",
+    "title": "That's the bug: after the initial 5 are spent, a free user is stuck at 0 forever.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That's the bug: after the initial 5 are spent, a free user is stuck at 0 forever.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:thebugisinthecomposeraddtoyourstory",
+    "app": "Finished.",
+    "title": "Bug is in the composer (\"Add to your story\").",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The bug is in the **composer** (\"Add to your story\").",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:foundtherealbugthechartsvgscollapseto1616pxansvgheightautoin",
+    "app": "Hallalu CRM",
+    "title": "Found the real bug — the chart SVGs collapse to 16×16px (an SVG height:auto +…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Found the real bug — the chart SVGs collapse to **16×16px** (an SVG `height:auto` + intrinsic-aspect-ratio quirk inside a flex column).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:thechartdimensionsarecorrectnowverified162118barswith62pxtal",
+    "app": "Hallalu CRM",
+    "title": "Chart dimensions are correct now (verified: 162×118 bars with 62px-tall bars, 92px…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The chart dimensions are correct now (verified: 162×118 bars with 62px-tall bars, 92px donuts) — the blank capture is just the pane's scroll quirk.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:foundandfixedtherealbugitwasntcache",
+    "app": "Hallalu CRM",
+    "title": "Found and fixed the real bug — it wasn't cache.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Found and fixed the real bug — it wasn't cache.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
   }
 ]
