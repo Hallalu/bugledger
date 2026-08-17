@@ -1306,5 +1306,29 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:thetextscrambledtheformatbuttonsappendedmarkerstotheendwhile",
+    "app": "Finished.",
+    "title": "Text scrambled — the format buttons appended markers to the end while typing inserted…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The text scrambled — the format buttons appended markers to the end while typing inserted at caret 0 (the button click blurred the textarea and React reset the caret).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:onthe404thatsonlythelocalstaticserveritcantserveappusedemo1l",
+    "app": "Hallalu CRM",
+    "title": "- On the 404: that's only the local static server (it can't serve /app — use /?demo=1…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- On the **404**: that's only the local static server (it can't serve `/app` — use `/?demo=1` locally); production `/app` works, and the promissory line is already gone live (your screenshot was a st…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
   }
 ]
