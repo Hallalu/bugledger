@@ -1162,5 +1162,65 @@
     "status": "unverified",
     "session": "ea9a3232",
     "found": "2026-08-17"
+  },
+  {
+    "key": "b6ac4f45:properfixillbatchitintothedeployillrewriteminttokentodropthe",
+    "app": "Breadcrumb",
+    "title": "Proper fix (I'll batch it into the deploy) I'll rewrite mintToken() to drop the fragile…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "### Proper fix (I'll batch it into the deploy) I'll rewrite `mintToken()` to drop the fragile `prompt()` — mint immediately with a sensible default label (and an inline rename), so the button just wo…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b6ac4f45",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "b6ac4f45:twothingsineedtoflagbeforethenextbuildbreadcrumbisprobablyon",
+    "app": "Breadcrumb",
+    "title": "Two things I need to flag before the next build - Breadcrumb is probably on the wrong…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "## Two things I need to flag before the next build - **Breadcrumb is probably on the wrong account too.** I logged the 22 apps to whatever account its saved key belongs to — which may be the `@rhema`…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b6ac4f45",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "ff5425a5:willdoeverygenuinelynewbuggetsappendedtotheledger",
+    "app": "Budget LevelUp",
+    "title": "Will do — every genuinely new bug gets appended to the ledger.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Will do — every genuinely new bug gets appended to the ledger.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff5425a5",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "ff5425a5:clientfixeserrorhandlersfocusringlabelsogmeta",
+    "app": "Budget LevelUp",
+    "title": "Client fixes — error handlers, focus ring, labels, OG meta:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Client fixes — error handlers, focus ring, labels, OG meta:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff5425a5",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "ff5425a5:crosscuttingwalkedfound4morerealitemstofixnoratelimitontheai",
+    "app": "Budget LevelUp",
+    "title": "Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI endpoint, no data export, silent note-save failures, and unlabeled pad keys.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff5425a5",
+    "found": "2026-08-17"
   }
 ]
