@@ -1270,5 +1270,29 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-17"
+  },
+  {
+    "key": "52294be6:oneorderingbugtofixtheclientscriptreadsthedataelementbutipla",
+    "app": "Breadcrumb",
+    "title": "One ordering bug to fix — the client script reads the data element, but I placed the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One ordering bug to fix — the client script reads the data element, but I placed the data script *after* it, so it wouldn't exist yet at parse time.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "52294be6",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "6e9b661e:heresacleanstopandimportantlynothingisdeployedorbrokentheliv",
+    "app": "Hallalu CRM",
+    "title": "Here's a clean stop — and importantly, nothing is deployed or broken: the live Aprizely…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Here's a clean stop — and importantly, **nothing is deployed or broken**: the live Aprizely site is untouched and working (still on the spill-off fix from earlier).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-17"
   }
 ]
