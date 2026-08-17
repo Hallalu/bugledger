@@ -1330,5 +1330,77 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:item16v1blankdoclosesa4sizingwhenmadesmallerthisissubtleletm",
+    "app": "Finished.",
+    "title": "Item 16 — V1 blank doc loses A4 sizing when made smaller. This is subtle — let me first…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Item #16 — V1 blank doc loses A4 sizing when made smaller.** This is subtle — let me first diagnose the actual behavior rather than guess.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:thefixinpagedmodemakethesheetatleastonea4pagetallvarpagehwhi",
+    "app": "Finished.",
+    "title": "Fix: in paged mode, make the sheet at least one A4 page tall (var(--pageh), which…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The fix: in paged mode, make the sheet at least one **A4 page tall** (`var(--pageh)`, which scales with width), so a blank V1 doc stays A4 at any size.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:item31fixembeddedstripepaymentsthisisapaymentsbackenditem",
+    "app": "Finished.",
+    "title": "Item 31 — fix embedded Stripe payments. This is a payments backend item.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Item #31 — fix embedded Stripe payments.** This is a payments backend item.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:continuingwave9thetimezoneweatherbuglondonshowingest",
+    "app": "Hallalu CRM",
+    "title": "Continuing — Wave 9: the timezone/weather bug (London showing EST).",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Continuing — **Wave 9: the timezone/weather bug** (London showing EST).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:thatsthebugtheheaderclockusesnewdatedevicetimeestnotthechose",
+    "app": "Hallalu CRM",
+    "title": "That's the bug — the header clock uses new Date() (device time, EST), not the chosen…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "That's the bug — the header clock uses `new Date()` (device time, EST), not the chosen city's timezone.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:timezonebugfixedversionbe80df21",
+    "app": "Hallalu CRM",
+    "title": "Timezone bug fixed (version be80df21).",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Timezone bug fixed (version `be80df21`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
   }
 ]
