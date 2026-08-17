@@ -1,13 +1,14 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-94 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+97 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (45)
+## Hallalu CRM (47)
 
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
 - [ ] `high` `crash` (2026-08-10, #55c985af) — Two problems: a crash in the report loop and heavy noise (268 medium — almost certainly…
 - [ ] `high` `auth` (2026-08-11, #55c985af) — Copy, conversion, accessibility) when the session limit resets to catch more.
 - [ ] `high` `security` (2026-08-11, #215ee275) — Stripe now works with just the secret key (hosted-checkout fallback).
+- [ ] `high` `crash` (2026-08-17, #2c2a51fc) — What actually changed today Your Mac installed a macOS update today. The Aug 11 crash…
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -49,6 +50,7 @@
 - [ ] `low` `other` (2026-08-16, #074809b3) — All three research sweeps are still running (Reddit/app-store consumer complaints,…
 - [ ] `low` `other` (2026-08-16, #074809b3) — Found a real bug I introduced — the type filter shows "undefined (8)" for the new…
 - [ ] `low` `other` (2026-08-16, #074809b3) — One accuracy fix: the traction slide's "581 total" isn't cleanly derivable.
+- [ ] `low` `other` (2026-08-17, #2c2a51fc) — That's why today ≠ every other day. You've run 6+ sessions with Chrome on a full disk…
 
 ## Breadcrumb (19)
 
@@ -99,9 +101,10 @@
 - [ ] `low` `other` (2026-08-16, #3e50ec98) — Sudo scan is the bigger prize and doesn't risk anything.
 - [ ] `low` `other` (2026-08-16, #3e50ec98) — This is more "periodic maintenance" than a one-time fix.
 
-## Stitchhooky (3)
+## Stitchhooky (4)
 
 - [ ] `high` `crash` (2026-08-10, #236ae80d) — Boot crash (TDZ) — termKey read db while let db = load() was still initializing,…
+- [ ] `medium` `logic` (2026-08-17, #ea9a3232) — File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.
 - [ ] `low` `other` (2026-08-10, #236ae80d) — Anything truly unreadable becomes a special cell that holds the instruction…
 - [ ] `low` `other` (2026-08-10, #236ae80d) — Blank-screen you'd have seen on v3's first open.
 
