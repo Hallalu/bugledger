@@ -1510,5 +1510,29 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:avacomposeratodropaphotoforhertolookatentertosendfixeditwasb",
+    "app": "Hallalu CRM",
+    "title": "Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "**Ava composer** — a `+` to drop a photo for her to look at, **Enter to send** (fixed — it was being lost on re-render), and a **hold-to-record toggle** in settings.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:oneunitbugtofixclocktakesmillisecondspertherecorderbutacurre",
+    "app": "Hallalu CRM",
+    "title": "One unit bug to fix: clock() takes milliseconds (per the recorder), but…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "One unit bug to fix: `clock()` takes **milliseconds** (per the recorder), but `a.currentTime`/`a.duration` are in **seconds** — so the live time would read wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
   }
 ]
