@@ -1126,5 +1126,41 @@
     "status": "unverified",
     "session": "074809b3",
     "found": "2026-08-16"
+  },
+  {
+    "key": "2c2a51fc:whatactuallychangedtodayyourmacinstalledamacosupdatetodaythe",
+    "app": "Hallalu CRM",
+    "title": "What actually changed today Your Mac installed a macOS update today. The Aug 11 crash…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "## What actually changed today **Your Mac installed a macOS update today.** The Aug 11 crash report recorded `macOS 26.4.1 (25E253)`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2c2a51fc",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "2c2a51fc:thatswhytodayeveryotherdayyouverun6sessionswithchromeonafull",
+    "app": "Hallalu CRM",
+    "title": "That's why today ≠ every other day. You've run 6+ sessions with Chrome on a full disk…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**That's why today ≠ every other day.** You've run 6+ sessions with Chrome on a full disk before and been fine, because the machine wasn't simultaneously installing an OS and rebuilding every index o…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2c2a51fc",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "ea9a3232:thefileisutf8buttheserverisntdeclaringitsothebrowserguessesw",
+    "app": "Stitchhooky",
+    "title": "File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The file is UTF-8 but the server isn't declaring it, so the browser guesses wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ea9a3232",
+    "found": "2026-08-17"
   }
 ]
