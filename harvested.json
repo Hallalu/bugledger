@@ -1222,5 +1222,53 @@
     "status": "unverified",
     "session": "ff5425a5",
     "found": "2026-08-17"
+  },
+  {
+    "key": "6e9b661e:theboardisrepeat5minmax216px1frwithoverflowxautoafixed5colum",
+    "app": "Finished.",
+    "title": "Board is repeat(5, minmax(216px, 1fr)) with overflow-x:auto — a fixed 5-column kanban.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The board is `repeat(5, minmax(216px, 1fr))` with `overflow-x:auto` — a fixed 5-column kanban.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "6e9b661e:thisisthegroundtruthviewport1280pxboardhasoverflowxautoandre",
+    "app": "Finished.",
+    "title": "This is the ground truth: viewport 1280px, .board has overflow-x:auto and renders 5…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "This is the ground truth: viewport 1280px, `.board` has `overflow-x:auto` and renders 5 fixed 216px columns totaling 1128px, but only 966px is visible — so the **EARNING** column (the money stage) is…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "6e9b661e:threeedits1baseboard5equalcolumnsthatalwaysfit2colgetsminwid",
+    "app": "Finished.",
+    "title": "Three edits: (1) base board = 5 equal columns that always fit, (2) .col gets…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Three edits: (1) base board = 5 equal columns that always fit, (2) `.col` gets `min-width:0` so cards can't force overflow, (3) a responsive swipe mode for ≤1140px.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:noliteral6incodelikelyamisrememberdoesntchangethefixfollowup",
+    "app": "Hallalu CRM",
+    "title": "(No literal \"6\" in code — likely a misremember; doesn't change the fix.) - Follow-ups…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "(No literal \"6\" in code — likely a misremember; doesn't change the fix.) - Follow-ups view already calls itself *\"Your kindest manager\"* — great foundation to make genuinely supportive.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
   }
 ]
