@@ -1294,5 +1294,17 @@
     "status": "unverified",
     "session": "6e9b661e",
     "found": "2026-08-17"
+  },
+  {
+    "key": "f256d011:onitillmakethepricingpagefullerandmorecompellingusingthedema",
+    "app": "Hallalu CRM",
+    "title": "On it — I'll make the pricing page fuller and more compelling, using the demand…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "On it — I'll make the pricing page fuller and more compelling, using the demand research (highlight the all-in-one, flat-pricing, own-your-clients, AI-does-the-chore wins), and fix an accuracy issue:…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-17"
   }
 ]
