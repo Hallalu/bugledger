@@ -1690,5 +1690,65 @@
     "status": "unverified",
     "session": "1363a864",
     "found": "2026-08-18"
+  },
+  {
+    "key": "00ae642b:tworesidualleakswouldstillproducewrongresultsletmefixthem",
+    "app": "Listing Lab Pro",
+    "title": "Two residual leaks would still produce wrong results — let me fix them.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Two residual leaks would still produce wrong results — let me fix them.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "00ae642b",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "00ae642b:micisblockedinthebrowserpanesotheerrorpathfiredcorrectlybuti",
+    "app": "Listing Lab Pro",
+    "title": "Mic is blocked in the Browser pane — so the error path fired correctly, but it closes…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Mic is blocked in the Browser pane — so the error path fired correctly, but it closes the panel and the user loses the help.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "00ae642b",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:verificationcaughtarealbugthealertsmixcurrenciestrialrenewal",
+    "app": "Hallalu CRM",
+    "title": "Verification caught a real bug: the alerts mix currencies — trial/renewal show £52…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Verification caught a real bug: the alerts mix currencies — trial/renewal show **£52** (what you actually pay) while the idle alert shows **$70.47** (home-currency normalised).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:allrestoredwithanincodenoteexplainingtheasymmetryastalesugge",
+    "app": "Hallalu CRM",
+    "title": "All restored, with an in-code note explaining the asymmetry (a stale suggestion costs…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "All restored, with an in-code note explaining the asymmetry (a stale suggestion costs nothing; a missing famous one costs usability).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:whilefixingthatifoundathirdbugthehandlerwasboundtochangenoti",
+    "app": "Hallalu CRM",
+    "title": "While fixing that I found a third bug: the handler was bound to change, not input — so…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "While fixing that I found a **third** bug: the handler was bound to `change`, not `input` — so typing did nothing until you clicked away.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
   }
 ]
