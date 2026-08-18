@@ -1534,5 +1534,77 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-17"
+  },
+  {
+    "key": "a15dff44:theproblemwasmyownearlieritem31idwronglyassumedcreatecheckou",
+    "app": "Finished.",
+    "title": "Problem was my own earlier item 31: I'd wrongly assumed create-checkout was missing…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The problem was **my own earlier item #31**: I'd wrongly assumed `create-checkout` was missing (it's deployed, just wasn't in the repo), so I'd made the client detour through an unconfigured Cloudfla…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "a15dff44:thecrashisatrimonundefinedmyseededrecordslackacontentfieldth",
+    "app": "Finished.",
+    "title": "Crash is a .trim() on undefined — my seeded records lack a content field that card()…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "The crash is a `.trim()` on undefined — my seeded records lack a `content` field that `card()` → `countWords()` reads.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "a15dff44:countwordscrashesonundefinedcontentalatentrobustnessgapthatm",
+    "app": "Finished.",
+    "title": "CountWords crashes on undefined content — a latent robustness gap that my seed exposed.",
+    "category": "security",
+    "severity": "high",
+    "symptom": "`countWords` crashes on undefined content — a latent robustness gap that my seed exposed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:theintrobubbleis182pxtallfor3linesoftexttheres110pxofblanksp",
+    "app": "Hallalu CRM",
+    "title": "Intro bubble is 182px tall for 3 lines of text — there's 110px of blank space inside it.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The intro bubble is **182px tall for ~3 lines of text** — there's ~110px of blank space inside it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:foundthebugtheintrobubblehaswhitespaceprewrapandtheavamsgtem",
+    "app": "Hallalu CRM",
+    "title": "Found the bug: the intro bubble has white-space: pre-wrap and the avaMsg template…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Found the bug: the intro bubble has `white-space: pre-wrap` and the `avaMsg` template leaves **trailing newlines** inside the bubble (`\"Yours to edit.\\n \\n \\n...\"` from the empty conditional blocks) …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:line2008setswhitespaceprewraponallbubblessoailinebreaksshowt",
+    "app": "Hallalu CRM",
+    "title": "Line 2008 sets white-space:pre-wrap on all bubbles (so AI line breaks show) — that's…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Line 2008 sets `white-space:pre-wrap` on **all** bubbles (so AI line breaks show) — that's intentional, but it means the `avaMsg` template's trailing newlines from empty conditional blocks render as …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
   }
 ]
