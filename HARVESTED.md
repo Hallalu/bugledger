@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-136 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+141 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (66)
+## Hallalu CRM (68)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -17,6 +17,7 @@
 - [ ] `medium` `logic` (2026-08-17, #f256d011) — That's the bug — the header clock uses new Date() (device time, EST), not the chosen…
 - [ ] `medium` `logic` (2026-08-17, #f256d011) — Timezone bug fixed (version be80df21).
 - [ ] `medium` `logic` (2026-08-17, #f256d011) — One unit bug to fix: clock() takes milliseconds (per the recorder), but…
+- [ ] `medium` `logic` (2026-08-18, #1363a864) — "By email" is the wrong handle. Money is phone-native everywhere here — M-Pesa is your…
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Assistant (Ava) on mobile confirmed real bug Root cause found: the Ava hero (.ava-stage…
 - [ ] `low` `other` (2026-08-10, #215ee275) — That's exactly why it doesn't match the call.
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Mobile Ava fix + dark-mode contrast sweep (fixes the "invisible on mobile" bug — and…
@@ -70,6 +71,7 @@
 - [ ] `low` `ui` (2026-08-18, #f256d011) — Found the bug: the intro bubble has white-space: pre-wrap and the avaMsg template…
 - [ ] `low` `ui` (2026-08-18, #f256d011) — Line 2008 sets white-space:pre-wrap on all bubbles (so AI line breaks show) — that's…
 - [ ] `low` `other` (2026-08-18, #f256d011) — DM template chips now toggle too (a latent bug from before, now fixed).
+- [ ] `low` `other` (2026-08-18, #1363a864) — The app you're copying — PayPal — is structurally broken in Nigeria (send-only, can't…
 
 ## Finished. (30)
 
@@ -129,6 +131,15 @@
 - [ ] `low` `ui` (2026-08-17, #b6ac4f45) — Proper fix (I'll batch it into the deploy) I'll rewrite mintToken() to drop the fragile…
 - [ ] `low` `other` (2026-08-17, #52294be6) — One ordering bug to fix — the client script reads the data element, but I placed the…
 
+## Listing Lab Pro (6)
+
+- [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a CSS bug — display:grid is overriding the hidden attribute so both dialogs show.
+- [ ] `low` `other` (2026-08-10, #2d2c2119) — It needs the LSTM core variants which I didn't copy:
+- [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a real layout bug — the meal grid breaks below 860px, misaligning days and meals.
+- [ ] `low` `other` (2026-08-18, #00ae642b) — Stale HTML is being served — the old design.
+- [ ] `low` `other` (2026-08-18, #00ae642b) — Confirmed: 102 rows, 51 distinct — my earlier multi-statement DELETE didn't take.
+- [ ] `low` `other` (2026-08-18, #00ae642b) — DELETE is silently failing — foreign keys.
+
 ## Budget LevelUp (6)
 
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
@@ -152,9 +163,3 @@
 - [ ] `medium` `logic` (2026-08-17, #ea9a3232) — File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.
 - [ ] `low` `other` (2026-08-10, #236ae80d) — Anything truly unreadable becomes a special cell that holds the instruction…
 - [ ] `low` `other` (2026-08-10, #236ae80d) — Blank-screen you'd have seen on v3's first open.
-
-## Listing Lab Pro (3)
-
-- [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a CSS bug — display:grid is overriding the hidden attribute so both dialogs show.
-- [ ] `low` `other` (2026-08-10, #2d2c2119) — It needs the LSTM core variants which I didn't copy:
-- [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a real layout bug — the meal grid breaks below 860px, misaligning days and meals.

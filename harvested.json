@@ -1630,5 +1630,65 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-18"
+  },
+  {
+    "key": "00ae642b:stalehtmlisbeingservedtheolddesign",
+    "app": "Listing Lab Pro",
+    "title": "Stale HTML is being served — the old design.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Stale HTML is being served — the old design.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "00ae642b",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "00ae642b:confirmed102rows51distinctmyearliermultistatementdeletedidnt",
+    "app": "Listing Lab Pro",
+    "title": "Confirmed: 102 rows, 51 distinct — my earlier multi-statement DELETE didn't take.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Confirmed: 102 rows, 51 distinct — my earlier multi-statement DELETE didn't take.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "00ae642b",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "00ae642b:thedeleteissilentlyfailingforeignkeys",
+    "app": "Listing Lab Pro",
+    "title": "DELETE is silently failing — foreign keys.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The DELETE is silently failing — foreign keys.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "00ae642b",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "1363a864:byemailisthewronghandlemoneyisphonenativeeverywhereherempesa",
+    "app": "Hallalu CRM",
+    "title": "\"By email\" is the wrong handle. Money is phone-native everywhere here — M-Pesa is your…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "**\"By email\" is the wrong handle.** Money is **phone-native** everywhere here — M-Pesa *is* your phone number, UPI is a phone-linked VPA, Pix allows email only as one of several keys.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1363a864",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "1363a864:andtheappyourecopyingpaypalisstructurallybrokeninnigeriasend",
+    "app": "Hallalu CRM",
+    "title": "The app you're copying — PayPal — is structurally broken in Nigeria (send-only, can't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "And the app you're copying — **PayPal — is structurally broken in Nigeria** (send-only, can't even receive/withdraw).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1363a864",
+    "found": "2026-08-18"
   }
 ]
