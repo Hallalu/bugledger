@@ -1606,5 +1606,29 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-18"
+  },
+  {
+    "key": "6e9b661e:aprizelyupdatedloggedall29ofthissessionsfeaturesbugfixesinsi",
+    "app": "Finished.",
+    "title": "Aprizely updated Logged all 29 of this session's features, bug fixes, insights, and…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "## Aprizely updated Logged **all 29** of this session's features, bug fixes, insights, and queue items to the Aprizely project record (append-only) — so your portfolio reflects everything that change…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e9b661e",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:thedmtemplatechipsnowtoggletooalatentbugfrombeforenowfixed",
+    "app": "Hallalu CRM",
+    "title": "DM template chips now toggle too (a latent bug from before, now fixed).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The DM template chips now toggle too (a latent bug from before, now fixed).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
   }
 ]
