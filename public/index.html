@@ -201,7 +201,7 @@
 <script src="data-opt.js"></script>
 <script src="data-scan.js"></script>
 <script src="data-harvest.js"></script>
-<script src="data.js"></script>
+<script src="data.js?v=2"></script>
 <script>
 (function(){
   var BUGS = (window.BUGS||[]).map(function(b,i){ b._id = b.session+'-'+i; return b; });
@@ -224,6 +224,7 @@
   var apps={}, cats={};
   BUGS.forEach(function(b){ apps[b.app]=(apps[b.app]||0)+1; cats[b.category]=(cats[b.category]||0)+1; });
   var appOrder=Object.keys(apps).sort(function(a,b){return apps[b]-apps[a]});
+  var NONAPP={'cross-cutting':1,'Unknown':1}; var realAppCount=appOrder.filter(function(a){return !NONAPP[a];}).length;
   appOrder.forEach(function(a){ var o=document.createElement('option'); o.value=a; o.textContent=a+' ('+apps[a]+')'; $('#fApp').appendChild(o); });
   Object.keys(cats).sort().forEach(function(c){ var o=document.createElement('option'); o.value=c; o.textContent=CATLABEL[c]+' ('+cats[c]+')'; $('#fCat').appendChild(o); });
 
@@ -260,7 +261,7 @@
     d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openKpi(l,n);}});
     return d; }
   kpi.appendChild(kpiEl(BUGS.length,'bugs fixed'));
-  kpi.appendChild(kpiEl(appOrder.length,'apps'));
+  kpi.appendChild(kpiEl(realAppCount,'apps'));
   var sec=BUGS.filter(function(b){return b.category==='security'}).length;
   var dl=BUGS.filter(function(b){return b.category==='data-loss'||b.category==='sync'}).length;
   kpi.appendChild(kpiEl(sec,'security'));
@@ -372,7 +373,7 @@
   $('#print').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=true;}); window.print(); });
   $('#reset').addEventListener('click',function(){ if(confirm('Clear all ticks?')){ checked={}; save(); render(); } });
 
-  $('#foot').innerHTML='Bug Ledger · '+BUGS.length+' fixes across '+appOrder.length+' apps'+(GENERATED?(' · generated '+esc(GENERATED)):'')+' · state saved locally in your browser';
+  $('#foot').innerHTML='Bug Ledger · '+BUGS.length+' fixes across '+realAppCount+' apps'+(GENERATED?(' · generated '+esc(GENERATED)):'')+' · state saved locally in your browser';
   render();
 
   // ---- Security Sweep panel ----

@@ -1,47 +1,43 @@
 {
-  "id": "d47a5ec4-2dd7-4e3a-81f9-ca6d6028be58",
-  "app": "Investor Deck Financial Model",
+  "id": "9cb13d76-e59e-454d-9e60-6245e05c8330",
+  "app": "Bug Ledger",
   "project": "BugLedger",
-  "title": "Research: 2026 LLM API pricing + AI SaaS gross margins",
-  "status": "active",
-  "current": "Compile report",
+  "title": "Update Bug Ledger slash commands with new features (41 detectors, new counts)",
+  "status": "done",
+  "current": "Done ✓",
   "note": "",
   "tasks": [
     {
-      "text": "Claude pricing",
-      "note": "Captured real list prices from Snyk, Semgrep, Sonar, Codacy, Aikido, Socket, CodeRabbit, Greptile and Qodo straight off their own pricing pages — including the billing units (contributor, seat, lines of code, credits, org-level) and what flips each vendor to contact-sales. Effect: the deck can now anchor Bug Ledger's price against a verified $18–$50 per-dev/month band instead of a guess.",
+      "text": "Audit commands vs live ledger",
+      "note": "Read all 7 commands + pulled live checklist.json: found stale 14-detector refs, 315/43 counts; live ledger now 417 bugs / 64 security / 115 optimisers / 41 detectors / 18 apps",
       "status": "done"
     },
     {
-      "text": "OpenAI + Gemini pricing",
-      "note": "Added 6 new layers (accessibility, claims-accuracy, privacy/legal, testing, SEO, observability): 41 detectors (was 14), 31 seeded catalog entries, 8 optimisers, plus site labels/colours — deployed and verified live",
+      "text": "Detectors 14→41 + families",
+      "note": "bugcheck + fullscan now cite all 41 detectors across 7 families (security · a11y · privacy · claims · tests · SEO · observability), not just 14 security ones",
       "status": "done"
     },
     {
-      "text": "Cheap tier (DeepSeek/Together/Groq/Cloudflare)",
-      "note": "Cloudflare Workers AI Neuron unit (/bin/zsh.011/1k neurons) + Llama per-MTok equivalents captured",
+      "text": "Refresh catalog counts",
+      "note": "fullscan description 315→417+, securitysweep example 43/43→N/N; both already compute the live count dynamically from checklist.json",
       "status": "done"
     },
     {
-      "text": "Inference price decline rate",
-      "note": "Cheap-tier priced: DeepSeek, Together, Groq, Fireworks, Cloudflare Workers AI — gives the deck a 100x+ cost spread between frontier and commodity routing tiers",
+      "text": "Deepscan a11y/privacy coverage",
+      "note": "deepscan bug phase now runs the a11y/privacy/claims/tests/SEO/observability detector families; security phase notes PII-in-logs/URLs + trackers",
       "status": "done"
     },
     {
-      "text": "AI SaaS gross margins",
-      "note": "Got vendor-published per-1M-token prices across Anthropic, OpenAI, Google, DeepSeek, Together, Groq, Fireworks and Cloudflare — and the key finding: a ~65x output-cost spread between frontier and commodity models, plus prompt caching (-90%) stacking with batch (-50%) to cut the input leg ~20x. Effect: proves the scan COGS is an architecture choice we control, which is exactly the margin question investors press on.",
+      "text": "Refresh memory note",
+      "note": "project-bugledger memory + MEMORY.md index refreshed to 417/64/115/18-apps/41-detectors; historical rounds kept",
       "status": "done"
     },
     {
-      "text": "COGS reduction levers",
-      "note": "Built the COGS stack investors actually audit: hosting (verified Cloudflare unit prices), LLM inference, support headcount and Stripe at 2.9% + 30c. Benchmarks captured: SaaS COGS 15-30% of revenue = 70-85% gross margin, cloud infra typically 6-15% of revenue. Effect: the deck can show a defensible cost-per-customer line and explain why a Cloudflare-native, zero-egress architecture beats the benchmark.",
+      "text": "Verify",
+      "note": "grep clean: no stale 14/315/43 refs; 41-detector + family refs confirmed in bugcheck/deepscan/fullscan/securitysweep",
       "status": "done"
-    },
-    {
-      "text": "Compile report",
-      "note": "Assembling the tables, the sources list and the monetization recommendation, and running the actual arithmetic: what a customer costs to serve on Cloudflare vs what the same scan costs if we pay for the inference vs if the customer's own agent does. Effect: the deck gets a defensible gross-margin number instead of an assertion.",
-      "status": "active"
     }
   ],
-  "started": 1786916233484
+  "started": 1786934390154,
+  "reported": true
 }

@@ -88,6 +88,8 @@ const bugs = JSON.parse(fs.readFileSync(p("bugs.json"), "utf8"));
 const count = {};
 for (const b of bugs) count[b.app] = (count[b.app]||0)+1;
 const appOrder = Object.keys(count).sort((a,b)=>count[b]-count[a] || a.localeCompare(b));
+const NONAPP = new Set(['cross-cutting','Unknown']);
+const realAppCount = appOrder.filter(a => !NONAPP.has(a)).length;
 
 // ---- public/data.js ----
 fs.writeFileSync(p("public","data.js"),
@@ -109,10 +111,10 @@ const sec = fs.existsSync(p("security.json")) ? JSON.parse(fs.readFileSync(p("se
 
 let L = [];
 L.push("# 🐞 Bug Ledger — Master Checklist\n");
-L.push(`**${bugs.length} bugs fixed** across **${appOrder.length} apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**\n`);
+L.push(`**${bugs.length} bugs fixed** across **${realAppCount} apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**\n`);
 L.push("| Metric | Count |","|---|---|",
   `| Total bugs fixed | ${bugs.length} |`,
-  `| Apps | ${appOrder.length} |`,
+  `| Apps | ${realAppCount} |`,
   `| Security fixes | ${catCount.security||0} |`,
   `| Data-loss / sync fixes | ${(catCount["data-loss"]||0)+(catCount.sync||0)} |`,
   `| Crashes fixed | ${catCount.crash||0} |`);
@@ -151,7 +153,7 @@ fs.writeFileSync(p("BUGS.md"), L.join("\n"));
 // ---- CHECKLIST.md (flat, copy-paste) ----
 const short = (s,n=95)=>{ s=(s||"").replace(/\s+/g," ").trim(); return s.length>n ? s.slice(0,n-1).trim()+"…" : s; };
 let C = [];
-C.push(`# BUG REGRESSION CHECKLIST — ${bugs.length} known bugs across ${appOrder.length} apps`);
+C.push(`# BUG REGRESSION CHECKLIST — ${bugs.length} known bugs across ${realAppCount} apps`);
 C.push(`# Paste this into any build session and re-check each item (bugs recur).`);
 C.push(`# Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger`);
 C.push("");
@@ -262,7 +264,7 @@ if (sec) fs.writeFileSync(p("public","security.json"), JSON.stringify(sec));
 
 // compact per-app checklist for agents
 const checklist = { generated: GEN, base: "https://bugledger.coconvo.workers.dev",
-  totals: { bugs: bugs.length, apps: appOrder.length, security: sec ? sec.findings.length : 0 },
+  totals: { bugs: bugs.length, apps: realAppCount, security: sec ? sec.findings.length : 0 },
   apps: {}, recurring: RECURRING, detectors: DETECTORS,
   security: sec ? sec.findings.map(f => ({ id: f.id, severity: f.severity, status: f.status, app: f.app, title: f.title })) : [],
   optimisers: optimisers.map(o => ({ title: o.title, category: o.category, app: o.app })) };
@@ -275,7 +277,7 @@ fs.writeFileSync(p("public","checklist.json"), JSON.stringify(checklist));
 // llms.txt — root index for AI agents (llmstxt.org convention)
 const llms = `# Bug Ledger
 
-> A catalogue of ${bugs.length} bugs fixed across ${appOrder.length} apps, plus a security audit and a code scanner. Use it to debug and security-check a project by checking it against every bug we've hit before, then log what you checked.
+> A catalogue of ${bugs.length} bugs fixed across ${realAppCount} apps, plus a security audit and a code scanner. Use it to debug and security-check a project by checking it against every bug we've hit before, then log what you checked.
 
 Agent instructions: fetch /AGENT.md and follow the protocol. Report back with POST /api/checks.
 
@@ -305,7 +307,7 @@ const appListMd = appOrder.map(a => `\`${a}\` (${count[a]})`).join(" · ");
 const agent = `# Bug Ledger — Agent Protocol
 
 You are a coding agent working inside a project. This ledger is your regression + security
-memory: **${bugs.length} bugs across ${appOrder.length} apps**, a security audit (${sec ? sec.findings.length : 0} findings),
+memory: **${bugs.length} bugs across ${realAppCount} apps**, a security audit (${sec ? sec.findings.length : 0} findings),
 and ${DETECTORS.length} static detectors. Use it to debug the current project against every bug we've
 hit before, then **log what you checked** so there's a record.
 
@@ -396,4 +398,4 @@ on the site's **Check-log** panel and at GET /api/checks.
 `;
 fs.writeFileSync(p("public","AGENT.md"), agent);
 
-console.log(`gen: ${bugs.length} bugs, ${appOrder.length} apps${sec?`, ${sec.findings.length} security`:""}${scanCount?`, ${scanCount} scanner`:""}${harvCount?`, ${harvCount} harvested`:""} -> data.js, bugs.json, checklist.json, AGENT.md, llms.txt, docs`);
+console.log(`gen: ${bugs.length} bugs, ${realAppCount} apps${sec?`, ${sec.findings.length} security`:""}${scanCount?`, ${scanCount} scanner`:""}${harvCount?`, ${harvCount} harvested`:""} -> data.js, bugs.json, checklist.json, AGENT.md, llms.txt, docs`);
