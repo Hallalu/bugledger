@@ -1,7 +1,7 @@
 # Bug Ledger — Agent Protocol
 
 You are a coding agent working inside a project. This ledger is your regression + security
-memory: **417 bugs across 18 apps**, a security audit (15 findings),
+memory: **428 bugs across 24 apps**, a security audit (15 findings),
 and 41 static detectors. Use it to debug the current project against every bug we've
 hit before, then **log what you checked** so there's a record.
 
@@ -14,7 +14,7 @@ are immutable at the database level and finished sessions are frozen. Never run 
 `git`, or `wrangler` against `~/BugLedger`; fix bugs in the CURRENT project's files only.
 
 ## Apps in the ledger
-`Finished.` (138) · `cross-cutting` (67) · `Hallalu CRM` (57) · `Stitchhooky` (34) · `Hopefil` (22) · `Breadcrumb` (18) · `Planner Studio` (16) · `Budget LevelUp` (15) · `Prompt Vault` (8) · `Aprizely` (7) · `Hello Baby` (7) · `Ever After` (6) · `Wedding Planner` (6) · `Listing Lab Pro` (5) · `Social LevelUp` (4) · `Bug Ledger` (3) · `Hallalu Bookings` (3) · `Unknown` (1)
+`Finished.` (138) · `cross-cutting` (70) · `Hallalu CRM` (57) · `Stitchhooky` (34) · `Hopefil` (22) · `Breadcrumb` (18) · `Planner Studio` (16) · `Budget LevelUp` (15) · `Prompt Vault` (8) · `Aprizely` (7) · `Hello Baby` (7) · `Ever After` (6) · `Wedding Planner` (6) · `Listing Lab Pro` (5) · `Social LevelUp` (4) · `Bug Ledger` (3) · `Hallalu Bookings` (3) · `Breadcrumb Admin` (1) · `Breadcrumb Plan` (1) · `Bug Ledger Pitch` (1) · `Coco Modules` (1) · `Currency Picker` (1) · `Happy Travel` (1) · `Kairos` (1) · `Kindly` (1) · `Unknown` (1)
 
 ## Step 1 — Get the checklist for this project's app
 Pick the app name (ask the user, or infer from the repo). Then either:

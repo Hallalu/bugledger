@@ -1,19 +1,19 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**417 bugs fixed** across **18 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**428 bugs fixed** across **24 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|
-| Total bugs fixed | 417 |
-| Apps | 18 |
-| Security fixes | 49 |
+| Total bugs fixed | 428 |
+| Apps | 24 |
+| Security fixes | 52 |
 | Data-loss / sync fixes | 36 |
 | Crashes fixed | 27 |
 | Security-audit findings | 15 (9 open) |
 
 ### By category
 
-`ui: 128` `logic: 92` `security: 49` `crash: 27` `data-loss: 25` `other: 23` `race: 12` `sync: 11` `auth: 10` `perf: 9` `a11y: 8` `privacy: 7` `claims: 5` `testing: 4` `observability: 4` `SEO: 3`
+`ui: 130` `logic: 93` `security: 52` `crash: 27` `data-loss: 25` `other: 24` `race: 12` `sync: 11` `a11y: 11` `auth: 10` `perf: 10` `privacy: 7` `claims: 5` `testing: 4` `observability: 4` `SEO: 3`
 
 ---
 
@@ -348,7 +348,7 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
 - [ ] **Stale cached JavaScript made features appear broken** `other`
   *Symptom:* Write templates, the Homework + button, and AI features all did nothing even though the code was correct.  <br>*Cause:* The deployed app was serving stale JavaScript from the service worker cache.  <br>*Fix:* Fixed the service worker so every deploy arrives instantly (with a one-time hard-refresh to clear the old bundle).
 
-## cross-cutting  ·  67 fixed
+## cross-cutting  ·  70 fixed
 
 - [ ] **AI-hallucinated dependency (slopsquatting) pulled into the build** `security`
   *Symptom:* An install/import references a package that sounds right but isn't the real project; it either 404s the build or, worse, resolves to a squatter's malicious package.  <br>*Cause:* LLMs confidently emit non-existent package names at a meaningful rate; attackers pre-register the popular hallucinations on npm/PyPI. Auto-installing whatever the agent wrote runs attacker code.  <br>*Fix:* Verify every AI-suggested dependency exists as the genuine project (publisher, repo, download history) before install; pin exact versions and commit a lockfile; review install scripts. Prefer platform-native bindings over adding packages at all.
@@ -444,6 +444,8 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* A control works with a mouse but cannot be reached or activated by keyboard or screen reader at all.  <br>*Cause:* onclick is attached to a non-interactive element, which gets no implicit role, no focusability and no Enter/Space activation.  <br>*Fix:* Use a real <button>. If impossible, add role="button", tabindex="0" and an explicit Enter/Space keydown handler. Detector: A11Y-CLICK-NONINTERACTIVE.
 - [ ] **Document missing a lang attribute** `a11y`
   *Symptom:* Screen readers pronounce the page with the wrong language voice, making content hard or impossible to follow.  <br>*Cause:* <html> is written without lang; nothing visually breaks so it is never noticed.  <br>*Fix:* Set <html lang="en"> (or the actual language), and mark inline foreign-language passages with their own lang. Detector: A11Y-NO-LANG.
+- [ ] **Drag-only interaction with no single-pointer alternative (WCAG 2.2 · 2.5.7 Dragging Movements)** `a11y`
+  *Symptom:* Reorder / move / slider interactions that only work by dragging exclude users who cannot perform a drag (motor impairment, switch access).  <br>*Cause:* Drag implemented as the sole path.  <br>*Fix:* Always pair a drag with a non-drag alternative — Move up/down buttons, a right-click/kebab menu, or number entry — unless dragging is essential.
 - [ ] **Focus indicator removed by outline:none** `a11y`
   *Symptom:* Keyboard users tabbing through the interface cannot see where they are — focus becomes invisible.  <br>*Cause:* outline:none is applied to kill the default focus ring for aesthetics, with no replacement style.  <br>*Fix:* Never reset the outline without providing a high-contrast :focus-visible style. WCAG 2.2 requires a visible focus indicator meeting minimum size and contrast. Detector: A11Y-FOCUS-KILLED.
 - [ ] **Form field with no associated label** `a11y`
@@ -454,8 +456,12 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Screen readers announce the raw filename (or nothing) instead of the image's meaning; present on ~53% of pages.  <br>*Cause:* alt is optional in HTML so it is silently omitted, especially for generated/icon/decorative images.  <br>*Fix:* Every <img> gets an alt: descriptive text for meaningful images, alt="" for purely decorative ones so it is skipped. Detector: A11Y-IMG-ALT.
 - [ ] **Low-contrast text below the 4.5:1 minimum** `a11y`
   *Symptom:* Light grey body text on white is unreadable for low-vision users and in sunlight; appears on ~84% of homepages, the single most common accessibility failure.  <br>*Cause:* Palettes are chosen for aesthetics against a bright designer monitor; muted greys used for 'secondary' text fall under the WCAG minimum without anyone measuring.  <br>*Fix:* Enforce 4.5:1 for normal text and 3:1 for large text (and for UI/graphical boundaries). Check every token pair in BOTH light and dark themes with a contrast checker, not by eye.
+- [ ] **PIN/OTP field blocks paste or uses a cognitive-test CAPTCHA (WCAG 2.2 · 3.3.8 Accessible Authentication)** `a11y`
+  *Symptom:* A login/recovery step relies on a cognitive function test (transcribe/solve/recognise) or disables paste into the code field, which WCAG 2.2 Accessible Authentication (Minimum) forbids without an alternative.  <br>*Cause:* Anti-bot or per-digit inputs that intercept paste; puzzle CAPTCHAs with no alternative.  <br>*Fix:* Allow paste and password managers to fill PIN/OTP fields; offer a non-cognitive authentication path; avoid puzzle/transcription CAPTCHAs as the only option.
 - [ ] **Positive tabindex breaks the natural tab order** `a11y`
   *Symptom:* Tabbing jumps around the page unpredictably, skipping or reordering controls.  <br>*Cause:* tabindex is set to a positive number to 'fix' an ordering problem, which promotes those elements ahead of the entire document order.  <br>*Fix:* Use only tabindex="0" (focusable in document order) or "-1" (programmatic focus). Fix ordering by fixing the DOM order. Detector: A11Y-POSITIVE-TABINDEX.
+- [ ] **Touch target smaller than 24×24 CSS px (WCAG 2.2 · 2.5.8 Target Size)** `a11y`
+  *Symptom:* Small icon buttons — a row options dot, a drag handle, an inline ✕, a bell toggle — are hard to hit accurately on touch and fail WCAG 2.2 Target Size (Minimum).  <br>*Cause:* Icons sized to the glyph (16–20px) with no padded hit area.  <br>*Fix:* Give every pointer target at least a 24×24px hit area (padding or min-width/height), or space inline controls so each has 24px of exclusive space. Exceptions: inline-in-text links and equivalent nearby controls.
 - [ ] **Empty catch block swallows the error** `observability`
   *Symptom:* A feature silently does nothing; there is no error in the console and no clue in any log about what failed.  <br>*Cause:* catch {} is used to stop an exception propagating, discarding the error object entirely.  <br>*Fix:* Never leave a catch empty: log the error with context and surface a user-visible failure state. If the failure genuinely is expected and safe, say so in a comment. Detector: OBS-EMPTY-CATCH.
 - [ ] **No build/version stamp to correlate an error with a deploy** `observability`
@@ -951,6 +957,46 @@ _Source-read audit (no live exploitation). Scope: budget-levelup worker + public
   *Symptom:* Slots show the business's local hours to every visitor regardless of where they are, so an out-of-area client books '2pm' meaning their own 2pm and shows up at the wrong hour.  <br>*Cause:* Times are formatted from stored local/naive datetimes without converting to the visitor's detected timezone, and the page never states which timezone the times are in.  <br>*Fix:* Store all slots in UTC, detect the visitor's timezone (Intl.DateTimeFormat().resolvedOptions().timeZone), render every time converted to it, always print an explicit timezone label plus a picker to override, and spell out both parties' timezones in the confirmation.
 - [ ] **Orphaned dead whitespace in FAQ + Policies section** `ui`
   *Symptom:* The FAQ and Policies cards sat only in the right column while the left column ended at the testimonials card, leaving a dead bottom-left quadrant.  <br>*Cause:* The section used a 5fr/7fr split where the short left column (About + Testimonials) ended early while the long right column (Gallery + FAQ + Policies) ran on, orphaning the bottom-left quadrant.  <br>*Fix:* Restructured the section into a balanced editorial layout — a full-width gallery strip then a 2x2 equal-height card grid (About / Testimonials / FAQ / Policies) so rows align and nothing is orphaned.
+
+## Breadcrumb Admin  ·  1 fixed
+
+- [ ] **Admin surface kept off the user-facing app** `security`
+  *Symptom:* Putting admin oversight (which reads the app D1) inside the main app would widen its attack surface.  <br>*Cause:* Admin routes co-located with the user app.  <br>*Fix:* Admin runs as a separate passcode-gated Worker that reads the app D1; nothing admin ships in the user bundle.
+
+## Breadcrumb Plan  ·  1 fixed
+
+- [ ] **Business plan and /deck must not leak on any direct path** `security`
+  *Symptom:* A passcode-gated business plan plus /deck could leak via direct asset paths (plan.html.txt, src, deck).  <br>*Cause:* Static assets can be served before the auth gate runs.  <br>*Fix:* Plan and deck live on a separate PLAN_PASS-gated Worker; verified every direct path returns the lock screen.
+
+## Bug Ledger Pitch  ·  1 fixed
+
+- [ ] **Deck chip truncated the name to M...** `ui`
+  *Symptom:* A slide chip clipped the label (e.g. M...) instead of showing the full name.  <br>*Cause:* The chip had flex-shrink:0, starving the name of width.  <br>*Fix:* Chip yields width first and titles wrap to two lines; also added reading-progress and tick-off.
+
+## Coco Modules  ·  1 fixed
+
+- [ ] **Live board cards blinked every poll** `perf`
+  *Symptom:* Activity timelines/boards re-appended cards each poll, replaying the CSS entrance animation so cards flickered every ~1.5s.  <br>*Cause:* Re-render/re-append replayed the one-time entrance animation.  <br>*Fix:* One-shot .enter class stripped after it plays; re-render only when content or order changes. Shipped as a reusable module.
+
+## Currency Picker  ·  1 fixed
+
+- [ ] **Currency picker logic duplicated per app** `other`
+  *Symptom:* The 153-currency parse-search picker was re-implemented in each app, duplicating a whole class of currency bugs.  <br>*Cause:* No shared module for the picker.  <br>*Fix:* Extracted to a standalone dependency-free module (CurrencyPicker.search/open/button) that ships its own sheet and CSS.
+
+## Happy Travel  ·  1 fixed
+
+- [ ] **Recovery keys generated with Math.random (brute-forceable)** `security`
+  *Symptom:* Cloud-data recovery keys came from Math.random (~15.5M combos); the key IS the password to a users synced blob, so the space is scannable.  <br>*Cause:* Math.random is not cryptographically secure.  <br>*Fix:* Regenerated recovery keys with crypto.getRandomValues (~39 quadrillion combos). Same fix applied to Hello Baby.
+
+## Kairos  ·  1 fixed
+
+- [ ] **Unsupportable 47% more productive landing claim** `logic`
+  *Symptom:* The landing asserted 47% more productive and other stats with no citable source.  <br>*Cause:* Marketing copy used an unverified stat (traces to a non-peer-reviewed internal note).  <br>*Fix:* Cut to verified-only claims; validated the manual-first default against real, still-true competitor gaps.
+
+## Kindly  ·  1 fixed
+
+- [ ] **Opaque gate never left, so Take-me-in did nothing** `ui`
+  *Symptom:* The sign-in gate stayed opaque over the booted app and the Take-me-in button appeared dead.  <br>*Cause:* Author .gate{display:grid} beat the UA [hidden]{display:none} rule (author styles win), so setting hidden had no effect.  <br>*Fix:* Global [hidden]{display:none!important} near the CSS reset; pad rebuilt to exactly 5 digits with phone letters.
 
 ## Unknown  ·  1 fixed
 

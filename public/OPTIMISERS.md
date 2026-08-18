@@ -1,6 +1,6 @@
 # ✨ Optimisers — elevations worth reusing
 
-115 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
+117 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
 
 ## design elevation (21)
 
@@ -234,7 +234,7 @@
   <br>*Why:* Most freelancers are owed money at any time and describe chasing as a nightmare; they lack a way to see what's paid, due, or lost in a client's inbox.
   <br>*How:* Track a viewed timestamp (hosted invoice link open), show an aging dashboard, and let users enable auto-reminders at due-date, +7, +14 days with editable wording.
 
-## architecture (7)
+## architecture (8)
 
 - **Marketing landing at root, app at /app** _(Hallalu CRM)_
   Serve a marketing landing at the root and the app at /app; returning users skip the landing.
@@ -264,6 +264,10 @@
   Requests for hashed assets must 404 when missing — never fall through to index.html — and index.html must be served no-cache while assets are immutable-cached.
   <br>*Why:* Serving index.html (200 text/html) for a missing .js chunk turns a routine deploy into a white-screen ChunkLoadError for users with the page already open or a stale service worker.
   <br>*How:* In the Worker, match asset extensions first and return the asset or a real 404; only unknown non-asset paths get the SPA shell. Set Cache-Control: no-cache on the HTML, immutable long max-age on hashed assets, and add a one-time hard-reload recovery on failed dynamic imports.
+- **Embedded-view pattern: one component, standalone or nested** _(cross-cutting)_
+  A feature that has a full page (its own header + back button) often also wants to appear as a section inside a hub. Add an  prop that hides the component's own chrome so the host provides the back/title, and render the same body in both places.
+  <br>*Why:* Avoids a second implementation and keeps behaviour identical; lets a rich view (e.g. Follow-ups) live both as its own screen and as a tab inside another tool (Task Manager) with no double header.
+  <br>*How:* Gate the header/back on !embedded; neutralise the standalone padding/max-width when embedded; pass onBack that returns to the host section. Verify no double header and that deep actions still work.
 
 ## accessibility (5)
 
@@ -338,7 +342,7 @@
   <br>*Why:* Fee rage is a top Etsy complaint because the fees compound invisibly; sellers routinely misjudge margins. A clear net-take number is decision-grade information.
   <br>*How:* Add a fee-aware profit field to each listing/price suggestion using current rates, flag when a price barely clears fees, note that the Offsite Ads fee only hits attributed sales, and keep rates in one config so they stay current.
 
-## dev-experience (10)
+## dev-experience (11)
 
 - **Never cache a failure** _(Bug Ledger)_
   Only cache a successful, non-empty fetch; caching a transient failure poisons the isolate until redeploy.
@@ -380,6 +384,10 @@
   Treat every package name and API the model emits as unverified until checked against the real registry/docs; pin exact versions and commit a lockfile.
   <br>*Why:* LLMs hallucinate package names (slopsquatting supply-chain risk) and deprecated/imaginary APIs. Auto-installing or calling them causes build breaks or runs an attacker's squatted package.
   <br>*How:* Before adding a dep: confirm the genuine repo, publisher, and download history; pin x.y.z not ^; keep a lockfile; prefer platform-native bindings (D1/KV/Workers AI). Cross-check unfamiliar SDK calls against current official docs, not the model's memory.
+- **Track deployed serverless/edge functions in the repo** _(cross-cutting)_
+  Serverless functions (Supabase edge functions, Cloudflare Workers/Pages Functions) that are deployed but not committed to the repo become invisible — an agent or teammate reads the repo, concludes the function is missing, and builds a redundant, contract-mismatched replacement.
+  <br>*Why:* A whole live payment/auth backend can be absent from source control; the next person duplicates it or routes around it, adding risk and drift. It cost a real detour on Finished. (a needless Cloudflare create-checkout in front of the working, deployed Supabase one).
+  <br>*How:* Keep a tracked copy of every deployed function under supabase/functions/ or functions/, secrets read from a vault (never in the file), with a header noting it mirrors the live version. Diff repo-vs-deployed as part of review.
 
 ## integrity (20)
 
