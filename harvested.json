@@ -1750,5 +1750,29 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:samedisciplineaseverywhereelsewhenitdoesntknowitsaysso",
+    "app": "Hallalu CRM",
+    "title": "Same discipline as everywhere else — when it doesn't know, it says so.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Same discipline as everywhere else — when it doesn't know, it says so.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:honestnoteontheresearchfourbackgroundlanesfailedtwotoyourcom",
+    "app": "Hallalu CRM",
+    "title": "Honest note on the research Four background lanes failed — two to \"your computer went…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "## Honest note on the research Four background lanes **failed** — two to *\"your computer went to sleep mid-response\"*, two to a **session limit that resets at 7:20pm**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-18"
   }
 ]
