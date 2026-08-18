@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-141 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+146 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (68)
+## Hallalu CRM (71)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -72,6 +72,9 @@
 - [ ] `low` `ui` (2026-08-18, #f256d011) — Line 2008 sets white-space:pre-wrap on all bubbles (so AI line breaks show) — that's…
 - [ ] `low` `other` (2026-08-18, #f256d011) — DM template chips now toggle too (a latent bug from before, now fixed).
 - [ ] `low` `other` (2026-08-18, #1363a864) — The app you're copying — PayPal — is structurally broken in Nigeria (send-only, can't…
+- [ ] `low` `other` (2026-08-18, #f256d011) — Verification caught a real bug: the alerts mix currencies — trial/renewal show £52…
+- [ ] `low` `other` (2026-08-18, #f256d011) — All restored, with an in-code note explaining the asymmetry (a stale suggestion costs…
+- [ ] `low` `other` (2026-08-18, #f256d011) — While fixing that I found a third bug: the handler was bound to change, not input — so…
 
 ## Finished. (30)
 
@@ -131,14 +134,16 @@
 - [ ] `low` `ui` (2026-08-17, #b6ac4f45) — Proper fix (I'll batch it into the deploy) I'll rewrite mintToken() to drop the fragile…
 - [ ] `low` `other` (2026-08-17, #52294be6) — One ordering bug to fix — the client script reads the data element, but I placed the…
 
-## Listing Lab Pro (6)
+## Listing Lab Pro (8)
 
+- [ ] `medium` `logic` (2026-08-18, #00ae642b) — Two residual leaks would still produce wrong results — let me fix them.
 - [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a CSS bug — display:grid is overriding the hidden attribute so both dialogs show.
 - [ ] `low` `other` (2026-08-10, #2d2c2119) — It needs the LSTM core variants which I didn't copy:
 - [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a real layout bug — the meal grid breaks below 860px, misaligning days and meals.
 - [ ] `low` `other` (2026-08-18, #00ae642b) — Stale HTML is being served — the old design.
 - [ ] `low` `other` (2026-08-18, #00ae642b) — Confirmed: 102 rows, 51 distinct — my earlier multi-statement DELETE didn't take.
 - [ ] `low` `other` (2026-08-18, #00ae642b) — DELETE is silently failing — foreign keys.
+- [ ] `low` `other` (2026-08-18, #00ae642b) — Mic is blocked in the Browser pane — so the error path fired correctly, but it closes…
 
 ## Budget LevelUp (6)
 
