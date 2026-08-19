@@ -1786,5 +1786,29 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:everythingisverifiedletmeresetcleanuptestdataandlogtheoptimi",
+    "app": "Hallalu CRM",
+    "title": "Everything is verified. Let me reset, clean up test data, and log the optimisers…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Everything is verified.** Let me reset, clean up test data, and log the optimisers (including the eyebrow fix you asked me to add):",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:onesmallhonestnotethepaybuttonopenswhateverpaylinkyoupastest",
+    "app": "Hallalu CRM",
+    "title": "One small honest note: the Pay button opens whatever pay link you paste…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "One small honest note: the **Pay** button opens whatever pay link you paste (Stripe/PayPal/etc.) — Hallalu isn't taking the payment itself yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
   }
 ]
