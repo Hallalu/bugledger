@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-151 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+152 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (76)
+## Hallalu CRM (77)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -80,6 +80,7 @@
 - [ ] `low` `other` (2026-08-18, #f256d011) — Same discipline as everywhere else — when it doesn't know, it says so.
 - [ ] `low` `other` (2026-08-19, #f256d011) — Everything is verified. Let me reset, clean up test data, and log the optimisers…
 - [ ] `low` `ui` (2026-08-19, #f256d011) — One small honest note: the Pay button opens whatever pay link you paste…
+- [ ] `low` `ui` (2026-08-19, #f256d011) — Research also surfaced a few quick wins I didn't build yet — a soft…
 
 ## Finished. (30)
 

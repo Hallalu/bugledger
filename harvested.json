@@ -1810,5 +1810,17 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:theresearchalsosurfacedafewquickwinsididntbuildyetasoftestim",
+    "app": "Hallalu CRM",
+    "title": "Research also surfaced a few quick wins I didn't build yet — a soft…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The research also surfaced a few quick wins I *didn't* build yet — a soft **estimated-completion range**, a **\"book a call\"** button, and a **completion celebration → testimonial ask**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
   }
 ]
