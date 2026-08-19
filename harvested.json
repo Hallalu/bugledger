@@ -1774,5 +1774,17 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-18"
+  },
+  {
+    "key": "f256d011:thesnapshotiscleanoneventsbuticaughtanotherleakthenextkpipul",
+    "app": "Hallalu CRM",
+    "title": "Snapshot is clean on events — but I caught another leak: the \"next\" KPI pulls…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "The snapshot is clean on events — but I caught another leak: the **\"next\" KPI** pulls `next.label = \"Follow up Maya — Gentle check-in\"`, an internal reminder label that would show to the client.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
   }
 ]
