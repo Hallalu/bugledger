@@ -1858,5 +1858,17 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:biggerstatcardsandthemulticolourtoggleyouaskedforcoralbluegr",
+    "app": "Hallalu CRM",
+    "title": "- Bigger stat cards, and the multicolour toggle you asked for — coral · blue · green ·…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Bigger stat cards**, and the **multicolour toggle** you asked for — coral · blue · green · purple tiles (verified visually; I also caught and fixed a bug where flat themes overrode the colours).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
   }
 ]

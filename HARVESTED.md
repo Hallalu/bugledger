@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-155 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+156 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (80)
+## Hallalu CRM (81)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -84,6 +84,7 @@
 - [ ] `low` `ui` (2026-08-19, #f256d011) — Preview button was broken because it used a pop-up that browsers block.
 - [ ] `low` `other` (2026-08-19, #f256d011) — On it — a mix of a bug (Edit not visible), a new theme, and the motion pass.
 - [ ] `low` `ui` (2026-08-19, #f256d011) — Everything from both messages: The fixes - Edit button — it's now an unmissable coral…
+- [ ] `low` `other` (2026-08-19, #f256d011) — - Bigger stat cards, and the multicolour toggle you asked for — coral · blue · green ·…
 
 ## Finished. (30)
 
