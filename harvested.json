@@ -1822,5 +1822,41 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:thepreviewbuttonwasbrokenbecauseitusedapopupthatbrowsersbloc",
+    "app": "Hallalu CRM",
+    "title": "Preview button was broken because it used a pop-up that browsers block.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The **Preview button** was broken because it used a pop-up that browsers block.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:onitamixofabugeditnotvisibleanewthemeandthemotionpass",
+    "app": "Hallalu CRM",
+    "title": "On it — a mix of a bug (Edit not visible), a new theme, and the motion pass.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "On it — a mix of a bug (Edit not visible), a new theme, and the motion pass.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:everythingfrombothmessagesthefixeseditbuttonitsnowanunmissab",
+    "app": "Hallalu CRM",
+    "title": "Everything from both messages: The fixes - Edit button — it's now an unmissable coral…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Everything from both messages: ## The fixes - **Edit button** — it's now an unmissable coral **Edit** button, and the template swatches moved to their own labelled **Template** row (that's why you co…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-19"
   }
 ]
