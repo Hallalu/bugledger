@@ -1942,5 +1942,41 @@
     "status": "unverified",
     "session": "a15dff44",
     "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:thatsthebugttstsdeliberatelywaitsforvoicestoloaditscommentli",
+    "app": "Finished.",
+    "title": "That's the bug — tts.ts deliberately waits for voices to load (its comment literally…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That's the bug — `tts.ts` deliberately **waits for voices to load** (its comment literally warns \"speaking now would use the monotone system default\"), but my `syllable.ts` speaks immediately.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:themonotonebugisgonevoicesreadyguardworks",
+    "app": "Finished.",
+    "title": "Monotone bug is gone (voices-ready guard works).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The monotone bug is gone (voices-ready guard works).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:resetbacktoazuresoilefttheappasifounditlevelpickersearchbars",
+    "app": "Finished.",
+    "title": "(Reset back to Azure so I left the app as I found it.) - Level picker + search bar…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "(Reset back to Azure so I left the app as I found it.) - **Level picker + search bar** styled correctly (the reported grey-box bug is fixed).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
   }
 ]
