@@ -1870,5 +1870,53 @@
     "status": "unverified",
     "session": "f256d011",
     "found": "2026-08-19"
+  },
+  {
+    "key": "f256d011:thebugisthesonboardedgateanyonewhosusedtheapporranthedemobef",
+    "app": "Hallalu CRM",
+    "title": "Bug is the !S.onboarded gate — anyone who's used the app (or ran the demo before) is…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The bug is the `!S.onboarded` gate — anyone who's used the app (or ran the demo before) is dropped into their *real* session instead.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-20"
+  },
+  {
+    "key": "f256d011:sothebugisexactlythesonboardedgateanyvisitorwhohastouchedthe",
+    "app": "Hallalu CRM",
+    "title": "The bug is exactly the !S.onboarded gate: any visitor who has touched the app before…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "So the bug is exactly the `!S.onboarded` gate: **any visitor who has touched the app before** (or ran the demo once) clicking \"See the demo\" gets dropped into their *real* free-plan session, where bu…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-20"
+  },
+  {
+    "key": "f256d011:visualproofcapturedthedemonowshowsthefullecommercebusinessvi",
+    "app": "Hallalu CRM",
+    "title": "Visual proof captured — the demo now shows the full Ecommerce business view (revenue,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Visual proof captured — the demo now shows the full **Ecommerce** business view (revenue, net profit, channels, \"Your store\", best sellers) with the updated banner *\"every plan unlocked, not your dat…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "f256d011",
+    "found": "2026-08-20"
+  },
+  {
+    "key": "a15dff44:butispotabugpercentshowsanurbandictionarydefinitionshouldbea",
+    "app": "Hello Baby",
+    "title": "I spot a bug: \"percent\" shows an Urban Dictionary definition (should be a real…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "But I spot a bug: \"percent\" shows an *Urban Dictionary* definition (should be a real dictionary) — that's a **stale cache** entry from before the provider-chain fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
   }
 ]
