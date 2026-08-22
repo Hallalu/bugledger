@@ -1918,5 +1918,29 @@
     "status": "unverified",
     "session": "a15dff44",
     "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:goodcatchondeadthatstheeverydaycommonbankleakingintotheacade",
+    "app": "Finished.",
+    "title": "Good catch on \"dead\" — that's the everyday COMMON bank leaking into the academic exam…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Good catch on \"dead\" — that's the everyday **COMMON** bank leaking into the academic exam levels (SAT/ACT/GMAT).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:theleaguetabrendersperfectlygentleoptinresetsin1d8hpractiset",
+    "app": "Finished.",
+    "title": "League tab renders perfectly — gentle, opt-in, \"Resets in 1d 8h · practise to climb, no…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The **League tab** renders perfectly — gentle, opt-in, \"Resets in 1d 8h · practise to climb, no pressure · 43 XP\", graceful sign-in fallback, and the anti-dark-pattern note.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
   }
 ]
