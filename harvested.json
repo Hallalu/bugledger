@@ -1978,5 +1978,41 @@
     "status": "unverified",
     "session": "a15dff44",
     "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:ifanyfailssendmetheconsoleerrorandillfixit",
+    "app": "Finished.",
+    "title": "If any fails, send me the console error and I'll fix it.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "If any fails, send me the console error and I'll fix it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:itsfulloutputisntallinthenotificationsoillhaveitwritethesixl",
+    "app": "Finished.",
+    "title": "Its full output isn't all in the notification, so I'll have it write the six lists to a…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Its full output isn't all in the notification, so I'll have it write the six lists to a file.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:wantmetoapplythetravelfinancethemepurityfixandpushgretowardt",
+    "app": "Finished.",
+    "title": "Want me to apply the Travel/Finance theme-purity fix, and push GRE toward the canonical…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Want me to apply the **Travel/Finance theme-purity fix**, and push **GRE toward the canonical 3,500**?",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-22"
   }
 ]
