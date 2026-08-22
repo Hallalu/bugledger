@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-160 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+162 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (84)
 
@@ -89,7 +89,7 @@
 - [ ] `low` `other` (2026-08-19, #f256d011) — - Bigger stat cards, and the multicolour toggle you asked for — coral · blue · green ·…
 - [ ] `low` `other` (2026-08-20, #f256d011) — Visual proof captured — the demo now shows the full Ecommerce business view (revenue,…
 
-## Finished. (30)
+## Finished. (32)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -121,6 +121,8 @@
 - [ ] `low` `other` (2026-08-17, #a15dff44) — That's the bug: after the initial 5 are spent, a free user is stuck at 0 forever.
 - [ ] `low` `other` (2026-08-17, #a15dff44) — Bug is in the composer ("Add to your story").
 - [ ] `low` `other` (2026-08-18, #a15dff44) — Problem was my own earlier item 31: I'd wrongly assumed create-checkout was missing…
+- [ ] `low` `other` (2026-08-22, #a15dff44) — Good catch on "dead" — that's the everyday COMMON bank leaking into the academic exam…
+- [ ] `low` `other` (2026-08-22, #a15dff44) — League tab renders perfectly — gentle, opt-in, "Resets in 1d 8h · practise to climb, no…
 
 ## Breadcrumb (22)
 
