@@ -2014,5 +2014,17 @@
     "status": "unverified",
     "session": "a15dff44",
     "found": "2026-08-22"
+  },
+  {
+    "key": "a15dff44:goodbuttheedictpcommonwordmarkerleakedintotheromajinanip",
+    "app": "Finished.",
+    "title": "Good — but the EDICT \"(P)\" common-word marker leaked into the romaji (\"nani(P)\").",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Good — but the EDICT \"(P)\" common-word marker leaked into the romaji (\"nani(P)\").",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-23"
   }
 ]

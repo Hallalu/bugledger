@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-168 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+169 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (84)
 
@@ -89,7 +89,7 @@
 - [ ] `low` `other` (2026-08-19, #f256d011) — - Bigger stat cards, and the multicolour toggle you asked for — coral · blue · green ·…
 - [ ] `low` `other` (2026-08-20, #f256d011) — Visual proof captured — the demo now shows the full Ecommerce business view (revenue,…
 
-## Finished. (38)
+## Finished. (39)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -129,6 +129,7 @@
 - [ ] `low` `other` (2026-08-22, #a15dff44) — If any fails, send me the console error and I'll fix it.
 - [ ] `low` `other` (2026-08-22, #a15dff44) — Its full output isn't all in the notification, so I'll have it write the six lists to a…
 - [ ] `low` `other` (2026-08-22, #a15dff44) — Want me to apply the Travel/Finance theme-purity fix, and push GRE toward the canonical…
+- [ ] `low` `other` (2026-08-23, #a15dff44) — Good — but the EDICT "(P)" common-word marker leaked into the romaji ("nani(P)").
 
 ## Breadcrumb (22)
 
