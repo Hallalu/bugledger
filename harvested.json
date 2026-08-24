@@ -2026,5 +2026,17 @@
     "status": "unverified",
     "session": "a15dff44",
     "found": "2026-08-23"
+  },
+  {
+    "key": "8e4bfa79:thatsthebugclearlythesidebarstopsatmeetingsandeverythingbelo",
+    "app": "Finished.",
+    "title": "That's the bug clearly: the sidebar stops at \"Meetings\" and everything below — Video…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "That's the bug clearly: the sidebar stops at \"Meetings\" and everything below — Video Journal, Journal, Voice Notes, Income, Finance, Import, Research, and the profile/settings button — is unreachable…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8e4bfa79",
+    "found": "2026-08-24"
   }
 ]
