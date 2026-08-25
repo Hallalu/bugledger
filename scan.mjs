@@ -289,15 +289,20 @@ perLine("TEST-SKIPPED","low","testing","Skipped/disabled test",
 
 // --- SEO, meta & social sharing ---
 const isPage = (c, fp) => /\.html?$/i.test(fp) && /<html/i.test(c);
+// A page that tells crawlers to stay out (private portals, share fragments, media kits) has
+// opted out of search & social preview — flagging it for missing OG/description is a false
+// positive. Title & viewport still matter (tab name, mobile render), so those are NOT skipped.
+const isNoindex = (c) => /<meta[^>]+name\s*=\s*["']robots["'][^>]*content\s*=\s*["'][^"']*noindex/i.test(c)
+  || /<meta[^>]+content\s*=\s*["'][^"']*noindex[^"']*["'][^>]*name\s*=\s*["']robots["']/i.test(c);
 perFile("SEO-NO-TITLE","medium","seo","Page has no <title>",
   "Add a unique, descriptive <title> — it is the tab name, the search-result headline and the default share text.",
   (c, fp) => isPage(c, fp) && !/<title[\s>]/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
 perFile("SEO-NO-DESC","low","seo","No meta description",
   "Add <meta name=\"description\"> — it is the snippet shown under your link in search results.",
-  (c, fp) => isPage(c, fp) && !/<meta[^>]+name\s*=\s*["']description["']/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
+  (c, fp) => isPage(c, fp) && !isNoindex(c) && !/<meta[^>]+name\s*=\s*["']description["']/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
 perFile("SEO-NO-OG","medium","seo","No Open Graph/Twitter card — shared links render as a bare URL",
   "Add og:title, og:description and og:image (1200×630) so the page previews properly wherever it is shared.",
-  (c, fp) => isPage(c, fp) && !/property\s*=\s*["']og:|name\s*=\s*["']twitter:/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
+  (c, fp) => isPage(c, fp) && !isNoindex(c) && !/property\s*=\s*["']og:|name\s*=\s*["']twitter:/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
 perFile("SEO-NO-VIEWPORT","high","seo","No viewport meta — the page renders desktop-width on phones",
   "Add <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">.",
   (c, fp) => isPage(c, fp) && !/name\s*=\s*["']viewport["']/i.test(c) ? [{ line: 1, excerpt: path.basename(fp) }] : []);
@@ -318,6 +323,66 @@ perFile("OBS-UNHANDLED-PROMISE","medium","observability","Promise chain with no 
     }
     return out;
   });
+
+// ---------- precision layer: confidence + context-aware refinement ----------
+// Two problems this fixes: (1) heuristic detectors buried real findings under false positives
+// (esc()-wrapped innerHTML, noindex pages, already-sourced stats); (2) every finding read as
+// equally certain. Now each finding carries a `confidence` — "high" (structural, near-certain)
+// vs "review" (heuristic lead, confirm by hand) — and the noisiest detectors get a refine()
+// that DROPS a hit it can prove is safe, or downgrades one it can't be sure about.
+
+// A detector is high-confidence when a positive is almost always a real defect on inspection:
+// its match is structural, not a guess about intent.
+const HIGH_CONF = new Set([
+  "SECRET","ESC-QUOTES","ARGUMENTS-CALLEE","PBKDF2-WEAK","NO-CSP","SW-CACHE-FIRST",
+  "DUP-DOM-ID","A11Y-IMG-ALT","A11Y-NO-LANG","A11Y-INPUT-NOLABEL","A11Y-EMPTY-CONTROL",
+  "A11Y-POSITIVE-TABINDEX","A11Y-CLICK-NONINTERACTIVE","A11Y-FOCUS-KILLED",
+  "SEO-NO-TITLE","SEO-NO-DESC","SEO-NO-OG","SEO-NO-VIEWPORT",
+  "TEST-ONLY","TEST-SKIPPED","TEST-NONE","TEST-NO-CI",
+  "PRIV-3P-TRACKER","PRIV-NO-POLICY","PRIV-NO-DELETE","PRIV-PII-IN-URL","CLAIM-PLACEHOLDER",
+]);
+// Everything else is a lead to confirm (XSS-INNERHTML, FIND-DEREF, DATE-TOISO, OBS-*, CLAIM-*, …).
+const confOf = (id) => HIGH_CONF.has(id) ? "high" : "review";
+
+// Is a single interpolated expression provably safe to drop into HTML?
+// Deliberately conservative — only forms that CANNOT carry markup: escaper-wrapped, pure
+// arithmetic, a .length/.size/.count read, or an expression built entirely from string literals.
+// No name-based guessing (a bare `d` might be photo data in an attribute, not a loop index) —
+// anything we can't prove safe stays a "review" finding rather than being silently dropped.
+function interpSafe(e) {
+  e = (e || "").trim();
+  if (!e) return true;
+  if (/^(esc|escapeHtml|escapeHTML|escapeHtmlAttr|escAttr|htmlEscape|encodeURIComponent|encodeURI)\s*\(/.test(e)) return true;
+  if (/^[\d\s()+\-*/%.]+$/.test(e)) return true;                                 // arithmetic / number literal
+  if (/^[a-z_$][\w.$]*\.(length|size|count)$/i.test(e)) return true;             // x.length / x.a.size — a count, no call
+  // ternary / expression built only from string literals (no bare identifier survives the strip)
+  const stripped = e.replace(/'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`/g, "")
+                    .replace(/[?:!=<>&|+\-*/%.,\s()[\]]/g, "");
+  return stripped === "";
+}
+// True when EVERY dynamic part of an HTML-sink line is provably safe — then the XSS hit is noise.
+function interpAllSafe(line) {
+  const interps = [];
+  const re = /\$\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g; let m;
+  while ((m = re.exec(line))) interps.push(m[1]);
+  if (!interps.length) return false;                    // matched via `+` concat, not ${} → can't prove safe
+  if (!interps.every(interpSafe)) return false;
+  // a `+ rawIdentifier` (not escaper/String/literal/number) concatenated in is still a sink → keep
+  if (/[)\]'"`\w]\s*\+\s*(?!esc\b|escapeHtml|escapeHTML|htmlEscape|encodeURI|String\(|['"`]|\d|IC\b)[a-zA-Z_$][\w.$]*/.test(line)) return false;
+  return true;
+}
+// Is a statistic accompanied by a citation? (a link, footnote, <sup>, or a .source/.s/cite element nearby)
+function citationNear(content, lineIdx) {
+  const lines = content.split("\n");
+  const win = lines.slice(Math.max(0, lineIdx - 1), lineIdx + 3).join("\n");
+  return /<a\b[^>]*\bhref\s*=|<sup\b|class\s*=\s*["'][^"']*\b(?:source|src|cite|citation|s|ref|footnote)\b|\bcite\s*=|\bhref\s*=\s*["']https?:|\[\d+\]|↗|†|‡/i.test(win);
+}
+// refine(ctx) → "skip" to drop the hit, a confidence string to override, or undefined for the default.
+const REFINE = {
+  "XSS-INNERHTML": ({ line }) => interpAllSafe(line) ? "skip" : "review",
+  "CLAIM-UNSOURCED-STAT": ({ content, lineIdx }) => citationNear(content, lineIdx) ? "skip" : undefined,
+};
+for (const d of D) { d.confidence = confOf(d.id); if (REFINE[d.id]) d.refine = REFINE[d.id]; }
 
 // ---------- run detectors ----------
 const findings = [];
@@ -345,14 +410,16 @@ for (const fp of files) {
         const m = d.re.exec(ln); d.re.lastIndex = 0;
         if (!m) continue;
         if (d.id === "PBKDF2-WEAK") { const n = parseInt(m[1],10); if (!(n < 600000)) continue; }
-        findings.push({ detector:d.id, severity:d.sev, category:d.cat, bug:d.bug, advice:d.advice,
+        let conf = d.confidence;
+        if (d.refine) { const r = d.refine({ line: ln, m, content, lineIdx: i, fp }); if (r === "skip") continue; if (typeof r === "string") conf = r; }
+        findings.push({ detector:d.id, severity:d.sev, category:d.cat, bug:d.bug, advice:d.advice, confidence: conf,
           file: rel(fp), line: i+1, excerpt: ln.trim().slice(0,160) });
         if (++hitsInFile >= 25) break;                  // cap noise per file/detector
       }
     } else {
       let hits = []; try { hits = d.fn(content, fp) || []; } catch {}
       for (const h of hits)
-        findings.push({ detector:d.id, severity:d.sev, category:d.cat, bug:d.bug, advice:d.advice,
+        findings.push({ detector:d.id, severity:d.sev, category:d.cat, bug:d.bug, advice:d.advice, confidence: d.confidence,
           file: rel(fp), line: h.line, excerpt: h.excerpt });
     }
   }
@@ -363,7 +430,7 @@ const PROJECT_DETECTORS = 5; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-D
 {
   const all = corpus.join("\n");
   const proj = (detector, severity, category, bug, advice, file, excerpt) =>
-    findings.push({ detector, severity, category, bug, advice, file, line: 1, excerpt });
+    findings.push({ detector, severity, category, bug, advice, confidence: confOf(detector), file, line: 1, excerpt });
 
   const testFiles = files.filter(isTestFile);
   if (!testFiles.length) {
@@ -423,11 +490,18 @@ if (AS_JSON) {
   console.log(`files: ${files.length} scanned   detectors: ${D.length + PROJECT_DETECTORS}   findings: ${findings.length}`);
   const tally = findings.reduce((a,f)=>(a[f.severity]=(a[f.severity]||0)+1,a),{});
   console.log(`sev:   ${["critical","high","medium","low"].filter(s=>tally[s]).map(s=>`${tally[s]} ${s}`).join("  ·  ")||"none"}`);
+  const nHigh = findings.filter(f=>f.confidence==="high").length;
+  console.log(`conf:  ${nHigh} high-confidence  ·  ${findings.length-nHigh} needs-review   (act on high-confidence first; verify the rest)`);
   console.log(bar);
   if (!findings.length) console.log("\n✓ No static regressions detected. Still run the manual checklist below.\n");
-  for (const [det, fs_] of Object.entries(byDet)) {
+  // high-confidence detectors first — so a real finding is never buried under a wall of leads
+  const dets = Object.entries(byDet).sort((a,b) =>
+    (a[1][0].confidence==="high"?0:1) - (b[1][0].confidence==="high"?0:1)
+    || (SEVORDER[a[1][0].severity]-SEVORDER[b[1][0].severity]));
+  for (const [det, fs_] of dets) {
     const d = fs_[0];
-    console.log(`\n[${(d.severity||"?").toUpperCase()}] ${det} — ${d.bug}  (${fs_.length})`);
+    const badge = d.confidence === "high" ? "✔ HIGH" : "◦ review";
+    console.log(`\n[${(d.severity||"?").toUpperCase()}] ${badge}  ${det} — ${d.bug}  (${fs_.length})`);
     console.log(`  ↳ ${d.advice}`);
     for (const f of fs_.slice(0,12)) console.log(`    ${f.file}:${f.line}   ${f.excerpt}`);
     if (fs_.length > 12) console.log(`    …and ${fs_.length-12} more`);
@@ -509,15 +583,18 @@ if (flags.has("--log")) {
   const cleanDet = D.map(d=>d.id).filter(id=>!firedDet.has(id));
   const secFindings = findings.filter(f=>f.category==="security")
     .map(f=>({ severity:f.severity, title:`${f.detector}: ${f.bug}`, file:`${f.file}:${f.line}` }));
+  const nHighLog = findings.filter(f=>f.confidence==="high").length;
   const payload = {
     app: APP, project: path.basename(TARGET), checkedBy: "scan.mjs",
     scanned: files.length, checkedCount: D.length + appBugs.length, foundCount: findings.length,
     securityStatus: secFindings.length ? "issues" : "clean",
-    notFound: cleanDet.map(id=>`${id} (static check clean)`),
-    found: findings.map(f=>({ title:`${f.detector}: ${f.bug}`, file:`${f.file}:${f.line}`, note:f.excerpt })).slice(0,200),
+    // a detector that ran clean is genuinely detector-verified, not merely "listed"
+    notFound: cleanDet.map(id=>({ title:`${id} (static check clean)`, verifiedBy:"detector" })),
+    found: findings.map(f=>({ title:`${f.detector}: ${f.bug}`, file:`${f.file}:${f.line}`, note:f.excerpt,
+      verifiedBy:"detector", confidence:f.confidence })).slice(0,200),
     securityChecked: [...secDet],
     securityFindings: secFindings,
-    notes: `Static scan via scan.mjs (${D.length + PROJECT_DETECTORS} detectors across 9 layers, ${files.length} files). Auto-detected leads only — not a full manual pass.`,
+    notes: `Static scan via scan.mjs (${D.length + PROJECT_DETECTORS} detectors across 9 layers, ${files.length} files). ${nHighLog} high-confidence, ${findings.length-nHighLog} needs-review. Detector-verified leads — not a full manual pass.`,
   };
   try {
     const res = await fetch(base + "/api/checks", { method:"POST",

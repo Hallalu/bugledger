@@ -139,6 +139,59 @@
   details.clean-more{margin-top:4px}
   details.clean-more summary{cursor:pointer;color:var(--muted);font-size:12.5px}
   .find .appname{font-weight:700}
+  /* ---- screenshots on a finding (before → after) ---- */
+  .shots{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}
+  .shot{margin:0;cursor:zoom-in;border:1px solid var(--line);border-radius:11px;overflow:hidden;
+    background:var(--chip);width:170px;box-shadow:var(--shadow);transition:transform .12s ease,border-color .12s ease}
+  .shot:hover{transform:translateY(-2px);border-color:var(--accent)}
+  .shot img{display:block;width:100%;height:112px;object-fit:cover;object-position:top center;background:var(--panel)}
+  .shot figcaption{font-size:11px;font-weight:700;color:var(--muted);padding:5px 9px;display:flex;align-items:center;gap:6px}
+  .shot figcaption .ba{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    padding:1px 6px;border-radius:99px;color:#fff}
+  .shot .ba.before{background:#e5735a}.shot .ba.after{background:var(--accent2)}
+  /* lightbox */
+  #shotlb{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:26px;
+    background:rgba(12,10,25,.82);backdrop-filter:blur(6px)}
+  #shotlb.show{display:flex}
+  #shotlb figure{margin:0;max-width:94vw;max-height:92vh;display:flex;flex-direction:column;gap:10px;align-items:center}
+  #shotlb img{max-width:94vw;max-height:82vh;object-fit:contain;border-radius:14px;box-shadow:0 24px 70px -20px rgba(0,0,0,.7)}
+  #shotlb figcaption{color:#fff;font-weight:700;font-size:14px}
+  #shotlb .lbx{position:fixed;top:18px;right:22px;font-size:34px;line-height:1;color:#fff;cursor:pointer;
+    background:none;border:none;opacity:.8}#shotlb .lbx:hover{opacity:1}
+  #shotlb .lbnav{position:fixed;top:50%;transform:translateY(-50%);font-size:44px;color:#fff;cursor:pointer;
+    background:none;border:none;opacity:.6;padding:0 14px;user-select:none}#shotlb .lbnav:hover{opacity:1}
+  #shotlb .lbprev{left:8px}#shotlb .lbnext{right:8px}
+  /* ---- add-a-finding panel ---- */
+  details.addfind{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 18px;overflow:hidden}
+  details.addfind > summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:10px;font-weight:750}
+  details.addfind > summary::-webkit-details-marker{display:none}
+  details.addfind > summary .chev{transition:transform .2s;color:var(--muted)}
+  details.addfind[open] > summary .chev{transform:rotate(90deg)}
+  details.addfind > summary .sub{font-weight:500;color:var(--muted);font-size:12.5px;margin-left:auto;max-width:none}
+  .addform{padding:4px 18px 20px;display:grid;gap:13px}
+  .addform .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
+  .addform label{display:grid;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .addform input,.addform select,.addform textarea{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);
+    border-radius:10px;padding:9px 11px;outline:none;font-weight:400;text-transform:none;letter-spacing:normal}
+  .addform input:focus,.addform select:focus,.addform textarea:focus{border-color:var(--accent)}
+  .addform textarea{resize:vertical;min-height:52px}
+  .ba-slots{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:560px){.ba-slots{grid-template-columns:1fr}}
+  .drop{position:relative;border:1.5px dashed var(--line);border-radius:12px;min-height:118px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px;text-align:center;padding:12px;cursor:pointer;color:var(--muted);
+    transition:.14s;background:var(--bg)}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--ink);background:color-mix(in srgb,var(--accent) 7%,var(--bg))}
+  .drop.filled{border-style:solid;padding:0;overflow:hidden}
+  .drop .dz-ba{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;padding:2px 9px;border-radius:99px}
+  .drop .dz-ba.before{background:#e5735a}.drop .dz-ba.after{background:var(--accent2)}
+  .drop .dz-hint{font-size:12px;line-height:1.4}
+  .drop img{width:100%;height:100%;object-fit:cover;object-position:top center;max-height:220px}
+  .drop .dz-clear{position:absolute;top:7px;right:8px;z-index:2;background:rgba(0,0,0,.6);color:#fff;border:none;
+    border-radius:99px;width:24px;height:24px;font-size:16px;line-height:1;cursor:pointer}
+  .addrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .addmsg{font-size:13px;font-weight:600}.addmsg.ok{color:var(--accent2)}.addmsg.err{color:#e5484d}
+  .keywrap{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+  .keywrap input{max-width:230px}
   @media print{
     .controls,.progress,.kpis,.btn{display:none!important}
     details.app{break-inside:avoid;box-shadow:none;border-color:#ccc}
@@ -185,6 +238,7 @@
     </div>
   </div>
 
+  <section id="addpanel"></section>
   <section id="checkpanel"></section>
   <section id="submitpanel"></section>
   <section id="secsweep"></section>
@@ -196,12 +250,54 @@
 </div>
 
 <div id="kpimodal" onclick="if(event.target===this)this.classList.remove('show')"><div class="km-card"></div></div>
+<div id="shotlb" onclick="if(event.target===this)window.BL_closeShot&&window.BL_closeShot()"><button class="lbx" aria-label="Close">×</button><button class="lbnav lbprev" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lbnav lbnext" aria-label="Next">›</button></div>
 <script>document.addEventListener('keydown',function(e){if(e.key==='Escape'){var m=document.getElementById('kpimodal');if(m)m.classList.remove('show');}});</script>
 <script src="data-sec.js"></script>
 <script src="data-opt.js"></script>
 <script src="data-scan.js"></script>
 <script src="data-harvest.js"></script>
 <script src="data.js?v=2"></script>
+<script>
+/* ---- shared screenshot helpers: thumbnails + before/after lightbox ---- */
+(function(){
+  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
+  // classify a caption as before/after for the little pill
+  function baClass(cap){ var c=(cap||'').toLowerCase();
+    if(/\bbefore\b|\bwas\b|current|old|problem|issue/.test(c)) return 'before';
+    if(/\bafter\b|\bnow\b|fixed|new|improved|elevated|proposed/.test(c)) return 'after'; return ''; }
+  // render a strip of thumbnails for a shots array [{url,caption}]
+  window.BL_shotStrip=function(shots){
+    if(!Array.isArray(shots)||!shots.length) return '';
+    var urls=shots.map(function(s){return s.url;});
+    var html=shots.map(function(s,i){
+      var ba=baClass(s.caption);
+      return '<figure class="shot" data-shot="'+esc(urls.join('|'))+'" data-i="'+i+'" tabindex="0" role="button" aria-label="View screenshot">'+
+        '<img loading="lazy" src="'+esc(s.url)+'" alt="'+esc(s.caption||'screenshot')+'">'+
+        (s.caption||ba?'<figcaption>'+(ba?'<span class="ba '+ba+'">'+ba+'</span>':'')+esc(s.caption||'')+'</figcaption>':'')+
+        '</figure>';
+    }).join('');
+    return '<div class="shots">'+html+'</div>';
+  };
+  var lb=document.getElementById('shotlb'), lbImg=lb.querySelector('img'), lbCap=lb.querySelector('figcaption');
+  var cur=[], curCaps=[], idx=0;
+  function show(){ lbImg.src=cur[idx]||''; lbCap.textContent=curCaps[idx]||''; lb.classList.add('show');
+    lb.querySelector('.lbprev').style.display=lb.querySelector('.lbnext').style.display=cur.length>1?'block':'none'; }
+  window.BL_openShot=function(urls,caps,i){ cur=urls||[]; curCaps=caps||[]; idx=i||0; show(); };
+  window.BL_closeShot=function(){ lb.classList.remove('show'); lbImg.src=''; };
+  lb.querySelector('.lbx').onclick=window.BL_closeShot;
+  lb.querySelector('.lbprev').onclick=function(e){ e.stopPropagation(); idx=(idx-1+cur.length)%cur.length; show(); };
+  lb.querySelector('.lbnext').onclick=function(e){ e.stopPropagation(); idx=(idx+1)%cur.length; show(); };
+  document.addEventListener('keydown',function(e){ if(!lb.classList.contains('show'))return;
+    if(e.key==='Escape')window.BL_closeShot(); else if(e.key==='ArrowLeft')lb.querySelector('.lbprev').click();
+    else if(e.key==='ArrowRight')lb.querySelector('.lbnext').click(); });
+  // one delegated click handler opens any thumbnail (thumbs are added dynamically)
+  document.addEventListener('click',function(e){ var f=e.target.closest&&e.target.closest('.shot[data-shot]'); if(!f)return;
+    var urls=f.getAttribute('data-shot').split('|');
+    var caps=Array.prototype.map.call(f.parentNode.querySelectorAll('.shot'),function(x){var c=x.querySelector('figcaption');return c?c.textContent:'';});
+    window.BL_openShot(urls,caps,+f.getAttribute('data-i')||0); });
+  document.addEventListener('keydown',function(e){ if((e.key==='Enter'||e.key===' ')&&document.activeElement&&document.activeElement.classList&&document.activeElement.classList.contains('shot')){ e.preventDefault(); document.activeElement.click(); } });
+})();
+</script>
 <script>
 (function(){
   var BUGS = (window.BUGS||[]).map(function(b,i){ b._id = b.session+'-'+i; return b; });
@@ -514,13 +610,28 @@
         var missedBlock = (!isScan && cov && cov.missed && cov.missed.length) ?
           '<details class="clean-more" open><summary style="color:#e5484d">⚠ '+cov.missed.length+' known bug'+(cov.missed.length>1?'s':'')+' NOT addressed</summary><ul class="mini">'+
           cov.missed.map(function(t){return '<li>○ '+esc(t)+'</li>'}).join('')+'</ul></details>' : '';
+        // evidence-weighted coverage: of the ground reported "covered", how much was actually
+        // inspected (a detector ran, code was read, a test passed) vs merely reasoned/assumed?
+        var ev=(cov&&cov.evidence)||null, vPct=(cov&&cov.verifiedPct);
+        var evBadge = (cov && cov.total && cov.verified!=null && vPct!=null) ? (function(){
+          var cls = vPct>=67?'fixed':(vPct>=25?'partial':'open');
+          return '<span class="st '+cls+'" title="how the covered items were verified">🔬 '+cov.verified+'/'+cov.total+' inspected ('+vPct+'%)</span>';
+        })() : '';
+        var evRow = ev ? (function(){
+          var seg=[]; ['detector','code-read','test','reasoned','assumed'].forEach(function(k){ if(ev[k]) seg.push(ev[k]+' '+k); });
+          if(!seg.length) return '';
+          var verified=(ev.detector||0)+(ev['code-read']||0)+(ev.test||0), claimed=(ev.reasoned||0)+(ev.assumed||0);
+          return '<div style="color:var(--muted);font-size:12px">Evidence: '+seg.join(' · ')+
+            (claimed&&verified? ' <span style="color:#e5a23d">— '+claimed+' listed but not inspected</span>':'')+'</div>';
+        })() : '';
         return '<li class="find"><div class="f-top">'+
-            '<span class="appname">'+esc(c.app)+'</span>'+covBadge+
+            '<span class="appname">'+esc(c.app)+'</span>'+covBadge+evBadge+
             '<span class="st '+stCls+'">security: '+esc(c.securityStatus||'n/a')+'</span>'+
             '<span class="tag">'+esc(fmt(c.ts))+' · '+esc(c.checkedBy||'')+(c.project?' · '+esc(c.project):'')+'</span></div>'+
           '<div class="f-body">'+
             '<div><b>'+ (c.checkedCount||0) +'</b> checked · <b>'+(c.foundCount||0)+'</b> found · <b>'+(c.scanned||0)+'</b> files scanned'+
               (c.id?' &middot; <a href="/report?id='+esc(c.id)+'" style="color:#ff6a5a;font-weight:700;text-decoration:none">📊 Full report →</a>':'')+'</div>'+
+            evRow+
             missedBlock+
             (foundList?'<div><b>Found:</b><ul class="mini">'+foundList+'</ul></div>':'<div style="color:var(--done,#12a150)">No known bugs found present.</div>')+
             (secList?'<div><b>Security findings:</b><ul class="mini">'+secList+'</ul></div>':'')+
@@ -559,7 +670,8 @@
             '<div class="f-body">'+(b.symptom?'<div>'+esc(b.symptom)+'</div>':'')+
             (b.file?'<div class="f-files">'+esc(b.file)+'</div>':'')+
             (b.fix?'<div><b>Fix:</b> '+esc(b.fix)+'</div>':'')+
-            (b.project?'<div class="tag">'+esc(b.project)+'</div>':'')+'</div></li>';
+            (b.project?'<div class="tag">'+esc(b.project)+'</div>':'')+
+            (window.BL_shotStrip?window.BL_shotStrip(b.shots):'')+'</div></li>';
         }).join('');
         return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
       }).join('');
@@ -604,6 +716,163 @@
     }
     tick(); setInterval(tick, 3000);
   })();
+</script>
+<script>
+/* ---- Add-a-finding panel: log a bug / security issue / optimiser WITH before→after screenshots ---- */
+(function(){
+  var host=document.getElementById('addpanel'); if(!host) return;
+  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
+  var KEYK='bugledger.key', LASTAPP='bugledger.lastapp';
+  var CATS={
+    bug:['crash','data-loss','logic','ui','security','performance','race','sync','auth','other'],
+    security:['auth','xss','ssrf','secrets','injection','isolation','rate-limit','csrf','other'],
+    optimiser:['design-elevation','ux','performance','workflow','architecture','accessibility','copy','conversion','dx','integrity']
+  };
+  var KLABEL={bug:'🐛 Bug',security:'🛡 Security',optimiser:'✨ Optimiser'};
+  var appsSet={}; (window.BUGS||[]).forEach(function(b){ if(b.app) appsSet[b.app]=1; });
+  var appList=Object.keys(appsSet).sort();
+  var state={ before:null, after:null }; // each: {dataUrl}
+  var activeRole='before';
+
+  var det=document.createElement('details'); det.className='addfind'; det.id='addfind';
+  det.innerHTML=
+    '<summary><span class="chev">▶</span><span>➕ Add a finding</span>'+
+      '<span class="sub">bug · security · optimiser — with before → after screenshots</span></summary>'+
+    '<form class="addform" autocomplete="off">'+
+      '<div class="grid">'+
+        '<label>Type<select name="kind">'+Object.keys(KLABEL).map(function(k){return '<option value="'+k+'">'+KLABEL[k]+'</option>';}).join('')+'</select></label>'+
+        '<label>App<input name="app" list="addapps" placeholder="e.g. Finished." required></label>'+
+        '<label>Category<select name="category"></select></label>'+
+        '<label>Severity<select name="severity"><option value="critical">critical</option><option value="high">high</option><option value="medium" selected>medium</option><option value="low">low</option></select></label>'+
+      '</div>'+
+      '<datalist id="addapps">'+appList.map(function(a){return '<option value="'+esc(a)+'">';}).join('')+'</datalist>'+
+      '<label>Title<input name="title" placeholder="Short, specific — e.g. “Search control looks unstyled / low-standard”" required></label>'+
+      '<div class="grid">'+
+        '<label>Symptom / what’s wrong<textarea name="symptom" placeholder="What the user sees or why it matters"></textarea></label>'+
+        '<label>Fix / the elevation<textarea name="fix" placeholder="What fixes it, or the better pattern"></textarea></label>'+
+      '</div>'+
+      '<label>File · location <span style="font-weight:400;text-transform:none;color:var(--muted)">(optional)</span><input name="file" placeholder="path/to/file.js:120 — or the screen/route"></label>'+
+      '<div><label style="margin-bottom:6px">Screenshots — before → after</label>'+
+        '<div class="ba-slots">'+
+          '<div><div class="drop" data-role="before"><span class="dz-ba before">Before</span><span class="dz-hint">Click, drop, or paste the current state</span><input type="file" accept="image/*" hidden></div>'+
+            '<input class="cap" data-role="before" value="Before" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
+          '<div><div class="drop" data-role="after"><span class="dz-ba after">After</span><span class="dz-hint">Click, drop, or paste the improved state</span><input type="file" accept="image/*" hidden></div>'+
+            '<input class="cap" data-role="after" value="After" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
+        '</div>'+
+        '<div style="font-size:11.5px;color:var(--muted);margin-top:6px">A single screenshot is fine too — fill just one. Tip: copy an image and paste (⌘V) into a slot. Max 5MB each; large images are auto-downscaled.</div>'+
+      '</div>'+
+      '<div class="addrow">'+
+        '<button type="submit" class="btn solid">Add to ledger →</button>'+
+        '<span class="addmsg"></span>'+
+        '<span class="keywrap" style="margin-left:auto">🔑 <input type="password" class="lkey" placeholder="ledger key (once)" title="Stored only in this browser. Needed only if the ledger requires a write key."></span>'+
+      '</div>'+
+      '<div class="addresult"></div>'+
+    '</form>';
+  host.appendChild(det);
+
+  var form=det.querySelector('form');
+  var kindSel=form.kind, catSel=form.category, appInp=form.app, msg=det.querySelector('.addmsg'), keyInp=det.querySelector('.lkey'), result=det.querySelector('.addresult');
+  keyInp.value=localStorage.getItem(KEYK)||'';
+  keyInp.addEventListener('change',function(){ localStorage.setItem(KEYK, keyInp.value.trim()); });
+  appInp.value=localStorage.getItem(LASTAPP)||'';
+
+  function fillCats(){ var k=kindSel.value; catSel.innerHTML=CATS[k].map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join(''); }
+  kindSel.addEventListener('change',fillCats); fillCats();
+
+  function setMsg(t,cls){ msg.textContent=t||''; msg.className='addmsg'+(cls?' '+cls:''); }
+
+  // downscale big images to ≤1600px wide; PNG for fidelity, JPEG fallback if too heavy
+  function downscale(dataUrl, cb){
+    var img=new Image();
+    img.onload=function(){
+      var max=1600, w=img.width, h=img.height;
+      if(w>max){ h=Math.round(h*max/w); w=max; }
+      try{
+        var c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        var out=c.toDataURL('image/png');
+        if(out.length>3.8*1024*1024) out=c.toDataURL('image/jpeg',0.9);
+        cb(out);
+      }catch(e){ cb(dataUrl); }
+    };
+    img.onerror=function(){ cb(dataUrl); };
+    img.src=dataUrl;
+  }
+  function renderSlot(role){
+    var dz=det.querySelector('.drop[data-role="'+role+'"]');
+    if(state[role]&&state[role].dataUrl){
+      dz.classList.add('filled');
+      dz.innerHTML='<button type="button" class="dz-clear" title="Remove">×</button><img src="'+state[role].dataUrl+'" alt="'+role+'">';
+      dz.querySelector('.dz-clear').addEventListener('click',function(ev){ ev.stopPropagation(); state[role]=null; resetSlot(role); });
+    }
+  }
+  function resetSlot(role){
+    var dz=det.querySelector('.drop[data-role="'+role+'"]');
+    dz.classList.remove('filled');
+    var ba=role==='before'?'Before':'After', hint=role==='before'?'Click, drop, or paste the current state':'Click, drop, or paste the improved state';
+    dz.innerHTML='<span class="dz-ba '+role+'">'+ba+'</span><span class="dz-hint">'+hint+'</span><input type="file" accept="image/*" hidden>';
+    wireDrop(dz);
+  }
+  function readImage(file, role){
+    if(!file||!/^image\//.test(file.type)){ setMsg('That’s not an image.','err'); return; }
+    var fr=new FileReader();
+    fr.onload=function(){ downscale(fr.result,function(out){ state[role]={dataUrl:out}; renderSlot(role); setMsg(''); }); };
+    fr.readAsDataURL(file);
+  }
+  function wireDrop(dz){
+    var role=dz.getAttribute('data-role'), inp=dz.querySelector('input[type=file]');
+    dz.addEventListener('click',function(){ activeRole=role; if(!dz.classList.contains('filled')) inp.click(); });
+    dz.addEventListener('mouseenter',function(){ activeRole=role; });
+    inp.addEventListener('change',function(){ if(inp.files&&inp.files[0]) readImage(inp.files[0],role); });
+    dz.addEventListener('dragover',function(e){ e.preventDefault(); dz.classList.add('over'); });
+    dz.addEventListener('dragleave',function(){ dz.classList.remove('over'); });
+    dz.addEventListener('drop',function(e){ e.preventDefault(); dz.classList.remove('over'); activeRole=role;
+      var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readImage(f,role); });
+  }
+  det.querySelectorAll('.drop').forEach(wireDrop);
+  // paste an image straight into the active slot
+  det.addEventListener('paste',function(e){
+    var items=(e.clipboardData&&e.clipboardData.items)||[];
+    for(var i=0;i<items.length;i++){ if(items[i].type&&items[i].type.indexOf('image')===0){
+      var role=activeRole||(state.before?'after':'before'); readImage(items[i].getAsFile(),role); e.preventDefault(); return; } }
+  });
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var app=appInp.value.trim(), title=form.title.value.trim();
+    if(!app){ setMsg('App is required.','err'); appInp.focus(); return; }
+    if(!title){ setMsg('Title is required.','err'); form.title.focus(); return; }
+    var shots=[];
+    ['before','after'].forEach(function(role){
+      if(state[role]&&state[role].dataUrl){
+        var cap=det.querySelector('.cap[data-role="'+role+'"]').value.trim();
+        shots.push({ dataUrl:state[role].dataUrl, caption:cap });
+      }
+    });
+    var payload={ app:app, project:'', kind:kindSel.value, title:title, category:catSel.value,
+      severity:form.severity.value, symptom:form.symptom.value.trim(), fix:form.fix.value.trim(),
+      file:form.file.value.trim(), submittedBy:'ledger-web', shots:shots };
+    var key=keyInp.value.trim(); if(key) localStorage.setItem(KEYK,key); localStorage.setItem(LASTAPP,app);
+    var headers={'content-type':'application/json'}; if(key) headers['x-ledger-key']=key;
+    var btn=form.querySelector('button[type=submit]'); btn.disabled=true;
+    setMsg(shots.length?'Uploading screenshot'+(shots.length>1?'s':'')+' & adding…':'Adding…');
+    fetch('/api/bugs',{method:'POST',headers:headers,body:JSON.stringify(payload)})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        btn.disabled=false;
+        if(!d||!d.ok){ setMsg((d&&d.error)||'Failed.', 'err'); if(d&&/unauthor/i.test(d.error||'')){ setMsg('Needs a ledger key — paste it in the 🔑 box.','err'); keyInp.focus(); } return; }
+        setMsg('Added ✓ — appended to the ledger (append-only).','ok');
+        result.innerHTML='<div style="margin-top:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)">'+
+          '<div style="font-weight:700">'+esc(KLABEL[payload.kind])+' · '+esc(app)+' — '+esc(title)+'</div>'+
+          (window.BL_shotStrip?window.BL_shotStrip(d.shots||[]):'')+
+          '<div style="font-size:12.5px;color:var(--muted);margin-top:8px">Now in the 🧫 Agent-submitted panel &amp; the <a href="/timeline">🕘 Activity timeline</a>.</div></div>';
+        // reset for the next one (keep app + key)
+        form.title.value=''; form.symptom.value=''; form.fix.value=''; form.file.value='';
+        state.before=null; state.after=null; resetSlot('before'); resetSlot('after');
+      })
+      .catch(function(err){ btn.disabled=false; setMsg('Network error: '+err,'err'); });
+  });
+})();
 </script>
 </body>
 </html>

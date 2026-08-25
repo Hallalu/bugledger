@@ -38,6 +38,12 @@ For every known bug for that app (and every recurring class + detector), look at
 decide: **present**, **not present**, or **n/a**. Don't guess — grep/read the relevant files. Fix any
 you find (or report them). Track two lists: `notFound` (checked & clean) and `found` ({title,file,note}).
 
+**Tag how you verified each item** with `verifiedBy` — this is what separates an audit from a list:
+`"detector"` (a scanner/grep ran), `"code-read"` (you opened the file and confirmed), `"test"` (a test
+covers it), `"reasoned"` (inferred, not inspected — the honest default), or `"assumed"`. Only the first
+three count as *inspected* in the coverage score. Be honest: a `reasoned` tag is worth more to the user
+than a `code-read` you didn't actually do.
+
 For security, run the detectors (the scanner does most automatically) and note `securityChecked`
 (what you looked for) and `securityFindings` ({severity,title,file}). Set `securityStatus` to
 "clean" or "issues".
@@ -56,8 +62,8 @@ curl -s -X POST https://bugledger.coconvo.workers.dev/api/checks \
     "checkedCount": 42,
     "foundCount": 1,
     "securityStatus": "clean",
-    "notFound": ["Billing view shows outdated Solo/Studio/£19 pricing", "Dark-mode hero/aurora + a dozen surfaces stay light"],
-    "found": [{"title":"Currency search fails on plurals","file":"public/app.js:210","note":"still reproduces"}],
+    "notFound": [{"title":"Billing view shows outdated Solo/Studio/£19 pricing","verifiedBy":"code-read"}, {"title":"Dark-mode hero/aurora + a dozen surfaces stay light","verifiedBy":"reasoned"}],
+    "found": [{"title":"Currency search fails on plurals","file":"public/app.js:210","note":"still reproduces","verifiedBy":"code-read"}],
     "securityChecked": ["XSS-INNERHTML","SECRET","SSRF-GOTO","LOCALSTORAGE-GLOBAL"],
     "securityFindings": [],
     "notes": "Checked the whole Hallalu CRM list; only the plurals bug remained."
@@ -76,10 +82,16 @@ node ~/BugLedger/worklog.mjs finish
 ```
 Each call posts to `POST /api/session`; the board polls every ~1.5s and ticks tasks off as you go.
 
-## Coverage is server-verified
-The `POST /api/checks` response includes `coverage: {total, matched, pct, complete, missed[]}` — the
-worker matches your `notFound`+`found` titles against the app's catalog. If `complete` is false, the
-`missed` array names the exact bugs you didn't address; check those and re-post until it's true. New
+## Coverage is server-verified — and now evidence-weighted
+The `POST /api/checks` response includes
+`coverage: {total, matched, pct, complete, verified, verifiedPct, evidence, missed[]}` — the worker
+matches your `notFound`+`found` titles against the app's catalog. `matched/total` is list-completeness;
+**`verified/total` (verifiedPct) is how much of that was actually inspected** — the sum of items tagged
+`detector`/`code-read`/`test`, with `evidence` giving the full breakdown. A green `complete` with a low
+`verifiedPct` means "you listed the catalog but didn't inspect most of it" — the honest signal. Raise
+`verifiedPct` by actually reading the code and tagging `verifiedBy`, not by listing more titles. If
+`complete` is false, the `missed` array names the exact bugs you didn't address; check those and re-post
+until it's true. New
 bugs you find go to `POST /api/bugs` (append-only). To scan against **every bug across ALL apps**
 (the whole catalog, e.g. 315/315), send `"scope":"all"`; for a **full security sweep** across all apps'
 security items, send `"scope":"security"`. Coverage is computed against that catalog. Stream a live

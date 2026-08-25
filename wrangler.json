@@ -13,6 +13,12 @@
       "database_id": "db2e48ed-a2c0-485b-af06-abff6c12555c"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "SHOTS",
+      "bucket_name": "bugledger-shots"
+    }
+  ],
   "observability": {
     "enabled": true
   }
