@@ -2170,5 +2170,29 @@
     "status": "unverified",
     "session": "de0b0aae",
     "found": "2026-08-25"
+  },
+  {
+    "key": "0c4410c7:onecommandfromyoufixesitsaythewordafterthatrunsandillfinishi",
+    "app": "Hallalu CRM",
+    "title": "One command from you fixes it: Say the word after that runs and I'll finish it — enable…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One command from you fixes it: Say the word after that runs and I'll finish it — enable Email Sending on coconvo.com, add the `SEND` binding, redeploy, and prove the outbound half with a real sent me…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0c4410c7",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "88a3d192:therealbugonlightthemesthefaintmutedtoneistoopaletoreadonwhi",
+    "app": "Finished.",
+    "title": "Real bug: on light themes the \"faint\" muted tone is too pale to read on white.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The real bug: on light themes the \"faint\" muted tone is too pale to read on white.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-25"
   }
 ]
