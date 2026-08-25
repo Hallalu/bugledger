@@ -2038,5 +2038,41 @@
     "status": "unverified",
     "session": "8e4bfa79",
     "found": "2026-08-24"
+  },
+  {
+    "key": "5f9a4f4e:twofixestrinidaddoesntmatchportofspainthinianametadatatheexa",
+    "app": "Hallalu CRM",
+    "title": "Two fixes: \"trinidad\" doesn't match Port of Spain (thin IANA metadata — the exact \"too…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two fixes: \"trinidad\" doesn't match Port of Spain (thin IANA metadata — the exact \"too few\" complaint), and the 5-col rule is being out-specified.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5f9a4f4e",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "5f9a4f4e:theonlythingleftthatneedsyourhandsthetwocloudflareclicksleak",
+    "app": "Hallalu CRM",
+    "title": "Only thing left that needs your hands: the two Cloudflare clicks — Leaked credentials…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**The only thing left that needs your hands:** the two Cloudflare clicks — **Leaked credentials mitigation → Activate**, **Client-side security → ON**, and leave **Bot Fight Mode OFF** (it can challe…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5f9a4f4e",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "5f9a4f4e:mynewfilesarecrashcleanandtheworkerparses",
+    "app": "Hallalu CRM",
+    "title": "My new files are crash-clean and the worker parses.",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "My new files are crash-clean and the worker parses.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5f9a4f4e",
+    "found": "2026-08-25"
   }
 ]
