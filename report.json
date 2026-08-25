@@ -1,0 +1,44 @@
+{
+  "title": "Make the ledger honest + precise",
+  "summary": "Two upgrades that turn a green checkmark from 'a list was submitted' into 'code was actually inspected'. (1) Evidence-weighted coverage: every checked item now carries how it was verified (detector/code-read/test vs reasoned/assumed), and the worker + UI report verified/total alongside matched/total. (2) Context-aware scanner precision: the three noisiest detectors stop firing on esc()-wrapped HTML, noindex pages, and already-sourced stats, and every finding is tagged high-confidence vs needs-review. Shipped to production and verified end-to-end.",
+  "tasks": [
+    {"text": "Scanner precision (esc/noindex/citation aware + confidence tags)", "done": true, "desc": "scan.mjs: XSS suppressed only when every interpolation is provably safe (no name guessing → zero false negatives), SEO skipped on noindex pages, CLAIM skipped beside a citation; high-confidence findings shown first"},
+    {"text": "Prove the false-positive drop on a real app", "done": true, "desc": "Ran on Hallalu CRM before/after; audited every dropped line by hand"},
+    {"text": "Evidence-weighted coverage in the worker", "done": true, "desc": "verifiedBy dimension; server tallies evidence over matched catalog items; POST + both GETs return verified/verifiedPct/evidence; backward-compatible"},
+    {"text": "Additive D1 migration on the live table", "done": true, "desc": "cov_verified + evidence columns; ADD COLUMN only; old rows read as unknown"},
+    {"text": "Surface it in the UI", "done": true, "desc": "#checks shows a 🔬 inspected N/total badge + an Evidence breakdown so a green tick is qualified by real inspection"},
+    {"text": "Deploy + verify end-to-end in the browser", "done": true, "desc": "wrangler deploy; POST self-test → correct math; GET round-trip → persisted; live rendered DOM shows the badge + evidence line"},
+    {"text": "Document verifiedBy in the agent protocol", "done": true, "desc": "AGENT.md updated so agents actually send the evidence dimension"}
+  ],
+  "metrics": [
+    {"label": "Coverage dimensions", "before": "1 (listed)", "after": "2 (listed + inspected)"},
+    {"label": "Evidence buckets tracked", "before": "0", "after": "5"},
+    {"label": "Scanner findings (Hallalu)", "before": "332", "after": "313"},
+    {"label": "SEO false positives (OG+DESC)", "before": "18", "after": "6"},
+    {"label": "CLAIM false positive (sourced stat)", "before": "4", "after": "3"},
+    {"label": "XSS dropped (all provably safe)", "before": 0, "after": 6},
+    {"label": "Confidence split (high / review)", "before": "none", "after": "48 / 265"},
+    {"label": "XSS false negatives introduced", "before": "—", "after": "0"}
+  ],
+  "features": [
+    "verifiedBy dimension on every checked item (detector | code-read | test | reasoned | assumed)",
+    "coverage.verified / verifiedPct / evidence returned by POST and both GET endpoints",
+    "🔬 inspected N/total badge + Evidence breakdown in the #checks UI",
+    "Context-aware detectors: esc-aware XSS, noindex-aware SEO, citation-aware CLAIM",
+    "high-confidence vs needs-review tagging, high-confidence surfaced first"
+  ],
+  "bugfixes": [
+    "XSS-INNERHTML no longer flags esc()-wrapped / numeric / literal interpolations",
+    "SEO-NO-OG/DESC no longer flag pages marked noindex",
+    "CLAIM-UNSOURCED-STAT no longer flags a stat that carries an adjacent citation"
+  ],
+  "findings": [
+    "The old green tick certified a submitted list, not an audit — it could not tell code-read from title-listed.",
+    "My own earlier '73 already-escaped' critique was an overstatement: only ~6 are purely safe to drop; the real fix is the confidence split, not mass deletion.",
+    "Removing a name-based 'loop counter is safe' shortcut prevented a real false negative (img src=\"${d}\" where d is photo data)."
+  ],
+  "insights": [
+    "Precision beats recall for a shared detector: when 99% is noise, a real finding gets pattern-dismissed with the rest.",
+    "Verify the critic — including yourself: measuring the claimed 73 esc-wrapped strings corrected the plan before it shipped."
+  ]
+}

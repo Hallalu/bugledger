@@ -71,6 +71,14 @@
   .when{margin-left:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
   .title{font-weight:650;margin:6px 0 2px}
   .cur{color:var(--muted);font-size:13.5px}
+  /* screenshots attached to an added finding (before → after) */
+  .shots{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .shot{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);
+    width:136px;text-decoration:none;transition:transform .12s ease,border-color .12s ease}
+  .shot:hover{transform:translateY(-2px);border-color:var(--coral)}
+  .shot img{display:block;width:100%;height:88px;object-fit:cover;object-position:top center}
+  .shot span{display:block;font-size:10.5px;font-weight:700;color:var(--muted);padding:4px 8px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
   .chip{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
   .chip.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 55%,transparent)}
@@ -159,7 +167,17 @@
     return '<div class="card"><div class="row1"><span class="kind add">➕ added · '+chip+'</span>'+
       '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
       '<span class="when" title="'+fullts(e.ts)+'">'+fullts(e.ts)+'</span></div>'+
-      '<div class="title" style="font-weight:600;margin-bottom:0">'+esc(e.title)+'</div></div>';
+      '<div class="title" style="font-weight:600;margin-bottom:0">'+esc(e.title)+'</div>'+shotStrip(e.shots)+'</div>';
+  }
+  // thumbnails for screenshots attached to a finding — each opens the full image
+  function shotStrip(shots){
+    if(!Array.isArray(shots)||!shots.length) return '';
+    return '<div class="shots">'+shots.map(function(s){
+      if(!s||!s.url) return '';
+      return '<a class="shot" href="'+esc(s.url)+'" target="_blank" rel="noopener">'+
+        '<img loading="lazy" src="'+esc(s.url)+'" alt="'+esc(s.caption||'screenshot')+'">'+
+        (s.caption?'<span>'+esc(s.caption)+'</span>':'')+'</a>';
+    }).join('')+'</div>';
   }
   function render(data){
     var feed=document.getElementById('feed');

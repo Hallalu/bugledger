@@ -14,6 +14,7 @@
    node ~/BugLedger/worklog.mjs add "Also fix hairline border"
    node ~/BugLedger/worklog.mjs note "waiting on a browser reload"
    node ~/BugLedger/worklog.mjs finish                       # all done, session closes
+   node ~/BugLedger/worklog.mjs shot ./after.png --caption "after"   # upload a screenshot → hosted /api/shot URL
 
  State for the current project lives in ./.worklog.json (git-ignore it).
 */
@@ -102,7 +103,22 @@ if (cmd === "start") {
   const dn = s.tasks.filter((t) => t.status === "done").length;
   const prog = s.progress ? ` · ${s.progress.done}/${s.progress.total} ${s.progress.label}` : "";
   console.log(`✓ ${cmd} → ${dn}/${s.tasks.length} tasks${prog} · "${s.current}"`);
+} else if (cmd === "shot") {
+  // upload one screenshot → hosted /api/shot url, ready to attach to a POST /api/bugs `shots` list.
+  // usage: worklog.mjs shot <image-file> [--caption "after"]   (no session needed)
+  const file = positional[0];
+  if (!file) die('shot <image-file> [--caption "…"]');
+  const TYPES = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".gif": "image/gif", ".avif": "image/avif" };
+  const type = TYPES[path.extname(file).toLowerCase()];
+  if (!type) die("unsupported image type (png/jpg/webp/gif/avif)");
+  let bytes; try { bytes = fs.readFileSync(file); } catch { die("cannot read " + file); }
+  const res = await fetch(BASE + "/api/shot", { method: "POST", headers: { "content-type": type, "x-ledger-key": TOKEN }, body: bytes });
+  const out = await res.json().catch(() => ({}));
+  if (!out.ok) die("upload failed — " + res.status + " " + (out.error || "") + (TOKEN ? "" : " (no token in ~/.bugledger.json)"));
+  const caption = flag("caption") || "";
+  console.log(out.view || BASE + out.url);
+  console.log('shots entry: {"url":"' + out.url + '"' + (caption ? ',"caption":"' + caption + '"' : "") + "}");
 } else {
-  console.log("usage: worklog.mjs start|step <i>|done <i>|current \"…\"|add \"…\"|note \"…\"|finish   (see file header)");
+  console.log("usage: worklog.mjs start|step <i>|done <i>|current \"…\"|add \"…\"|note \"…\"|finish|shot <img>   (see file header)");
   process.exit(cmd ? 1 : 0);
 }

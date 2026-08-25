@@ -1,43 +1,66 @@
 {
-  "id": "9cb13d76-e59e-454d-9e60-6245e05c8330",
+  "id": "a2a1bfc7-9aa5-4393-b65f-d43075ea9a93",
   "app": "Bug Ledger",
   "project": "BugLedger",
-  "title": "Update Bug Ledger slash commands with new features (41 detectors, new counts)",
-  "status": "done",
-  "current": "Done ✓",
+  "title": "Real screenshot images in the Bug Ledger (retire the text-only honesty note)",
+  "status": "active",
+  "current": "committing scanner + worker + docs, publishing report, updating memory",
   "note": "",
   "tasks": [
     {
-      "text": "Audit commands vs live ledger",
-      "note": "Read all 7 commands + pulled live checklist.json: found stale 14-detector refs, 315/43 counts; live ledger now 417 bugs / 64 security / 115 optimisers / 41 detectors / 18 apps",
-      "status": "done"
+      "text": "Absorb",
+      "note": "Read all 433 lines of the worker + schemas: the shot pipeline (POST /api/shot, GET /api/shot/:key, shots on /api/bugs) is already CODED and committed — task is now to verify what is live vs missing",
+      "status": "done",
+      "wave": ""
     },
     {
-      "text": "Detectors 14→41 + families",
-      "note": "bugcheck + fullscan now cite all 41 detectors across 7 families (security · a11y · privacy · claims · tests · SEO · observability), not just 14 security ones",
-      "status": "done"
+      "text": "Design",
+      "note": "Probed production: upload+serve are LIVE (200 image/png). Real gaps = timeline card ignores shots, HEAD /api/shot 404s, protocol docs still text-only, worklog client has no shot helper",
+      "status": "done",
+      "wave": ""
     },
     {
-      "text": "Refresh catalog counts",
-      "note": "fullscan description 315→417+, securitysweep example 43/43→N/N; both already compute the live count dynamically from checklist.json",
-      "status": "done"
+      "text": "Build API",
+      "note": "Worker: /api/shot/:key now answers HEAD as well as GET (link unfurlers and probes no longer see 404) with content-length set",
+      "status": "done",
+      "wave": ""
     },
     {
-      "text": "Deepscan a11y/privacy coverage",
-      "note": "deepscan bug phase now runs the a11y/privacy/claims/tests/SEO/observability detector families; security phase notes PII-in-logs/URLs + trackers",
-      "status": "done"
+      "text": "Build client",
+      "note": "worklog.mjs gained a standalone 'shot <file> --caption' upload command; AGENT.md + llms.txt now document the whole screenshot protocol agents read",
+      "status": "done",
+      "wave": ""
     },
     {
-      "text": "Refresh memory note",
-      "note": "project-bugledger memory + MEMORY.md index refreshed to 417/64/115/18-apps/41-detectors; historical rounds kept",
-      "status": "done"
+      "text": "Render",
+      "note": "/timeline addition cards now render attached before/after thumbnails (data was already in /api/activity, previously dropped)",
+      "status": "done",
+      "wave": ""
+    },
+    {
+      "text": "Deploy",
+      "note": "Ship the HEAD fix, the timeline thumbnails and the updated agent protocol docs to production",
+      "status": "done",
+      "wave": ""
     },
     {
       "text": "Verify",
-      "note": "grep clean: no stale 14/315/43 refs; 41-detector + family refs confirmed in bugcheck/deepscan/fullscan/securitysweep",
-      "status": "done"
+      "note": "Deployed twice (worker HEAD fix, then docs). Browser-verified: timeline renders before/after thumbnails, main page shows 13 shot imgs (0 broken), HEAD 200 image/png, lightbox opens",
+      "status": "done",
+      "wave": ""
+    },
+    {
+      "text": "Report",
+      "note": "Commit all changes, publish the before/after report, retire the honesty note in memory",
+      "status": "active",
+      "wave": ""
+    },
+    {
+      "text": "User report",
+      "note": "Log the user-reported bug (asked for before/after, got names not photos) and push the class into the shared scan catalog so every app's fullscan checks it",
+      "status": "pending",
+      "wave": ""
     }
   ],
-  "started": 1786934390154,
-  "reported": true
+  "started": 1787684847924
 }

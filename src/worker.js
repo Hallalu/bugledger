@@ -95,8 +95,8 @@ export default {
     if (request.method === "OPTIONS")
       return new Response(null, { status: 204, headers: JSON_HEADERS });
 
-    // ---- GET /api/shot/:key : serve a stored screenshot from R2 (public read) ----
-    if (pathname.startsWith("/api/shot/") && request.method === "GET") {
+    // ---- GET/HEAD /api/shot/:key : serve a stored screenshot from R2 (public read) ----
+    if (pathname.startsWith("/api/shot/") && (request.method === "GET" || request.method === "HEAD")) {
       const key = decodeURIComponent(pathname.slice("/api/shot/".length));
       if (!/^[a-z0-9._-]+$/i.test(key) || key.includes("..")) return json({ ok: false, error: "bad key" }, 400);
       if (!env.SHOTS) return json({ ok: false, error: "no store" }, 404);
@@ -109,7 +109,9 @@ export default {
         h.set("x-content-type-options", "nosniff");
         h.set("access-control-allow-origin", "*");
         if (obj.httpEtag) h.set("etag", obj.httpEtag);
-        return new Response(obj.body, { headers: h });
+        if (typeof obj.size === "number") h.set("content-length", String(obj.size));
+        // HEAD gets headers only — link unfurlers and probes use it, and a body would be discarded
+        return new Response(request.method === "HEAD" ? null : obj.body, { headers: h });
       } catch (e) { return json({ ok: false, error: String(e) }, 500); }
     }
 

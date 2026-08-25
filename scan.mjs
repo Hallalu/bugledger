@@ -264,6 +264,38 @@ perLine("CLAIM-PLACEHOLDER","medium","claims","Placeholder or sample copy shippe
   "Replace lorem ipsum / TODO / sample testimonials before shipping — fabricated testimonials are also unlawful.",
   f => /\.(html?|vue|svelte)$/i.test(f),
   /lorem\s+ipsum|\bTODO\b|\bFIXME\b|\bJohn\s+Doe\b|\bJane\s+Doe\b|sample\s+testimonial|your\s+text\s+here/i);
+// A feature that offers before/after screenshots or photo capture must persist the IMAGE, not just
+// its label. This catches the "asked for before & after, got only names" drop: a shot/photo record
+// that keeps a caption/label/name but carries no image reference (url|dataUrl|src|blob|base64|file),
+// or a shots/photos list mapped down to only its captions. High impact (silent visual data-loss),
+// review confidence (intent heuristic — confirm the image really isn't stored elsewhere).
+perFile("IMG-DROP","high","data-loss","Screenshot/photo kept by label only — the actual image is dropped",
+  "Persist the image bytes or a URL for every before/after or photo record; a caption/name is metadata ON the image, never a substitute. Keep url|dataUrl|src|blob|base64|file alongside the caption.",
+  (c, fp) => {
+    if (!isCode(fp)) return [];
+    const out = [];
+    // an image field present (incl. ES6 shorthand `url,`/`url}`) means the picture IS kept — not a drop
+    const IMGFIELD = /\b(?:url|src|href|dataurl|data|blob|base64|file|bytes|buffer|uri|objecturl|bloburl|thumb(?:nail)?|images?|imgs?|photos?|pictures?|screenshots?|shots?|path|key)\b\s*[:,}]/i;
+    const SHOTCTX = /\b(?:shots?|screenshots?|photos?|pictures?|snapshots?|thumbnails?|before\s*(?:&|and|→|->|\/|-)?\s*after)\b/i;
+    // shape 1 — an object literal that captions a shot/photo but carries no image reference
+    const reObj = /\{[^{}]{0,240}\}/g; let m;
+    while ((m = reObj.exec(c))) {
+      const obj = m[0];
+      if (!/\b(?:caption|label|name|alt|title|text)\b\s*:/i.test(obj)) continue;
+      if (IMGFIELD.test(obj)) continue;
+      const before = c.slice(Math.max(0, m.index - 160), m.index);
+      if (!SHOTCTX.test(before) && !SHOTCTX.test(obj)) continue;
+      out.push({ line: c.slice(0, m.index).split("\n").length, excerpt: obj.slice(0, 90).replace(/\s+/g, " ") });
+      if (out.length >= 12) break;
+    }
+    // shape 2 — the exact "pulled only names" bug: a shots/photos list mapped to just a label field
+    const reMap = /\b(?:shots?|photos?|screenshots?|images?|pictures?)\b\s*\.\s*map\s*\(\s*(\w+)\s*=>\s*\1\s*\.\s*(?:caption|label|name|alt|title|text)\b/gi;
+    while ((m = reMap.exec(c))) {
+      out.push({ line: c.slice(0, m.index).split("\n").length, excerpt: m[0].slice(0, 90) });
+      if (out.length >= 20) break;
+    }
+    return out;
+  });
 
 // --- privacy & legal ---
 perLine("PRIV-3P-TRACKER","high","privacy","Third-party analytics/ad tracker present",

@@ -2,7 +2,7 @@
 
 You are a coding agent working inside a project. This ledger is your regression + security
 memory: **428 bugs across 24 apps**, a security audit (15 findings),
-and 41 static detectors. Use it to debug the current project against every bug we've
+and 42 static detectors. Use it to debug the current project against every bug we've
 hit before, then **log what you checked** so there's a record.
 
 Base URL: `https://bugledger.coconvo.workers.dev`
@@ -38,12 +38,6 @@ For every known bug for that app (and every recurring class + detector), look at
 decide: **present**, **not present**, or **n/a**. Don't guess — grep/read the relevant files. Fix any
 you find (or report them). Track two lists: `notFound` (checked & clean) and `found` ({title,file,note}).
 
-**Tag how you verified each item** with `verifiedBy` — this is what separates an audit from a list:
-`"detector"` (a scanner/grep ran), `"code-read"` (you opened the file and confirmed), `"test"` (a test
-covers it), `"reasoned"` (inferred, not inspected — the honest default), or `"assumed"`. Only the first
-three count as *inspected* in the coverage score. Be honest: a `reasoned` tag is worth more to the user
-than a `code-read` you didn't actually do.
-
 For security, run the detectors (the scanner does most automatically) and note `securityChecked`
 (what you looked for) and `securityFindings` ({severity,title,file}). Set `securityStatus` to
 "clean" or "issues".
@@ -62,8 +56,8 @@ curl -s -X POST https://bugledger.coconvo.workers.dev/api/checks \
     "checkedCount": 42,
     "foundCount": 1,
     "securityStatus": "clean",
-    "notFound": [{"title":"Billing view shows outdated Solo/Studio/£19 pricing","verifiedBy":"code-read"}, {"title":"Dark-mode hero/aurora + a dozen surfaces stay light","verifiedBy":"reasoned"}],
-    "found": [{"title":"Currency search fails on plurals","file":"public/app.js:210","note":"still reproduces","verifiedBy":"code-read"}],
+    "notFound": ["Billing view shows outdated Solo/Studio/£19 pricing", "Dark-mode hero/aurora + a dozen surfaces stay light"],
+    "found": [{"title":"Currency search fails on plurals","file":"public/app.js:210","note":"still reproduces"}],
     "securityChecked": ["XSS-INNERHTML","SECRET","SSRF-GOTO","LOCALSTORAGE-GLOBAL"],
     "securityFindings": [],
     "notes": "Checked the whole Hallalu CRM list; only the plurals bug remained."
@@ -82,20 +76,29 @@ node ~/BugLedger/worklog.mjs finish
 ```
 Each call posts to `POST /api/session`; the board polls every ~1.5s and ticks tasks off as you go.
 
-## Coverage is server-verified — and now evidence-weighted
-The `POST /api/checks` response includes
-`coverage: {total, matched, pct, complete, verified, verifiedPct, evidence, missed[]}` — the worker
-matches your `notFound`+`found` titles against the app's catalog. `matched/total` is list-completeness;
-**`verified/total` (verifiedPct) is how much of that was actually inspected** — the sum of items tagged
-`detector`/`code-read`/`test`, with `evidence` giving the full breakdown. A green `complete` with a low
-`verifiedPct` means "you listed the catalog but didn't inspect most of it" — the honest signal. Raise
-`verifiedPct` by actually reading the code and tagging `verifiedBy`, not by listing more titles. If
-`complete` is false, the `missed` array names the exact bugs you didn't address; check those and re-post
-until it's true. New
+## Coverage is server-verified
+The `POST /api/checks` response includes `coverage: {total, matched, pct, complete, missed[]}` — the
+worker matches your `notFound`+`found` titles against the app's catalog. If `complete` is false, the
+`missed` array names the exact bugs you didn't address; check those and re-post until it's true. New
 bugs you find go to `POST /api/bugs` (append-only). To scan against **every bug across ALL apps**
 (the whole catalog, e.g. 315/315), send `"scope":"all"`; for a **full security sweep** across all apps'
 security items, send `"scope":"security"`. Coverage is computed against that catalog. Stream a live
 `N/total` counter with `worklog.mjs progress <done> <total>`.
+
+## Screenshots — the ledger is NOT text-only
+A finding can carry real **before → after images**, not just metrics. Two ways (both need
+`x-ledger-key`; images land in R2, served at `GET /api/shot/<key>`, max 5MB, png/jpg/webp/gif/avif):
+
+1. **Inline on the bug** — add `shots` to your `POST /api/bugs` body:
+   `"shots":[{"dataUrl":"data:image/png;base64,…","caption":"before"},{"dataUrl":"…","caption":"after"}]`
+   (or a single `"shotDataUrl"` + `"shotCaption"`). Data URLs are uploaded for you; the response
+   echoes the stored `shots` with their `/api/shot/…` URLs.
+2. **Upload first, attach by URL** — `POST /api/shot` with a raw `image/*` body (or JSON `{dataUrl}`)
+   returns `{url}`; put that url in `shots:[{url,caption}]`. One-liner:
+   `node ~/BugLedger/worklog.mjs shot ./after.png --caption "after"` prints the hosted URL.
+
+Captioning `before`/`after` gets badge styling on the ledger; shots show on the main page's
+Agent-submitted panel and on the /timeline feed. Append-only as ever — written once, never edited.
 
 ## Step 4 — Tell the user
 Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the

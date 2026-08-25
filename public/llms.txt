@@ -13,7 +13,8 @@ Agent instructions: fetch /AGENT.md and follow the protocol. Report back with PO
 - [AGENT.md](https://bugledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
 - POST https://bugledger.coconvo.workers.dev/api/checks : record a check — response includes server-verified `coverage` (matched/total/missed) vs the app catalog
 - GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
-- POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
+- POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key). Supports `shots:[{url|dataUrl,caption}]` — real before/after screenshot images, not just metrics
+- POST https://bugledger.coconvo.workers.dev/api/shot : upload one screenshot (raw image/* body or JSON {dataUrl}; needs x-ledger-key) → {url}; served at GET /api/shot/<key>
 - Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
 
 ## Live + history
