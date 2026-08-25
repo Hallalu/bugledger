@@ -2074,5 +2074,101 @@
     "status": "unverified",
     "session": "5f9a4f4e",
     "found": "2026-08-25"
+  },
+  {
+    "key": "5f9a4f4e:toansweryourquestiondirectlyimeasureditratherthanguessedandi",
+    "app": "Hallalu CRM",
+    "title": "To answer your question directly — I measured it rather than guessed, and it wasn't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**To answer your question directly** — I measured it rather than guessed, and it *wasn't* lined up: - It was sitting **~12px too high** — its center at y=50 vs the topbar buttons' center at y=60.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5f9a4f4e",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "61999ed8:thedomconfirmstheclipblock45pxcontent85pxtitlebelowtheedgema",
+    "app": "Listing Lab Pro",
+    "title": "DOM confirms the clip (block 45px, content 85px, title below the edge) — matching your…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The DOM confirms the clip (block 45px, content 85px, title below the edge) — matching your screenshot; that's solid \"before\" evidence (screenshots keep coming back blank due to a tall-viewport quirk …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "61999ed8:theblankscreenshotswereatallviewportquirkletmesetaproperdesk",
+    "app": "Listing Lab Pro",
+    "title": "Blank screenshots were a tall-viewport quirk — let me set a proper desktop viewport,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The blank screenshots were a tall-viewport quirk — let me set a proper desktop viewport, then verify the fixes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "88a3d192:ifdevelopermodestilldoesntshowafterstep2itsalmostalwaysthatt",
+    "app": "Finished.",
+    "title": "- If Developer Mode still doesn't show after step 2, it's almost always that the phone…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- If Developer Mode *still* doesn't show after step 2, it's almost always that the phone hasn't been trusted yet — unlock the phone, tap **Trust This Computer** on the popup, then re-run.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "88a3d192:yesitnowworksinyourmacappthatscreenshotisthenativemacapprunn",
+    "app": "Finished.",
+    "title": "Yes — it now works in your Mac app. That screenshot is the native Mac app running in…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Yes — it now works in your Mac app.** That screenshot is the native Mac app running in the **Ocean theme** I set on the server: teal sidebar, white background, teal equity curve, dark ink text — th…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "88a3d192:onecaveatworthstatingplainlythebackgroundsandtopbannerareset",
+    "app": "Finished.",
+    "title": "One caveat worth stating plainly: the backgrounds and top banner are set from the web…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One caveat worth stating plainly: the **backgrounds and top banner are set from the web app** — the native apps read and display them, but I didn't add editors for them in the native Settings yet (on…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "de0b0aae:itdoesntusethenewevidenceweightingverifiedbysoitsfullcoverag",
+    "app": "Hallalu CRM",
+    "title": "It doesn't use the new evidence-weighting (verifiedBy) — so its \"full coverage\" still…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It doesn't use the new **evidence-weighting** (`verifiedBy`) — so its \"full coverage\" still certifies a *list*, not inspection (the exact thing I just fixed).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "de0b0aae",
+    "found": "2026-08-25"
+  },
+  {
+    "key": "de0b0aae:itdoesntleveragethescannersnewconfidencetags",
+    "app": "Hallalu CRM",
+    "title": "It doesn't leverage the scanner's new confidence tags.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It doesn't leverage the scanner's new **confidence** tags.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "de0b0aae",
+    "found": "2026-08-25"
   }
 ]
