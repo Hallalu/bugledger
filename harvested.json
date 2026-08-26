@@ -2470,5 +2470,41 @@
     "status": "unverified",
     "session": "a15dff44",
     "found": "2026-08-26"
+  },
+  {
+    "key": "a15dff44:thepaymentsorttotopworksapaymentloggedtodayjumpstothetopwith",
+    "app": "Finished.",
+    "title": "Payment sort-to-top works — a payment logged today jumps to the top with a \"today\"…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The payment sort-to-top works — a payment logged today jumps to the top with a \"today\" badge (\"Test — logged today · Aug 26 · 4:24 PM today\"), and the demo bug is fixed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "a15dff44:thecoreproblemsolvedyouwerentseeingupdatesbecausecloudflares",
+    "app": "Finished.",
+    "title": "Core problem — solved You weren't seeing updates because Cloudflare's edge cache was…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "## The core problem — solved You weren't seeing updates because **Cloudflare's edge cache was serving stale JS/CSS** — it keys on the pathname and *ignores* `?v=`, so cache‑busting never worked, and …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "a15dff44:alsofixedademocrashwhiletestingit",
+    "app": "Finished.",
+    "title": "Fixed a demo crash while testing it.",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "Also fixed a demo crash while testing it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-26"
   }
 ]
