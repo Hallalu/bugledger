@@ -2338,5 +2338,41 @@
     "status": "unverified",
     "session": "88a3d192",
     "found": "2026-08-26"
+  },
+  {
+    "key": "88a3d192:samescreenthebacktestsilentlyfailed",
+    "app": "Finished.",
+    "title": "Same screen — the backtest silently failed.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Same screen — the backtest silently failed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "88a3d192:threerealbugsfoundbyverificationandfixedpercentencodedqueryu",
+    "app": "Finished.",
+    "title": "Three real bugs found by verification and fixed: percent-encoded query URLs, a…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "Three real bugs found *by* verification and fixed: percent-encoded query URLs, a simulator audio-bridge crash (now degrades gracefully), and journal saves that could wipe web data.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "88a3d192:tradesjournaledinthewrongworldmovewithonetapinthetradeeditor",
+    "app": "Finished.",
+    "title": "Trades journaled in the wrong world move with one tap in the trade editor.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Trades journaled in the wrong world move with one tap in the trade editor.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-26"
   }
 ]
