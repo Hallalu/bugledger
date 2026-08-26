@@ -2374,5 +2374,77 @@
     "status": "unverified",
     "session": "88a3d192",
     "found": "2026-08-26"
+  },
+  {
+    "key": "6739dab7:thatmeansthelivesiteitselfishealthysothefailureislocaltoyour",
+    "app": "Finished.",
+    "title": "That means the live site itself is healthy — so the failure is local to your browser,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That means the live site itself is healthy — so **the failure is local to your browser**, and the \"Loading…\" screen you're seeing is the app's boot screen that never gets replaced.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6739dab7",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "6739dab7:theusualculpritinyourappsisastaleserviceworkercachedoldbuild",
+    "app": "Finished.",
+    "title": "Usual culprit in your apps is a stale service worker / cached old build (exactly the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The usual culprit in your apps is a **stale service worker / cached old build** (exactly the trap I just baked into `/together`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6739dab7",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "6739dab7:soareturningusergetsstrandedonloadingforeverifeitherapimehan",
+    "app": "Finished.",
+    "title": "A returning user gets stranded on \"Loading…\" forever if either: api('/me') hangs…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "So a returning user gets stranded on \"Loading…\" forever if either: `api('/me')` **hangs** (slow/blocked network), or it resolves **without a valid `.user`** (line 765 throws, and that throw is *not* …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6739dab7",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "a15dff44:enginealreadysplitsonconnectivessothebugislikelyinhowthevoic",
+    "app": "Finished.",
+    "title": "Engine already splits on connectives — so the bug is likely in how the voice/paste UI…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Engine already splits on connectives — so the bug is likely in how the voice/paste UI *uses* it (one block instead of `parseBrainDump`→`placeItems`), or run-on speech with no delimiters.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "a15dff44:thebulkmodalalreadyhasaneditabletranscriptlivesplitpreviewth",
+    "app": "Finished.",
+    "title": "Bulk modal already has an editable transcript + live split preview — the bug is the…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The Bulk modal already has an editable transcript + live split preview — the bug is the **main mic** auto-adds via `runBrainDump` with no review, and `splitItems` fails on run-on speech.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "a15dff44:iintroducedasentinelbugthesplitdelimitersgotmangledtoemptyst",
+    "app": "Finished.",
+    "title": "Introduced a sentinel bug (the split delimiters got mangled to empty strings — that…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I introduced a sentinel bug (the split delimiters got mangled to empty strings — that would split into characters).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a15dff44",
+    "found": "2026-08-26"
   }
 ]
