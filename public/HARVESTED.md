@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-204 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+206 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (93)
 
@@ -98,7 +98,7 @@
 - [ ] `low` `other` (2026-08-26, #8007b232) — Good — the upload itself works, but I found a real bug in my CLI: positional includes…
 - [ ] `low` `other` (2026-08-26, #0c4410c7) — Dark set failed one check (likely the lightness band) — let me see it fully and fix:
 
-## Finished. (62)
+## Finished. (64)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -162,6 +162,8 @@
 - [ ] `low` `other` (2026-08-26, #a15dff44) — Engine already splits on connectives — so the bug is likely in how the voice/paste UI…
 - [ ] `low` `ui` (2026-08-26, #a15dff44) — Bulk modal already has an editable transcript + live split preview — the bug is the…
 - [ ] `low` `other` (2026-08-26, #a15dff44) — Introduced a sentinel bug (the split delimiters got mangled to empty strings — that…
+- [ ] `low` `other` (2026-08-26, #a15dff44) — Noted — also tidy the action bar (the "Default voice" select doesn't match).
+- [ ] `low` `other` (2026-08-26, #a15dff44) — Deploy isn't propagating — I need to fix that before any Aprizely change will show.
 
 ## Breadcrumb (22)
 
