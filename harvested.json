@@ -2242,5 +2242,17 @@
     "status": "unverified",
     "session": "8007b232",
     "found": "2026-08-26"
+  },
+  {
+    "key": "61999ed8:thebadgefixwasalreadyvisuallyconfirmedat676pxearlierandstruc",
+    "app": "Finished.",
+    "title": "Badge fix was already visually confirmed at 676px earlier, and structural checks pass.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The badge fix was already visually confirmed at 676px earlier, and structural checks pass.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-26"
   }
 ]

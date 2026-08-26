@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-187 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+188 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (92)
 
@@ -97,7 +97,7 @@
 - [ ] `low` `other` (2026-08-25, #0c4410c7) — One command from you fixes it: Say the word after that runs and I'll finish it — enable…
 - [ ] `low` `other` (2026-08-26, #8007b232) — Good — the upload itself works, but I found a real bug in my CLI: positional includes…
 
-## Finished. (47)
+## Finished. (48)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -146,6 +146,7 @@
 - [ ] `low` `other` (2026-08-26, #61999ed8) — "demo" doesn't appear in the settings/app code, so I'll pin down what you mean — but…
 - [ ] `low` `other` (2026-08-26, #61999ed8) — User's screenshot shows the old badge overlap (my in-flow fix isn't republished yet),…
 - [ ] `low` `ui` (2026-08-26, #61999ed8) — BodyScrollW=768=clientW no horizontal overflow at tablet width.
+- [ ] `low` `other` (2026-08-26, #61999ed8) — Badge fix was already visually confirmed at 676px earlier, and structural checks pass.
 
 ## Breadcrumb (22)
 
