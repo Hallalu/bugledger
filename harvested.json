@@ -2194,5 +2194,53 @@
     "status": "unverified",
     "session": "88a3d192",
     "found": "2026-08-25"
+  },
+  {
+    "key": "61999ed8:demodoesntappearinthesettingsappcodesoillpindownwhatyoumeanb",
+    "app": "Finished.",
+    "title": "\"demo\" doesn't appear in the settings/app code, so I'll pin down what you mean — but…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "\"demo\" doesn't appear in the settings/app code, so I'll pin down what you mean — but first let me fix the Stories avatar (clear ask).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "61999ed8:theusersscreenshotshowstheoldbadgeoverlapmyinflowfixisntrepu",
+    "app": "Finished.",
+    "title": "User's screenshot shows the old badge overlap (my in-flow fix isn't republished yet),…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The user's screenshot shows the **old** badge overlap (my in-flow fix isn't republished yet), plus new asks.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "61999ed8:bodyscrollw768clientwnohorizontaloverflowattabletwidth",
+    "app": "Finished.",
+    "title": "BodyScrollW=768=clientW no horizontal overflow at tablet width.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "`bodyScrollW=768=clientW` → no horizontal overflow at tablet width.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "8007b232:goodtheuploaditselfworksbutifoundarealbuginmyclipositionalin",
+    "app": "Hallalu CRM",
+    "title": "Good — the upload itself works, but I found a real bug in my CLI: positional includes…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Good — the upload itself works, but I found a real bug in my CLI: `positional` includes flag *values*, so `--label \"Dashboard\"` made \"Dashboard\", \"before\", and the URL get treated as filenames.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8007b232",
+    "found": "2026-08-26"
   }
 ]
