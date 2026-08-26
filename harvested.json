@@ -2506,5 +2506,41 @@
     "status": "unverified",
     "session": "a15dff44",
     "found": "2026-08-26"
+  },
+  {
+    "key": "1363a864:byraceandethnicitynotworkingillredeploythetopnavchangeandver",
+    "app": "Hallalu CRM",
+    "title": "\"by race and ethnicity not working\" — I'll redeploy the topnav change and verify the…",
+    "category": "race",
+    "severity": "medium",
+    "symptom": "**\"by race and ethnicity not working\"** — I'll redeploy the topnav change and verify the lens actually switches content, fixing any break.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1363a864",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "1363a864:thedurablefixmaketheinlinefallbackthecompletedatasetsoeveryt",
+    "app": "Hallalu CRM",
+    "title": "Durable fix: make the inline fallback the complete dataset so everything works even…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The durable fix: make the inline fallback the **complete** dataset so everything works even without the fetch.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1363a864",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "1363a864:thecurrentblackentryonlycountsthe2mmiddlepassagedeathsplusly",
+    "app": "Hallalu CRM",
+    "title": "Current Black entry only counts the 2M Middle Passage deaths plus lynchings — it…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The current Black entry only counts the ~2M Middle Passage deaths plus lynchings — it doesn't reflect the millions who died in capture, forced marches, and enslavement itself.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1363a864",
+    "found": "2026-08-26"
   }
 ]
