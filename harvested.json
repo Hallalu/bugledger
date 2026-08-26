@@ -2254,5 +2254,17 @@
     "status": "unverified",
     "session": "61999ed8",
     "found": "2026-08-26"
+  },
+  {
+    "key": "61999ed8:twoprominentstatsinmydeckarewrongandtwoagentsfailedonasessio",
+    "app": "Listing Lab Pro",
+    "title": "Two prominent stats in my deck are wrong, and two agents failed on a session limit (now…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "Two prominent stats in my deck are **wrong**, and two agents failed on a session limit (now reset with the date rollover), so I'll verify their clusters myself.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-26"
   }
 ]

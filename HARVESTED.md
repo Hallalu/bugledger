@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-188 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+189 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (92)
 
@@ -173,8 +173,9 @@
 - [ ] `low` `ui` (2026-08-17, #b6ac4f45) — Proper fix (I'll batch it into the deploy) I'll rewrite mintToken() to drop the fragile…
 - [ ] `low` `other` (2026-08-17, #52294be6) — One ordering bug to fix — the client script reads the data element, but I placed the…
 
-## Listing Lab Pro (10)
+## Listing Lab Pro (11)
 
+- [ ] `high` `auth` (2026-08-26, #61999ed8) — Two prominent stats in my deck are wrong, and two agents failed on a session limit (now…
 - [ ] `medium` `logic` (2026-08-18, #00ae642b) — Two residual leaks would still produce wrong results — let me fix them.
 - [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a CSS bug — display:grid is overriding the hidden attribute so both dialogs show.
 - [ ] `low` `other` (2026-08-10, #2d2c2119) — It needs the LSTM core variants which I didn't copy:
