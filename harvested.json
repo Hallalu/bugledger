@@ -2266,5 +2266,77 @@
     "status": "unverified",
     "session": "61999ed8",
     "found": "2026-08-26"
+  },
+  {
+    "key": "0c4410c7:thedarksetfailedonechecklikelythelightnessbandletmeseeitfull",
+    "app": "Hallalu CRM",
+    "title": "Dark set failed one check (likely the lightness band) — let me see it fully and fix:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The dark set failed one check (likely the lightness band) — let me see it fully and fix:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0c4410c7",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "61999ed8:livedeckconfirmed17slidesnostalenumbersthecorrected58statcou",
+    "app": "Finished.",
+    "title": "Live deck confirmed: 17 slides, no stale numbers, the corrected 58% stat (count-up…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Live deck confirmed: 17 slides, **no stale numbers**, the corrected **58%** stat (count-up works), the fixed Amie line (\"still no Android in 2026\"), and the interactive slider computes correctly (50k…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "61999ed8:thevw0isthesamejssandboxquirkscrollw340panewidthnorealoverfl",
+    "app": "Finished.",
+    "title": "Vw:0 is the same JS-sandbox quirk (scrollW=340 = pane width, no real overflow).",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The `vw:0` is the same JS-sandbox quirk (scrollW=340 = pane width, no real overflow).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61999ed8",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "88a3d192:onebugtofixthevoiceprefillobjecthasnoidbuteditsubtreatsanyar",
+    "app": "Finished.",
+    "title": "One bug to fix: the voice-prefill object has no id, but editSub treats any argument as…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One bug to fix: the voice-prefill object has no `id`, but `editSub` treats any argument as an edit.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "88a3d192:aruleyoucantwritedownisntarule",
+    "app": "Finished.",
+    "title": "A rule you can't write down isn't a rule.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "A rule you can't write down isn't a rule.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-26"
+  },
+  {
+    "key": "88a3d192:mostideasfailhereandthatsthefeatureacheapnointhebacktesterbe",
+    "app": "Finished.",
+    "title": "Most ideas fail here, and that's the feature: a cheap \"no\" in the backtester beats an…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Most ideas fail here, and that's the feature: a cheap \"no\" in the backtester beats an expensive one in your account.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-26"
   }
 ]

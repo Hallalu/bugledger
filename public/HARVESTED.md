@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-189 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+195 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (92)
+## Hallalu CRM (93)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -96,8 +96,9 @@
 - [ ] `low` `other` (2026-08-25, #de0b0aae) — It doesn't leverage the scanner's new confidence tags.
 - [ ] `low` `other` (2026-08-25, #0c4410c7) — One command from you fixes it: Say the word after that runs and I'll finish it — enable…
 - [ ] `low` `other` (2026-08-26, #8007b232) — Good — the upload itself works, but I found a real bug in my CLI: positional includes…
+- [ ] `low` `other` (2026-08-26, #0c4410c7) — Dark set failed one check (likely the lightness band) — let me see it fully and fix:
 
-## Finished. (48)
+## Finished. (53)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -147,6 +148,11 @@
 - [ ] `low` `other` (2026-08-26, #61999ed8) — User's screenshot shows the old badge overlap (my in-flow fix isn't republished yet),…
 - [ ] `low` `ui` (2026-08-26, #61999ed8) — BodyScrollW=768=clientW no horizontal overflow at tablet width.
 - [ ] `low` `other` (2026-08-26, #61999ed8) — Badge fix was already visually confirmed at 676px earlier, and structural checks pass.
+- [ ] `low` `other` (2026-08-26, #61999ed8) — Live deck confirmed: 17 slides, no stale numbers, the corrected 58% stat (count-up…
+- [ ] `low` `ui` (2026-08-26, #61999ed8) — Vw:0 is the same JS-sandbox quirk (scrollW=340 = pane width, no real overflow).
+- [ ] `low` `other` (2026-08-26, #88a3d192) — One bug to fix: the voice-prefill object has no id, but editSub treats any argument as…
+- [ ] `low` `other` (2026-08-26, #88a3d192) — A rule you can't write down isn't a rule.
+- [ ] `low` `other` (2026-08-26, #88a3d192) — Most ideas fail here, and that's the feature: a cheap "no" in the backtester beats an…
 
 ## Breadcrumb (22)
 
