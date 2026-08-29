@@ -2578,5 +2578,53 @@
     "status": "unverified",
     "session": "88a3d192",
     "found": "2026-08-29"
+  },
+  {
+    "key": "3814d650:sopaintallsowninnerhtmlwritesareobservedfirepaintallagainwri",
+    "app": "Finished.",
+    "title": "- So paintAll's own innerHTML writes are observed fire paintAll again write again…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- So `paintAll`'s own `innerHTML` writes are observed → fire `paintAll` again → write again → **infinite microtask loop** that pegs the main thread (no error, watchdog `setTimeout` never gets to run).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3814d650",
+    "found": "2026-08-29"
+  },
+  {
+    "key": "3814d650:thisisthebugletmeconfirmthetwocopiesareidenticalthencheckhow",
+    "app": "Finished.",
+    "title": "This is the bug. Let me confirm the two copies are identical, then check how the page…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**This is the bug.** Let me confirm the two copies are identical, then check how the page versions/deploys scripts.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3814d650",
+    "found": "2026-08-29"
+  },
+  {
+    "key": "85333044:foundthebugthenotetabsendskindnotebuttheserverandthewallrend",
+    "app": "Hallalu CRM",
+    "title": "Found the bug — the Note tab sends kind: \"note\", but the server (and the wall renderer)…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Found the bug — the Note tab sends `kind: \"note\"`, but the server (and the wall renderer) expect `kind: \"text\"`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "85333044",
+    "found": "2026-08-29"
+  },
+  {
+    "key": "85333044:honestyfromverificationifoundandfixedonerealbugmidtestwritte",
+    "app": "Hallalu CRM",
+    "title": "Honesty from verification: - I found and fixed one real bug mid-test — written Note…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Honesty from verification:** - I found and fixed one real bug mid-test — written **Note** wishes were 400ing (the tab sent `kind:\"note\"` but the API expects `\"text\"`); mapped it, redeployed, re-pro…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "85333044",
+    "found": "2026-08-29"
   }
 ]
