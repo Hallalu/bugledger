@@ -2542,5 +2542,17 @@
     "status": "unverified",
     "session": "1363a864",
     "found": "2026-08-26"
+  },
+  {
+    "key": "88a3d192:thedeploysilentlyfailedwranglervanishedfromnodemodulesanothe",
+    "app": "Finished.",
+    "title": "Deploy silently failed — wrangler vanished from nodemodules (another session may have…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The deploy silently failed — wrangler vanished from node_modules (another session may have pruned it).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-29"
   }
 ]
