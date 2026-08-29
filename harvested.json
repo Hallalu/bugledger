@@ -2626,5 +2626,17 @@
     "status": "unverified",
     "session": "85333044",
     "found": "2026-08-29"
+  },
+  {
+    "key": "85333044:bothfixesareliveandirereadeverypromptinthisthreadandcheckede",
+    "app": "Hallalu CRM",
+    "title": "Both fixes are live, and I re-read every prompt in this thread and checked each against…",
+    "category": "performance",
+    "severity": "low",
+    "symptom": "Both fixes are live, and I re-read every prompt in this thread and checked each against the live site (not memory).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "85333044",
+    "found": "2026-08-29"
   }
 ]
