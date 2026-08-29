@@ -2554,5 +2554,29 @@
     "status": "unverified",
     "session": "88a3d192",
     "found": "2026-08-29"
+  },
+  {
+    "key": "88a3d192:verifyingthefixontheexactscreenthatwasbroken",
+    "app": "Finished.",
+    "title": "Verifying the fix on the exact screen that was broken:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Verifying the fix on the exact screen that was broken:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-29"
+  },
+  {
+    "key": "88a3d192:verifiedthehonestwayrebuiltbothplatformswalkedthesamesetting",
+    "app": "Finished.",
+    "title": "Verified the honest way: rebuilt both platforms, walked the same Settings Analytics…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Verified the honest way: rebuilt both platforms, walked the same Settings → Analytics path that was broken, photographed it in a light theme *and* in Abba dark — screenshots are on the board's Screen…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "88a3d192",
+    "found": "2026-08-29"
   }
 ]

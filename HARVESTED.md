@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-213 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+215 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (96)
 
@@ -101,7 +101,7 @@
 - [ ] `low` `other` (2026-08-26, #1363a864) — Durable fix: make the inline fallback the complete dataset so everything works even…
 - [ ] `low` `other` (2026-08-26, #1363a864) — Current Black entry only counts the 2M Middle Passage deaths plus lynchings — it…
 
-## Finished. (68)
+## Finished. (70)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -171,6 +171,8 @@
 - [ ] `low` `other` (2026-08-26, #a15dff44) — Deploy isn't propagating — I need to fix that before any Aprizely change will show.
 - [ ] `low` `other` (2026-08-26, #a15dff44) — Payment sort-to-top works — a payment logged today jumps to the top with a "today"…
 - [ ] `low` `ui` (2026-08-26, #a15dff44) — Core problem — solved You weren't seeing updates because Cloudflare's edge cache was…
+- [ ] `low` `other` (2026-08-29, #88a3d192) — Verifying the fix on the exact screen that was broken:
+- [ ] `low` `other` (2026-08-29, #88a3d192) — Verified the honest way: rebuilt both platforms, walked the same Settings Analytics…
 
 ## Breadcrumb (22)
 
