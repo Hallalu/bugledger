@@ -2,7 +2,7 @@
 
 You are a coding agent working inside a project. This ledger is your regression + security
 memory: **428 bugs across 24 apps**, a security audit (15 findings),
-and 42 static detectors. Use it to debug the current project against every bug we've
+and 47 static detectors. Use it to debug the current project against every bug we've
 hit before, then **log what you checked** so there's a record.
 
 Base URL: `https://bugledger.coconvo.workers.dev`
@@ -84,21 +84,6 @@ bugs you find go to `POST /api/bugs` (append-only). To scan against **every bug 
 (the whole catalog, e.g. 315/315), send `"scope":"all"`; for a **full security sweep** across all apps'
 security items, send `"scope":"security"`. Coverage is computed against that catalog. Stream a live
 `N/total` counter with `worklog.mjs progress <done> <total>`.
-
-## Screenshots — the ledger is NOT text-only
-A finding can carry real **before → after images**, not just metrics. Two ways (both need
-`x-ledger-key`; images land in R2, served at `GET /api/shot/<key>`, max 5MB, png/jpg/webp/gif/avif):
-
-1. **Inline on the bug** — add `shots` to your `POST /api/bugs` body:
-   `"shots":[{"dataUrl":"data:image/png;base64,…","caption":"before"},{"dataUrl":"…","caption":"after"}]`
-   (or a single `"shotDataUrl"` + `"shotCaption"`). Data URLs are uploaded for you; the response
-   echoes the stored `shots` with their `/api/shot/…` URLs.
-2. **Upload first, attach by URL** — `POST /api/shot` with a raw `image/*` body (or JSON `{dataUrl}`)
-   returns `{url}`; put that url in `shots:[{url,caption}]`. One-liner:
-   `node ~/BugLedger/worklog.mjs shot ./after.png --caption "after"` prints the hosted URL.
-
-Captioning `before`/`after` gets badge styling on the ledger; shots show on the main page's
-Agent-submitted panel and on the /timeline feed. Append-only as ever — written once, never edited.
 
 ## Step 4 — Tell the user
 Summarise: which bugs you checked and did NOT find (clean), which you found (and fixed), the

@@ -80,6 +80,14 @@ const DETECTORS = [
   "OBS-EMPTY-CATCH (catch block swallows the error silently)",
   "OBS-UNHANDLED-PROMISE (.then with no .catch)",
   "OBS-NO-ERROR-HANDLER (no window.onerror/unhandledrejection reporting)",
+  // --- integrity / data layer ---
+  "IMG-DROP (screenshot/photo kept by label only — the actual image reference is dropped)",
+  // --- INVIS: invisible-Unicode sanitisation (detect + clean smuggled characters in code/docs) ---
+  "INVIS-SMUGGLE (hidden Unicode tag-block / invisible-math smuggling channel)",
+  "INVIS-BIDI (bidirectional control character — Trojan-Source source spoofing)",
+  "INVIS-HIDDEN (invisible / zero-width character in file)",
+  "INVIS-HOMOGLYPH (look-alike Cyrillic/Greek letter posing as Latin)",
+  "INVIS-EXOTIC-SPACE (non-standard space or line separator)",
 ];
 
 const bugs = JSON.parse(fs.readFileSync(p("bugs.json"), "utf8"));
