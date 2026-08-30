@@ -2674,5 +2674,41 @@
     "status": "unverified",
     "session": "1c5481ca",
     "found": "2026-08-30"
+  },
+  {
+    "key": "1c5481ca:therealfixhereisntasktheaihardervisionmodelsestimateposition",
+    "app": "Hallalu CRM",
+    "title": "Real fix here isn't \"ask the AI harder\": vision models estimate positions and drift,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The real fix here isn't \"ask the AI harder\": vision models estimate positions and drift, but the printed boxes are *right there in the pixels*.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1c5481ca",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "1c5481ca:measuredaftereverychange821meanplacementerror3worst",
+    "app": "Hallalu CRM",
+    "title": "Measured after every change: 82‰ 1‰ mean placement error, 3‰ worst.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Measured after every change**: 82‰ → **1‰ mean placement error, 3‰ worst**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1c5481ca",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "1c5481ca:tier3qeslegalsignaturesidverificationisnthonestlyreplicablea",
+    "app": "Hallalu CRM",
+    "title": "Tier 3 (QES legal signatures, ID verification) isn't honestly replicable and Fullfill…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Tier 3 (QES legal signatures, ID verification) isn't honestly replicable and Fullfill won't pretend.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1c5481ca",
+    "found": "2026-08-30"
   }
 ]
