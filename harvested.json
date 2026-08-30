@@ -2854,5 +2854,41 @@
     "status": "unverified",
     "session": "acedd3e8",
     "found": "2026-08-30"
+  },
+  {
+    "key": "4324cbca:thisisastandardmoderunafocusedrenderingpaginationbugfixnotam",
+    "app": "Finished.",
+    "title": "This is a Standard-mode run — a focused rendering/pagination bug fix, not a…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "This is a **Standard-mode** run — a focused rendering/pagination bug fix, not a market-research task — so I'll compress the research phase and go straight to grounding in your actual code, then plan,…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "4324cbca",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "4324cbca:buticaughtarealregressiongoogledocsencodesbolditalicasspanst",
+    "app": "Finished.",
+    "title": "I caught a real regression: Google Docs encodes bold/italic as <span…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "But I caught a real regression: Google Docs encodes **bold/italic as `<span style=\"font-weight:700\">`**, and unwrapping spans drops that emphasis — you chose to *keep* bold/italic.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "4324cbca",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "8a626956:aligningbusinessfixesboththelegalflagandtheinconsistency",
+    "app": "Hallalu CRM",
+    "title": "Aligning Business fixes both the legal flag and the inconsistency.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Aligning Business fixes both the legal flag and the inconsistency.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8a626956",
+    "found": "2026-08-30"
   }
 ]
