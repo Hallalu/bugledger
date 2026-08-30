@@ -230,13 +230,17 @@ export default {
       const rawScope = str(body.scope, 40);
       const catMatch = /^category:([a-z-]+)$/.exec(rawScope);
       const wantCat = catMatch && CATEGORY_SET.has(catMatch[1]) ? catMatch[1] : null;
+      // "full" = the distinct union of every checkable item (bugs + audit findings + optimisers),
+      // deduped — one grand-total scope so a deep scan can confirm a single N/N (e.g. 560/560) that
+      // spans all phases at once, without the naive 428+67+117 double-count of security-category bugs.
       const scope = wantCat ? `category:${wantCat}`
-        : ["all", "security", "optimisers"].includes(rawScope) ? rawScope : "app";
+        : ["all", "security", "optimisers", "full"].includes(rawScope) ? rawScope : "app";
       const cat = await catalog(env, request);
       const appTitles = wantCat ? categoryTitles(cat, wantCat)
         : scope === "all" ? allTitles(cat)
         : scope === "security" ? securityTitles(cat)
         : scope === "optimisers" ? optimiserTitles(cat)
+        : scope === "full" ? fullTitles(cat)
         : ((cat.apps && cat.apps[rec.app]) ? cat.apps[rec.app].map((b) => b.title) : []);
       // map each reported title to its STRONGEST evidence, so we can weight coverage by inspection
       const repMap = new Map();
@@ -464,5 +468,14 @@ function securityTitles(cat) {
 function optimiserTitles(cat) {
   const m = new Map();
   for (const o of (cat.optimisers || [])) { const k = norm(o.title); if (!m.has(k)) m.set(k, o.title); }
+  return [...m.values()];
+}
+// the grand-total target: every distinct checkable item across bugs + security audit + optimisers,
+// deduped into one list. This is the honest whole (no double-count) — a deep scan confirms N/N here.
+function fullTitles(cat) {
+  const m = new Map();
+  for (const t of [...allTitles(cat), ...securityTitles(cat), ...optimiserTitles(cat)]) {
+    const k = norm(t); if (!m.has(k)) m.set(k, t);
+  }
   return [...m.values()];
 }
