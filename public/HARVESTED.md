@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-245 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+246 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (107)
 
@@ -217,7 +217,7 @@
 - [ ] `low` `other` (2026-08-30, #3814d650) — What actually makes bots trade well for the traders who succeed with them is rules that…
 - [ ] `low` `other` (2026-08-30, #3814d650) — Fail any retire it out loud.
 
-## Stitchhooky (14)
+## Stitchhooky (15)
 
 - [ ] `high` `crash` (2026-08-10, #236ae80d) — Boot crash (TDZ) — termKey read db while let db = load() was still initializing,…
 - [ ] `medium` `logic` (2026-08-17, #ea9a3232) — File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.
@@ -233,6 +233,7 @@
 - [ ] `low` `ui` (2026-08-30, #6739dab7) — That's the exact overflow from your screenshot, fixed.
 - [ ] `low` `other` (2026-08-30, #6739dab7) — - Nothing broke during the walk-through, so there was no new bug to log — everything…
 - [ ] `low` `other` (2026-08-30, #c73f3217) — - "Couldn't verify" ≠ "doesn't exist" — so I'm not cutting the feature.
+- [ ] `low` `ui` (2026-08-30, #c73f3217) — My stale-CSS hypothesis was wrong — the styles are applied (.gatewrap is grid, keypad…
 
 ## Listing Lab Pro (11)
 
