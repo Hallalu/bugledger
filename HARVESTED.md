@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-220 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+223 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (99)
 
@@ -218,6 +218,16 @@
 - [ ] `low` `other` (2026-08-25, #61999ed8) — DOM confirms the clip (block 45px, content 85px, title below the edge) — matching your…
 - [ ] `low` `other` (2026-08-25, #61999ed8) — Blank screenshots were a tall-viewport quirk — let me set a proper desktop viewport,…
 
+## Stitchhooky (7)
+
+- [ ] `high` `crash` (2026-08-10, #236ae80d) — Boot crash (TDZ) — termKey read db while let db = load() was still initializing,…
+- [ ] `medium` `logic` (2026-08-17, #ea9a3232) — File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.
+- [ ] `low` `other` (2026-08-10, #236ae80d) — Anything truly unreadable becomes a special cell that holds the instruction…
+- [ ] `low` `other` (2026-08-10, #236ae80d) — Blank-screen you'd have seen on v3's first open.
+- [ ] `low` `ui` (2026-08-30, #1c5481ca) — The honest process was "recreate this layout as a new fillable PDF," not "convert/scan…
+- [ ] `low` `other` (2026-08-30, #1c5481ca) — Third accuracy check — the one that actually matters: does typing into it work This is…
+- [ ] `low` `other` (2026-08-30, #1c5481ca) — Fixing the calendar-icon glyph fallback in the original form itself, since I flagged it…
+
 ## Budget LevelUp (6)
 
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
@@ -234,13 +244,6 @@
 - [ ] `low` `other` (2026-08-10, #3e50ec98) — - The sudo du one-liner above will reveal the 100 GB of root-owned space I couldn't…
 - [ ] `low` `other` (2026-08-16, #3e50ec98) — Sudo scan is the bigger prize and doesn't risk anything.
 - [ ] `low` `other` (2026-08-16, #3e50ec98) — This is more "periodic maintenance" than a one-time fix.
-
-## Stitchhooky (4)
-
-- [ ] `high` `crash` (2026-08-10, #236ae80d) — Boot crash (TDZ) — termKey read db while let db = load() was still initializing,…
-- [ ] `medium` `logic` (2026-08-17, #ea9a3232) — File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.
-- [ ] `low` `other` (2026-08-10, #236ae80d) — Anything truly unreadable becomes a special cell that holds the instruction…
-- [ ] `low` `other` (2026-08-10, #236ae80d) — Blank-screen you'd have seen on v3's first open.
 
 ## Hello Baby (1)
 

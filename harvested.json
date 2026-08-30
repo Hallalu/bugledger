@@ -2638,5 +2638,41 @@
     "status": "unverified",
     "session": "85333044",
     "found": "2026-08-29"
+  },
+  {
+    "key": "1c5481ca:sothehonestprocesswasrecreatethislayoutasanewfillablepdfnotc",
+    "app": "Stitchhooky",
+    "title": "The honest process was \"recreate this layout as a new fillable PDF,\" not \"convert/scan…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "So the honest process was \"recreate this layout as a new fillable PDF,\" not \"convert/scan an existing doc.\" I'll map your requested categories onto what actually happened, and flag the one that doesn…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1c5481ca",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "1c5481ca:thirdaccuracychecktheonethatactuallymattersdoestypingintoitw",
+    "app": "Stitchhooky",
+    "title": "Third accuracy check — the one that actually matters: does typing into it work This is…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Third accuracy check — the one that actually matters: does typing into it work** This is the step I skipped in my first pass, and it's the one that would have caught a real bug.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1c5481ca",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "1c5481ca:alsofixingthecalendariconglyphfallbackintheoriginalformitsel",
+    "app": "Stitchhooky",
+    "title": "Fixing the calendar-icon glyph fallback in the original form itself, since I flagged it…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Also fixing the calendar-icon glyph fallback in the original form itself, since I flagged it as a real gap — a proper vector icon instead of a font glyph that silently fails.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1c5481ca",
+    "found": "2026-08-30"
   }
 ]
