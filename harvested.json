@@ -2842,5 +2842,17 @@
     "status": "unverified",
     "session": "acedd3e8",
     "found": "2026-08-30"
+  },
+  {
+    "key": "acedd3e8:wantmetoresetittoyournormalviewormoveontothenativelabsheetpa",
+    "app": "Finished.",
+    "title": "Want me to reset it to your normal view, or move on to the native LabSheet parity so…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Want me to reset it to your normal view, or move on to the **native LabSheet parity** so iPhone/Mac get this same Lab + modes + scan?",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acedd3e8",
+    "found": "2026-08-30"
   }
 ]
