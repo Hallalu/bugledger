@@ -2950,5 +2950,77 @@
     "status": "unverified",
     "session": "c73f3217",
     "found": "2026-08-30"
+  },
+  {
+    "key": "2f772364:testingthemarkdownrendererlocallytofindthebug",
+    "app": "Hallalu CRM",
+    "title": "Testing the markdown renderer locally to find the bug.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Testing the markdown renderer locally to find the bug.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2f772364",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "2f772364:rendereroutputiscompletelocallysothebugisinthepagenottherend",
+    "app": "Hallalu CRM",
+    "title": "Renderer output is complete locally — so the bug is in the page, not the renderer.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Renderer output is complete locally — so the bug is in the page, not the renderer.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2f772364",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "2f772364:dashboardlivewiththeswitcherandappearancebuttonmountedconsol",
+    "app": "Hallalu CRM",
+    "title": "Dashboard live with the switcher and Appearance button mounted (console error is the…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Dashboard live with the switcher and Appearance button mounted (console error is the stale pre-fix one).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2f772364",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "847a2e5f:onevisualbugthelegendcolordotsaregraybecauseireferencedcssva",
+    "app": "Hallalu CRM",
+    "title": "One visual bug: the legend color dots are gray because I referenced CSS vars…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "One visual bug: the legend color dots are gray because I referenced CSS vars `--candidate/--defensive/--known` but defined `--cand/--def/--known`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "847a2e5f",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "847a2e5f:myshippedentrysclaimthatitdoesnotexistinthecodeisflatwrong",
+    "app": "Hallalu CRM",
+    "title": "My shipped entry's claim that it \"does not exist in the code\" is flat wrong.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "My shipped entry's claim that it \"does not exist in the code\" is flat wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "847a2e5f",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "c73f3217:staleshellissueisnowgenuinelyfixedprovenbymyownmarkerheadera",
+    "app": "Stitchhooky",
+    "title": "Stale-shell issue is now genuinely fixed (proven by my own marker header) and the ring…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Stale-shell issue is now genuinely fixed (proven by my own marker header) and the ring reads correctly.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-08-30"
   }
 ]
