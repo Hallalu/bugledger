@@ -21,8 +21,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+import { createRequire } from "node:module";
 
 const LEDGER = path.dirname(fileURLToPath(import.meta.url));
+// Shared sanitizer engine — SAME rules as the /sanitize tool and the ledger API,
+// so the scanner, the web tool and the server agree on what counts as hidden.
+const require = createRequire(import.meta.url);
+const Sanitize = require(path.join(LEDGER, "public", "sanitize.js"));
 const argv = process.argv.slice(2);
 const flags = new Set(argv.filter(a => a.startsWith("--")));
 const positional = argv.filter(a => !a.startsWith("--"));
@@ -356,6 +361,50 @@ perFile("OBS-UNHANDLED-PROMISE","medium","observability","Promise chain with no 
     return out;
   });
 
+// --- invisible / hidden Unicode (shared engine — identical rules to the /sanitize tool) ---
+// Detection is deterministic (a byte is or isn't there), so these are high-confidence.
+// The engine marks legitimate emoji ZWJ/VS and Persian/Arabic/Indic joiners as "preserve";
+// we drop those, so real multilingual text and emoji are never flagged.
+let _invKey = null, _invRes = null;
+function invAnalyze(content) {
+  if (content === _invKey) return _invRes;
+  _invKey = content;
+  try { _invRes = Sanitize.analyze(content); } catch { _invRes = { findings: [] }; }
+  return _invRes;
+}
+function invHits(content, wanted) {
+  const res = invAnalyze(content), out = [];
+  for (const f of res.findings) {
+    if (f.action === "preserve") continue;            // legit emoji / multilingual
+    if (!wanted.has(f.category)) continue;
+    const lineStart = content.lastIndexOf("\n", f.index - 1) + 1;
+    let lineEnd = content.indexOf("\n", f.index); if (lineEnd < 0) lineEnd = content.length;
+    const line = content.slice(0, f.index).split("\n").length;
+    const raw = content.slice(lineStart, lineEnd);
+    const col = f.index - lineStart, adv = f.cp > 0xffff ? 2 : 1;
+    const ctx = (raw.slice(Math.max(0, col - 20), col) + "‹" + f.chip + "›" + raw.slice(col + adv, col + adv + 20))
+      .replace(/\s+/g, " ").trim();
+    out.push({ line, excerpt: (f.hex + " " + f.name + " · " + ctx).slice(0, 150) });
+    if (out.length >= 25) break;                      // cap noise per file
+  }
+  return out;
+}
+perFile("INVIS-SMUGGLE", "high", "security", "Hidden Unicode smuggling channel (tag block / invisible math)",
+  "Strip U+E0000–E007F and U+2061–2064 — invisible to humans, decoded by LLMs; an invisible-prompt-injection / data-exfiltration vector. Run text through the Sanitizer before it is stored or fed to a model.",
+  (c) => invHits(c, new Set(["tag", "invisible-math"])));
+perFile("INVIS-BIDI", "high", "security", "Bidirectional control character in source (Trojan-Source class)",
+  "Remove RLO/LRO/embeddings/isolates from source — they let a human reviewer and the compiler see different logic (CVE-2021-42574). Legitimate RTL prose belongs in data, not code.",
+  (c, fp) => invHits(c, isCode(fp) ? new Set(["bidi-override", "bidi-format"]) : new Set(["bidi-override"])));
+perFile("INVIS-HIDDEN", "medium", "other", "Invisible / zero-width character in file",
+  "Zero-width, mid-text BOM, soft-hyphen, filler or control characters break diffs, search and string compares, and are a common AI/paste artefact. Normalise with the Sanitizer.",
+  (c) => invHits(c, new Set(["zero-width", "bom", "invisible-blank", "annotation", "cgj", "soft-hyphen", "control"])));
+perFile("INVIS-HOMOGLYPH", "medium", "security", "Look-alike (Cyrillic/Greek) letter posing as Latin",
+  "A confusable character inside otherwise-Latin text enables identifier / URL / brand spoofing. Confirm it is intentional multilingual content, not a homoglyph attack.",
+  (c) => invHits(c, new Set(["homoglyph"])));
+perFile("INVIS-EXOTIC-SPACE", "low", "other", "Non-standard space or line separator",
+  "Non-breaking / narrow / ideographic spaces and U+2028/U+2029 look normal but diff differently, stop line-wrapping and confuse parsers. Normalise to a plain space / newline.",
+  (c) => invHits(c, new Set(["exotic-space", "line-sep"])));
+
 // ---------- precision layer: confidence + context-aware refinement ----------
 // Two problems this fixes: (1) heuristic detectors buried real findings under false positives
 // (esc()-wrapped innerHTML, noindex pages, already-sourced stats); (2) every finding read as
@@ -372,6 +421,7 @@ const HIGH_CONF = new Set([
   "SEO-NO-TITLE","SEO-NO-DESC","SEO-NO-OG","SEO-NO-VIEWPORT",
   "TEST-ONLY","TEST-SKIPPED","TEST-NONE","TEST-NO-CI",
   "PRIV-3P-TRACKER","PRIV-NO-POLICY","PRIV-NO-DELETE","PRIV-PII-IN-URL","CLAIM-PLACEHOLDER",
+  "INVIS-SMUGGLE","INVIS-BIDI","INVIS-HIDDEN","INVIS-HOMOGLYPH","INVIS-EXOTIC-SPACE",
 ]);
 // Everything else is a lead to confirm (XSS-INNERHTML, FIND-DEREF, DATE-TOISO, OBS-*, CLAIM-*, …).
 const confOf = (id) => HIGH_CONF.has(id) ? "high" : "review";
@@ -513,7 +563,16 @@ const byDet = {};
 for (const f of findings) (byDet[f.detector] ||= []).push(f);
 
 if (AS_JSON) {
-  console.log(JSON.stringify({ app:APP, target:TARGET, filesScanned:files.length, findings }, null, 2));
+  // per-family rollup so a caller (e.g. /deepscan) can surface each quality family — accessibility,
+  // privacy, claims, testing, seo, observability, performance, security … — on its own line instead
+  // of collapsing every detector into one "bugs" bucket.
+  const byCategory = {};
+  for (const f of findings) {
+    const c = (byCategory[f.category ||= "other"] ||= { total: 0, high: 0, detectors: {} });
+    c.total++; if (f.confidence === "high") c.high++;
+    c.detectors[f.detector] = (c.detectors[f.detector] || 0) + 1;
+  }
+  console.log(JSON.stringify({ app:APP, target:TARGET, filesScanned:files.length, byCategory, findings }, null, 2));
 } else {
   const bar = "─".repeat(60);
   console.log(`\n🔎 Bug Ledger scan — ${APP}`);

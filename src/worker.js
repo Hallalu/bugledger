@@ -2,6 +2,12 @@
 // Static assets (index.html, data*.js, bugs.json, AGENT.md, llms.txt, …) are served
 // by the ASSETS binding. Only /api/* is handled here.
 
+// Shared sanitizer engine (same rules as the /sanitize tool + scan.mjs). Every free-text
+// field written to the append-only ledger is cleaned of hidden / AI-inserted / smuggled
+// Unicode first, so the ledger itself never stores an invisible payload. The "safe" preset
+// keeps emoji and multilingual text intact.
+import Sanitize from "../public/sanitize.js";
+
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
   "access-control-allow-origin": "*",
@@ -20,6 +26,13 @@ const str = (v, max) => (typeof v === "string" ? v : v == null ? "" : String(v))
 const num = (v) => (Number.isFinite(+v) ? Math.trunc(+v) : 0);
 const arr = (v, max, mapper) => (Array.isArray(v) ? v.slice(0, max).map(mapper) : []);
 const norm = (t) => String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+// like str(), but first strips hidden / AI-inserted / smuggled Unicode (safe preset keeps
+// emoji + multilingual). Use for human/agent free-text so the append-only ledger stays clean.
+const cleanStr = (v, max) => {
+  const s = typeof v === "string" ? v : v == null ? "" : String(v);
+  try { return (Sanitize.hasSuspect(s) ? Sanitize.clean(s, { preset: "safe" }) : s).slice(0, max); }
+  catch { return s.slice(0, max); }
+};
 
 // ---- evidence dimension: HOW was a check verified, not just whether it was listed ----
 // Ranked strongest→weakest so a duplicate report keeps its best evidence. "verified" = the
@@ -208,13 +221,20 @@ export default {
         security_findings: JSON.stringify(arr(body.securityFindings, 100, (x) => ({
           severity: str(x && x.severity, 12), title: str(x && x.title, 200), file: str(x && x.file, 200),
         }))),
-        notes: str(body.notes, 2000),
+        notes: cleanStr(body.notes, 2000),
       };
       // server-verified coverage: match reported titles against the app catalog — or the WHOLE
-      // catalog (all apps) when scope:"all", so a full scan is confirmed N/315.
-      const scope = ["all", "security", "optimisers"].includes(body.scope) ? body.scope : "app";
+      // catalog (all apps) when scope:"all", so a full scan is confirmed N/315. Beyond the three
+      // macro scopes we also accept a per-FAMILY scope "category:<name>" (e.g. category:accessibility)
+      // so quality families that used to be buried inside the bug scan each get their own N/N line.
+      const rawScope = str(body.scope, 40);
+      const catMatch = /^category:([a-z-]+)$/.exec(rawScope);
+      const wantCat = catMatch && CATEGORY_SET.has(catMatch[1]) ? catMatch[1] : null;
+      const scope = wantCat ? `category:${wantCat}`
+        : ["all", "security", "optimisers"].includes(rawScope) ? rawScope : "app";
       const cat = await catalog(env, request);
-      const appTitles = scope === "all" ? allTitles(cat)
+      const appTitles = wantCat ? categoryTitles(cat, wantCat)
+        : scope === "all" ? allTitles(cat)
         : scope === "security" ? securityTitles(cat)
         : scope === "optimisers" ? optimiserTitles(cat)
         : ((cat.apps && cat.apps[rec.app]) ? cat.apps[rec.app].map((b) => b.title) : []);
@@ -298,18 +318,18 @@ export default {
           return json({ ok: false, error: "session already finished — start a new one" }, 409);
         const started = existing ? existing.started : now;
         // identity is set once at creation and never overwritten on update (append-only integrity)
-        const app = existing ? existing.app : str(body.app, 80);
-        const project = existing ? existing.project : str(body.project, 200);
-        const title = existing ? existing.title : str(body.title, 200);
+        const app = existing ? existing.app : cleanStr(body.app, 80);
+        const project = existing ? existing.project : cleanStr(body.project, 200);
+        const title = existing ? existing.title : cleanStr(body.title, 200);
         const agent = existing ? existing.agent : str(body.agent || "claude-code", 60);
         await env.DB.prepare(
           `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note,prog_done,prog_total,prog_label)
            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
            ON CONFLICT(id) DO UPDATE SET updated=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?,prog_done=?,prog_total=?,prog_label=?`
         ).bind(
-          id, started, now, app, project, title, agent, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500),
+          id, started, now, app, project, title, agent, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, 500),
           prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null,
-          now, status, str(body.current, 300), JSON.stringify(tasks), done, tasks.length, str(body.note, 500),
+          now, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, 500),
           prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null
         ).run();
         return json({ ok: true, id, url: "https://bugledger.coconvo.workers.dev/live", done, total: tasks.length });
@@ -387,9 +407,9 @@ export default {
         await env.DB.prepare(
           `INSERT INTO submitted (id,ts,app,project,kind,title,category,severity,symptom,fix,file,submitted_by,shots)
            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`
-        ).bind(id, ts, str(body.app, 80), str(body.project, 200), kind, str(body.title, 200),
+        ).bind(id, ts, cleanStr(body.app, 80), cleanStr(body.project, 200), kind, cleanStr(body.title, 200),
                str(body.category || "other", 20), str(body.severity || "medium", 12),
-               str(body.symptom, 500), str(body.fix, 500), str(body.file, 200), str(body.submittedBy || "claude-code", 60),
+               cleanStr(body.symptom, 500), cleanStr(body.fix, 500), cleanStr(body.file, 200), str(body.submittedBy || "claude-code", 60),
                shots.length ? JSON.stringify(shots) : null).run();
         return json({ ok: true, id, app: str(body.app, 80), title: str(body.title, 200), shots });
       } catch (e) { return writeErr(e); }
@@ -411,6 +431,19 @@ function mapSession(r) {
     tasks: safeParse(r.tasks, []), done: r.done_count, total: r.total_count, note: r.note,
     progress: r.prog_total ? { done: r.prog_done || 0, total: r.prog_total, label: r.prog_label || "" } : null,
   };
+}
+// the bug/quality families the ledger tracks — anything here can be scoped as "category:<name>"
+// for its own server-verified N/N coverage line (a per-family view of the full catalog).
+const CATEGORY_SET = new Set([
+  "security", "data-loss", "crash", "auth", "sync", "race", "logic", "performance",
+  "ui", "other", "privacy", "claims", "accessibility", "observability", "testing", "seo",
+]);
+// every distinct bug title in ONE family across all apps (deduped) — a family-scoped target
+function categoryTitles(cat, category) {
+  const m = new Map();
+  for (const app of Object.keys(cat.apps || {}))
+    for (const b of cat.apps[app]) if (b.category === category) { const k = norm(b.title); if (!m.has(k)) m.set(k, b.title); }
+  return [...m.values()];
 }
 // every distinct bug title across ALL apps (deduped) — the full-catalog target
 function allTitles(cat) {
