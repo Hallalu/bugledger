@@ -2890,5 +2890,53 @@
     "status": "unverified",
     "session": "8a626956",
     "found": "2026-08-30"
+  },
+  {
+    "key": "6739dab7:thatstheexactoverflowfromyourscreenshotfixed",
+    "app": "Stitchhooky",
+    "title": "That's the exact overflow from your screenshot, fixed.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "That's the exact overflow from your screenshot, fixed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6739dab7",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "6739dab7:nothingbrokeduringthewalkthroughsotherewasnonewbugtologevery",
+    "app": "Stitchhooky",
+    "title": "- Nothing broke during the walk-through, so there was no new bug to log — everything…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- Nothing broke during the walk-through, so there was no new bug to log — everything shipped is working.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6739dab7",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "c73f3217:boundaryyourerightinsideoneframeandwrongoutsideitstridelengt",
+    "app": "Stitchhooky",
+    "title": "- BOUNDARY — you're right inside one frame and wrong outside it: stride length is…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- **BOUNDARY — you're right inside one frame and wrong outside it:** stride length is driven by **height × gait × speed**, not by profession.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-08-30"
+  },
+  {
+    "key": "c73f3217:couldntverifydoesntexistsoimnotcuttingthefeature",
+    "app": "Stitchhooky",
+    "title": "- \"Couldn't verify\" ≠ \"doesn't exist\" — so I'm not cutting the feature.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **\"Couldn't verify\" ≠ \"doesn't exist\"** — so I'm not cutting the feature.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-08-30"
   }
 ]
