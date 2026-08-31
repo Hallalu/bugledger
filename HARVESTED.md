@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-255 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+256 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (112)
 
@@ -222,10 +222,11 @@
 - [ ] `low` `other` (2026-08-30, #3814d650) — What actually makes bots trade well for the traders who succeed with them is rules that…
 - [ ] `low` `other` (2026-08-30, #3814d650) — Fail any retire it out loud.
 
-## Stitchhooky (19)
+## Stitchhooky (20)
 
 - [ ] `high` `crash` (2026-08-10, #236ae80d) — Boot crash (TDZ) — termKey read db while let db = load() was still initializing,…
 - [ ] `high` `sync` (2026-08-31, #c73f3217) — Sync was silently dead. Swift's synthesised Codable init throws on any missing key — it…
+- [ ] `high` `crash` (2026-08-31, #c73f3217) — Worst produced no crash and no error message — Swift Codable threw on a missing key,…
 - [ ] `medium` `logic` (2026-08-17, #ea9a3232) — File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.
 - [ ] `medium` `logic` (2026-08-30, #c73f3217) — - BOUNDARY — you're right inside one frame and wrong outside it: stride length is…
 - [ ] `medium` `logic` (2026-08-31, #c73f3217) — Two problems, and my assert fired after the write — wrong order.

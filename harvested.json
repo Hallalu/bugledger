@@ -3058,5 +3058,17 @@
     "status": "unverified",
     "session": "c73f3217",
     "found": "2026-08-31"
+  },
+  {
+    "key": "c73f3217:theworstproducednocrashandnoerrormessageswiftcodablethrewona",
+    "app": "Stitchhooky",
+    "title": "Worst produced no crash and no error message — Swift Codable threw on a missing key,…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "The worst produced no crash and no error message — Swift `Codable` threw on a missing key, `pull()` swallowed it, and sync just quietly did nothing while the server held real data.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-08-31"
   }
 ]
