@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-252 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+255 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (112)
 
@@ -222,11 +222,13 @@
 - [ ] `low` `other` (2026-08-30, #3814d650) — What actually makes bots trade well for the traders who succeed with them is rules that…
 - [ ] `low` `other` (2026-08-30, #3814d650) — Fail any retire it out loud.
 
-## Stitchhooky (16)
+## Stitchhooky (19)
 
 - [ ] `high` `crash` (2026-08-10, #236ae80d) — Boot crash (TDZ) — termKey read db while let db = load() was still initializing,…
+- [ ] `high` `sync` (2026-08-31, #c73f3217) — Sync was silently dead. Swift's synthesised Codable init throws on any missing key — it…
 - [ ] `medium` `logic` (2026-08-17, #ea9a3232) — File is UTF-8 but the server isn't declaring it, so the browser guesses wrong.
 - [ ] `medium` `logic` (2026-08-30, #c73f3217) — - BOUNDARY — you're right inside one frame and wrong outside it: stride length is…
+- [ ] `medium` `logic` (2026-08-31, #c73f3217) — Two problems, and my assert fired after the write — wrong order.
 - [ ] `low` `other` (2026-08-10, #236ae80d) — Anything truly unreadable becomes a special cell that holds the instruction…
 - [ ] `low` `other` (2026-08-10, #236ae80d) — Blank-screen you'd have seen on v3's first open.
 - [ ] `low` `ui` (2026-08-30, #1c5481ca) — The honest process was "recreate this layout as a new fillable PDF," not "convert/scan…
@@ -240,6 +242,7 @@
 - [ ] `low` `other` (2026-08-30, #c73f3217) — - "Couldn't verify" ≠ "doesn't exist" — so I'm not cutting the feature.
 - [ ] `low` `ui` (2026-08-30, #c73f3217) — My stale-CSS hypothesis was wrong — the styles are applied (.gatewrap is grid, keypad…
 - [ ] `low` `other` (2026-08-30, #c73f3217) — Stale-shell issue is now genuinely fixed (proven by my own marker header) and the ring…
+- [ ] `low` `other` (2026-08-31, #c73f3217) — A web-written document failed to decode, pull() swallowed the error, and the phone…
 
 ## Listing Lab Pro (11)
 

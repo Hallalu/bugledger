@@ -3022,5 +3022,41 @@
     "status": "unverified",
     "session": "c73f3217",
     "found": "2026-08-30"
+  },
+  {
+    "key": "c73f3217:syncwassilentlydeadswiftssynthesisedcodableinitthrowsonanymi",
+    "app": "Stitchhooky",
+    "title": "Sync was silently dead. Swift's synthesised Codable init throws on any missing key — it…",
+    "category": "sync",
+    "severity": "high",
+    "symptom": "Sync was silently dead.** Swift's synthesised `Codable` init throws on any missing key — it ignores property defaults.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-08-31"
+  },
+  {
+    "key": "c73f3217:awebwrittendocumentfailedtodecodepullswallowedtheerrorandthe",
+    "app": "Stitchhooky",
+    "title": "A web-written document failed to decode, pull() swallowed the error, and the phone…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "A web-written document failed to decode, `pull()` swallowed the error, and the phone showed an empty document while the server held real data.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-08-31"
+  },
+  {
+    "key": "c73f3217:twoproblemsandmyassertfiredafterthewritewrongorder",
+    "app": "Stitchhooky",
+    "title": "Two problems, and my assert fired after the write — wrong order.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Two problems, and my assert fired *after* the write — wrong order.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-08-31"
   }
 ]
