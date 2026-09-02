@@ -3070,5 +3070,65 @@
     "status": "unverified",
     "session": "c73f3217",
     "found": "2026-08-31"
+  },
+  {
+    "key": "a5a97e71:gitfilterrepoisntinstalledillfetchthesinglefilescriptcleaner",
+    "app": "Hallalu CRM",
+    "title": "- git-filter-repo isn't installed — I'll fetch the single-file script (cleaner and…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- `git-filter-repo` isn't installed — I'll fetch the single-file script (cleaner and safer than deprecated `filter-branch`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a5a97e71",
+    "found": "2026-09-02"
+  },
+  {
+    "key": "a5a97e71:ideliberatelydidntrerewritethemthatwouldrewritecommitsalives",
+    "app": "Hallalu CRM",
+    "title": "Deliberately didn't re-rewrite them — that would rewrite commits a live session is…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "I deliberately didn't re-rewrite them — that would rewrite commits a live session is mid-work on and risk its uncommitted changes, and it won't stick while that session keeps committing.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "a5a97e71",
+    "found": "2026-09-02"
+  },
+  {
+    "key": "c73f3217:therealfailurethenativeappdisplayedthedevicespedometercountb",
+    "app": "Stitchhooky",
+    "title": "Real failure: the native app displayed the device's pedometer count but never persisted…",
+    "category": "sync",
+    "severity": "high",
+    "symptom": "The real failure: the native app **displayed** the device's pedometer count but **never persisted it** — so it never reached your goal, your coins, your badges, the widget, or sync.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-09-02"
+  },
+  {
+    "key": "c73f3217:stillopentheapplewatchtargetnowatchosruntimethedownloadfaile",
+    "app": "Stitchhooky",
+    "title": "Still open: the Apple Watch target (no watchOS runtime — the download failed twice),…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "Still open: the **Apple Watch target** (no watchOS runtime — the download failed twice), and the **research lanes** that died on your session rate limit, including the unanswered question of whether …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-09-02"
+  },
+  {
+    "key": "c73f3217:twothingsletmefixthekeypadfirstsincehardtopressisarealusabil",
+    "app": "Stitchhooky",
+    "title": "Two things — let me fix the keypad first since \"hard to press\" is a real usability…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two things — let me fix the keypad first since \"hard to press\" is a real usability failure.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-09-02"
   }
 ]
