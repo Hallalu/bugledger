@@ -3130,5 +3130,41 @@
     "status": "unverified",
     "session": "c73f3217",
     "found": "2026-09-02"
+  },
+  {
+    "key": "c73f3217:whatwasactuallywrongthreefaultseachmeasured1",
+    "app": "Stitchhooky",
+    "title": "What was actually wrong (three faults, each measured) 1.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "## What was actually wrong (three faults, each measured) **1.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-09-02"
+  },
+  {
+    "key": "c73f3217:thewrappermeasuredthewrongthingitspannedthewholecardnottheri",
+    "app": "Stitchhooky",
+    "title": "Wrapper measured the wrong thing. It spanned the whole card, not the ring — so the…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The wrapper measured the wrong thing.** It spanned the whole *card*, not the ring — so the label box was wider than the circle, **and** the container-query unit measured 328 px instead of 264.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c73f3217",
+    "found": "2026-09-02"
+  },
+  {
+    "key": "cc86f31f:preshipauditthecardfixtouches43rulesappwidesoletmeconfirmitd",
+    "app": "Hallalu CRM",
+    "title": "Pre-ship audit — the --card fix touches 43 rules app-wide, so let me confirm it didn't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Pre-ship audit — the `--card` fix touches 43 rules app-wide, so let me confirm it didn't regress anything else:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc86f31f",
+    "found": "2026-09-02"
   }
 ]
