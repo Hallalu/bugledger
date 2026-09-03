@@ -154,6 +154,85 @@ export default {
       } catch (e) { return writeErr(e); }
     }
 
+    // ---- /story/:id : the itemised scan story (served by report.html, which reads the path) ----
+    if (pathname.startsWith("/story/") && (request.method === "GET" || request.method === "HEAD")) {
+      const res = await env.ASSETS.fetch(new Request(new URL("/report", request.url), { method: "GET" }));
+      return new Response(request.method === "HEAD" ? null : res.body, { status: res.status, headers: res.headers });
+    }
+
+    // ---- POST /api/session/event : append narrative events to a live session's story ----
+    // Body: { sessionId, events:[{kind,phase,severity,status,category,confidence,verifiedBy,title,detail,
+    //         impact,fix,file,ref,before,after,meta,seq}] }  (or a single event with sessionId on it).
+    // Append-only: every event is immutable once written; a later "fixed" event references the
+    // earlier "found" event by id instead of editing it.
+    if (pathname === "/api/session/event" && request.method === "POST") {
+      if (env.LEDGER_WRITE_TOKEN && request.headers.get("x-ledger-key") !== env.LEDGER_WRITE_TOKEN)
+        return json({ ok: false, error: "unauthorized" }, 401);
+      let body;
+      try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
+      const sessionId = str(body && body.sessionId, 60);
+      if (!sessionId) return json({ ok: false, error: "sessionId required" }, 400);
+      const list = Array.isArray(body.events) ? body.events.slice(0, 50) : [body];
+      try {
+        const sess = await env.DB.prepare("SELECT id FROM sessions WHERE id = ?").bind(sessionId).first();
+        if (!sess) return json({ ok: false, error: "session not found — run worklog.mjs start first" }, 404);
+        const now = Date.now(), ids = [];
+        const stmts = [];
+        list.forEach((e, i) => {
+          if (!e) return;
+          const kind = EVENT_KINDS.has(e.kind) ? e.kind : "say";
+          const id = crypto.randomUUID(); ids.push(id);
+          stmts.push(env.DB.prepare(
+            `INSERT INTO session_events (id,session_id,ts,seq,kind,phase,severity,status,category,confidence,verified_by,title,detail,impact,fix,file,ref,before_v,after_v,meta)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+          ).bind(id, sessionId, now + i, num(e.seq) || null, kind, cleanStr(e.phase, 120),
+            normSev(e.severity), normStatus(e.status), str(e.category, 30) || null,
+            e.confidence === "high" || e.confidence === "review" ? e.confidence : null,
+            e.verifiedBy ? normVer(e.verifiedBy) : null,
+            cleanStr(e.title, 200), cleanStr(e.detail, 1200), cleanStr(e.impact, 600), cleanStr(e.fix, 800),
+            str(e.file, 200), str(e.ref, 60) || null,
+            e.before == null ? null : str(e.before, 60), e.after == null ? null : str(e.after, 60),
+            e.meta && typeof e.meta === "object" ? JSON.stringify(e.meta).slice(0, 1000) : null));
+        });
+        if (!stmts.length) return json({ ok: false, error: "no events" }, 400);
+        await env.DB.batch(stmts);
+        return json({ ok: true, ids, count: ids.length, story: "https://bugledger.coconvo.workers.dev/story/" + sessionId });
+      } catch (e) { return writeErr(e); }
+    }
+
+    // ---- GET /api/story?id=<session> : the whole story — session + events + linked checks/additions + previous run ----
+    if (pathname === "/api/story" && request.method === "GET") {
+      const id = url.searchParams.get("id");
+      if (!id) return json({ ok: false, error: "id required" }, 400);
+      try {
+        const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
+        if (!row) return json({ ok: false, error: "not found" }, 404);
+        const session = mapSession(row);
+        const [ev, ck, sb] = await Promise.all([
+          env.DB.prepare("SELECT * FROM session_events WHERE session_id = ? ORDER BY ts ASC, seq ASC LIMIT 2000").bind(id).all(),
+          env.DB.prepare("SELECT * FROM checks WHERE session_id = ? ORDER BY ts ASC LIMIT 100").bind(id).all(),
+          env.DB.prepare("SELECT * FROM submitted WHERE session_id = ? ORDER BY ts ASC LIMIT 200").bind(id).all(),
+        ]);
+        const events = (ev.results || []).map(mapEvent);
+        const checks = (ck.results || []).map(mapCheck);
+        const additions = (sb.results || []).map(mapSubmitted);
+        // previous story for the same app (the most recent earlier session that has events) → progress line
+        let previous = null;
+        try {
+          const prevRows = await env.DB.prepare(
+            `SELECT s.id, s.started, s.updated, s.title, s.status FROM sessions s
+             WHERE s.app = ? AND s.started < ? AND EXISTS (SELECT 1 FROM session_events e WHERE e.session_id = s.id AND e.kind IN ('found','metric'))
+             ORDER BY s.started DESC LIMIT 1`).bind(session.app, session.started).all();
+          const p = (prevRows.results || [])[0];
+          if (p) {
+            const pev = await env.DB.prepare("SELECT * FROM session_events WHERE session_id = ? ORDER BY ts ASC LIMIT 2000").bind(p.id).all();
+            previous = { id: p.id, started: p.started, updated: p.updated, title: p.title, rollup: rollup((pev.results || []).map(mapEvent)) };
+          }
+        } catch {}
+        return json({ ok: true, session, events, checks, additions, rollup: rollup(events), previous });
+      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+    }
+
     // ---- GET /api/checks?app=&limit= : recent agent check-logs ----
     if (pathname === "/api/checks" && request.method === "GET") {
       const app = url.searchParams.get("app");
@@ -163,22 +242,7 @@ export default {
           ? env.DB.prepare("SELECT * FROM checks WHERE app = ? ORDER BY ts DESC LIMIT ?").bind(app, limit)
           : env.DB.prepare("SELECT * FROM checks ORDER BY ts DESC LIMIT ?").bind(limit);
         const { results } = await q.all();
-        const rows = (results || []).map((r) => ({
-          id: r.id, ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by,
-          scanned: r.scanned, checkedCount: r.checked_count, foundCount: r.found_count,
-          securityStatus: r.security_status,
-          notFound: safeParse(r.not_found, []), found: safeParse(r.found, []),
-          securityChecked: safeParse(r.security_checked, []), securityFindings: safeParse(r.security_findings, []),
-          notes: r.notes, scope: r.scope || "app",
-          coverage: r.cov_total != null ? {
-            total: r.cov_total, matched: r.cov_matched, scope: r.scope || "app",
-            pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,
-            complete: r.cov_total === r.cov_matched, missed: safeParse(r.cov_missed, []),
-            verified: r.cov_verified != null ? r.cov_verified : null,
-            verifiedPct: (r.cov_verified != null && r.cov_total) ? Math.round((r.cov_verified / r.cov_total) * 100) : null,
-            evidence: safeParse(r.evidence, null),
-          } : null,
-        }));
+        const rows = (results || []).map(mapCheck);
         return json({ ok: true, count: rows.length, checks: rows });
       } catch (e) {
         return json({ ok: false, error: String(e) }, 500);
@@ -222,6 +286,7 @@ export default {
           severity: str(x && x.severity, 12), title: str(x && x.title, 200), file: str(x && x.file, 200),
         }))),
         notes: cleanStr(body.notes, 2000),
+        session_id: str(body.sessionId, 60) || null,
       };
       // server-verified coverage: match reported titles against the app catalog — or the WHOLE
       // catalog (all apps) when scope:"all", so a full scan is confirmed N/315. Beyond the three
@@ -258,15 +323,17 @@ export default {
       const covVerified = evidence.detector + evidence["code-read"] + evidence.test;
       try {
         await env.DB.prepare(
-          `INSERT INTO checks (id,ts,app,project,checked_by,scanned,checked_count,found_count,security_status,not_found,found,security_checked,security_findings,notes,cov_total,cov_matched,cov_missed,scope,cov_verified,evidence)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+          `INSERT INTO checks (id,ts,app,project,checked_by,scanned,checked_count,found_count,security_status,not_found,found,security_checked,security_findings,notes,cov_total,cov_matched,cov_missed,scope,cov_verified,evidence,session_id)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
         ).bind(rec.id, rec.ts, rec.app, rec.project, rec.checked_by, rec.scanned, rec.checked_count,
                rec.found_count, rec.security_status, rec.not_found, rec.found, rec.security_checked,
                rec.security_findings, rec.notes, covTotal, covMatched, JSON.stringify(missed), scope,
-               covVerified, JSON.stringify(evidence)).run();
+               covVerified, JSON.stringify(evidence), rec.session_id).run();
         const pct = covTotal ? Math.round((covMatched / covTotal) * 100) : 100;
         const verifiedPct = covTotal ? Math.round((covVerified / covTotal) * 100) : 0;
         return json({ ok: true, id, ts, app: rec.app, view: "https://bugledger.coconvo.workers.dev/#checks",
+          report: "https://bugledger.coconvo.workers.dev/report?id=" + id,
+          story: rec.session_id ? "https://bugledger.coconvo.workers.dev/story/" + rec.session_id : null,
           coverage: { total: covTotal, matched: covMatched, pct, complete: missed.length === 0,
             verified: covVerified, verifiedPct, evidence, missed: missed.slice(0, 60) } });
       } catch (e) {
@@ -352,12 +419,12 @@ export default {
         const now = Date.now();
         const sessions = (s.results || []).map((r) => {
           const m = mapSession(r);
-          return { kind: "session", ts: m.updated, started: m.started, app: m.app, project: m.project,
+          return { kind: "session", id: m.id, ts: m.updated, started: m.started, app: m.app, project: m.project,
             title: m.title, status: m.status, current: m.current, done: m.done, total: m.total,
             progress: m.progress, agent: m.agent, live: m.status === "active" && now - m.updated < 90_000 };
         });
         const checks = (c.results || []).map((r) => ({
-          kind: "check", id: r.id, ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by, scope: r.scope || "app",
+          kind: "check", id: r.id, ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by, scope: r.scope || "app", sessionId: r.session_id || null,
           foundCount: r.found_count, securityStatus: r.security_status,
           coverage: r.cov_total != null ? { total: r.cov_total, matched: r.cov_matched,
             pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,
@@ -368,7 +435,7 @@ export default {
         }));
         const additions = (sub.results || []).map((r) => ({
           kind: "addition", id: r.id, ts: r.ts, subkind: r.kind, app: r.app, project: r.project,
-          title: r.title, severity: r.severity, category: r.category, shots: safeParse(r.shots, []),
+          title: r.title, severity: r.severity, category: r.category, shots: safeParse(r.shots, []), sessionId: r.session_id || null,
         }));
         const events = sessions.concat(checks).concat(additions).sort((a, b) => b.ts - a.ts).slice(0, limit);
         return json({ ok: true, now, count: events.length, events });
@@ -383,7 +450,7 @@ export default {
         const rows = (results || []).map((r) => ({
           id: r.id, ts: r.ts, app: r.app, project: r.project, kind: r.kind, title: r.title,
           category: r.category, severity: r.severity, symptom: r.symptom, fix: r.fix, file: r.file, submittedBy: r.submitted_by,
-          shots: safeParse(r.shots, []),
+          shots: safeParse(r.shots, []), sessionId: r.session_id || null,
         }));
         return json({ ok: true, count: rows.length, submitted: rows });
       } catch (e) { return json({ ok: false, error: String(e) }, 500); }
@@ -409,12 +476,12 @@ export default {
       } catch { shots = []; }
       try {
         await env.DB.prepare(
-          `INSERT INTO submitted (id,ts,app,project,kind,title,category,severity,symptom,fix,file,submitted_by,shots)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`
+          `INSERT INTO submitted (id,ts,app,project,kind,title,category,severity,symptom,fix,file,submitted_by,shots,session_id)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
         ).bind(id, ts, cleanStr(body.app, 80), cleanStr(body.project, 200), kind, cleanStr(body.title, 200),
                str(body.category || "other", 20), str(body.severity || "medium", 12),
                cleanStr(body.symptom, 500), cleanStr(body.fix, 500), cleanStr(body.file, 200), str(body.submittedBy || "claude-code", 60),
-               shots.length ? JSON.stringify(shots) : null).run();
+               shots.length ? JSON.stringify(shots) : null, str(body.sessionId, 60) || null).run();
         return json({ ok: true, id, app: str(body.app, 80), title: str(body.title, 200), shots });
       } catch (e) { return writeErr(e); }
     }
@@ -427,6 +494,70 @@ export default {
 };
 
 function safeParse(s, dflt) { try { return JSON.parse(s); } catch { return dflt; } }
+
+// ---- scan story: event kinds, severities, statuses ----
+const EVENT_KINDS = new Set(["phase", "say", "found", "fixed", "clean", "metric", "verdict", "caveat", "note"]);
+const SEVS = new Set(["critical", "high", "medium", "low", "info"]);
+const STATUSES = new Set(["fixed", "open", "needs-call", "false-positive", "applied", "recommended", "wontfix", "clean"]);
+const normSev = (v) => { const s = String(v || "").toLowerCase().trim(); if (SEVS.has(s)) return s;
+  if (s === "crit") return "critical"; if (s === "med" || s === "moderate") return "medium"; if (s === "warn" || s === "warning") return "medium"; return null; };
+const normStatus = (v) => { const s = String(v || "").toLowerCase().trim().replace(/[\s_]+/g, "-");
+  if (STATUSES.has(s)) return s; if (s === "needs-your-call" || s === "your-call" || s === "needscall") return "needs-call";
+  if (s === "fp" || s === "false-alarm" || s === "falsepositive") return "false-positive"; if (s === "done" || s === "resolved") return "fixed"; return null; };
+function mapEvent(r) {
+  return { id: r.id, sessionId: r.session_id, ts: r.ts, seq: r.seq, kind: r.kind, phase: r.phase, severity: r.severity,
+    status: r.status, category: r.category, confidence: r.confidence, verifiedBy: r.verified_by, title: r.title,
+    detail: r.detail, impact: r.impact, fix: r.fix, file: r.file, ref: r.ref, before: r.before_v, after: r.after_v,
+    meta: safeParse(r.meta, null) };
+}
+function mapCheck(r) {
+  return {
+    id: r.id, ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by,
+    scanned: r.scanned, checkedCount: r.checked_count, foundCount: r.found_count,
+    securityStatus: r.security_status,
+    notFound: safeParse(r.not_found, []), found: safeParse(r.found, []),
+    securityChecked: safeParse(r.security_checked, []), securityFindings: safeParse(r.security_findings, []),
+    notes: r.notes, scope: r.scope || "app", sessionId: r.session_id || null,
+    coverage: r.cov_total != null ? {
+      total: r.cov_total, matched: r.cov_matched, scope: r.scope || "app",
+      pct: r.cov_total ? Math.round((r.cov_matched / r.cov_total) * 100) : 100,
+      complete: r.cov_total === r.cov_matched, missed: safeParse(r.cov_missed, []),
+      verified: r.cov_verified != null ? r.cov_verified : null,
+      verifiedPct: (r.cov_verified != null && r.cov_total) ? Math.round((r.cov_verified / r.cov_total) * 100) : null,
+      evidence: safeParse(r.evidence, null),
+    } : null,
+  };
+}
+function mapSubmitted(r) {
+  return { id: r.id, ts: r.ts, app: r.app, project: r.project, kind: r.kind, title: r.title, category: r.category,
+    severity: r.severity, symptom: r.symptom, fix: r.fix, file: r.file, submittedBy: r.submitted_by,
+    shots: safeParse(r.shots, []), sessionId: r.session_id || null };
+}
+// Resolve a story's findings: a later "fixed" event (ref → found id, or same title) updates the status
+// of the earlier "found" WITHOUT editing it — the rollup is computed, the rows stay immutable.
+function resolveFindings(events) {
+  const finds = events.filter((e) => e.kind === "found");
+  const byId = new Map(finds.map((f) => [f.id, { ...f }]));
+  const byTitle = new Map(finds.map((f) => [norm(f.title), f.id]));
+  for (const e of events) {
+    if (e.kind !== "fixed") continue;
+    const id = (e.ref && byId.has(e.ref)) ? e.ref : byTitle.get(norm(e.title));
+    const f = id && byId.get(id); if (!f) continue;
+    f.status = e.status || "fixed"; if (e.fix) f.fix = e.fix; if (e.file && !f.file) f.file = e.file; f.fixedAt = e.ts;
+  }
+  return [...byId.values()];
+}
+function rollup(events) {
+  const finds = resolveFindings(events);
+  const bySev = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
+  const byStatus = { fixed: 0, open: 0, "needs-call": 0, "false-positive": 0, applied: 0, recommended: 0, wontfix: 0 };
+  for (const f of finds) { bySev[f.severity || "info"] = (bySev[f.severity || "info"] || 0) + 1; const st = f.status || "open"; byStatus[st] = (byStatus[st] || 0) + 1; }
+  const real = finds.filter((f) => f.status !== "false-positive");
+  const metrics = events.filter((e) => e.kind === "metric").map((e) => ({ label: e.title, before: e.before, after: e.after, phase: e.phase }));
+  const verdict = [...events].reverse().find((e) => e.kind === "verdict");
+  return { findings: finds.length, real: real.length, bySev, byStatus, metrics, phases: events.filter((e) => e.kind === "phase").length,
+    verdict: verdict ? verdict.title || verdict.detail : null, caveats: events.filter((e) => e.kind === "caveat").length };
+}
 
 function mapSession(r) {
   return {

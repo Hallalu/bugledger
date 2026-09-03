@@ -3,8 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Debug any project against 428+ bugs, 67 security items and 117 optimisers from 24 apps. Agents scan, prove coverage, fix, and write an itemised scan story.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bug Ledger — every bug, security hole and optimiser we ever hit, in one append-only catalogue">
+<meta property="og:description" content="Debug any project against 428+ bugs, 67 security items and 117 optimisers from 24 apps. Agents scan, prove coverage, fix, and write an itemised scan story.">
+<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <title>Bug Ledger — every bug fixed</title>
-<meta name="description" content="A comprehensive, interactive checklist of every bug fixed across the app portfolio.">
 <style>
   :root{
     --bg:#f6f7fb; --panel:#ffffff; --ink:#141726; --muted:#5b6178; --line:#e7e9f2;
@@ -206,7 +211,7 @@
     <div class="title">
       <span class="dot"></span>
       <h1>Bug Ledger</h1>
-      <nav class="topnav"><a href="/timeline">🕘 Activity</a><a href="/live">● Live</a></nav>
+      <nav class="topnav"><a href="/sanitize">🧹 Sanitizer</a><a href="/timeline">🕘 Activity</a><a href="/live">● Live</a></nav>
     </div>
     <p class="sub">Every bug fixed across the portfolio — mined from the full conversation history and organized into one comprehensive checklist. Tick items as you re-verify them; progress is saved in your browser.</p>
     <div class="kpis" id="kpis"></div>
@@ -220,9 +225,9 @@
 
   <div class="controls">
     <div class="line">
-      <input id="q" type="search" placeholder="Search bugs, symptoms, fixes…" autocomplete="off">
-      <select id="fApp"><option value="">All apps</option></select>
-      <select id="fCat"><option value="">All types</option></select>
+      <input id="q" type="search" placeholder="Search bugs, symptoms, fixes…" autocomplete="off" aria-label="Search bugs, symptoms and fixes">
+      <select id="fApp" aria-label="Filter by app"><option value="">All apps</option></select>
+      <select id="fCat" aria-label="Filter by type"><option value="">All types</option></select>
       <select id="fSev" title="Severity is derived from impact category">
         <option value="">All severities</option>
         <option value="critical">Critical</option>
@@ -409,7 +414,7 @@
         if(b.symptom) body+='<div><b>Symptom:</b> '+hl(b.symptom,q)+'</div>';
         if(b.root_cause) body+='<div><b>Cause:</b> '+hl(b.root_cause,q)+'</div>';
         if(b.fix) body+='<div><b>Fix:</b> '+hl(b.fix,q)+'</div>';
-        li.innerHTML='<input class="cbx" type="checkbox" '+(isDone(b)?'checked':'')+'>'+
+        li.innerHTML='<input class="cbx" type="checkbox" aria-label="Mark checked: '+esc(b.title)+'" '+(isDone(b)?'checked':'')+'>'+
           '<div class="b-main"><div class="b-title">'+hl(b.title,q)+'</div>'+
           '<div class="b-meta"><span class="sev '+sevOf(b)+'">'+sevOf(b)+'</span>'+
           '<span class="badge" style="background:'+col+'">'+CATLABEL[b.category]+'</span>'+
@@ -630,7 +635,8 @@
             '<span class="tag">'+esc(fmt(c.ts))+' · '+esc(c.checkedBy||'')+(c.project?' · '+esc(c.project):'')+'</span></div>'+
           '<div class="f-body">'+
             '<div><b>'+ (c.checkedCount||0) +'</b> checked · <b>'+(c.foundCount||0)+'</b> found · <b>'+(c.scanned||0)+'</b> files scanned'+
-              (c.id?' &middot; <a href="/report?id='+esc(c.id)+'" style="color:#ff6a5a;font-weight:700;text-decoration:none">📊 Full report →</a>':'')+'</div>'+
+              (c.sessionId?' &middot; <a href="/story/'+esc(c.sessionId)+'" style="color:#ff6a5a;font-weight:700;text-decoration:none">📖 Story →</a>':'')+
+              (c.id?' &middot; <a href="/report?id='+esc(c.id)+(c.sessionId?'&legacy=1':'')+'" style="color:#ff6a5a;font-weight:700;text-decoration:none">📊 '+(c.sessionId?'Coverage':'Full report')+' →</a>':'')+'</div>'+
             evRow+
             missedBlock+
             (foundList?'<div><b>Found:</b><ul class="mini">'+foundList+'</ul></div>':'<div style="color:var(--done,#12a150)">No known bugs found present.</div>')+
@@ -754,10 +760,10 @@
       '<label>File · location <span style="font-weight:400;text-transform:none;color:var(--muted)">(optional)</span><input name="file" placeholder="path/to/file.js:120 — or the screen/route"></label>'+
       '<div><label style="margin-bottom:6px">Screenshots — before → after</label>'+
         '<div class="ba-slots">'+
-          '<div><div class="drop" data-role="before"><span class="dz-ba before">Before</span><span class="dz-hint">Click, drop, or paste the current state</span><input type="file" accept="image/*" hidden></div>'+
-            '<input class="cap" data-role="before" value="Before" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
-          '<div><div class="drop" data-role="after"><span class="dz-ba after">After</span><span class="dz-hint">Click, drop, or paste the improved state</span><input type="file" accept="image/*" hidden></div>'+
-            '<input class="cap" data-role="after" value="After" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
+          '<div><div class="drop" data-role="before"><span class="dz-ba before">Before</span><span class="dz-hint">Click, drop, or paste the current state</span><input type="file" accept="image/*" hidden aria-label="Choose a screenshot"></div>'+
+            '<input class="cap" data-role="before" value="Before" aria-label="Caption for the before screenshot" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
+          '<div><div class="drop" data-role="after"><span class="dz-ba after">After</span><span class="dz-hint">Click, drop, or paste the improved state</span><input type="file" accept="image/*" hidden aria-label="Choose a screenshot"></div>'+
+            '<input class="cap" data-role="after" value="After" aria-label="Caption for the after screenshot" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
         '</div>'+
         '<div style="font-size:11.5px;color:var(--muted);margin-top:6px">A single screenshot is fine too — fill just one. Tip: copy an image and paste (⌘V) into a slot. Max 5MB each; large images are auto-downscaled.</div>'+
       '</div>'+
@@ -810,7 +816,7 @@
     var dz=det.querySelector('.drop[data-role="'+role+'"]');
     dz.classList.remove('filled');
     var ba=role==='before'?'Before':'After', hint=role==='before'?'Click, drop, or paste the current state':'Click, drop, or paste the improved state';
-    dz.innerHTML='<span class="dz-ba '+role+'">'+ba+'</span><span class="dz-hint">'+hint+'</span><input type="file" accept="image/*" hidden>';
+    dz.innerHTML='<span class="dz-ba '+role+'">'+ba+'</span><span class="dz-hint">'+hint+'</span><input type="file" accept="image/*" hidden aria-label="Choose a screenshot">';
     wireDrop(dz);
   }
   function readImage(file, role){

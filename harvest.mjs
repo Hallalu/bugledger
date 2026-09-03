@@ -26,7 +26,7 @@ const OUT = path.join(LEDGER, "harvested.json");
 const flags = new Set(process.argv.slice(2).filter(a => a.startsWith("--")));
 const QUIET = flags.has("--quiet");
 const log = (...a) => { if (!QUIET) console.log(...a); };
-const today = new Date().toISOString().slice(0, 10);
+const today = (() => { const d = new Date(), p = (x) => String(x).padStart(2, "0"); return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); })(); // local Y-M-D, not UTC
 
 // ---- app inference cues ----
 const APP_CUES = [

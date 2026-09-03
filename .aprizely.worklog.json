@@ -1,66 +1,54 @@
 {
-  "id": "a2a1bfc7-9aa5-4393-b65f-d43075ea9a93",
+  "id": "936502a9-81d8-40cc-85c0-b62e372ba14a",
   "app": "Bug Ledger",
   "project": "BugLedger",
-  "title": "Real screenshot images in the Bug Ledger (retire the text-only honesty note)",
+  "title": "Deepscan narrative reports — itemised, severity-tagged findings from the agent's own chat",
   "status": "active",
-  "current": "committing scanner + worker + docs, publishing report, updating memory",
+  "current": "Wave 3 — after screenshots, commit + push, Aprizely report, research report to Analysis app",
   "note": "",
   "tasks": [
     {
-      "text": "Absorb",
-      "note": "Read all 433 lines of the worker + schemas: the shot pipeline (POST /api/shot, GET /api/shot/:key, shots on /api/bugs) is already CODED and committed — task is now to verify what is live vs missing",
+      "text": "Read Bug Ledger + deepscan skill",
+      "note": "Read worker.js (481 lines), report/live/timeline pages, worklog client, live D1 schema and all six sweep commands. Gap confirmed: the agent's narrative never reaches the ledger — /report only shows bare titles + notes",
       "status": "done",
-      "wave": ""
+      "wave": "Wave 0 — Absorb"
     },
     {
-      "text": "Design",
-      "note": "Probed production: upload+serve are LIVE (200 image/png). Real gaps = timeline card ignores shots, HEAD /api/shot 404s, protocol docs still text-only, worklog client has no shot helper",
+      "text": "Verify what devs, vibecoders and designers want from a scan report",
+      "note": "Verified from primary sources: Google Tricorder's <10% false-positive bar + understandable/actionable criteria; WCAG 1.4.1 (colour never the only cue); Veracode spring 2026 45% flaw rate, unchanged 2 years; CVE-2025-48757 170 Lovable apps / 303 endpoints; counter-evidence: CVSS severity ≠ risk, reasoning traces ~40% performative (so findings must carry evidence tags, not just narrative)",
       "status": "done",
-      "wave": ""
+      "wave": "Wave 1 — Research"
     },
     {
-      "text": "Build API",
-      "note": "Worker: /api/shot/:key now answers HEAD as well as GET (link unfurlers and probes no longer see 404) with content-length set",
+      "text": "Narrative finding events in worklog",
+      "note": "Shipped: session_events table (append-only triggers), POST /api/session/event, GET /api/story, /story/<id> route, sessionId on checks+bugs; worklog.mjs gained phase/say/found/fixed/clean/metric/caveat/verdict/story/id/events and every board command now writes itself into the story",
       "status": "done",
-      "wave": ""
+      "wave": "Wave 2 — Build"
     },
     {
-      "text": "Build client",
-      "note": "worklog.mjs gained a standalone 'shot <file> --caption' upload command; AGENT.md + llms.txt now document the whole screenshot protocol agents read",
+      "text": "Report renderer",
+      "note": "Rendered + deployed as version 0908f0a9; now proving it on a real scan",
       "status": "done",
-      "wave": ""
+      "wave": "Wave 2 — Build"
     },
     {
-      "text": "Render",
-      "note": "/timeline addition cards now render attached before/after thumbnails (data was already in /api/activity, previously dropped)",
+      "text": "Deepscan + sweep skills emit the narrative",
+      "note": "Every future sweep writes its own itemised story without being asked",
       "status": "done",
-      "wave": ""
+      "wave": "Wave 2 — Build"
     },
     {
-      "text": "Deploy",
-      "note": "Ship the HEAD fix, the timeline thumbnails and the updated agent protocol docs to production",
+      "text": "Deploy + run a real deepscan",
+      "note": "Real scan of Bug Ledger itself: 60→39 detector findings (32→12 high), a11y 15→3, SEO 8→0, CSP+4 headers served, 8 real fixes, 6 false alarms ruled out by reading, 2 stdout bugs found in the scanner's own --json paths, 3/3 catalogue items clean; story verified in browser: tooltips, filters, search, tabs, fix prompts",
       "status": "done",
-      "wave": ""
+      "wave": "Wave 3 — Prove it"
     },
     {
-      "text": "Verify",
-      "note": "Deployed twice (worker HEAD fix, then docs). Browser-verified: timeline renders before/after thumbnails, main page shows 13 shot imgs (0 broken), HEAD 200 image/png, lightbox opens",
-      "status": "done",
-      "wave": ""
-    },
-    {
-      "text": "Report",
-      "note": "Commit all changes, publish the before/after report, retire the honesty note in memory",
+      "text": "Report to Aprizely",
+      "note": "Close the loop: proof shots, git, report, and publish the verified research behind the design",
       "status": "active",
-      "wave": ""
-    },
-    {
-      "text": "User report",
-      "note": "Log the user-reported bug (asked for before/after, got names not photos) and push the class into the shared scan catalog so every app's fullscan checks it",
-      "status": "pending",
-      "wave": ""
+      "wave": "Wave 3 — Prove it"
     }
   ],
-  "started": 1787684847924
+  "started": 1788474664087
 }

@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A permanent, append-only timeline of every scan, story and ledger addition across the portfolio.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bug Ledger · Activity">
+<meta property="og:description" content="A permanent, append-only timeline of every scan, story and ledger addition across the portfolio.">
+<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <title>Bug Ledger · Activity</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%98%3C/text%3E%3C/svg%3E">
 <style>
@@ -103,7 +109,7 @@
     <div class="brand">Bug Ledger<span class="dot">.</span> Activity</div>
     <div class="sub"><span class="beat"></span><span id="pollstate">live</span></div>
   </header>
-  <p class="lede">Every work session and scan, saved and streamed. · <a href="/live">live board</a> · <a href="/">the ledger</a></p>
+  <p class="lede">Every work session and scan, saved and streamed. · <a href="/sanitize">sanitizer</a> · <a href="/live">live board</a> · <a href="/">the ledger</a></p>
   <main id="feed"></main>
   <div class="foot">A permanent, append-only record of agent activity.</div>
 </div>
@@ -136,7 +142,8 @@
       (e.title?'<div class="title">'+esc(e.title)+'</div>':'')+
       (e.current?'<div class="cur">'+esc(e.current)+'</div>':'')+
       '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
-      '<div class="chips"><span class="chip">'+countTxt+'</span>'+(done?'<span class="chip ok">✓ complete</span>':'')+'</div>'+
+      '<div class="chips"><span class="chip">'+countTxt+'</span>'+(done?'<span class="chip ok">✓ complete</span>':'')+
+        (e.id?'<a class="chip report" href="/story/'+esc(e.id)+'">📖 Story →</a>':'')+'</div>'+
     '</div>';
   }
   function checkCard(e){
@@ -156,7 +163,8 @@
       '<div class="chips">'+covChip+
         '<span class="chip '+(secOk?'ok':(e.securityStatus==='issues'?'warn':''))+'">security: '+esc(e.securityStatus||'n/a')+'</span>'+
         (e.foundCount?'<span class="chip warn">'+e.foundCount+' present</span>':'')+
-        (e.id?'<a class="chip report" href="/report?id='+esc(e.id)+'">📊 Full report →</a>':'')+
+        (e.sessionId?'<a class="chip report" href="/story/'+esc(e.sessionId)+'">📖 Story →</a>':'')+
+        (e.id?'<a class="chip report" href="/report?id='+esc(e.id)+(e.sessionId?'&legacy=1':'')+'">📊 Coverage →</a>':'')+
       '</div></div>';
   }
 
@@ -167,7 +175,8 @@
     return '<div class="card"><div class="row1"><span class="kind add">➕ added · '+chip+'</span>'+
       '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
       '<span class="when" title="'+fullts(e.ts)+'">'+fullts(e.ts)+'</span></div>'+
-      '<div class="title" style="font-weight:600;margin-bottom:0">'+esc(e.title)+'</div>'+shotStrip(e.shots)+'</div>';
+      '<div class="title" style="font-weight:600;margin-bottom:0">'+esc(e.title)+'</div>'+shotStrip(e.shots)+
+      (e.sessionId?'<div class="chips"><a class="chip report" href="/story/'+esc(e.sessionId)+'">📖 From this story →</a></div>':'')+'</div>';
   }
   // thumbnails for screenshots attached to a finding — each opens the full image
   function shotStrip(shots){

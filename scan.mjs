@@ -12,6 +12,9 @@
    --write     append genuinely-new findings to scan-findings.json + rebuild ledger
    --deploy    after --write, wrangler deploy + git commit/push the ledger
    --json      print findings as JSON instead of the human report
+   --story     itemise this scan's high-confidence findings on the live session's story (/story/<id>)
+   --story-all …and the review-confidence leads too (noisier; they are leads until read)
+   --log       POST this scan as a check-log (coverage record) to the ledger
 
  Static analysis only — it reads files, never executes the app. Treat findings as
  leads to verify, not proof. Pair with the printed manual checklist for the bugs
@@ -44,7 +47,7 @@ const APP_ALIASES = {
   weddingplanner:"Wedding Planner", babyplanner:"Hello Baby","hello-baby":"Hello Baby", hellobaby:"Hello Baby",
   hallalu:"Hallalu CRM", hopefil:"Hopefil", hopefill:"Hopefil", stitchhooky:"Stitchhooky", stitchhookey:"Stitchhooky",
   finished:"Finished.", kairos:"Kairos", promptvault:"Prompt Vault", everafter:"Ever After",
-  sociallevelup:"Social LevelUp", hallalubookings:"Hallalu CRM",
+  sociallevelup:"Social LevelUp", hallalubookings:"Hallalu CRM", bugledger:"Bug Ledger", aprizely:"Aprizely", kindly:"Kindly",
 };
 function detectApp() {
   if (appFlag) return appFlag;
@@ -652,7 +655,7 @@ if (flags.has("--write")) {
     added++;
   }
   fs.writeFileSync(OUT, JSON.stringify(store, null, 2));
-  console.log(`\n📝 --write: ${added} new finding(s) added to scan-findings.json (${store.length} total).`);
+  (AS_JSON ? console.error : console.log)(`\n📝 --write: ${added} new finding(s) added to scan-findings.json (${store.length} total).`);
   try { execSync(`node ${JSON.stringify(path.join(LEDGER,"gen.mjs"))}`, { stdio:"inherit" }); } catch {}
   if (flags.has("--deploy")) {
     try {
@@ -661,6 +664,42 @@ if (flags.has("--write")) {
       execSync("git add scan-findings.json public/data-scan.js SCAN-FINDINGS.md public/SCAN-FINDINGS.md 2>/dev/null; git -c user.email=rhemajking@gmail.com -c user.name=Hallalu commit -q -m "+JSON.stringify(`scan: +${added} findings for ${APP}`)+" && git push -q origin main", { cwd:LEDGER, stdio:"inherit" });
       console.log("🚀 deployed + pushed.");
     } catch(e) { console.error("deploy/push failed:", e.message); }
+  }
+}
+
+// ---------- --story : narrate this scan into the live session's story ----------
+// Posts one "found" per HIGH-confidence detector group (open, evidence=detector) plus a summary line,
+// so the automated pass is itemised on /story/<session> the moment it runs. Review-confidence leads
+// are summarised per family (not itemised) unless --story-all — they are leads, not findings, until read.
+if (flags.has("--story")) {
+  let ws = null; try { ws = JSON.parse(fs.readFileSync(path.join(TARGET, ".worklog.json"), "utf8")); } catch {}
+  let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(path.join(process.env.HOME, ".bugledger.json"),"utf8")); } catch {}
+  const base = process.env.BUGLEDGER_BASE || cfg.base || "https://bugledger.coconvo.workers.dev";
+  const token = process.env.BUGLEDGER_TOKEN || cfg.token || "";
+  if (!ws || !ws.id) console.error("--story: no ./.worklog.json in the target — run worklog.mjs start first (skipped)");
+  else {
+    const nHigh = findings.filter(f=>f.confidence==="high").length;
+    const fam = {}; for (const f of findings) { const c=(fam[f.category||"other"] ||= {t:0,h:0}); c.t++; if (f.confidence==="high") c.h++; }
+    const famTxt = Object.entries(fam).sort((a,b)=>b[1].t-a[1].t).map(([k,v])=>`${k} ${v.t}${v.h?" ("+v.h+" high)":""}`).join(" · ");
+    const events = [{ kind:"say", title:`Automated pass: ${D.length + PROJECT_DETECTORS} detectors over ${files.length} files → ${findings.length} findings, ${nHigh} high-confidence`,
+      detail: findings.length ? "Families that fired: " + famTxt : "Clean — no detector fired.", meta:{ scanner:true, total:findings.length, high:nHigh, byFamily:fam } }];
+    const groups = new Map();
+    for (const f of findings) { if (f.confidence !== "high" && !flags.has("--story-all")) continue; const g = groups.get(f.detector) || { f, n:0, files:[] }; g.n++; if (g.files.length < 6) g.files.push(f.file + ":" + f.line); groups.set(f.detector, g); }
+    for (const [det, g] of groups) {
+      events.push({ kind:"found", title: g.f.bug + (g.n > 1 ? " ×" + g.n : ""), severity: g.f.severity, status:"open",
+        category: g.f.category, file: g.files[0], confidence: g.f.confidence, verifiedBy:"detector",
+        detail: (g.n > 1 ? g.n + " hits — " : "") + "detector " + det + " · " + g.f.excerpt, fix: g.f.advice,
+        meta:{ detector: det, count: g.n, files: g.files } });
+    }
+    if (events.length > 50) events.length = 50;
+    try {
+      const res = await fetch(base + "/api/session/event", { method:"POST", headers:{ "content-type":"application/json", "x-ledger-key": token },
+        body: JSON.stringify({ sessionId: ws.id, events }) });
+      const out = await res.json().catch(()=>({}));
+      // stderr on purpose: with --json, stdout must stay pure JSON for the caller that parses it
+      if (out.ok) console.error(`📖 --story: ${events.length-1} detector finding${events.length===2?"":"s"} itemised on ${out.story}`);
+      else console.error(`\n--story failed: ${res.status} ${out.error||""}`);
+    } catch(e) { console.error("--story failed:", e.message); }
   }
 }
 
@@ -675,8 +714,9 @@ if (flags.has("--log")) {
   const secFindings = findings.filter(f=>f.category==="security")
     .map(f=>({ severity:f.severity, title:`${f.detector}: ${f.bug}`, file:`${f.file}:${f.line}` }));
   const nHighLog = findings.filter(f=>f.confidence==="high").length;
+  let wsLog = null; try { wsLog = JSON.parse(fs.readFileSync(path.join(TARGET, ".worklog.json"), "utf8")); } catch {}
   const payload = {
-    app: APP, project: path.basename(TARGET), checkedBy: "scan.mjs",
+    app: APP, project: path.basename(TARGET), checkedBy: "scan.mjs", sessionId: wsLog && wsLog.id || undefined,
     scanned: files.length, checkedCount: D.length + appBugs.length, foundCount: findings.length,
     securityStatus: secFindings.length ? "issues" : "clean",
     // a detector that ran clean is genuinely detector-verified, not merely "listed"
@@ -692,7 +732,7 @@ if (flags.has("--log")) {
       headers: { "content-type":"application/json", "x-ledger-key": token },
       body: JSON.stringify(payload) });
     const out = await res.json().catch(()=>({}));
-    if (out.ok) console.log(`\n✅ --log: recorded check for ${APP} (id ${out.id}). See ${base}/#checks`);
+    if (out.ok) (AS_JSON ? console.error : console.log)(`\n✅ --log: recorded check for ${APP} (id ${out.id}). See ${base}/#checks`); // stderr in --json mode: stdout is the JSON contract
     else console.error(`\n--log failed: ${res.status} ${out.error||""}${token?"":" (no token — set ~/.bugledger.json)"}`);
   } catch(e) { console.error("--log failed:", e.message); }
 }

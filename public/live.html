@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Watch an agent scan a project against the whole ledger in real time — tasks ticking off, the story so far, findings as they are raised.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bug Ledger · Live board">
+<meta property="og:description" content="Watch an agent scan a project against the whole ledger in real time — tasks ticking off, the story so far, findings as they are raised.">
+<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <title>Bug Ledger · Live</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9F%A2%3C/text%3E%3C/svg%3E">
 <style>
@@ -93,6 +99,18 @@
   .empty code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:2px 7px}
   .foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:26px}
   .foot a{color:inherit}
+  .reportcta[hidden],.story[hidden],.note[hidden]{display:none!important}   /* [hidden] must beat any display rule */
+  .story{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .storyhead{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .storyhead a{color:var(--coral);text-decoration:none;text-transform:none;letter-spacing:0;font-size:13px}
+  .storylines{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:5px;font-size:14px}
+  .storylines .sl{display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:start;color:var(--muted);animation:rise .35s ease both}
+  .storylines .sl .ic{text-align:center}
+  .storylines .sl.phase .tx{color:var(--ink);font-weight:800}
+  .storylines .sl.found .tx{color:var(--ink);font-weight:650}
+  .storylines .sl.found em{font-style:normal;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--coral);margin-left:6px}
+  .storylines .sl.verdict .tx{color:var(--ink);font-weight:800}
+  .storylines .sl.say .tx{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -103,7 +121,7 @@
     <div class="sub"><span class="beat"></span><span id="pollstate">watching…</span></div>
   </header>
   <main id="board"></main>
-  <div class="foot">Live worklog · <a href="/timeline">activity timeline</a> · <a href="/">back to the ledger</a></div>
+  <div class="foot">Live worklog · <a href="/sanitize">sanitizer</a> · <a href="/timeline">activity timeline</a> · <a href="/">back to the ledger</a></div>
 </div>
 <script>
   var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
@@ -128,10 +146,12 @@
       '<div class="barlbl"><span class="dn"></span><span class="pct"></span></div>'+
       '<ul class="tasks"></ul>'+
       '<div class="note" hidden></div>'+
-      '<a class="reportcta" hidden></a>';
+      '<div class="story" hidden><div class="storyhead"><span>📖 Story so far</span><a class="storylink" href="#">open the full story →</a></div><ol class="storylines"></ol></div>'+
+      '<a class="reportcta" hidden>✅ Complete — 📖 open the itemised story →</a>';
     var refs = { status:el.querySelector('.status'), meta:el.querySelector('.meta'), title:el.querySelector('.title'),
       current:el.querySelector('.current'), bar:el.querySelector('.bar>i'), dn:el.querySelector('.dn'),
-      pct:el.querySelector('.pct'), tasks:el.querySelector('.tasks'), note:el.querySelector('.note'), report:el.querySelector('.reportcta') };
+      pct:el.querySelector('.pct'), tasks:el.querySelector('.tasks'), note:el.querySelector('.note'), report:el.querySelector('.reportcta'),
+      story:el.querySelector('.story'), storyLines:el.querySelector('.storylines'), storyLink:el.querySelector('.storylink') };
     return { el:el, refs:refs, prevTasks:[], prevCurrent:null, started:s.started };
   }
 
@@ -181,11 +201,13 @@
     }
     renderTasks(c, s.tasks||[]);
     if(s.note){ c.refs.note.hidden=false; c.refs.note.textContent=s.note; } else c.refs.note.hidden=true;
+    c.refs.storyLink.href='/story/'+encodeURIComponent(s.id);
+    pollStory(c, s);
     // when a sweep completes, prompt the user to open its full report
     if(done){
       c.refs.report.hidden=false;
-      c.refs.report.href='/report?app='+encodeURIComponent(s.app||'')+'&project='+encodeURIComponent(s.project||'');
-      c.refs.report.textContent='✅ Complete — 📊 open the full report →';
+      c.refs.report.href='/story/'+encodeURIComponent(s.id);
+      c.refs.report.textContent='✅ Complete — 📖 open the itemised story →';
     } else c.refs.report.hidden=true;
   }
 
@@ -217,6 +239,29 @@
     document.getElementById('pollstate').textContent = sessions.some(function(s){return s.live;})?'live':'watching…';
   }
 
+  var SEVIC={critical:'🔴',high:'🟠',medium:'🟡',low:'🟢',info:'🔵'};
+  var EVIC={phase:'▶',say:'💬',found:'•',fixed:'✓',clean:'✅',metric:'📈',verdict:'🏁',caveat:'⚠',note:'·'};
+  function pollStory(c, s){
+    var now=Date.now(); if(c.storyAt && now-c.storyAt<4000) return; c.storyAt=now;
+    fetch('/api/story?id='+encodeURIComponent(s.id),{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+      if(!d||!d.ok) return;
+      var ev=(d.events||[]).filter(function(e){ return e.kind!=='note' || /finished|started/i.test(e.title||''); });
+      if(!ev.length){ c.refs.story.hidden=true; return; }
+      var last=ev.slice(-7);
+      var sig=last.map(function(e){return e.id}).join('|'); if(sig===c.storySig) return; c.storySig=sig;
+      var nFound=(d.events||[]).filter(function(e){return e.kind==='found'}).length;
+      c.refs.story.hidden=false;
+      c.refs.storyLink.textContent=(nFound?nFound+' finding'+(nFound>1?'s':'')+' · ':'')+'open the full story →';
+      c.refs.storyLines.innerHTML=last.map(function(e){
+        var SEVTIP={critical:'Critical — fix now. Could expose data, break sign-in or take the app down.',high:'High — fix before the next release. A real user hits this, or an attacker could use it.',medium:'Medium — schedule it. Degrades the experience for some users.',low:'Low — polish when convenient. No user is blocked.',info:'Info — for your awareness.'};
+        var ic=e.kind==='found'?(SEVIC[e.severity]||'•'):(EVIC[e.kind]||'·');
+        var icTitle=e.kind==='found'?(SEVTIP[e.severity]||''):'';
+        var full=(e.detail&&/…$/.test(e.title||'')&&e.detail.indexOf((e.title||'').slice(0,-1))===0)?e.detail:(e.title||'');
+        var tx=esc(full)+(e.kind==='found'&&e.status?' <em>'+esc(e.status)+'</em>':'')+(e.kind==='metric'?' <b>'+esc(e.before)+' → '+esc(e.after)+'</b>':'');
+        return '<li class="sl '+e.kind+'"><span class="ic"'+(icTitle?' title="'+esc(icTitle)+'"':'')+'>'+ic+'</span><span class="tx">'+tx+'</span></li>';
+      }).join('');
+    }).catch(function(){});
+  }
   function poll(){
     fetch('/api/sessions?active=1&limit=12',{cache:'no-store'})
       .then(function(r){return r.json();}).then(render)

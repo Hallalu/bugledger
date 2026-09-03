@@ -1,44 +1,43 @@
 {
-  "title": "Make the ledger honest + precise",
-  "summary": "Two upgrades that turn a green checkmark from 'a list was submitted' into 'code was actually inspected'. (1) Evidence-weighted coverage: every checked item now carries how it was verified (detector/code-read/test vs reasoned/assumed), and the worker + UI report verified/total alongside matched/total. (2) Context-aware scanner precision: the three noisiest detectors stop firing on esc()-wrapped HTML, noindex pages, and already-sourced stats, and every finding is tagged high-confidence vs needs-review. Shipped to production and verified end-to-end.",
+  "title": "Real before/after screenshots on the Bug Ledger",
+  "summary": "The standing honesty note — 'the Bug Ledger API is text-only, so screenshots are recorded as before/after metrics, not images' — is now retired. Findings carry genuine before/after image pairs, uploaded to R2, served at /api/shot, and rendered as real thumbnails on the main page and the /timeline. Fixed a HEAD 404 on served shots, taught the /timeline to render attached images (it was silently dropping them), added a client one-liner, and — per the user's report — added a scanner detector so EVERY app is checked for the 'kept the label, dropped the image' mistake.",
   "tasks": [
-    {"text": "Scanner precision (esc/noindex/citation aware + confidence tags)", "done": true, "desc": "scan.mjs: XSS suppressed only when every interpolation is provably safe (no name guessing → zero false negatives), SEO skipped on noindex pages, CLAIM skipped beside a citation; high-confidence findings shown first"},
-    {"text": "Prove the false-positive drop on a real app", "done": true, "desc": "Ran on Hallalu CRM before/after; audited every dropped line by hand"},
-    {"text": "Evidence-weighted coverage in the worker", "done": true, "desc": "verifiedBy dimension; server tallies evidence over matched catalog items; POST + both GETs return verified/verifiedPct/evidence; backward-compatible"},
-    {"text": "Additive D1 migration on the live table", "done": true, "desc": "cov_verified + evidence columns; ADD COLUMN only; old rows read as unknown"},
-    {"text": "Surface it in the UI", "done": true, "desc": "#checks shows a 🔬 inspected N/total badge + an Evidence breakdown so a green tick is qualified by real inspection"},
-    {"text": "Deploy + verify end-to-end in the browser", "done": true, "desc": "wrangler deploy; POST self-test → correct math; GET round-trip → persisted; live rendered DOM shows the badge + evidence line"},
-    {"text": "Document verifiedBy in the agent protocol", "done": true, "desc": "AGENT.md updated so agents actually send the evidence dimension"}
+    {"text": "Absorb the repo — worker, schemas, worklog client", "done": true, "desc": "Read all 433 lines of the worker + schemas; found the shot pipeline was already coded, so the job was gap-closing not greenfield"},
+    {"text": "Probe production for real gaps", "done": true, "desc": "Upload+serve were live; real gaps were HEAD 404, timeline dropping images, text-only protocol docs, no client helper"},
+    {"text": "Worker: HEAD on /api/shot/:key", "done": true, "desc": "Route now matches GET|HEAD and returns headers-only with content-length; link unfurlers/probes no longer 404"},
+    {"text": "Timeline renders before/after thumbnails", "done": true, "desc": "additionCard now renders the shots the /api/activity feed was already sending; each opens the full image"},
+    {"text": "Client: worklog.mjs shot + protocol docs", "done": true, "desc": "'shot <file> --caption' uploads one image; AGENT.md + llms.txt now document the whole screenshot protocol agents read"},
+    {"text": "Scanner detector IMG-DROP (user request)", "done": true, "desc": "Catches a shot/photo object with a caption but no image reference, and a shots/photos list mapped to just names — in every app, 0 self false-positives"},
+    {"text": "Deploy + commit + push", "done": true, "desc": "Two deploys (worker HEAD fix, then docs); committed and pushed to Hallalu/bugledger"},
+    {"text": "Browser-verify feature by feature", "done": true, "desc": "Timeline renders real before/after thumbnails; main page shows 13 shot imgs, 0 broken; HEAD 200 image/png; lightbox opens the full image"}
   ],
   "metrics": [
-    {"label": "Coverage dimensions", "before": "1 (listed)", "after": "2 (listed + inspected)"},
-    {"label": "Evidence buckets tracked", "before": "0", "after": "5"},
-    {"label": "Scanner findings (Hallalu)", "before": "332", "after": "313"},
-    {"label": "SEO false positives (OG+DESC)", "before": "18", "after": "6"},
-    {"label": "CLAIM false positive (sourced stat)", "before": "4", "after": "3"},
-    {"label": "XSS dropped (all provably safe)", "before": 0, "after": 6},
-    {"label": "Confidence split (high / review)", "before": "none", "after": "48 / 265"},
-    {"label": "XSS false negatives introduced", "before": "—", "after": "0"}
+    {"label": "Screenshots on the ledger", "before": "text-only (metrics)", "after": "real before/after images"},
+    {"label": "HEAD /api/shot/:key", "before": "404", "after": "200 image/png"},
+    {"label": "Timeline addition cards", "before": "title only, images dropped", "after": "before/after thumbnails"},
+    {"label": "Scanner detectors", "before": 41, "after": 42},
+    {"label": "IMG-DROP self false-positives", "before": "2 (pre-tune)", "after": 0},
+    {"label": "Shot images rendering on main page", "before": 0, "after": 13},
+    {"label": "Deploys", "before": 0, "after": 2}
   ],
   "features": [
-    "verifiedBy dimension on every checked item (detector | code-read | test | reasoned | assumed)",
-    "coverage.verified / verifiedPct / evidence returned by POST and both GET endpoints",
-    "🔬 inspected N/total badge + Evidence breakdown in the #checks UI",
-    "Context-aware detectors: esc-aware XSS, noindex-aware SEO, citation-aware CLAIM",
-    "high-confidence vs needs-review tagging, high-confidence surfaced first"
+    "HEAD support on served screenshots (with content-length)",
+    "Before/after thumbnails on the /timeline activity feed",
+    "worklog.mjs shot <file> --caption — one-line screenshot upload",
+    "IMG-DROP scanner detector — catches label-only image drops in every app",
+    "Screenshot protocol documented in AGENT.md + llms.txt"
   ],
   "bugfixes": [
-    "XSS-INNERHTML no longer flags esc()-wrapped / numeric / literal interpolations",
-    "SEO-NO-OG/DESC no longer flag pages marked noindex",
-    "CLAIM-UNSOURCED-STAT no longer flags a stat that carries an adjacent citation"
+    "HEAD /api/shot/:key returned 404 — route matched GET only",
+    "Timeline dropped attached screenshots — /api/activity sent shots, additionCard never rendered them",
+    "Before/after screenshots requested but only names/captions stored — full photos dropped (user report)",
+    "Corrected stale detector counts in docs (41->42, 14->42)"
   ],
   "findings": [
-    "The old green tick certified a submitted list, not an audit — it could not tell code-read from title-listed.",
-    "My own earlier '73 already-escaped' critique was an overstatement: only ~6 are purely safe to drop; the real fix is the confidence split, not mass deletion.",
-    "Removing a name-based 'loop counter is safe' shortcut prevented a real false negative (img src=\"${d}\" where d is photo data)."
+    "The R2 binding, D1 shots column and upload/serve endpoints already existed — the honesty note had outlived the code that made it true.",
+    "The 'pulled only names, not photos' failure is a general class (label kept, image dropped), so the durable fix is a scanner detector every app runs, not a one-off patch."
   ],
   "insights": [
-    "Precision beats recall for a shared detector: when 99% is noise, a real finding gets pattern-dismissed with the rest.",
-    "Verify the critic — including yourself: measuring the claimed 73 esc-wrapped strings corrected the plan before it shipped."
+    "A caption is metadata ON an image, never a substitute for it — persist url|dataUrl|src|blob|base64|file alongside every caption."
   ]
 }

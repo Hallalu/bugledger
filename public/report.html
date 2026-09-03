@@ -3,316 +3,713 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bug Ledger · Sweep Report</title>
+<meta name="description" content="An itemised, severity-tagged report of one scan: what was found, why it matters, what was done, how the project is better now, and how it compares to last time.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bug Ledger · Scan story">
+<meta property="og:description" content="An itemised, severity-tagged report of one scan: what was found, why it matters, what was done, how the project is better now, and how it compares to last time.">
+<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>Bug Ledger · Scan Report</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
 <style>
   *{box-sizing:border-box}
   :root{
-    --bg:#f5f6fb; --ink:#12141c; --muted:#636879; --card:rgba(255,255,255,.74);
+    --bg:#f5f6fb; --ink:#12141c; --muted:#636879; --card:rgba(255,255,255,.76); --card2:rgba(255,255,255,.55);
     --line:rgba(18,20,28,.09); --coral:#ff6a5a; --good:#12b886; --violet:#8b7bf0; --amber:#e08a00; --red:#e5484d;
     --shadow:0 16px 44px -24px rgba(30,25,60,.32);
-    --crit:#b4227a; --high:#e5484d; --med:#d1620a; --low:#6b7280;
+    --crit:#b4227a; --high:#e5484d; --med:#d1620a; --low:#12b886; --info:#3b82f6; --gray:#6b7280;
+    --critbg:rgba(180,34,122,.12); --highbg:rgba(229,72,77,.12); --medbg:rgba(209,98,10,.13); --lowbg:rgba(18,184,134,.13); --infobg:rgba(59,130,246,.12);
   }
   @media (prefers-color-scheme:dark){
-    :root{ --bg:#0b0d15; --ink:#eef0f7; --muted:#9aa0b4; --card:rgba(255,255,255,.05);
-      --line:rgba(255,255,255,.11); --shadow:0 24px 60px -24px rgba(0,0,0,.7); }
+    :root{ --bg:#0b0d15; --ink:#eef0f7; --muted:#9aa0b4; --card:rgba(255,255,255,.055); --card2:rgba(255,255,255,.035);
+      --line:rgba(255,255,255,.11); --shadow:0 24px 60px -24px rgba(0,0,0,.7); --med:#f0883e; --low:#3ddc9a; }
   }
   html,body{margin:0;min-height:100%}
-  body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;color:var(--ink);
+  body{font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;color:var(--ink);
     background:var(--bg);overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased}
-  .aurora{position:fixed;inset:-20vh -10vw;z-index:-1;filter:blur(72px) saturate(120%);opacity:.75;pointer-events:none}
+  .aurora{position:fixed;inset:-20vh -10vw;z-index:-1;filter:blur(72px) saturate(120%);opacity:.7;pointer-events:none}
   .aurora span{position:absolute;border-radius:50%;animation:drift 26s ease-in-out infinite}
   .aurora .a{width:50vw;height:50vw;left:-6vw;top:-8vh;background:radial-gradient(circle at 30% 30%,#ff9a7a,transparent 62%)}
   .aurora .b{width:46vw;height:46vw;right:-8vw;top:-6vh;background:radial-gradient(circle at 60% 40%,#8ab6ff,transparent 62%);animation-delay:-8s}
   .aurora .c{width:46vw;height:46vw;left:14vw;bottom:-16vh;background:radial-gradient(circle at 50% 50%,#7ff0cf,transparent 60%);animation-delay:-14s}
   .aurora .d{width:38vw;height:38vw;right:6vw;bottom:-12vh;background:radial-gradient(circle at 50% 50%,#c9a3ff,transparent 62%);animation-delay:-19s}
-  @media (prefers-color-scheme:dark){.aurora{opacity:.5}}
+  @media (prefers-color-scheme:dark){.aurora{opacity:.45}}
   @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(3vw,4vh) scale(1.07)}66%{transform:translate(-3vw,-2vh) scale(.96)}}
-  @media (prefers-reduced-motion:reduce){.aurora span{animation:none}}
+  @media (prefers-reduced-motion:reduce){.aurora span{animation:none}.card{animation:none}}
 
-  .wrap{max-width:900px;margin:0 auto;padding:26px 20px 90px}
-  .crumbs{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:13px;margin-bottom:14px}
-  .crumbs a{color:inherit;text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:4px 11px}
-  .crumbs a:hover{color:var(--ink)}
+  .wrap{max-width:960px;margin:0 auto;padding:26px 20px 90px}
+  .crumbs{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:13px;margin-bottom:14px;flex-wrap:wrap}
+  .crumbs a,.crumbs button{color:inherit;text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:5px 12px;background:transparent;font:inherit;font-size:13px;cursor:pointer}
+  .crumbs a:hover,.crumbs button:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 30%,transparent)}
+  .crumbs .sp{flex:1}
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
-    backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);padding:20px 22px;margin:0 0 16px;
+    backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);padding:22px 24px;margin:0 0 16px;
     animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
   @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .hero{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
-  .kicker{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
+  h1{font-size:26px;letter-spacing:-.02em;margin:6px 0 4px;line-height:1.2}
+  h2{font-size:16px;margin:0 0 12px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  h2 .cnt{font-weight:700;color:var(--muted);font-size:13px}
+  h3{font-size:13.5px;margin:14px 0 6px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  p{margin:0 0 8px}
+  .muted{color:var(--muted)} .center{text-align:center}
+  .kicker{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:99px;display:inline-block}
+  .kicker.story{color:var(--coral);background:color-mix(in srgb,var(--coral) 14%,transparent)}
   .kicker.bugs{color:var(--violet);background:color-mix(in srgb,var(--violet) 14%,transparent)}
   .kicker.sec{color:var(--red);background:color-mix(in srgb,var(--red) 13%,transparent)}
   .kicker.opt{color:#7c5cff;background:color-mix(in srgb,#7c5cff 14%,transparent)}
-  .addgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-  @media (max-width:560px){.addgrid{grid-template-columns:1fr}}
-  .addtile{border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center}
-  .addtile .n{font-size:28px;font-weight:800;line-height:1}
-  .addtile.bug .n{color:var(--coral)} .addtile.security .n{color:var(--red)} .addtile.optimiser .n{color:#7c5cff}
-  .addtile .l{color:var(--muted);font-size:12px;margin-top:3px;text-transform:capitalize}
-  .addgroup{margin-top:6px}
-  .addgroup>h3{font-size:13px;margin:12px 0 6px;font-weight:750}
-  .prov{font-size:11.5px;color:var(--muted)}
-  h1{font-size:23px;letter-spacing:-.02em;margin:8px 0 4px}
   .sub{color:var(--muted);font-size:14px}
-  .verdict{font-weight:750;font-size:16px;margin-top:8px}
+  .sub b{color:var(--ink);font-weight:650}
+  .verdict{font-weight:750;font-size:17px;margin:12px 0 0;line-height:1.4}
   .verdict.ok{color:var(--good)} .verdict.warn{color:var(--coral)}
-  .donut{flex:none}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
-  .tile{background:color-mix(in srgb,var(--card) 60%,transparent);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-  .tile .n{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}
-  .tile .l{color:var(--muted);font-size:12px;margin-top:4px}
-  .tile.good .n{color:var(--good)} .tile.warn .n{color:var(--coral)}
-  h2{font-size:15px;margin:2px 0 12px;font-weight:750}
-  .bars{display:grid;gap:8px}
-  .barrow{display:grid;grid-template-columns:120px 1fr 34px;align-items:center;gap:10px;font-size:13px}
-  .barrow .lab{color:var(--muted);text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .track{height:12px;border-radius:99px;background:color-mix(in srgb,var(--muted) 16%,transparent);overflow:hidden}
-  .track>i{display:block;height:100%;border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
-  .barrow .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
-  ul.finds{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-  li.find{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-  li.find .ft{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .sev{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;color:#fff}
-  .sev.critical{background:var(--crit)}.sev.high{background:var(--high)}.sev.medium{background:var(--med)}.sev.low{background:var(--low)}
-  li.find .file{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted)}
-  li.find .note{color:var(--muted);font-size:13px;margin-top:3px}
-  li.find .fixed{color:var(--good);font-weight:700}
-  .cmp{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
-  .cmp .big{font-size:30px;font-weight:800}
-  .delta{font-weight:800;padding:3px 10px;border-radius:99px;font-size:13px}
+
+  /* severity + status pills — colour AND icon AND text, never colour alone */
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:3px 9px;border-radius:99px;white-space:nowrap;border:1px solid transparent;line-height:1.4}
+  .pill.critical{color:var(--crit);background:var(--critbg)} .pill.high{color:var(--high);background:var(--highbg)}
+  .pill.medium{color:var(--med);background:var(--medbg)} .pill.low{color:var(--low);background:var(--lowbg)} .pill.info{color:var(--info);background:var(--infobg)}
+  .pill.st-fixed{color:var(--good);background:var(--lowbg)} .pill.st-applied{color:var(--good);background:var(--lowbg)}
+  .pill.st-open{color:var(--high);background:var(--highbg)} .pill.st-needs-call{color:var(--med);background:var(--medbg)}
+  .pill.st-false-positive{color:var(--gray);background:color-mix(in srgb,var(--gray) 14%,transparent)}
+  .pill.st-recommended{color:var(--violet);background:color-mix(in srgb,var(--violet) 14%,transparent)}
+  .pill.st-wontfix{color:var(--gray);background:color-mix(in srgb,var(--gray) 14%,transparent)} .pill.st-clean{color:var(--good);background:var(--lowbg)}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--muted);background:transparent;font-family:inherit;cursor:default;line-height:1.4}
+  .chip.mono{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:600}
+  .chip.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 50%,transparent)}
+  .chip.add{color:var(--violet);border-color:color-mix(in srgb,var(--violet) 50%,transparent)}
+  button.chip{cursor:pointer}
+  button.chip:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 35%,transparent)}
+  button.chip[aria-pressed="true"]{color:var(--ink);background:color-mix(in srgb,var(--ink) 9%,transparent);border-color:color-mix(in srgb,var(--ink) 30%,transparent)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .summary button.chip{font-size:13px;padding:6px 12px}
+  .summary button.chip .n{font-weight:800;color:var(--ink)}
+  .hero{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+  .hero .txt{flex:1;min-width:260px}
+  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;min-width:220px}
+  .meta .tile{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 13px}
+  .tile .n{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+  .tile .l{color:var(--muted);font-size:12px;margin-top:3px}
+  .tile.good .n{color:var(--good)} .tile.warn .n{color:var(--coral)} .tile.gray .n{color:var(--muted)}
+
+  /* what it means */
+  .means{display:grid;gap:10px}
+  .means .tier{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card2)}
+  .means .tier .ic{font-size:20px;line-height:1.2;width:28px;text-align:center}
+  .means .tier b{display:block;margin-bottom:2px}
+  .means .tier p{margin:0;color:var(--muted);font-size:14px}
+  .means .tier.critical{border-color:color-mix(in srgb,var(--crit) 45%,transparent)} .means .tier.high{border-color:color-mix(in srgb,var(--high) 45%,transparent)}
+  .means .tier.medium{border-color:color-mix(in srgb,var(--med) 45%,transparent)} .means .tier.low{border-color:color-mix(in srgb,var(--low) 45%,transparent)}
+  .progressline{margin-top:14px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--good) 9%,transparent);border:1px solid color-mix(in srgb,var(--good) 35%,transparent);font-size:14.5px}
+  .progressline.worse{background:color-mix(in srgb,var(--coral) 9%,transparent);border-color:color-mix(in srgb,var(--coral) 35%,transparent)}
+  .progressline.first{background:color-mix(in srgb,var(--violet) 9%,transparent);border-color:color-mix(in srgb,var(--violet) 35%,transparent)}
+  .progressline b{font-weight:800}
+
+  /* better since the scan */
+  .metrics{display:grid;gap:10px}
+  .mrow{display:grid;grid-template-columns:minmax(140px,1.2fr) auto auto auto minmax(90px,1fr);gap:12px;align-items:center;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
+  @media (max-width:640px){.mrow{grid-template-columns:1fr auto auto auto}.mrow .track{grid-column:1/-1}}
+  .mrow .lab{font-weight:650}
+  .mrow .v{font-variant-numeric:tabular-nums;font-weight:800}
+  .mrow .v.before{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 50%,transparent);font-weight:600}
+  .mrow .arrow{color:var(--muted)}
+  .delta{font-weight:800;padding:2px 9px;border-radius:99px;font-size:12.5px;white-space:nowrap}
   .delta.down{color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
   .delta.up{color:var(--red);background:color-mix(in srgb,var(--red) 13%,transparent)}
   .delta.flat{color:var(--muted);background:color-mix(in srgb,var(--muted) 12%,transparent)}
+  .track{height:10px;border-radius:99px;background:color-mix(in srgb,var(--muted) 16%,transparent);overflow:hidden;position:relative}
+  .track>i{display:block;height:100%;border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1);background:linear-gradient(90deg,var(--good),#4fd1a5)}
+  .track>i.was{position:absolute;inset:0 auto 0 0;background:color-mix(in srgb,var(--muted) 35%,transparent)}
+
+  /* tabs */
+  .tabs{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:8px;margin:0 0 16px;border-radius:16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line)}
+  .tabs button{font:inherit;font-size:13.5px;font-weight:700;color:var(--muted);background:transparent;border:1px solid transparent;border-radius:12px;padding:8px 13px;cursor:pointer}
+  .tabs button:hover{color:var(--ink)}
+  .tabs button[aria-selected="true"]{color:var(--ink);background:var(--card);border-color:var(--line);box-shadow:0 6px 18px -12px rgba(0,0,0,.35)}
+  .tabs button .cnt{color:var(--muted);font-weight:700;margin-left:4px}
+  .panel[hidden]{display:none}
+
+  /* findings */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .toolbar input{flex:1;min-width:180px;font:inherit;font-size:14px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--ink)}
+  .toolbar input:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .filters .grp{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding-right:10px;margin-right:4px;border-right:1px solid var(--line)}
+  .filters .grp:last-child{border:0}
+  .filters .lab{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+  ol.finds{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:f}
+  li.find{border:1px solid var(--line);border-radius:16px;background:var(--card2);overflow:hidden;transition:border-color .15s}
+  li.find:hover{border-color:color-mix(in srgb,var(--ink) 22%,transparent)}
+  li.find.critical{border-left:4px solid var(--crit)} li.find.high{border-left:4px solid var(--high)} li.find.medium{border-left:4px solid var(--med)}
+  li.find.low{border-left:4px solid var(--low)} li.find.info{border-left:4px solid var(--info)}
+  li.find.st-false-positive{opacity:.78}
+  li.find .head{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:14px 16px 10px;cursor:pointer}
+  li.find .num{font-size:15px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.5;min-width:26px}
+  li.find .num::before{content:counter(f) ".";counter-increment:f}
+  li.find .ttl{font-weight:750;font-size:16px;line-height:1.35;letter-spacing:-.005em}
+  li.find .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+  li.find .body{padding:0 16px 14px 54px;display:grid;gap:10px}
+  @media (max-width:560px){li.find .body{padding-left:16px}}
+  li.find[data-open="false"] .body{display:none}
+  .kv{display:grid;grid-template-columns:118px 1fr;gap:10px;font-size:14.5px;line-height:1.5}
+  @media (max-width:560px){.kv{grid-template-columns:1fr;gap:2px}}
+  .kv .k{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+  .kv .v{white-space:pre-wrap;word-break:break-word}
+  .kv.fixv .v{color:var(--good)} .kv.fixv .v::before{content:"✓ "}
+  .kv.recv .v::before{content:"→ "}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .caret{display:inline-block;transition:transform .2s;color:var(--muted);font-size:12px;margin-left:4px}
+  li.find[data-open="false"] .caret{transform:rotate(-90deg)}
+  .empty{padding:24px;text-align:center;color:var(--muted)}
+
+  /* story timeline */
+  .tl{position:relative;padding-left:30px}
+  .tl::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line);border-radius:2px}
+  .ph{position:relative;margin:18px 0 8px}
+  .ph:first-child{margin-top:0}
+  .ph .dot{position:absolute;left:-27px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--coral);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--line)}
+  .ph .t{font-weight:800;font-size:15px}
+  .ph .when{color:var(--muted);font-size:12.5px;margin-left:8px;font-variant-numeric:tabular-nums}
+  .ev{position:relative;padding:7px 0 7px 4px;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;font-size:14.5px}
+  .ev .dot{position:absolute;left:-24px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--muted)}
+  .ev.found .dot{width:10px;height:10px;left:-25px;top:12px}
+  .ev.found.critical .dot{background:var(--crit)} .ev.found.high .dot{background:var(--high)} .ev.found.medium .dot{background:var(--med)} .ev.found.low .dot{background:var(--low)} .ev.found.info .dot{background:var(--info)}
+  .ev.fixed .dot,.ev.clean .dot{background:var(--good)} .ev.metric .dot{background:var(--violet)} .ev.caveat .dot{background:var(--amber)} .ev.verdict .dot{background:var(--ink)}
+  .ev .ic{width:22px;text-align:center;font-size:15px;line-height:1.5}
+  .ev .tx b{font-weight:700}
+  .ev .tx .d{color:var(--muted);font-size:13.5px;margin-top:2px;white-space:pre-wrap}
+  .ev .ts{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;margin-left:8px}
+  .ev.say .tx{color:var(--ink)}
+  .ev.note .tx{color:var(--muted)}
+  .ev.verdict .tx{font-weight:800;font-size:15.5px}
+  .ev.metric .tx .mv{font-weight:800;color:var(--violet)}
+
+  /* coverage (legacy sweep sections) */
+  .donut{flex:none}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+  .grid .tile{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .bars{display:grid;gap:8px}
+  .barrow{display:grid;grid-template-columns:140px 1fr 60px;align-items:center;gap:10px;font-size:13px}
+  .barrow .lab{color:var(--muted);text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barrow .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .cmp{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .cmp .big{font-size:30px;font-weight:800}
   .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   @media (max-width:620px){.twocol{grid-template-columns:1fr}}
-  .mini{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font-size:13px}
+  .mini{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font-size:13.5px}
   .mini li{color:var(--muted)} .mini li b{color:var(--ink);font-weight:600}
-  .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-  .chip{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
-  .chip.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 50%,transparent)}
-  .chip.add{color:var(--violet);border-color:color-mix(in srgb,var(--violet) 50%,transparent)}
-  .muted{color:var(--muted)} .center{text-align:center}
+  ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  ul.plain li{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card2)}
+  ul.plain li .ft{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  ul.plain li .note{color:var(--muted);font-size:13.5px;margin-top:3px}
+  .covtable{width:100%;border-collapse:collapse;font-size:13.5px}
+  .covtable th,.covtable td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  .covtable th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+  .covtable td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .legend .it{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2);font-size:13.5px}
+  .legend .it b{display:block}
+  .legend .it span{color:var(--muted)}
   .foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:26px}
   .foot a{color:inherit}
   .spin{width:26px;height:26px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--coral);animation:sp 1s linear infinite;margin:16vh auto}
   @keyframes sp{to{transform:rotate(360deg)}}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13.5px;font-weight:700;transition:.25s;pointer-events:none;z-index:9}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .banner{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:14px;background:color-mix(in srgb,var(--coral) 10%,transparent);border:1px solid color-mix(in srgb,var(--coral) 40%,transparent);margin-bottom:16px;font-size:14px}
+  .banner a{color:var(--coral);font-weight:800;text-decoration:none}
+  /* hover / focus tooltip — every colour tag explains itself in words */
+  [data-tip]{cursor:help}
+  .tip{position:fixed;z-index:20;max-width:320px;padding:10px 12px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:13px;line-height:1.45;box-shadow:0 14px 34px -14px rgba(0,0,0,.5);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+  .tip.show{opacity:1;transform:none}
+  .tip b{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+  .tip .do{display:block;font-weight:700;margin-bottom:2px}
+  .tip::after{content:"";position:absolute;left:var(--ax,20px);bottom:-6px;border:6px solid transparent;border-top-color:var(--ink);border-bottom:0}
+  .tip.below::after{bottom:auto;top:-6px;border-top:0;border-bottom:6px solid var(--ink)}
+  @media print{
+    .aurora,.crumbs,.tabs,.toolbar,.filters,.actions,.toast,.foot{display:none!important}
+    .panel[hidden]{display:block!important}
+    li.find[data-open="false"] .body{display:grid!important}
+    .card{box-shadow:none;break-inside:avoid;background:#fff;border-color:#ddd;animation:none}
+    body{background:#fff;color:#000}
+    .panel{page-break-before:auto}
+    .panel::before{content:attr(data-title);display:block;font-weight:800;font-size:18px;margin:18px 0 10px}
+  }
 </style>
 </head>
 <body>
 <div class="aurora"><span class="a"></span><span class="b"></span><span class="c"></span><span class="d"></span></div>
 <div class="wrap">
-  <div class="crumbs"><a href="/timeline">← Activity</a><a href="/live">Live</a><a href="/">The ledger</a></div>
+  <div class="crumbs"><a href="/timeline">← Activity</a><a href="/live">Live</a><a href="/">The ledger</a><span class="sp"></span>
+    <button type="button" id="copyMd" hidden>⧉ Copy as Markdown</button><button type="button" id="printBtn" hidden>🖨 Print / PDF</button></div>
   <div id="report"><div class="spin"></div></div>
-  <div class="foot">Append-only sweep report · a permanent record of what was checked, found, fixed and added.</div>
+  <div class="foot">Append-only scan report · a permanent record of what was checked, what was found, what was done, and how the project is better now. · <a href="/AGENT.md">agent protocol</a></div>
 </div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="tip" id="tip" role="tooltip" hidden></div>
 <script>
-  var $=function(s){return document.querySelector(s)};
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   var q=new URLSearchParams(location.search);
   var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
   var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function fullts(ts){var d=new Date(ts),p=function(n){return('0'+n).slice(-2)};return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
+  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  function p2(n){return('0'+n).slice(-2)}
+  function fullts(ts){var d=new Date(ts);return DAYS[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+', '+p2(d.getHours())+':'+p2(d.getMinutes())+':'+p2(d.getSeconds());}
+  function shortts(ts){var d=new Date(ts);return d.getDate()+' '+MON[d.getMonth()]+', '+p2(d.getHours())+':'+p2(d.getMinutes());}
+  function hms(ts){var d=new Date(ts);return p2(d.getHours())+':'+p2(d.getMinutes())+':'+p2(d.getSeconds());}
+  function dur(ms){var s=Math.max(0,Math.round(ms/1000));if(s<60)return s+'s';var m=Math.floor(s/60);if(m<60)return m+'m '+(s%60)+'s';var h=Math.floor(m/60);return h+'h '+(m%60)+'m';}
   function norm(t){return String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'');}
+  function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show')},1600);}
+  function copy(text,msg){ (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(function(){toast(msg||'Copied')}).catch(function(){
+    var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg||'Copied')}catch(e){toast('Could not copy')}ta.remove();}); }
 
-  // donut SVG (matched vs total)
-  function donut(matched,total,color){
-    var r=52,c=2*Math.PI*r,pct=total?matched/total:1,off=c*(1-pct);
-    var pctTxt=Math.round(pct*100)+'%';
-    return '<svg class="donut" width="132" height="132" viewBox="0 0 132 132">'+
-      '<circle cx="66" cy="66" r="'+r+'" fill="none" stroke="color-mix(in srgb,var(--muted) 18%,transparent)" stroke-width="13"/>'+
-      '<circle cx="66" cy="66" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="13" stroke-linecap="round" '+
-        'stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)"/>'+
-      '<text x="66" y="62" text-anchor="middle" font-size="26" font-weight="800" fill="var(--ink)">'+pctTxt+'</text>'+
-      '<text x="66" y="84" text-anchor="middle" font-size="12" fill="var(--muted)">'+matched+'/'+total+'</text></svg>';
-  }
-  function bars(entries,colorFor){
-    var max=Math.max(1,Math.max.apply(null,entries.map(function(e){return e.v})));
-    return '<div class="bars">'+entries.map(function(e){
-      return '<div class="barrow"><span class="lab">'+esc(e.k)+'</span>'+
-        '<span class="track"><i style="width:'+Math.round(e.v/max*100)+'%;background:'+colorFor(e.k)+'"></i></span>'+
-        '<span class="v">'+e.v+'</span></div>';
-    }).join('')+'</div>';
-  }
-  function trend(points,color){ // points = [{ts,v}]
-    if(points.length<2) return '';
-    var w=560,h=90,pad=8, xs=points.map(function(p){return p.ts}), vs=points.map(function(p){return p.v});
-    var minx=Math.min.apply(null,xs),maxx=Math.max.apply(null,xs),maxv=Math.max(1,Math.max.apply(null,vs));
-    var X=function(t){return maxx===minx?w/2:pad+(t-minx)/(maxx-minx)*(w-2*pad)};
-    var Y=function(v){return h-pad-(v/maxv)*(h-2*pad)};
-    var d=points.map(function(p,i){return (i?'L':'M')+X(p.ts).toFixed(1)+' '+Y(p.v).toFixed(1)}).join(' ');
-    var dots=points.map(function(p){return '<circle cx="'+X(p.ts).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="3.5" fill="'+color+'"/>'}).join('');
-    return '<svg width="100%" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" style="max-width:100%"><path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';
-  }
-  var SEVCOLOR={critical:'var(--crit)',high:'var(--high)',medium:'var(--med)',low:'var(--low)'};
-  function catColor(){return 'linear-gradient(90deg,var(--violet),#b3a3ff)';}
+  var SEV={critical:{ic:'🔴',lbl:'Critical',do:'Fix now',why:'Could expose data, break sign-in or take the app down for real users.'},
+           high:{ic:'🟠',lbl:'High',do:'Fix before the next release',why:'A real user hits this in normal use, or it is a security weakness an attacker could use.'},
+           medium:{ic:'🟡',lbl:'Medium',do:'Schedule it',why:'Degrades the experience for some users — accessibility, wrong dates, silent failures.'},
+           low:{ic:'🟢',lbl:'Low',do:'Polish when convenient',why:'Cosmetic or best-practice; no user is blocked.'},
+           info:{ic:'🔵',lbl:'Info',do:'For your awareness',why:'A note, a clean check or context — nothing to fix.'}};
+  var SEVORDER=['critical','high','medium','low','info'];
+  var ST={fixed:{ic:'✓',lbl:'Fixed'},applied:{ic:'✓',lbl:'Applied'},open:{ic:'◌',lbl:'Open'},'needs-call':{ic:'⚑',lbl:'Needs your call'},
+          'false-positive':{ic:'⊘',lbl:'False alarm'},recommended:{ic:'★',lbl:'Recommended'},wontfix:{ic:'—',lbl:'Won’t fix'},clean:{ic:'✓',lbl:'Clean'}};
+  var EV={detector:'detector ran','code-read':'code read',test:'test passed',reasoned:'reasoned',assumed:'assumed'};
+  var STTIP={fixed:'Done during the scan. The change is made and described — nothing for you to do.',applied:'This upgrade was applied during the scan.',open:'Real and not yet fixed. Use “copy fix prompt” to hand it to an agent.','needs-call':'A decision only you can make — wording, policy or a destructive change. The agent explains and recommends; you decide.','false-positive':'The scanner flagged it; the agent read the code and ruled it out. Kept so you can see the reasoning.',recommended:'An optimiser (a reusable upgrade) this project would benefit from — not a bug.',wontfix:'Judged not worth changing, with the reason given.',clean:'Checked and nothing found.'};
+  var EVTIP={detector:'A static check fired — deterministic, but only a lead until someone reads the line.','code-read':'The agent opened the file and confirmed it — the strongest everyday evidence.',test:'Proven by running a test.',reasoned:'Inferred, not inspected — treat as a claim.',assumed:'Assumed without checking — the weakest evidence.'};
+  function tipAttr(head,doTxt,why){return ' tabindex="0" data-tip="'+esc(JSON.stringify({h:head,d:doTxt||'',w:why||''}))+'"';}
+  function sevPill(s){s=SEV[s]?s:'info';return '<span class="pill '+s+'"'+tipAttr(SEV[s].ic+' '+SEV[s].lbl+' severity',SEV[s].do,SEV[s].why)+'>'+SEV[s].ic+' '+SEV[s].lbl+'</span>';}
+  function stPill(s){var o=ST[s]||ST.open;return '<span class="pill st-'+esc(s||'open')+'"'+tipAttr(o.ic+' '+o.lbl,'',STTIP[s]||STTIP.open)+'>'+o.ic+' '+o.lbl+'</span>';}
+  function evChip(v){return '<span class="chip"'+tipAttr('Evidence: '+(EV[v]||v),'',EVTIP[v]||'')+'>'+esc(EV[v]||v)+'</span>';}
+  function confChip(c){return '<span class="chip"'+tipAttr(c==='high'?'✔ High confidence':'◦ Needs review','',c==='high'?'Structural and near-certain — the detector is right about this class almost every time.':'A heuristic lead — confirm by reading before acting.')+'>'+(c==='high'?'✔ high confidence':'◦ review')+'</span>';}
 
-  // resilient loader — retry each fetch a couple of times; never die on a transient network blip
+  // ---------- loading ----------
   function getJSON(url,fallback,tries){
     tries=tries||0;
     return fetch(url,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
       .catch(function(){ return tries<2 ? new Promise(function(res){setTimeout(function(){res(getJSON(url,fallback,tries+1));},400*(tries+1));}) : fallback; });
   }
+  var pathStory=/^\/story\/([^/?#]+)/.exec(location.pathname);
+  var SESSION=q.get('session')||(pathStory&&decodeURIComponent(pathStory[1]));
   function load(){
-    Promise.all([
-      getJSON('/api/checks?limit=200',{checks:[]}),
-      getJSON('/checklist.json',{apps:{}}),
-      getJSON('/api/bugs?limit=200',{submitted:[]})
-    ]).then(function(res){
+    if(SESSION){
+      Promise.all([getJSON('/api/story?id='+encodeURIComponent(SESSION),null),getJSON('/api/checks?limit=200',{checks:[]}),getJSON('/checklist.json',{apps:{}}),getJSON('/api/bugs?limit=200',{submitted:[]})])
+        .then(function(res){
+          if(!res[0]||!res[0].ok){ notFound(!res[0]); return; }
+          renderStory(res[0],(res[1]&&res[1].checks)||[],res[2]||{apps:{}},(res[3]&&res[3].submitted)||[]);
+        });
+      return;
+    }
+    Promise.all([getJSON('/api/checks?limit=200',{checks:[]}),getJSON('/checklist.json',{apps:{}}),getJSON('/api/bugs?limit=200',{submitted:[]})]).then(function(res){
       var checks=(res[0]&&res[0].checks)||[], cat=res[1]||{apps:{}}, submitted=(res[2]&&res[2].submitted)||[];
       var id=q.get('id'), app=q.get('app'), project=q.get('project');
       var c = id ? checks.find(function(x){return x.id===id})
         : checks.filter(function(x){return (!app||x.app===app)&&(!project||x.project===project)}).sort(function(a,b){return b.ts-a.ts})[0];
-      if(!c){
-        var lost=!checks.length;
-        $('#report').innerHTML='<div class="card center"><h1>'+(lost?'Couldn’t load the report':'Report not found')+'</h1>'+
-          '<p class="muted">'+(lost?'The connection dropped while loading.':'This sweep may have been pruned.')+
-          ' <a href="#" id="retry" style="color:var(--coral)">Retry</a> · <a href="/timeline">Activity</a></p></div>';
-        var rt=document.getElementById('retry'); if(rt) rt.onclick=function(e){e.preventDefault();$('#report').innerHTML='<div class="spin"></div>';load();};
-        return;
-      }
-      render(c,checks,cat,submitted);
+      if(!c){ notFound(!checks.length); return; }
+      // a check that belongs to a story → show the story (it contains this check) unless ?legacy=1
+      if(c.sessionId && !q.get('legacy')){ SESSION=c.sessionId; history.replaceState(null,'','/story/'+c.sessionId); load(); return; }
+      var html='<div class="banner">🐛 Coverage record only — this sweep was logged before scan stories existed, so there is no narrative for it. <a href="/timeline">See newer sweeps →</a></div>';
+      html+=renderCheck(c,checks,cat,submitted,{standalone:true});
+      document.title='Report · '+c.app;
+      $('#report').innerHTML=html;
     });
+  }
+  function notFound(lost){
+    $('#report').innerHTML='<div class="card center"><h1>'+(lost?'Couldn’t load the report':'Report not found')+'</h1>'+
+      '<p class="muted">'+(lost?'The connection dropped while loading.':'This sweep may have been pruned.')+
+      ' <a href="#" id="retry" style="color:var(--coral)">Retry</a> · <a href="/timeline">Activity</a></p></div>';
+    var rt=document.getElementById('retry'); if(rt) rt.onclick=function(e){e.preventDefault();$('#report').innerHTML='<div class="spin"></div>';load();};
   }
   load();
 
-  function catOfTitle(cat,title){
-    var n=norm(title);
-    for(var a in cat.apps){ for(var i=0;i<cat.apps[a].length;i++){ if(norm(cat.apps[a][i].title)===n) return cat.apps[a][i].category; } }
-    return 'other';
+  // ---------- story ----------
+  var DATA=null;
+  function resolveFindings(events){
+    var finds=events.filter(function(e){return e.kind==='found'}).map(function(f){return Object.assign({},f)});
+    var byId={},byTitle={};
+    finds.forEach(function(f){byId[f.id]=f;byTitle[norm(f.title)]=f.id});
+    events.forEach(function(e){ if(e.kind!=='fixed')return; var id=(e.ref&&byId[e.ref])?e.ref:byTitle[norm(e.title)]; var f=id&&byId[id]; if(!f)return;
+      f.status=e.status||'fixed'; if(e.fix)f.fix=e.fix; if(e.file&&!f.file)f.file=e.file; f.fixedAt=e.ts; });
+    return finds;
+  }
+  function pct(a,b){ if(!a) return null; return Math.round((a-b)/a*100); }
+  function isNum(v){return v!=null&&v!==''&&!isNaN(parseFloat(String(v).replace(/[^0-9.\-]/g,'')));}
+  function numOf(v){return parseFloat(String(v).replace(/[^0-9.\-]/g,''));}
+
+  function renderStory(d,allChecks,cat,allSubmitted){
+    DATA=d;
+    var s=d.session, events=d.events||[], checks=d.checks||[], adds=d.additions||[];
+    if(!adds.length) adds=allSubmitted.filter(function(x){return x.app===s.app && x.ts>=s.started-60000 && x.ts<=s.updated+30*60000;});
+    var finds=resolveFindings(events);
+    finds.sort(function(a,b){return SEVORDER.indexOf(a.severity||'info')-SEVORDER.indexOf(b.severity||'info')||a.ts-b.ts});
+    var real=finds.filter(function(f){return f.status!=='false-positive'});
+    var bySev={},byStatus={},byCat={};
+    finds.forEach(function(f){var sv=f.severity||'info';bySev[sv]=(bySev[sv]||0)+1;var st=f.status||'open';byStatus[st]=(byStatus[st]||0)+1;if(f.category)byCat[f.category]=(byCat[f.category]||0)+1;});
+    var fixedN=(byStatus.fixed||0)+(byStatus.applied||0), needN=byStatus['needs-call']||0, openN=byStatus.open||0, fpN=byStatus['false-positive']||0, recN=byStatus.recommended||0;
+    var cleans=events.filter(function(e){return e.kind==='clean'});
+    var metrics=events.filter(function(e){return e.kind==='metric'});
+    var caveats=events.filter(function(e){return e.kind==='caveat'});
+    var verdictEv=events.slice().reverse().find(function(e){return e.kind==='verdict'});
+    var phases=events.filter(function(e){return e.kind==='phase'});
+    var done=s.status==='done';
+    var headline=checks.slice().sort(function(a,b){var r={full:0,all:1,security:2,optimisers:3};return (r[a.scope]==null?9:r[a.scope])-(r[b.scope]==null?9:r[b.scope])||b.ts-a.ts})[0];
+    var scanned=Math.max.apply(null,[0].concat(checks.map(function(c){return c.scanned||0})));
+    var itemsChecked=headline&&headline.coverage&&headline.coverage.total>0?headline.coverage.total:null;   // a 0-item catalogue match is "no coverage", not "0 checked"
+    var inspected=itemsChecked&&headline.coverage.verified!=null?headline.coverage.verified:null;
+
+    // verdict
+    var vtxt=verdictEv?fullText(verdictEv):(real.length?(fixedN+' fixed'+(needN?', '+needN+' for your call':'')+(openN?', '+openN+' open':'')+(fpN?', '+fpN+' false alarm'+(fpN>1?'s':'')+' verified':'')):(done?'Clean — nothing from the ledger is present in this project':'Scan in progress'));
+    var vcls=(openN||(bySev.critical&&!fixedN))?'warn':(real.length&&!openN&&!needN?'ok':(real.length?'warn':'ok'));
+
+    var html='';
+    // ---- hero ----
+    html+='<div class="card"><div class="hero"><div class="txt">'+
+      '<span class="kicker story">📖 Scan story'+(done?'':' · live')+'</span>'+
+      '<h1>'+esc(s.app)+(s.project&&norm(s.project)!==norm(s.app)?' <span class="muted" style="font-weight:600">· '+esc(s.project)+'</span>':'')+'</h1>'+
+      '<div class="sub">'+esc(s.title||'')+'</div>'+
+      '<div class="sub" style="margin-top:4px">'+fullts(s.started)+' · <b>'+dur((s.updated||Date.now())-s.started)+'</b>'+(done?'':' so far')+' · by '+esc(s.agent||'agent')+(scanned?' · '+scanned+' files read':'')+(phases.length?' · '+phases.length+' phases':'')+' · '+events.length+' story lines</div>'+
+      '<div class="verdict '+vcls+'">'+(vcls==='ok'?'✓ ':'⚠ ')+esc(vtxt)+'</div>'+
+      '<div class="summary" role="group" aria-label="Filter findings by severity or status">'+
+        SEVORDER.filter(function(k){return bySev[k]}).map(function(k){return '<button class="chip" type="button" data-filter="sev:'+k+'" data-tip="'+esc(JSON.stringify({h:SEV[k].ic+' '+SEV[k].lbl+' · '+bySev[k],d:SEV[k].do,w:SEV[k].why+' Click to show only these.'}))+'">'+SEV[k].ic+' <span class="n">'+bySev[k]+'</span> '+SEV[k].lbl.toLowerCase()+'</button>'}).join('')+
+        (fixedN?'<button class="chip ok" type="button" data-filter="st:fixed">✓ <span class="n">'+fixedN+'</span> fixed</button>':'')+
+        (needN?'<button class="chip" type="button" data-filter="st:needs-call">⚑ <span class="n">'+needN+'</span> need your call</button>':'')+
+        (openN?'<button class="chip" type="button" data-filter="st:open">◌ <span class="n">'+openN+'</span> open</button>':'')+
+        (fpN?'<button class="chip" type="button" data-filter="st:false-positive">⊘ <span class="n">'+fpN+'</span> false alarm'+(fpN>1?'s':'')+'</button>':'')+
+        (cleans.length?'<button class="chip ok" type="button" data-tab="clean">✅ <span class="n">'+cleans.length+'</span> families clean</button>':'')+
+      '</div></div>'+
+      '<div class="meta">'+
+        (itemsChecked!=null?tile(itemsChecked,'items checked',''):tile(finds.length,'findings',''))+
+        tile(real.length,'real issues',real.length?'warn':'good')+
+        tile(fixedN,'fixed','good')+
+        (inspected!=null?tile(Math.round(inspected/itemsChecked*100)+'%','inspected by reading','gray'):tile(adds.length,'added to ledger',''))+
+      '</div></div></div>';
+
+    // ---- what this means for you ----
+    html+='<div class="card"><h2>What this means for you</h2><div class="means">';
+    if(!real.length){
+      html+='<div class="tier low"><div class="ic">✅</div><div><b>Nothing from the ledger is present in this project'+(done?'':' so far')+'.</b><p>'+(itemsChecked?'All '+itemsChecked+' catalogue items were checked'+(inspected!=null?', '+inspected+' of them by actually reading the code':'')+'.':'Every finding raised was verified as a false alarm or clean.')+(fpN?' '+fpN+' detector hit'+(fpN>1?'s were':' was')+' read and ruled out — no action needed.':'')+'</p></div></div>';
+    }
+    SEVORDER.filter(function(k){return k!=='info'&&real.some(function(f){return (f.severity||'info')===k})}).forEach(function(k){
+      var list=real.filter(function(f){return (f.severity||'info')===k});
+      var fx=list.filter(function(f){return f.status==='fixed'||f.status==='applied'}).length, nc=list.filter(function(f){return f.status==='needs-call'}).length, op=list.length-fx-nc;
+      var sentence=list.length+' '+SEV[k].lbl.toLowerCase()+' issue'+(list.length>1?'s':'')+' — '+SEV[k].why+' ';
+      sentence+=fx===list.length?'All '+(list.length>1?'of them are':'')+' fixed already; nothing for you to do.':((fx?fx+' fixed. ':'')+(nc?nc+' need'+(nc>1?'':'s')+' a decision only you can make. ':'')+(op?op+' still open — '+SEV[k].do.toLowerCase()+'.':''));
+      html+='<div class="tier '+k+'"><div class="ic">'+SEV[k].ic+'</div><div><b>'+SEV[k].lbl+' · '+SEV[k].do+'</b><p>'+esc(sentence)+'</p></div></div>';
+    });
+    if(needN){ html+='<div class="tier"><div class="ic">⚑</div><div><b>'+needN+' decision'+(needN>1?'s':'')+' waiting on you</b><p>'+esc(real.filter(function(f){return f.status==='needs-call'}).map(function(f){return f.title}).join(' · '))+' — each one is explained under Findings with a recommendation.</p></div></div>'; }
+    if(fpN){ html+='<div class="tier"><div class="ic">⊘</div><div><b>'+fpN+' detector hit'+(fpN>1?'s':'')+' verified as false alarm'+(fpN>1?'s':'')+'</b><p>The scanner flagged them; the agent read the code and confirmed they are not real. Listed under Findings so you can see the reasoning — nothing to do.</p></div></div>'; }
+    if(recN){ html+='<div class="tier"><div class="ic">★</div><div><b>'+recN+' elevation'+(recN>1?'s':'')+' worth applying</b><p>Not bugs — reusable upgrades from the optimiser catalogue this project would genuinely benefit from.</p></div></div>'; }
+    if(caveats.length){ html+='<div class="tier"><div class="ic">⚠</div><div><b>'+caveats.length+' honest caveat'+(caveats.length>1?'s':'')+'</b><p>'+esc(caveats.map(fullText).join(' · '))+'</p></div></div>'; }
+    html+='</div>'+progressLine(d,real,fixedN,openN+needN,metrics)+'</div>';
+
+    // ---- better since the scan ----
+    if(metrics.length||fixedN){
+      html+='<div class="card"><h2>Better since the scan <span class="cnt">before → after</span></h2><div class="metrics">';
+      metrics.forEach(function(m){ html+=metricRow(m.title,m.before,m.after,m.detail); });
+      if(fixedN) html+=metricRow('Issues present in this project',real.length,real.length-fixedN,fixedN+' fixed during the scan'+(openN+needN?'; '+(openN+needN)+' remain':''));
+      html+='</div></div>';
+    }
+
+    // ---- tabs ----
+    var tabs=[['findings','Findings',finds.length],['story','How the scan unfolded',events.length],['coverage','Coverage',checks.length],['added','Added to the ledger',adds.length],['clean','Checked & clean',cleans.length+(headline?(headline.notFound||[]).length:0)],['legend','Reading this report',null]];
+    html+='<div class="tabs" role="tablist">'+tabs.map(function(t,i){return '<button role="tab" type="button" data-tab="'+t[0]+'" aria-selected="'+(i===0)+'" aria-controls="p-'+t[0]+'">'+esc(t[1])+(t[2]!=null?'<span class="cnt">'+t[2]+'</span>':'')+'</button>'}).join('')+'</div>';
+
+    // ---- findings ----
+    html+='<section class="panel card" id="p-findings" data-title="Findings" role="tabpanel">';
+    if(finds.length){
+      html+='<h2>Findings, itemised <span class="cnt" id="findCount">'+finds.length+'</span></h2>'+
+        '<div class="toolbar"><input type="search" id="findSearch" placeholder="Search findings — title, file, plain-English detail…" aria-label="Search findings">'+
+        '<button class="chip" type="button" id="expandAll">Expand all</button><button class="chip" type="button" id="collapseAll">Collapse all</button></div>'+
+        '<div class="filters" id="filters">'+
+          '<div class="grp"><span class="lab">Severity</span>'+SEVORDER.filter(function(k){return bySev[k]}).map(function(k){return '<button class="chip" type="button" data-filter="sev:'+k+'" aria-pressed="false">'+SEV[k].ic+' '+SEV[k].lbl+' '+bySev[k]+'</button>'}).join('')+'</div>'+
+          '<div class="grp"><span class="lab">Status</span>'+Object.keys(byStatus).map(function(k){return '<button class="chip" type="button" data-filter="st:'+k+'" aria-pressed="false">'+(ST[k]||ST.open).ic+' '+(ST[k]||ST.open).lbl+' '+byStatus[k]+'</button>'}).join('')+'</div>'+
+          (Object.keys(byCat).length?'<div class="grp"><span class="lab">Area</span>'+Object.keys(byCat).sort().map(function(k){return '<button class="chip" type="button" data-filter="cat:'+esc(k)+'" aria-pressed="false">'+esc(k)+' '+byCat[k]+'</button>'}).join('')+'</div>':'')+
+          '<button class="chip" type="button" id="clearFilters" hidden>✕ clear filters</button>'+
+        '</div>'+
+        '<ol class="finds" id="findList">'+finds.map(findCard).join('')+'</ol><div class="empty" id="findEmpty" hidden>No findings match those filters.</div>';
+    } else {
+      html+='<div class="center" style="padding:14px 0"><h2 style="justify-content:center;margin:0">✓ No issues raised'+(done?'':' yet')+'</h2><p class="muted" style="margin:6px 0 0">'+(done?'The agent walked the whole catalogue and raised nothing for this project.':'The scan is still running — findings appear here the moment the agent raises them.')+'</p></div>';
+    }
+    html+='</section>';
+
+    // ---- story timeline ----
+    html+='<section class="panel card" id="p-story" data-title="How the scan unfolded" role="tabpanel" hidden><h2>How the scan unfolded <span class="cnt">the agent’s own narrative, as it worked</span></h2>'+timeline(events,s.started)+'</section>';
+
+    // ---- coverage ----
+    html+='<section class="panel card" id="p-coverage" data-title="Coverage" role="tabpanel" hidden>';
+    if(checks.length){
+      html+='<h2>Coverage, server-verified <span class="cnt">'+checks.length+' record'+(checks.length>1?'s':'')+'</span></h2>'+
+        '<p class="muted" style="margin-bottom:10px">Each line is a post the ledger checked against its own catalogue — <b>listed</b> is what the agent reported, <b>inspected</b> is how much of it was proven by a detector, a code read or a test rather than reasoned about.</p>'+
+        '<div style="overflow-x:auto"><table class="covtable"><thead><tr><th>Scope</th><th>Listed</th><th>Inspected</th><th>Present</th><th>When</th><th></th></tr></thead><tbody>'+
+        checks.map(function(c){var cv=c.coverage||{};return '<tr><td><b>'+esc(scopeLabel(c.scope))+'</b></td><td class="num">'+(cv.complete?'✅ ':'⚠ ')+cv.matched+'/'+cv.total+'</td><td class="num">'+(cv.verified!=null?'🔬 '+cv.verified+'/'+cv.total+' ('+cv.verifiedPct+'%)':'—')+'</td><td class="num">'+(c.foundCount||0)+'</td><td class="num">'+hms(c.ts)+'</td><td><a href="/report?id='+esc(c.id)+'&legacy=1" style="color:var(--coral);font-weight:700;text-decoration:none">detail →</a></td></tr>'}).join('')+
+        '</tbody></table></div>';
+      if(headline) html+='<div style="margin-top:16px">'+renderCheck(headline,allChecks,cat,allSubmitted,{embedded:true})+'</div>';
+    } else html+='<h2>Coverage</h2><p class="muted">No coverage record is linked to this session'+(done?'':' yet')+'. Coverage posts appear here when the agent sends <code>sessionId</code> on <code>POST /api/checks</code>.</p>';
+    html+='</section>';
+
+    // ---- added to ledger ----
+    html+='<section class="panel card" id="p-added" data-title="Added to the ledger" role="tabpanel" hidden><h2>Added to the ledger from this scan <span class="cnt">'+adds.length+'</span></h2>';
+    if(adds.length){
+      html+='<p class="muted" style="margin-bottom:10px">New items discovered here and appended to the shared ledger — permanent and append-only, so <b>every future project is checked for them too</b>. This is how one scan makes the next one stricter.</p><ul class="plain">'+
+        adds.map(function(a){var k=a.kind==='optimiser'?'✨ optimiser':(a.kind==='security'?'🛡 security':'🐛 bug');return '<li><div class="ft"><span class="chip add">'+k+'</span>'+(a.severity&&a.kind!=='optimiser'?sevPill(a.severity):'')+'<b>'+esc(a.title)+'</b>'+(a.category?'<span class="chip">'+esc(a.category)+'</span>':'')+(a.file?'<span class="chip mono">'+esc(a.file)+'</span>':'')+'</div>'+(a.symptom?'<div class="note">'+esc(a.symptom)+'</div>':'')+(a.fix?'<div class="note">Fix: '+esc(a.fix)+'</div>':'')+'</li>'}).join('')+'</ul>';
+    } else html+='<p class="muted">Nothing new — everything found was already in the catalogue. <span class="chip ok">nothing new</span></p>';
+    html+='</section>';
+
+    // ---- clean ----
+    html+='<section class="panel card" id="p-clean" data-title="Checked & clean" role="tabpanel" hidden><h2>Checked &amp; clean</h2>';
+    if(cleans.length) html+='<h3>Families the agent walked and found clean</h3><ul class="plain">'+cleans.map(function(c){return '<li><div class="ft">'+stPill('clean')+'<b>'+esc(c.title)+'</b>'+(c.meta&&c.meta.checked?'<span class="chip">'+c.meta.checked+' checked</span>':'')+(c.verifiedBy?evChip(c.verifiedBy):'')+'</div>'+(c.detail?'<div class="note">'+esc(c.detail)+'</div>':'')+'</li>'}).join('')+'</ul>';
+    if(headline&&(headline.notFound||[]).length){ var nf=headline.notFound; html+='<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:750">'+nf.length+' catalogue items checked &amp; not present</summary><ul class="mini" style="margin-top:10px;columns:2">'+nf.slice(0,600).map(function(t){return '<li>✓ '+esc(String(typeof t==='string'?t:t.title).replace(/ \(static check clean\)$/,''))+'</li>'}).join('')+'</ul></details>'; }
+    if(!cleans.length&&!(headline&&(headline.notFound||[]).length)) html+='<p class="muted">No clean-family records'+(done?'':' yet')+'.</p>';
+    html+='</section>';
+
+    // ---- legend ----
+    html+='<section class="panel card" id="p-legend" data-title="Reading this report" role="tabpanel" hidden><h2>Reading this report</h2>'+
+      '<h3>Severity — how much it matters, and what to do</h3><div class="legend">'+SEVORDER.map(function(k){return '<div class="it"><div>'+sevPill(k)+'</div><div><b>'+esc(SEV[k].do)+'</b><span>'+esc(SEV[k].why)+'</span></div></div>'}).join('')+'</div>'+
+      '<h3>Status — where each finding stands</h3><div class="legend">'+
+        '<div class="it"><div>'+stPill('fixed')+'</div><div><b>Done during the scan</b><span>The change is made and described. Nothing for you to do.</span></div></div>'+
+        '<div class="it"><div>'+stPill('needs-call')+'</div><div><b>A decision only you can make</b><span>Wording, policy, or a destructive change — the agent explains and recommends, you decide.</span></div></div>'+
+        '<div class="it"><div>'+stPill('open')+'</div><div><b>Real and not yet fixed</b><span>Use “copy fix prompt” to hand it straight to an agent.</span></div></div>'+
+        '<div class="it"><div>'+stPill('false-positive')+'</div><div><b>The scanner was wrong</b><span>Read and ruled out. Kept so you can see the reasoning, and so the ledger learns.</span></div></div>'+
+        '<div class="it"><div>'+stPill('recommended')+'</div><div><b>Worth applying</b><span>An optimiser (a reusable upgrade) this project would benefit from.</span></div></div>'+
+      '</div>'+
+      '<h3>Evidence — how each finding was verified</h3><div class="legend">'+
+        '<div class="it"><div><span class="chip">detector ran</span></div><div><b>A static check fired</b><span>Deterministic, but only a lead until read.</span></div></div>'+
+        '<div class="it"><div><span class="chip">code read</span></div><div><b>The agent opened the file</b><span>The strongest everyday evidence — the line is quoted.</span></div></div>'+
+        '<div class="it"><div><span class="chip">test passed</span></div><div><b>A test covers it</b><span>Proven by execution.</span></div></div>'+
+        '<div class="it"><div><span class="chip">reasoned</span></div><div><b>Inferred, not inspected</b><span>Honest default; treat as a claim.</span></div></div>'+
+      '</div>'+
+      '<h3>Why the ledger matters</h3><p class="muted" style="font-size:14px">Every bug, security hole and optimiser ever hit across the whole portfolio lives in one append-only catalogue. A scan checks <b>this</b> project against <b>all</b> of it, proves the coverage server-side, fixes what it can, explains what it can’t in plain English, and appends anything new — so the next project is checked for it too. The story above is the agent’s own account of doing exactly that, line by line, with the reasoning left in.</p>'+
+      '</section>';
+
+    document.title='Story · '+s.app+(done?'':' (live)');
+    $('#report').innerHTML=html;
+    $('#copyMd').hidden=false; $('#printBtn').hidden=false;
+    wire(finds,s);
+    if(!done) setTimeout(function(){ getJSON('/api/story?id='+encodeURIComponent(SESSION),null).then(function(r){ if(r&&r.ok&&(r.events.length!==events.length||r.session.status!==s.status)){ var t=activeTab(); renderStory(r,allChecks,cat,allSubmitted); selectTab(t);} else if(!done) setTimeout(arguments.callee,4000); }); },4000);
+  }
+  function tile(n,l,cls){return '<div class="tile '+(cls||'')+'"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
+  function scopeLabel(sc){ if(!sc||sc==='app')return 'this app'; if(sc==='all')return 'all bugs (16 categories)'; if(sc==='security')return 'security sweep'; if(sc==='optimisers')return 'optimisers'; if(sc==='full')return 'grand total (everything)'; var m=/^category:(.+)$/.exec(sc); return m?m[1]+' bugs':sc; }
+  function metricRow(label,before,after,note){
+    var b=isNum(before)?numOf(before):null, a=isNum(after)?numOf(after):null;
+    var d=(b!=null&&a!=null)?a-b:null, p=(b!=null&&a!=null&&b)?Math.round((b-a)/b*100):null;
+    var cls=d==null?'flat':(d<0?'down':(d>0?'up':'flat'));
+    var dt=d==null?'changed':(d<0?'↓ '+(-d)+(p!=null?' · '+p+'% better':''):(d>0?'↑ '+d+(p!=null?' · '+(-p)+'% more':''):'no change'));
+    var max=Math.max(b||0,a||0,1);
+    return '<div class="mrow"><div class="lab">'+esc(label)+(note?'<div class="muted" style="font-size:12.5px;font-weight:500">'+esc(note)+'</div>':'')+'</div>'+
+      '<div class="v before">'+esc(before)+'</div><div class="arrow">→</div><div class="v">'+esc(after)+' <span class="delta '+cls+'">'+dt+'</span></div>'+
+      (b!=null&&a!=null?'<div class="track"><i class="was" style="width:'+Math.round(b/max*100)+'%"></i><i style="width:'+Math.round(a/max*100)+'%;position:relative"></i></div>':'<div></div>')+'</div>';
+  }
+  function progressLine(d,real,fixedN,remaining,metrics){
+    var p=d.previous;
+    if(!p||!p.rollup) return '<div class="progressline first">📍 <b>First story for '+esc(d.session.app)+'.</b> This scan is the baseline — the next one will show progress against it here, in numbers.</div>';
+    var pr=p.rollup, prevReal=pr.real||0, prevOpen=(pr.byStatus&&((pr.byStatus.open||0)+(pr.byStatus['needs-call']||0)))||0;
+    var dReal=real.length-prevReal, pReal=prevReal?Math.round((prevReal-real.length)/prevReal*100):null;
+    var better=dReal<0||(dReal===0&&remaining<prevOpen);
+    var s='📈 <b>Since the last scan on '+shortts(p.started)+':</b> real issues '+prevReal+' → '+real.length+(pReal!=null&&dReal!==0?' ('+(dReal<0?pReal+'% fewer':(-pReal)+'% more')+')':(dReal===0?' (no change)':''))+
+      ' · outstanding '+prevOpen+' → '+remaining+' · fixed this run '+fixedN+'.';
+    // same-label metrics: compare "after" values
+    var cmp=[]; (pr.metrics||[]).forEach(function(pm){ var m=metrics.find(function(x){return norm(x.title)===norm(pm.label)}); if(m&&isNum(pm.after)&&isNum(m.after)){ var a=numOf(pm.after), b=numOf(m.after); cmp.push(esc(m.title)+' '+a+' → '+b+(a?' ('+Math.round((a-b)/a*100)+'%'+(b<=a?' better':' worse')+')':'')); } });
+    if(cmp.length) s+=' Compared on the same yardstick: '+cmp.join('; ')+'.';
+    s+=' <a href="/story/'+esc(p.id)+'" style="color:inherit;font-weight:700">previous story →</a>';
+    return '<div class="progressline '+(better?'':(dReal>0?'worse':''))+'">'+s+'</div>';
+  }
+  function findCard(f,i){
+    var sv=SEV[f.severity]?f.severity:'info', st=f.status||'open';
+    var hay=[f.title,f.file,f.detail,f.impact,f.fix,f.category,f.phase].join(' ').toLowerCase();
+    return '<li class="find '+sv+' st-'+st+'" data-open="true" data-sev="'+sv+'" data-st="'+esc(st)+'" data-cat="'+esc(f.category||'')+'" data-hay="'+esc(hay)+'">'+
+      '<div class="head" role="button" tabindex="0" aria-expanded="true"><div class="num"></div><div>'+
+        '<div class="ttl">'+esc(f.title)+'<span class="caret">▼</span></div>'+
+        '<div class="tags">'+sevPill(sv)+stPill(st)+(f.category?'<span class="chip">'+esc(f.category)+'</span>':'')+(f.file?'<button class="chip mono" type="button" data-copy="'+esc(f.file)+'" title="Copy path">'+esc(f.file)+'</button>':'')+
+          (f.verifiedBy?evChip(f.verifiedBy):'')+(f.confidence?confChip(f.confidence):'')+(f.phase?'<span class="chip" title="Phase">'+esc(f.phase)+'</span>':'')+'</div>'+
+      '</div></div>'+
+      '<div class="body">'+
+        (f.detail?'<div class="kv"><div class="k">What was wrong</div><div class="v">'+esc(f.detail)+'</div></div>':'')+
+        (f.impact?'<div class="kv"><div class="k">Why it matters</div><div class="v">'+esc(f.impact)+'</div></div>':'')+
+        (f.fix?'<div class="kv '+(st==='fixed'||st==='applied'?'fixv':'recv')+'"><div class="k">'+(st==='fixed'||st==='applied'?'What was done':(st==='false-positive'?'Why it’s a false alarm':'Recommendation'))+'</div><div class="v">'+esc(f.fix)+'</div></div>':'')+
+        (!f.detail&&!f.impact&&!f.fix?'<div class="kv"><div class="k">Detail</div><div class="v muted">No further detail was recorded for this finding.</div></div>':'')+
+        '<div class="actions">'+(st==='open'||st==='needs-call'||st==='recommended'?'<button class="chip" type="button" data-prompt="'+i+'">⧉ Copy fix prompt</button>':'')+'<button class="chip" type="button" data-md="'+i+'">⧉ Copy as Markdown</button>'+(f.fixedAt?'<span class="chip">fixed at '+hms(f.fixedAt)+'</span>':'')+'<span class="chip">raised at '+hms(f.ts)+'</span></div>'+
+      '</div></li>';
+  }
+  var EVIC={phase:'▶',say:'💬',found:'•',fixed:'✓',clean:'✅',metric:'📈',verdict:'🏁',caveat:'⚠',note:'·'};
+  // a trimmed headline ("…") keeps its full text in detail — show the whole thing, once
+  function trimmed(e){return e&&e.detail&&/…$/.test(e.title||'')&&e.detail.indexOf((e.title||'').slice(0,-1))===0;}
+  function fullText(e){return trimmed(e)?e.detail:(e.title||e.detail||'');}
+  function extraDetail(e){return trimmed(e)?'':(e.detail||'');}
+  function timeline(events,started){
+    if(!events.length) return '<p class="muted">No story lines yet.</p>';
+    var html='<div class="tl">', n=0;
+    events.forEach(function(e){
+      if(e.kind==='phase'){ html+='<div class="ph"><span class="dot"></span><span class="t">'+esc(e.title)+'</span><span class="when">'+hms(e.ts)+' · +'+dur(e.ts-started)+'</span>'+(e.detail?'<div class="muted" style="font-size:13.5px">'+esc(e.detail)+'</div>':'')+'</div>'; return; }
+      var sv=e.severity||'';
+      var tx='';
+      if(e.kind==='found'){ n++; tx='<b>#'+n+' '+esc(e.title)+'</b> '+sevPill(sv||'info')+' '+stPill(e.status||'open')+(e.file?' <span class="chip mono">'+esc(e.file)+'</span>':'')+(e.detail?'<div class="d">'+esc(e.detail)+'</div>':'')+(e.fix&&(e.status==='fixed'||e.status==='applied')?'<div class="d">✓ '+esc(e.fix)+'</div>':''); }
+      else if(e.kind==='fixed'){ tx='<b>Fixed:</b> '+esc(e.title)+(e.fix?'<div class="d">'+esc(e.fix)+'</div>':''); }
+      else if(e.kind==='clean'){ tx='<b>Clean:</b> '+esc(e.title)+(e.meta&&e.meta.checked?' <span class="chip">'+e.meta.checked+' checked</span>':'')+(e.detail?'<div class="d">'+esc(e.detail)+'</div>':''); }
+      else if(e.kind==='metric'){ tx=esc(e.title)+': <span class="mv">'+esc(e.before)+' → '+esc(e.after)+'</span>'+(e.detail?'<div class="d">'+esc(e.detail)+'</div>':''); }
+      else if(e.kind==='verdict'){ tx=esc(fullText(e))+(extraDetail(e)?'<div class="d">'+esc(extraDetail(e))+'</div>':''); }
+      else { tx=esc(fullText(e))+(extraDetail(e)?'<div class="d">'+esc(extraDetail(e))+'</div>':''); }
+      html+='<div class="ev '+e.kind+' '+sv+'"><span class="dot"'+(e.kind==='found'&&SEV[sv]?' data-tip="'+esc(JSON.stringify({h:SEV[sv].ic+' '+SEV[sv].lbl,d:SEV[sv].do,w:SEV[sv].why}))+'" tabindex="0" style="pointer-events:auto"':'')+'></span><span class="ic">'+(EVIC[e.kind]||'·')+'</span><span class="tx">'+tx+'<span class="ts">'+hms(e.ts)+'</span></span></div>';
+    });
+    return html+'</div>';
   }
 
-  function render(c,checks,cat,submitted){
+  // ---------- tooltip (hover + keyboard focus) ----------
+  (function(){
+    var tip=$('#tip'), cur=null;
+    function show(el){
+      var d; try{ d=JSON.parse(el.getAttribute('data-tip')); }catch(e){ d={h:el.getAttribute('data-tip')}; }
+      tip.innerHTML='<b>'+esc(d.h||'')+'</b>'+(d.d?'<span class="do">'+esc(d.d)+'</span>':'')+(d.w?esc(d.w):'');
+      tip.hidden=false; tip.classList.remove('below');
+      var r=el.getBoundingClientRect(), tw=tip.offsetWidth, th=tip.offsetHeight;
+      var left=Math.max(8,Math.min(window.innerWidth-tw-8, r.left+r.width/2-tw/2));
+      var top=r.top-th-10; if(top<8){ top=r.bottom+10; tip.classList.add('below'); }
+      tip.style.left=left+'px'; tip.style.top=top+'px'; tip.style.setProperty('--ax',Math.max(12,Math.min(tw-12,r.left+r.width/2-left-6))+'px');
+      tip.classList.add('show'); cur=el;
+    }
+    function hide(){ tip.classList.remove('show'); cur=null; setTimeout(function(){ if(!cur) tip.hidden=true; },150); }
+    document.addEventListener('mouseover',function(e){ var t=e.target.closest('[data-tip]'); if(t&&t!==cur) show(t); else if(!t&&cur) hide(); });
+    document.addEventListener('mouseout',function(e){ var t=e.target.closest('[data-tip]'); if(t&&!(e.relatedTarget&&t.contains(e.relatedTarget))) hide(); });
+    document.addEventListener('focusin',function(e){ var t=e.target.closest('[data-tip]'); if(t) show(t); });
+    document.addEventListener('focusout',function(e){ if(e.target.closest&&e.target.closest('[data-tip]')) hide(); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') hide(); });
+    window.addEventListener('scroll',function(){ if(cur) show(cur); },{passive:true});
+  })();
+
+  // ---------- interactivity ----------
+  var activeFilters={sev:null,st:null,cat:null};
+  function activeTab(){var b=$('.tabs [aria-selected="true"]');return b?b.dataset.tab:'findings';}
+  function selectTab(name){
+    $$('.tabs [role="tab"]').forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===name))});
+    $$('.panel').forEach(function(p){p.hidden=(p.id!=='p-'+name)});
+    try{history.replaceState(null,'',location.pathname+location.search+'#'+name)}catch(e){}
+  }
+  function applyFilters(){
+    var qv=($('#findSearch')&&$('#findSearch').value||'').toLowerCase().trim(); var shown=0;
+    $$('#findList li.find').forEach(function(li){
+      var ok=(!activeFilters.sev||li.dataset.sev===activeFilters.sev)&&(!activeFilters.st||li.dataset.st===activeFilters.st)&&(!activeFilters.cat||li.dataset.cat===activeFilters.cat)&&(!qv||li.dataset.hay.indexOf(qv)>=0);
+      li.hidden=!ok; if(ok)shown++;
+    });
+    if($('#findEmpty')) $('#findEmpty').hidden=shown>0;
+    if($('#findCount')) $('#findCount').textContent=shown+($$('#findList li.find').length!==shown?' of '+$$('#findList li.find').length:'');
+    $$('#filters [data-filter]').forEach(function(b){var kv=b.dataset.filter.split(':');b.setAttribute('aria-pressed',String(activeFilters[kv[0]]===kv.slice(1).join(':')))});
+    var any=activeFilters.sev||activeFilters.st||activeFilters.cat||qv; if($('#clearFilters')) $('#clearFilters').hidden=!any;
+  }
+  function setFilter(spec){ var kv=spec.split(':'), k=kv[0], v=kv.slice(1).join(':'); activeFilters[k]=activeFilters[k]===v?null:v; selectTab('findings'); applyFilters(); }
+  function wire(finds,s){
+    document.addEventListener('click',onClick,{once:false}); document.removeEventListener('click',onClick); document.addEventListener('click',onClick);
+    function onClick(ev){
+      var t=ev.target.closest('[data-tab],[data-filter],[data-copy],[data-prompt],[data-md],#expandAll,#collapseAll,#clearFilters,li.find .head'); if(!t)return;
+      if(t.dataset.tab){ selectTab(t.dataset.tab); return; }
+      if(t.dataset.filter){ setFilter(t.dataset.filter); return; }
+      if(t.dataset.copy){ copy(t.dataset.copy,'Path copied'); return; }
+      if(t.dataset.prompt){ copy(fixPrompt(finds[+t.dataset.prompt],s),'Fix prompt copied — paste it to your agent'); return; }
+      if(t.dataset.md){ copy(findMd(finds[+t.dataset.md],+t.dataset.md+1),'Finding copied as Markdown'); return; }
+      if(t.id==='expandAll'){ $$('#findList li.find').forEach(function(li){li.dataset.open='true';li.querySelector('.head').setAttribute('aria-expanded','true')}); return; }
+      if(t.id==='collapseAll'){ $$('#findList li.find').forEach(function(li){li.dataset.open='false';li.querySelector('.head').setAttribute('aria-expanded','false')}); return; }
+      if(t.id==='clearFilters'){ activeFilters={sev:null,st:null,cat:null}; if($('#findSearch'))$('#findSearch').value=''; applyFilters(); return; }
+      if(t.classList.contains('head')){ if(ev.target.closest('button'))return; var li=t.parentElement; var o=li.dataset.open!=='false'; li.dataset.open=String(!o); t.setAttribute('aria-expanded',String(!o)); }
+    }
+    document.onkeydown=function(ev){ if((ev.key==='Enter'||ev.key===' ')&&ev.target.classList&&ev.target.classList.contains('head')){ev.preventDefault();ev.target.click();} };
+    var si=$('#findSearch'); if(si) si.oninput=applyFilters;
+    $('#copyMd').onclick=function(){ copy(storyMd(finds,s),'Whole report copied as Markdown'); };
+    $('#printBtn').onclick=function(){ window.print(); };
+    var h=(location.hash||'').slice(1); if(h&&$('#p-'+h)) selectTab(h);
+  }
+  function fixPrompt(f,s){
+    return 'In the '+s.app+(s.project?' project ('+s.project+')':'')+', fix this finding from the Bug Ledger scan story '+location.origin+'/story/'+s.id+':\n\n'+
+      'Title: '+f.title+'\nSeverity: '+(f.severity||'medium')+(f.category?'\nArea: '+f.category:'')+(f.file?'\nWhere: '+f.file:'')+
+      (f.detail?'\nWhat is wrong: '+f.detail:'')+(f.impact?'\nWhy it matters: '+f.impact:'')+(f.fix?'\nRecommended fix: '+f.fix:'')+
+      '\n\nMake the smallest correct change, keep existing behaviour and design intact, verify it in the browser, and explain what you changed.';
+  }
+  function findMd(f,n){
+    var sv=SEV[f.severity]?f.severity:'info', st=f.status||'open';
+    return n+'. **'+f.title+'** — '+SEV[sv].ic+' '+SEV[sv].lbl+' · '+(ST[st]||ST.open).lbl+(f.category?' · '+f.category:'')+(f.file?' · `'+f.file+'`':'')+'\n'+
+      (f.detail?'   - What was wrong: '+f.detail+'\n':'')+(f.impact?'   - Why it matters: '+f.impact+'\n':'')+(f.fix?'   - '+(st==='fixed'||st==='applied'?'What was done':'Recommendation')+': '+f.fix+'\n':'')+(f.verifiedBy?'   - Evidence: '+(EV[f.verifiedBy]||f.verifiedBy)+'\n':'');
+  }
+  function storyMd(finds,s){
+    var d=DATA, ev=d.events||[], real=finds.filter(function(f){return f.status!=='false-positive'});
+    var out='# Scan story — '+s.app+(s.project?' · '+s.project:'')+'\n'+fullts(s.started)+' · '+dur((s.updated||Date.now())-s.started)+' · '+esc(s.agent||'agent')+'\n'+location.origin+'/story/'+s.id+'\n\n';
+    var v=ev.slice().reverse().find(function(e){return e.kind==='verdict'}); if(v) out+='**Verdict:** '+fullText(v)+'\n\n';
+    var m=ev.filter(function(e){return e.kind==='metric'}); if(m.length){ out+='## Better since the scan\n'+m.map(function(x){return '- '+x.title+': '+x.before+' → '+x.after}).join('\n')+'\n\n'; }
+    out+='## Findings ('+finds.length+'; '+real.length+' real)\n'+finds.map(findMd).join('')+'\n';
+    var c=ev.filter(function(e){return e.kind==='clean'}); if(c.length) out+='## Checked & clean\n'+c.map(function(x){return '- ✅ '+x.title+(x.meta&&x.meta.checked?' ('+x.meta.checked+' checked)':'')}).join('\n')+'\n\n';
+    var cv=ev.filter(function(e){return e.kind==='caveat'}); if(cv.length) out+='## Caveats\n'+cv.map(function(x){return '- ⚠ '+fullText(x)}).join('\n')+'\n\n';
+    out+='## How the scan unfolded\n'+ev.map(function(e){return '- '+hms(e.ts)+' '+(EVIC[e.kind]||'·')+' '+(e.kind==='found'?'['+(e.severity||'info')+'/'+(e.status||'open')+'] ':'')+(e.title||'')+(e.file?' `'+e.file+'`':'')}).join('\n')+'\n';
+    return out;
+  }
+
+  // ---------- legacy sweep record (coverage detail) ----------
+  var SEVCOLOR={critical:'var(--crit)',high:'var(--high)',medium:'var(--med)',low:'var(--low)'};
+  function donut(matched,total,color){
+    var r=52,c=2*Math.PI*r,pc=total?matched/total:1,off=c*(1-pc);
+    return '<svg class="donut" width="132" height="132" viewBox="0 0 132 132" role="img" aria-label="'+matched+' of '+total+' covered">'+
+      '<circle cx="66" cy="66" r="'+r+'" fill="none" stroke="color-mix(in srgb,var(--muted) 18%,transparent)" stroke-width="13"/>'+
+      '<circle cx="66" cy="66" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="13" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)"/>'+
+      '<text x="66" y="62" text-anchor="middle" font-size="26" font-weight="800" fill="var(--ink)">'+Math.round(pc*100)+'%</text>'+
+      '<text x="66" y="84" text-anchor="middle" font-size="12" fill="var(--muted)">'+matched+'/'+total+'</text></svg>';
+  }
+  function bars(entries,colorFor){
+    var max=Math.max(1,Math.max.apply(null,entries.map(function(e){return e.v})));
+    return '<div class="bars">'+entries.map(function(e){return '<div class="barrow"><span class="lab">'+esc(e.k)+'</span><span class="track"><i style="width:'+Math.round(e.v/max*100)+'%;background:'+colorFor(e.k)+'"></i></span><span class="v">'+e.v+'</span></div>';}).join('')+'</div>';
+  }
+  function trend(points,color){
+    if(points.length<2) return '';
+    var w=560,h=90,pad=8, xs=points.map(function(p){return p.ts}), vs=points.map(function(p){return p.v});
+    var minx=Math.min.apply(null,xs),maxx=Math.max.apply(null,xs),maxv=Math.max(1,Math.max.apply(null,vs));
+    var X=function(t){return maxx===minx?w/2:pad+(t-minx)/(maxx-minx)*(w-2*pad)}, Y=function(v){return h-pad-(v/maxv)*(h-2*pad)};
+    var d=points.map(function(p,i){return (i?'L':'M')+X(p.ts).toFixed(1)+' '+Y(p.v).toFixed(1)}).join(' ');
+    return '<svg width="100%" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" style="max-width:100%"><path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+points.map(function(p){return '<circle cx="'+X(p.ts).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="3.5" fill="'+color+'"/>'}).join('')+'</svg>';
+  }
+  function catOfTitle(cat,title){ var n=norm(title); for(var a in cat.apps){ for(var i=0;i<cat.apps[a].length;i++){ if(norm(cat.apps[a][i].title)===n) return cat.apps[a][i].category; } } return 'other'; }
+  function renderCheck(c,checks,cat,submitted,opt){
+    opt=opt||{};
     var sec=c.scope==='security', optm=c.scope==='optimisers';
     var cov=c.coverage||{matched:(c.notFound||[]).length+(c.found||[]).length,total:0};
     var found=c.found||[], notFound=c.notFound||[], secF=c.securityFindings||[];
-    var color= sec?'var(--red)':optm?'#7c5cff':(c.scope==='all'?'var(--violet)':'var(--good)');
-    var unitWord= sec?'security':optm?'elevations':'bugs';
+    var color= sec?'var(--red)':optm?'#7c5cff':(c.scope==='all'||c.scope==='full'?'var(--violet)':'var(--good)');
     var complete=cov.total&&cov.matched===cov.total;
-    // new submissions to the ledger around this sweep (± 30 min) — any project
-    var newSubs=submitted.filter(function(s){return Math.abs(s.ts-c.ts)<30*60000;});
+    var newSubs=submitted.filter(function(s){return c.sessionId?s.sessionId===c.sessionId:Math.abs(s.ts-c.ts)<30*60000;});
     var fixedCount=found.filter(function(f){return /fix|fixed|added|removed|patched|resolv|throttl|escap|scoped/i.test(f.note||'')}).length;
-
-    // comparison vs previous sweep of same app + scope
     var siblings=checks.filter(function(x){return x.app===c.app && (x.scope||'app')===(c.scope||'app') && x.ts<c.ts}).sort(function(a,b){return b.ts-a.ts});
     var prev=siblings[0];
     var series=checks.filter(function(x){return x.app===c.app && (x.scope||'app')===(c.scope||'app') && x.ts<=c.ts}).sort(function(a,b){return a.ts-b.ts}).map(function(x){return {ts:x.ts,v:x.foundCount||0}});
-
-    // severity or category distribution
     var dist=[];
-    if(sec){
-      var bysev={}; secF.forEach(function(f){var s=(f.severity||'low');bysev[s]=(bysev[s]||0)+1});
-      ['critical','high','medium','low'].forEach(function(s){ if(bysev[s]) dist.push({k:s,v:bysev[s]}); });
-    } else {
-      var bycat={}; found.forEach(function(f){var k=catOfTitle(cat,f.title);bycat[k]=(bycat[k]||0)+1});
-      dist=Object.keys(bycat).map(function(k){return {k:k,v:bycat[k]}}).sort(function(a,b){return b.v-a.v});
-    }
-
-    // severity lookup for a found title (from securityFindings)
+    if(sec){ var bysev={}; secF.forEach(function(f){var s=(f.severity||'low');bysev[s]=(bysev[s]||0)+1}); ['critical','high','medium','low'].forEach(function(s){ if(bysev[s]) dist.push({k:s,v:bysev[s]}); }); }
+    else { var bycat={}; found.forEach(function(f){var k=catOfTitle(cat,f.title);bycat[k]=(bycat[k]||0)+1}); dist=Object.keys(bycat).map(function(k){return {k:k,v:bycat[k]}}).sort(function(a,b){return b.v-a.v}); }
     function sevOf(title){var n=norm(title);var m=secF.find(function(f){return norm(f.title)===n});return m?m.severity:null;}
-
-    var kicker= sec?'<span class="kicker sec">🛡 Security Sweep</span>'
-      :optm?'<span class="kicker opt">✨ Optimiser Sweep</span>'
-      :(c.scope==='all'?'<span class="kicker bugs">📚 Full Bug Scan</span>':'<span class="kicker bugs">🐛 Bug + Security Check</span>');
+    var kicker= sec?'<span class="kicker sec">🛡 Security Sweep</span>':optm?'<span class="kicker opt">✨ Optimiser Sweep</span>':(c.scope==='all'||c.scope==='full'?'<span class="kicker bugs">📚 Full Scan · '+esc(scopeLabel(c.scope))+'</span>':'<span class="kicker bugs">🐛 Bug + Security Check</span>');
     var noun= optm?'elevation to add':'issue';
     var verdict = complete
-      ? (found.length? '<div class="verdict warn">'+(optm?'✨ ':'⚠ ')+found.length+' '+noun+(found.length>1?(optm?'s':'s'):'')+(optm?'':' found')+(fixedCount?(' · '+fixedCount+' fixed'):'')+' · '+cov.matched+'/'+cov.total+' reviewed</div>'
+      ? (found.length? '<div class="verdict warn">'+(optm?'✨ ':'⚠ ')+found.length+' '+noun+(found.length>1?'s':'')+(optm?'':' present')+(fixedCount?(' · '+fixedCount+' fixed'):'')+' · '+cov.matched+'/'+cov.total+' reviewed'+(cov.verified!=null?' · 🔬 '+cov.verified+' inspected':'')+'</div>'
                      : '<div class="verdict ok">✓ '+(optm?'Fully elevated — every optimiser already applied':'Clean — 0 issues present')+' · full coverage '+cov.matched+'/'+cov.total+'</div>')
       : '<div class="verdict warn">⚠ Incomplete — '+cov.matched+'/'+cov.total+' reviewed</div>';
-
     var html='';
-    // hero
-    html+='<div class="card"><div class="hero">'+donut(cov.matched,cov.total,color)+
-      '<div style="flex:1;min-width:220px">'+kicker+
-        '<h1>'+esc(c.app)+(c.project?' <span class="muted" style="font-weight:600">· '+esc(c.project)+'</span>':'')+'</h1>'+
-        '<div class="sub">'+fullts(c.ts)+' · by '+esc(c.checkedBy||'agent')+' · '+(c.scanned||0)+' files scanned</div>'+
-        verdict+'</div></div></div>';
-
-    // KPI tiles
-    html+='<div class="card"><div class="grid">'+
-      tile(cov.total,'items checked')+
-      tile(found.length,'present',found.length?'warn':'good')+
-      tile(fixedCount,'fixed','good')+
-      tile(newSubs.length,'added to ledger', newSubs.length?'':'')+
-      tile(notFound.length,'clean','good')+
-      tile((cov.total?Math.round(cov.matched/cov.total*100):100)+'%','coverage')+
-    '</div></div>';
-
-    // findings
+    var wrapO=opt.embedded?'<div class="card" style="box-shadow:none;animation:none">':'<div class="card">', wrapC='</div>';
+    html+=wrapO+'<div class="hero">'+donut(cov.matched,cov.total,color)+'<div class="txt">'+kicker+
+        (opt.embedded?'<h2 style="margin-top:8px">'+esc(c.app)+' · '+esc(scopeLabel(c.scope))+'</h2>':'<h1>'+esc(c.app)+(c.project?' <span class="muted" style="font-weight:600">· '+esc(c.project)+'</span>':'')+'</h1>')+
+        '<div class="sub">'+fullts(c.ts)+' · by '+esc(c.checkedBy||'agent')+' · '+(c.scanned||0)+' files scanned</div>'+verdict+(c.notes?'<p class="muted" style="margin-top:8px;font-size:14px">'+esc(c.notes)+'</p>':'')+'</div></div>'+wrapC;
+    html+=wrapO+'<div class="grid">'+tile(cov.total,'items checked')+tile(found.length,'present',found.length?'warn':'good')+tile(fixedCount,'fixed','good')+tile(newSubs.length,'added to ledger','')+tile(notFound.length,'clean','good')+tile((cov.total?Math.round(cov.matched/cov.total*100):100)+'%','coverage')+(cov.verified!=null?tile(cov.verifiedPct+'%','inspected','gray'):'')+'</div>'+wrapC;
+    if(cov.evidence){ var ev=cov.evidence; var ent=['detector','code-read','test','reasoned','assumed'].filter(function(k){return ev[k]}).map(function(k){return {k:EV[k]||k,v:ev[k]}}); if(ent.length) html+=wrapO+'<h2>Evidence behind the coverage</h2>'+bars(ent,function(k){return k==='reasoned'||k==='assumed'?'var(--muted)':'var(--good)'})+wrapC; }
     if(found.length){
-      html+='<div class="card"><h2>Findings — present in this project ('+found.length+')</h2><ul class="finds">'+
+      html+=wrapO+'<h2>Present in this project <span class="cnt">'+found.length+'</span></h2><ul class="plain">'+
         found.map(function(f){var s=sec?sevOf(f.title):null; var fixed=/fix|fixed|added|removed|patched|resolv|throttl|escap|scoped/i.test(f.note||'');
-          return '<li class="find"><div class="ft">'+(s?'<span class="sev '+s+'">'+s+'</span>':'')+
-            '<b>'+esc(f.title)+'</b>'+(f.file?' <span class="file">'+esc(f.file)+'</span>':'')+(fixed?' <span class="fixed">✓ fixed</span>':'')+'</div>'+
-            (f.note?'<div class="note">'+esc(f.note)+'</div>':'')+'</li>';
-        }).join('')+'</ul></div>';
-    } else {
-      html+='<div class="card center"><h2 style="margin:0">✓ No known '+(sec?'security issues':'bugs')+' present in this project</h2><p class="muted" style="margin:6px 0 0">All '+cov.total+' catalog items were checked and none reproduced here.</p></div>';
-    }
-
-    // distribution chart
-    if(dist.length){
-      html+='<div class="card"><h2>'+(sec?'Findings by severity':'Findings by category')+'</h2>'+
-        bars(dist,function(k){return sec?(SEVCOLOR[k]||'var(--low)'):catColor()})+'</div>';
-    }
-
-    // comparison + trend
-    html+='<div class="card"><h2>Compared to the last sweep</h2>';
+          return '<li><div class="ft">'+(s?sevPill(s):'')+'<b>'+esc(f.title)+'</b>'+(f.file?' <span class="chip mono">'+esc(f.file)+'</span>':'')+(f.verifiedBy?evChip(f.verifiedBy):'')+(fixed?' '+stPill('fixed'):'')+'</div>'+(f.note?'<div class="note">'+esc(f.note)+'</div>':'')+'</li>';
+        }).join('')+'</ul>'+wrapC;
+    } else html+=wrapO+'<div class="center"><h2 style="margin:0;justify-content:center">✓ No known '+(sec?'security issues':optm?'missing elevations':'bugs')+' present in this project</h2><p class="muted" style="margin:6px 0 0">All '+cov.total+' catalogue items were checked and none reproduced here.</p></div>'+wrapC;
+    if(dist.length) html+=wrapO+'<h2>'+(sec?'Findings by severity':'Findings by category')+'</h2>'+bars(dist,function(k){return sec?(SEVCOLOR[k]||'var(--low)'):'linear-gradient(90deg,var(--violet),#b3a3ff)'})+wrapC;
+    html+=wrapO+'<h2>Compared to the last sweep of this scope</h2>';
     if(prev){
-      var d=found.length-(prev.foundCount||0);
-      var dc=d<0?'down':(d>0?'up':'flat'), dt=d<0?('↓ '+(-d)+' fewer'):(d>0?('↑ '+d+' more'):'no change');
-      var prevTitles=new Set((prev.found||[]).map(function(f){return norm(f.title)}));
-      var nowTitles=new Set(found.map(function(f){return norm(f.title)}));
-      var resolved=(prev.found||[]).filter(function(f){return !nowTitles.has(norm(f.title))});
-      var appeared=found.filter(function(f){return !prevTitles.has(norm(f.title))});
-      html+='<div class="cmp"><div><div class="muted" style="font-size:12px">'+fullts(prev.ts).split(',')[0]+'</div><div class="big muted">'+(prev.foundCount||0)+'</div><div class="muted" style="font-size:12px">then present</div></div>'+
-        '<div style="font-size:22px;color:var(--muted)">→</div>'+
-        '<div><div class="muted" style="font-size:12px">now</div><div class="big">'+found.length+'</div><div class="muted" style="font-size:12px">present</div></div>'+
-        '<div class="delta '+dc+'">'+dt+'</div></div>'+
-        '<div class="twocol" style="margin-top:12px">'+
-          '<div><b>Resolved since last ('+resolved.length+')</b><ul class="mini">'+(resolved.length?resolved.map(function(f){return '<li>✓ '+esc(f.title)+'</li>'}).join(''):'<li>—</li>')+'</ul></div>'+
-          '<div><b>New since last ('+appeared.length+')</b><ul class="mini">'+(appeared.length?appeared.map(function(f){return '<li>⚠ '+esc(f.title)+'</li>'}).join(''):'<li>—</li>')+'</ul></div>'+
-        '</div>';
-    } else {
-      html+='<p class="muted">This is the <b>first sweep</b> for this project + scope. Future sweeps will compare here — resolved vs new — so you can watch it improve each day.</p>';
+      var d=found.length-(prev.foundCount||0), dc=d<0?'down':(d>0?'up':'flat'), dt=d<0?('↓ '+(-d)+' fewer'):(d>0?('↑ '+d+' more'):'no change');
+      var prevTitles=new Set((prev.found||[]).map(function(f){return norm(f.title)})), nowTitles=new Set(found.map(function(f){return norm(f.title)}));
+      var resolved=(prev.found||[]).filter(function(f){return !nowTitles.has(norm(f.title))}), appeared=found.filter(function(f){return !prevTitles.has(norm(f.title))});
+      html+='<div class="cmp"><div><div class="muted" style="font-size:12px">'+shortts(prev.ts)+'</div><div class="big muted">'+(prev.foundCount||0)+'</div><div class="muted" style="font-size:12px">then present</div></div><div style="font-size:22px;color:var(--muted)">→</div><div><div class="muted" style="font-size:12px">now</div><div class="big">'+found.length+'</div><div class="muted" style="font-size:12px">present</div></div><div class="delta '+dc+'">'+dt+'</div></div>'+
+        '<div class="twocol" style="margin-top:12px"><div><b>Resolved since last ('+resolved.length+')</b><ul class="mini">'+(resolved.length?resolved.map(function(f){return '<li>✓ '+esc(f.title)+'</li>'}).join(''):'<li>—</li>')+'</ul></div><div><b>New since last ('+appeared.length+')</b><ul class="mini">'+(appeared.length?appeared.map(function(f){return '<li>⚠ '+esc(f.title)+'</li>'}).join(''):'<li>—</li>')+'</ul></div></div>';
+    } else html+='<p class="muted">This is the <b>first sweep</b> for this project + scope. Future sweeps will compare here — resolved vs new — so you can watch it improve.</p>';
+    var tr=trend(series,color); if(tr) html+='<div style="margin-top:14px"><div class="muted" style="font-size:12px;margin-bottom:4px">Present issues over the last '+series.length+' sweeps</div>'+tr+'</div>';
+    html+=wrapC;
+    if(opt.standalone){
+      var kindOf=function(s){return s.kind==='optimiser'?'optimiser':(s.kind==='security'||s.category==='security'?'security':'bug');};
+      html+=wrapO+'<h2>Added to the ledger from this sweep <span class="cnt">'+newSubs.length+'</span></h2>'+(newSubs.length?'<ul class="plain">'+newSubs.map(function(s){return '<li><div class="ft"><span class="chip add">'+kindOf(s)+'</span>'+(s.severity&&kindOf(s)!=='optimiser'?sevPill(s.severity):'')+'<b>'+esc(s.title)+'</b>'+(s.file?' <span class="chip mono">'+esc(s.file)+'</span>':'')+'</div>'+(s.symptom?'<div class="note">'+esc(s.symptom)+'</div>':'')+'</li>'}).join('')+'</ul>':'<p class="muted" style="margin:0">Nothing new added — everything found was already in the catalogue.</p>')+wrapC;
+      if(notFound.length) html+='<details class="card"><summary style="cursor:pointer;font-weight:750">'+notFound.length+' items checked &amp; clean</summary><ul class="mini" style="margin-top:10px;columns:2">'+notFound.slice(0,600).map(function(t){return '<li>✓ '+esc(String(typeof t==='string'?t:t.title).replace(/ \(static check clean\)$/,''))+'</li>'}).join('')+'</ul></details>';
     }
-    var tr=trend(series,color);
-    if(tr) html+='<div style="margin-top:14px"><div class="muted" style="font-size:12px;margin-bottom:4px">Present issues over the last '+series.length+' sweeps</div>'+tr+'</div>';
-    html+='</div>';
-
-    // added to the ledger (append-only) — broken out by type, with the source project
-    var kindOf=function(s){return s.kind==='optimiser'?'optimiser':(s.kind==='security'||s.category==='security'?'security':'bug');};
-    var groups={bug:[],security:[],optimiser:[]};
-    newSubs.forEach(function(s){ groups[kindOf(s)].push(s); });
-    html+='<div class="card"><h2>Added to the ledger from this sweep</h2>';
-    html+='<div class="addgrid">'+
-      '<div class="addtile bug"><div class="n">'+groups.bug.length+'</div><div class="l">bugs</div></div>'+
-      '<div class="addtile security"><div class="n">'+groups.security.length+'</div><div class="l">security</div></div>'+
-      '<div class="addtile optimiser"><div class="n">'+groups.optimiser.length+'</div><div class="l">optimisers</div></div>'+
-    '</div>';
-    if(newSubs.length){
-      html+='<p class="muted" style="margin:0 0 4px">New items discovered here and appended to the shared ledger — permanent, append-only, so every future project is checked for them too.</p>';
-      ['bug','security','optimiser'].forEach(function(k){
-        if(!groups[k].length) return;
-        html+='<div class="addgroup"><h3>'+(k==='bug'?'🐛 Bugs':k==='security'?'🛡 Security':'✨ Optimisers')+' ('+groups[k].length+')</h3><ul class="finds">'+
-          groups[k].map(function(s){return '<li class="find"><div class="ft">'+(s.severity&&k!=='optimiser'?'<span class="sev '+s.severity+'">'+esc(s.severity)+'</span>':'')+
-            '<b>'+esc(s.title)+'</b>'+(s.file?' <span class="file">'+esc(s.file)+'</span>':'')+'</div>'+
-            (s.symptom?'<div class="note">'+esc(s.symptom)+'</div>':'')+
-            '<div class="prov">from <b>'+esc(s.app||'?')+'</b>'+(s.project?' · '+esc(s.project):'')+'</div></li>';}).join('')+'</ul></div>';
-      });
-    } else {
-      html+='<p class="muted" style="margin:0">Nothing new added — everything found was already in the catalogue. <span class="chip ok">nothing new</span></p>';
-    }
-    html+='</div>';
-
-    // clean list (collapsible)
-    if(notFound.length){
-      html+='<details class="card"><summary style="cursor:pointer;font-weight:750">'+notFound.length+' items checked &amp; clean</summary><ul class="mini" style="margin-top:10px;columns:2">'+
-        notFound.slice(0,120).map(function(t){return '<li>✓ '+esc(String(t).replace(/ \(static check clean\)$/,''))+'</li>'}).join('')+'</ul></details>';
-    }
-
-    document.title='Report · '+c.app+' '+(sec?'security':'bugs');
-    $('#report').innerHTML=html;
+    return html;
   }
-  function tile(n,l,cls){return '<div class="tile '+(cls||'')+'"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
 </script>
 </body>
 </html>
