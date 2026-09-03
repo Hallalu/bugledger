@@ -353,9 +353,11 @@
     var itemsChecked=headline&&headline.coverage&&headline.coverage.total>0?headline.coverage.total:null;   // a 0-item catalogue match is "no coverage", not "0 checked"
     var inspected=itemsChecked&&headline.coverage.verified!=null?headline.coverage.verified:null;
 
+    // a session with no story lines at all (it predates scan stories, or the agent never narrated) must not read as "clean"
+    var noStory=!events.length;
     // verdict
-    var vtxt=verdictEv?fullText(verdictEv):(real.length?(fixedN+' fixed'+(needN?', '+needN+' for your call':'')+(openN?', '+openN+' open':'')+(fpN?', '+fpN+' false alarm'+(fpN>1?'s':'')+' verified':'')):(done?'Clean — nothing from the ledger is present in this project':'Scan in progress'));
-    var vcls=(openN||(bySev.critical&&!fixedN))?'warn':(real.length&&!openN&&!needN?'ok':(real.length?'warn':'ok'));
+    var vtxt=noStory?(done?'No story was recorded for this session — it predates scan stories or the agent did not narrate. Coverage records, if any, are under Coverage.':'Waiting for the first story line…'):verdictEv?fullText(verdictEv):(real.length?(fixedN+' fixed'+(needN?', '+needN+' for your call':'')+(openN?', '+openN+' open':'')+(fpN?', '+fpN+' false alarm'+(fpN>1?'s':'')+' verified':'')):(done?'Clean — nothing from the ledger is present in this project':'Scan in progress'));
+    var vcls=noStory?'warn':(openN||(bySev.critical&&!fixedN))?'warn':(real.length&&!openN&&!needN?'ok':(real.length?'warn':'ok'));
 
     var html='';
     // ---- hero ----
@@ -382,7 +384,9 @@
 
     // ---- what this means for you ----
     html+='<div class="card"><h2>What this means for you</h2><div class="means">';
-    if(!real.length){
+    if(noStory){
+      html+='<div class="tier"><div class="ic">📭</div><div><b>Nothing was narrated for this session.</b><p>The agent ran before scan stories existed, or did not use the story commands, so there is no itemised account to show. Any coverage it posted is under the Coverage tab; newer sweeps narrate themselves automatically.</p></div></div>';
+    } else if(!real.length){
       html+='<div class="tier low"><div class="ic">✅</div><div><b>Nothing from the ledger is present in this project'+(done?'':' so far')+'.</b><p>'+(itemsChecked?'All '+itemsChecked+' catalogue items were checked'+(inspected!=null?', '+inspected+' of them by actually reading the code':'')+'.':'Every finding raised was verified as a false alarm or clean.')+(fpN?' '+fpN+' detector hit'+(fpN>1?'s were':' was')+' read and ruled out — no action needed.':'')+'</p></div></div>';
     }
     SEVORDER.filter(function(k){return k!=='info'&&real.some(function(f){return (f.severity||'info')===k})}).forEach(function(k){
