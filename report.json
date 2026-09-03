@@ -1,43 +1,52 @@
-{
-  "title": "Real before/after screenshots on the Bug Ledger",
-  "summary": "The standing honesty note — 'the Bug Ledger API is text-only, so screenshots are recorded as before/after metrics, not images' — is now retired. Findings carry genuine before/after image pairs, uploaded to R2, served at /api/shot, and rendered as real thumbnails on the main page and the /timeline. Fixed a HEAD 404 on served shots, taught the /timeline to render attached images (it was silently dropping them), added a client one-liner, and — per the user's report — added a scanner detector so EVERY app is checked for the 'kept the label, dropped the image' mistake.",
-  "tasks": [
-    {"text": "Absorb the repo — worker, schemas, worklog client", "done": true, "desc": "Read all 433 lines of the worker + schemas; found the shot pipeline was already coded, so the job was gap-closing not greenfield"},
-    {"text": "Probe production for real gaps", "done": true, "desc": "Upload+serve were live; real gaps were HEAD 404, timeline dropping images, text-only protocol docs, no client helper"},
-    {"text": "Worker: HEAD on /api/shot/:key", "done": true, "desc": "Route now matches GET|HEAD and returns headers-only with content-length; link unfurlers/probes no longer 404"},
-    {"text": "Timeline renders before/after thumbnails", "done": true, "desc": "additionCard now renders the shots the /api/activity feed was already sending; each opens the full image"},
-    {"text": "Client: worklog.mjs shot + protocol docs", "done": true, "desc": "'shot <file> --caption' uploads one image; AGENT.md + llms.txt now document the whole screenshot protocol agents read"},
-    {"text": "Scanner detector IMG-DROP (user request)", "done": true, "desc": "Catches a shot/photo object with a caption but no image reference, and a shots/photos list mapped to just names — in every app, 0 self false-positives"},
-    {"text": "Deploy + commit + push", "done": true, "desc": "Two deploys (worker HEAD fix, then docs); committed and pushed to Hallalu/bugledger"},
-    {"text": "Browser-verify feature by feature", "done": true, "desc": "Timeline renders real before/after thumbnails; main page shows 13 shot imgs, 0 broken; HEAD 200 image/png; lightbox opens the full image"}
-  ],
-  "metrics": [
-    {"label": "Screenshots on the ledger", "before": "text-only (metrics)", "after": "real before/after images"},
-    {"label": "HEAD /api/shot/:key", "before": "404", "after": "200 image/png"},
-    {"label": "Timeline addition cards", "before": "title only, images dropped", "after": "before/after thumbnails"},
-    {"label": "Scanner detectors", "before": 41, "after": 42},
-    {"label": "IMG-DROP self false-positives", "before": "2 (pre-tune)", "after": 0},
-    {"label": "Shot images rendering on main page", "before": 0, "after": 13},
-    {"label": "Deploys", "before": 0, "after": 2}
-  ],
-  "features": [
-    "HEAD support on served screenshots (with content-length)",
-    "Before/after thumbnails on the /timeline activity feed",
-    "worklog.mjs shot <file> --caption — one-line screenshot upload",
-    "IMG-DROP scanner detector — catches label-only image drops in every app",
-    "Screenshot protocol documented in AGENT.md + llms.txt"
-  ],
-  "bugfixes": [
-    "HEAD /api/shot/:key returned 404 — route matched GET only",
-    "Timeline dropped attached screenshots — /api/activity sent shots, additionCard never rendered them",
-    "Before/after screenshots requested but only names/captions stored — full photos dropped (user report)",
-    "Corrected stale detector counts in docs (41->42, 14->42)"
-  ],
-  "findings": [
-    "The R2 binding, D1 shots column and upload/serve endpoints already existed — the honesty note had outlived the code that made it true.",
-    "The 'pulled only names, not photos' failure is a general class (label kept, image dropped), so the durable fix is a scanner detector every app runs, not a one-off patch."
-  ],
-  "insights": [
-    "A caption is metadata ON an image, never a substitute for it — persist url|dataUrl|src|blob|base64|file alongside every caption."
-  ]
-}
+{"title":"Scan stories — every sweep now narrates itself into an itemised, severity-tagged report",
+ "summary":"The chat narrative of a deepscan (phases, triage reasoning, 'real defect confirmed by reading…', fixes, false alarms, before → after numbers, verdict, caveats) was lost the moment the session ended; the /report page showed bare titles. Now every sweep writes an append-only scan story and it renders at /story/<session>: numbered findings tagged 🔴🟠🟡🟢 with icon + text + hover/focus tooltips, fixed / open / needs-your-call / false-alarm status, plain-English what-was-wrong · why-it-matters · what-was-done, file:line and evidence grade, a 'what this means for you' panel, before → after with % improvement, a progress line against the previous scan of the same app, tabs (Findings · How the scan unfolded · Coverage · Added to the ledger · Checked & clean · Reading this report), search, filters, collapse, copy-as-Markdown, per-finding 'copy fix prompt' and print. All six sweep commands narrate automatically. Proven on a real scan of Bug Ledger itself.",
+ "tasks":[
+  {"text":"Wave 0 — Read Bug Ledger + the deepscan skill","done":true,"desc":"Worker, report/live/timeline pages, worklog client, live D1 schema and all six sweep commands read; the gap confirmed: narrative never reached the ledger"},
+  {"text":"Wave 1 — Verified research with counter-evidence","done":true,"desc":"Tricorder's <10% false-positive bar, FSE 2025 suppressions (34.4% FPs), Veracode 45% flaw rate flat two years, CVE-2025-48757 (170 Lovable apps), WCAG 1.4.1, and the counter-evidence: severity ≠ risk, reasoning traces ~40% performative. Published as a short+long report on the Analysis app"},
+  {"text":"Wave 2 — Story events: D1 + API + worklog commands","done":true,"desc":"session_events table with no-update/no-delete triggers; POST /api/session/event, GET /api/story, /story/:id; sessionId on checks and bugs; worklog.mjs phase/say/found/fixed/clean/metric/caveat/verdict/story/id/events; board commands narrate too; scan.mjs --story"},
+  {"text":"Wave 2 — Report renderer","done":true,"desc":"Hero + verdict + clickable severity/status chips, what-this-means-for-you per tier, better-since-the-scan rows with %, progress vs last scan, tabs, search, filters, expand/collapse, tooltips on every tag, copy Markdown, copy fix prompt, print"},
+  {"text":"Wave 2 — Sweep skills narrate automatically","done":true,"desc":"/deepscan /fullscan /securitysweep /optimise /bugcheck /showwork carry the protocol incl. 'resolve every scanner item'; AGENT.md + llms.txt updated"},
+  {"text":"Wave 3 — Real scan of Bug Ledger itself","done":true,"desc":"60→39 detector findings, 32→12 high, a11y 15→3, SEO 8→0, CSP + 4 headers served, 8 real fixes, 6 false alarms ruled out by reading, 2 stdout bugs found in the scanner's own --json paths, 3/3 catalogue items clean; story verified in the browser feature by feature"},
+  {"text":"Wave 3 — Ship: commit, push, Aprizely, Analysis report","done":true,"desc":"Two commits pushed to Hallalu/bugledger; research report appended to the Analysis app; before/after screenshots attached"}
+ ],
+ "metrics":[
+  {"label":"Narrative captured per sweep","before":"0 lines (lost at session end)","after":"56 story lines, immutable"},
+  {"label":"Report shows per finding","before":"title + note","after":"severity · status · what/why/fix · file:line · evidence · phase · fix prompt"},
+  {"label":"Detector findings on Bug Ledger","before":60,"after":39},
+  {"label":"High-confidence findings","before":32,"after":12},
+  {"label":"Accessibility findings","before":15,"after":3},
+  {"label":"SEO findings","before":8,"after":0},
+  {"label":"Security headers served","before":0,"after":5},
+  {"label":"Controls with an accessible name","before":0,"after":11},
+  {"label":"Sweep commands that narrate","before":0,"after":6},
+  {"label":"Ledger items appended this run","before":0,"after":3},
+  {"label":"Worker API routes","before":12,"after":15}
+ ],
+ "features":[
+  "Scan story: append-only session_events + POST /api/session/event + GET /api/story + /story/<id>",
+  "worklog.mjs phase · say · found · fixed · clean · metric · caveat · verdict · story · id · events",
+  "Story report: numbered findings, 🔴🟠🟡🟢 tags with icon + text + tooltips, status pills, what-it-means panel, before → after %, progress vs last scan, tabs, search, filters, collapse, copy Markdown, copy fix prompt, print",
+  "Live board story feed + story links on timeline and check-log",
+  "scan.mjs --story itemises high-confidence hits; --log attaches the session",
+  "Security headers via public/_headers; OG cards + og.png; accessible names on all controls"
+ ],
+ "bugfixes":[
+  "scan.mjs --json corrupted by confirmation lines on stdout (--story, --log, --write) — moved to stderr",
+  "Live board rendered an empty coral pill on every card ([hidden] beaten by a display rule)",
+  "Search, filters, checkboxes, file pickers, caption fields and sanitizer textareas had no accessible name",
+  "Sanitizer textareas killed the focus ring with no replacement",
+  "harvest.mjs dated bugs in UTC; worklog events printed UTC clock time",
+  "Scanner did not map repo 'bugledger' to catalogue app 'Bug Ledger' (coverage read 0/0)",
+  "Story page for a legacy session with no events would have read as 'clean'"
+ ],
+ "issues":["No tests in the Bug Ledger repo (needs your call — one smoke test of scan.mjs --json parsing and of /api/session/event → /api/story would guard both contracts)","The in-app Browser pane became unresponsive mid-scroll; verification was completed with headless Chrome screenshots and DOM checks via the pane's JS tool"],
+ "findings":[
+  "The agent's narrative was never persisted anywhere — the 2,000-char notes field on a check was the only free text, so the most useful part of a deepscan evaporated",
+  "Our own scanner's high-confidence hits were ~40% false alarms on the tooling repo (it matched its own rule table) — the reason false alarms stay visible with reasons",
+  "A [hidden] attribute is silently defeated by any author display rule; the class is now in the ledger"
+ ],
+ "insights":[
+  "A critique is a claim: two counter-evidence sources (severity ≠ risk; reasoning traces are partly performative) reshaped the design toward action-level facts next to the prose rather than replacing it",
+  "Colour is a label, never the meaning — icon + text + a tooltip that says what to do is the minimum (WCAG 1.4.1)",
+  "In zsh, $W with a space does not word-split — a shell function is the safe way to alias a CLI in docs"
+ ]}

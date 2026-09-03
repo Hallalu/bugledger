@@ -3,8 +3,8 @@
   "app": "Bug Ledger",
   "project": "BugLedger",
   "title": "Deepscan narrative reports — itemised, severity-tagged findings from the agent's own chat",
-  "status": "active",
-  "current": "Wave 3 — after screenshots, commit + push, Aprizely report, research report to Analysis app",
+  "status": "done",
+  "current": "Done ✓",
   "note": "",
   "tasks": [
     {
@@ -45,10 +45,11 @@
     },
     {
       "text": "Report to Aprizely",
-      "note": "Close the loop: proof shots, git, report, and publish the verified research behind the design",
-      "status": "active",
+      "note": "Committed + pushed (7a9057f and the legacy-session guard); research report live on the Analysis app; before/after shots attached",
+      "status": "done",
       "wave": "Wave 3 — Prove it"
     }
   ],
-  "started": 1788474664087
+  "started": 1788474664087,
+  "reported": true
 }

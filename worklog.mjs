@@ -96,7 +96,7 @@ async function emit(s, events, { quiet = false } = {}) {
 function die(msg) { console.error("worklog: " + msg); process.exit(1); }
 // the server caps title at 200 chars — a long line keeps its full text in detail and a trimmed headline in title
 const longText = (text, extra) => text.length > 180 ? { title: text.slice(0, 177).replace(/\s+\S*$/, "") + "…", detail: text, ...(extra || {}) } : { title: text, ...(extra || {}) };
-const SEV_ICON = { critical: "🔴", high: "🟠", medium: "🟡", low: "🟢", info: "🔵" };
+const SEV_ICON = { critical: "🟣", high: "🔴", medium: "🟠", low: "🟡", info: "⚪" };
 
 if (cmd === "start") {
   const project = flag("project") || path.basename(process.cwd());

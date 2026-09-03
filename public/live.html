@@ -239,8 +239,8 @@
     document.getElementById('pollstate').textContent = sessions.some(function(s){return s.live;})?'live':'watching…';
   }
 
-  var SEVIC={critical:'🔴',high:'🟠',medium:'🟡',low:'🟢',info:'🔵'};
-  var EVIC={phase:'▶',say:'💬',found:'•',fixed:'✓',clean:'✅',metric:'📈',verdict:'🏁',caveat:'⚠',note:'·'};
+  var SEVIC={critical:'🟣',high:'🔴',medium:'🟠',low:'🟡',info:'⚪'};
+  var EVIC={phase:'▶',say:'💬',found:'•',fixed:'🔵',clean:'🟢',metric:'📈',verdict:'🏁',caveat:'⚠',note:'·'};
   function pollStory(c, s){
     var now=Date.now(); if(c.storyAt && now-c.storyAt<4000) return; c.storyAt=now;
     fetch('/api/story?id='+encodeURIComponent(s.id),{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
@@ -253,7 +253,7 @@
       c.refs.story.hidden=false;
       c.refs.storyLink.textContent=(nFound?nFound+' finding'+(nFound>1?'s':'')+' · ':'')+'open the full story →';
       c.refs.storyLines.innerHTML=last.map(function(e){
-        var SEVTIP={critical:'Critical — fix now. Could expose data, break sign-in or take the app down.',high:'High — fix before the next release. A real user hits this, or an attacker could use it.',medium:'Medium — schedule it. Degrades the experience for some users.',low:'Low — polish when convenient. No user is blocked.',info:'Info — for your awareness.'};
+        var SEVTIP={critical:'Critical (beyond red) — fix now. Could expose data, break sign-in or take the app down.',high:'High — fix before the next release. A real user hits this, or an attacker could use it.',medium:'Medium — schedule it. Degrades the experience for some users.',low:'Low — polish when convenient. No user is blocked.',info:'Info — for your awareness.'};
         var ic=e.kind==='found'?(SEVIC[e.severity]||'•'):(EVIC[e.kind]||'·');
         var icTitle=e.kind==='found'?(SEVTIP[e.severity]||''):'';
         var full=(e.detail&&/…$/.test(e.title||'')&&e.detail.indexOf((e.title||'').slice(0,-1))===0)?e.detail:(e.title||'');

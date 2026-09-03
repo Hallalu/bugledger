@@ -17,12 +17,12 @@
     --bg:#f5f6fb; --ink:#12141c; --muted:#636879; --card:rgba(255,255,255,.76); --card2:rgba(255,255,255,.55);
     --line:rgba(18,20,28,.09); --coral:#ff6a5a; --good:#12b886; --violet:#8b7bf0; --amber:#e08a00; --red:#e5484d;
     --shadow:0 16px 44px -24px rgba(30,25,60,.32);
-    --crit:#b4227a; --high:#e5484d; --med:#d1620a; --low:#12b886; --info:#3b82f6; --gray:#6b7280;
-    --critbg:rgba(180,34,122,.12); --highbg:rgba(229,72,77,.12); --medbg:rgba(209,98,10,.13); --lowbg:rgba(18,184,134,.13); --infobg:rgba(59,130,246,.12);
+    --crit:#b4227a; --high:#e5484d; --med:#e07a00; --low:#b58900; --info:#6b7280; --fixed:#2563eb; --clean:#12b886; --gray:#6b7280;
+    --critbg:rgba(180,34,122,.12); --highbg:rgba(229,72,77,.12); --medbg:rgba(224,122,0,.13); --lowbg:rgba(181,137,0,.14); --infobg:rgba(107,114,128,.12); --fixedbg:rgba(37,99,235,.12); --cleanbg:rgba(18,184,134,.13);
   }
   @media (prefers-color-scheme:dark){
     :root{ --bg:#0b0d15; --ink:#eef0f7; --muted:#9aa0b4; --card:rgba(255,255,255,.055); --card2:rgba(255,255,255,.035);
-      --line:rgba(255,255,255,.11); --shadow:0 24px 60px -24px rgba(0,0,0,.7); --med:#f0883e; --low:#3ddc9a; }
+      --line:rgba(255,255,255,.11); --shadow:0 24px 60px -24px rgba(0,0,0,.7); --med:#f59e42; --low:#e3c000; --fixed:#60a5fa; --clean:#3ddc9a; }
   }
   html,body{margin:0;min-height:100%}
   body{font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;color:var(--ink);
@@ -66,11 +66,13 @@
   .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:3px 9px;border-radius:99px;white-space:nowrap;border:1px solid transparent;line-height:1.4}
   .pill.critical{color:var(--crit);background:var(--critbg)} .pill.high{color:var(--high);background:var(--highbg)}
   .pill.medium{color:var(--med);background:var(--medbg)} .pill.low{color:var(--low);background:var(--lowbg)} .pill.info{color:var(--info);background:var(--infobg)}
-  .pill.st-fixed{color:var(--good);background:var(--lowbg)} .pill.st-applied{color:var(--good);background:var(--lowbg)}
+  .pill.st-fixed{color:var(--fixed);background:var(--fixedbg)} .pill.st-applied{color:var(--fixed);background:var(--fixedbg)}
   .pill.st-open{color:var(--high);background:var(--highbg)} .pill.st-needs-call{color:var(--med);background:var(--medbg)}
   .pill.st-false-positive{color:var(--gray);background:color-mix(in srgb,var(--gray) 14%,transparent)}
   .pill.st-recommended{color:var(--violet);background:color-mix(in srgb,var(--violet) 14%,transparent)}
-  .pill.st-wontfix{color:var(--gray);background:color-mix(in srgb,var(--gray) 14%,transparent)} .pill.st-clean{color:var(--good);background:var(--lowbg)}
+  .pill.st-wontfix{color:var(--gray);background:color-mix(in srgb,var(--gray) 14%,transparent)} .pill.st-clean{color:var(--clean);background:var(--cleanbg)}
+  .chip.fixedc{color:var(--fixed);border-color:color-mix(in srgb,var(--fixed) 50%,transparent)}
+  .tile.fixed .n{color:var(--fixed)}
   .chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--muted);background:transparent;font-family:inherit;cursor:default;line-height:1.4}
   .chip.mono{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:600}
   .chip.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 50%,transparent)}
@@ -84,6 +86,8 @@
   .summary button.chip .n{font-weight:800;color:var(--ink)}
   .hero{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
   .hero .txt{flex:1;min-width:260px}
+  .donutwrap{flex:none;text-align:center;cursor:help}
+  .donutwrap .dl{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}
   .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;min-width:220px}
   .meta .tile{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 13px}
   .tile .n{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
@@ -153,7 +157,7 @@
   @media (max-width:560px){.kv{grid-template-columns:1fr;gap:2px}}
   .kv .k{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
   .kv .v{white-space:pre-wrap;word-break:break-word}
-  .kv.fixv .v{color:var(--good)} .kv.fixv .v::before{content:"✓ "}
+  .kv.fixv .v{color:var(--fixed)} .kv.fixv .v::before{content:"✓ "}
   .kv.recv .v::before{content:"→ "}
   .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
   .caret{display:inline-block;transition:transform .2s;color:var(--muted);font-size:12px;margin-left:4px}
@@ -172,7 +176,7 @@
   .ev .dot{position:absolute;left:-24px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--muted)}
   .ev.found .dot{width:10px;height:10px;left:-25px;top:12px}
   .ev.found.critical .dot{background:var(--crit)} .ev.found.high .dot{background:var(--high)} .ev.found.medium .dot{background:var(--med)} .ev.found.low .dot{background:var(--low)} .ev.found.info .dot{background:var(--info)}
-  .ev.fixed .dot,.ev.clean .dot{background:var(--good)} .ev.metric .dot{background:var(--violet)} .ev.caveat .dot{background:var(--amber)} .ev.verdict .dot{background:var(--ink)}
+  .ev.fixed .dot{background:var(--fixed)} .ev.clean .dot{background:var(--clean)} .ev.metric .dot{background:var(--violet)} .ev.caveat .dot{background:var(--amber)} .ev.verdict .dot{background:var(--ink)}
   .ev .ic{width:22px;text-align:center;font-size:15px;line-height:1.5}
   .ev .tx b{font-weight:700}
   .ev .tx .d{color:var(--muted);font-size:13.5px;margin-top:2px;white-space:pre-wrap}
@@ -262,16 +266,16 @@
   function copy(text,msg){ (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(function(){toast(msg||'Copied')}).catch(function(){
     var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg||'Copied')}catch(e){toast('Could not copy')}ta.remove();}); }
 
-  var SEV={critical:{ic:'🔴',lbl:'Critical',do:'Fix now',why:'Could expose data, break sign-in or take the app down for real users.'},
-           high:{ic:'🟠',lbl:'High',do:'Fix before the next release',why:'A real user hits this in normal use, or it is a security weakness an attacker could use.'},
-           medium:{ic:'🟡',lbl:'Medium',do:'Schedule it',why:'Degrades the experience for some users — accessibility, wrong dates, silent failures.'},
-           low:{ic:'🟢',lbl:'Low',do:'Polish when convenient',why:'Cosmetic or best-practice; no user is blocked.'},
-           info:{ic:'🔵',lbl:'Info',do:'For your awareness',why:'A note, a clean check or context — nothing to fix.'}};
+  var SEV={critical:{ic:'🟣',lbl:'Critical',do:'Fix now — beyond red',why:'Could expose data, break sign-in or take the app down for real users.'},
+           high:{ic:'🔴',lbl:'High',do:'Fix before the next release',why:'A real user hits this in normal use, or it is a security weakness an attacker could use.'},
+           medium:{ic:'🟠',lbl:'Medium',do:'Schedule it',why:'Degrades the experience for some users — accessibility, wrong dates, silent failures.'},
+           low:{ic:'🟡',lbl:'Low',do:'Polish when convenient',why:'Cosmetic or best-practice; no user is blocked.'},
+           info:{ic:'⚪',lbl:'Info',do:'For your awareness',why:'A note, a clean check or context — nothing to fix.'}};
   var SEVORDER=['critical','high','medium','low','info'];
-  var ST={fixed:{ic:'✓',lbl:'Fixed'},applied:{ic:'✓',lbl:'Applied'},open:{ic:'◌',lbl:'Open'},'needs-call':{ic:'⚑',lbl:'Needs your call'},
-          'false-positive':{ic:'⊘',lbl:'False alarm'},recommended:{ic:'★',lbl:'Recommended'},wontfix:{ic:'—',lbl:'Won’t fix'},clean:{ic:'✓',lbl:'Clean'}};
+  var ST={fixed:{ic:'🔵',lbl:'Fixed'},applied:{ic:'🔵',lbl:'Applied'},open:{ic:'◌',lbl:'Open'},'needs-call':{ic:'⚑',lbl:'Needs your call'},
+          'false-positive':{ic:'⊘',lbl:'False alarm'},recommended:{ic:'★',lbl:'Recommended'},wontfix:{ic:'—',lbl:'Won’t fix'},clean:{ic:'🟢',lbl:'Clean'}};
   var EV={detector:'detector ran','code-read':'code read',test:'test passed',reasoned:'reasoned',assumed:'assumed'};
-  var STTIP={fixed:'Done during the scan. The change is made and described — nothing for you to do.',applied:'This upgrade was applied during the scan.',open:'Real and not yet fixed. Use “copy fix prompt” to hand it to an agent.','needs-call':'A decision only you can make — wording, policy or a destructive change. The agent explains and recommends; you decide.','false-positive':'The scanner flagged it; the agent read the code and ruled it out. Kept so you can see the reasoning.',recommended:'An optimiser (a reusable upgrade) this project would benefit from — not a bug.',wontfix:'Judged not worth changing, with the reason given.',clean:'Checked and nothing found.'};
+  var STTIP={fixed:'Blue = done during the scan. The change is made and described — nothing for you to do.',applied:'This upgrade was applied during the scan.',open:'Real and not yet fixed. Use “copy fix prompt” to hand it to an agent.','needs-call':'A decision only you can make — wording, policy or a destructive change. The agent explains and recommends; you decide.','false-positive':'The scanner flagged it; the agent read the code and ruled it out. Kept so you can see the reasoning.',recommended:'An optimiser (a reusable upgrade) this project would benefit from — not a bug.',wontfix:'Judged not worth changing, with the reason given.',clean:'Checked and nothing found.'};
   var EVTIP={detector:'A static check fired — deterministic, but only a lead until someone reads the line.','code-read':'The agent opened the file and confirmed it — the strongest everyday evidence.',test:'Proven by running a test.',reasoned:'Inferred, not inspected — treat as a claim.',assumed:'Assumed without checking — the weakest evidence.'};
   function tipAttr(head,doTxt,why){return ' tabindex="0" data-tip="'+esc(JSON.stringify({h:head,d:doTxt||'',w:why||''}))+'"';}
   function sevPill(s){s=SEV[s]?s:'info';return '<span class="pill '+s+'"'+tipAttr(SEV[s].ic+' '+SEV[s].lbl+' severity',SEV[s].do,SEV[s].why)+'>'+SEV[s].ic+' '+SEV[s].lbl+'</span>';}
@@ -361,7 +365,10 @@
 
     var html='';
     // ---- hero ----
-    html+='<div class="card"><div class="hero"><div class="txt">'+
+    var donutHtml = headline&&headline.coverage&&headline.coverage.total>0
+      ? '<div class="donutwrap" data-tip="'+esc(JSON.stringify({h:'Coverage '+headline.coverage.matched+'/'+headline.coverage.total,d:scopeLabel(headline.scope),w:'How much of the ledger catalogue this scan checked, verified by the server. Full detail under Coverage.'}))+' tabindex="0">'+donut(headline.coverage.matched,headline.coverage.total,'var(--clean)')+'<div class="dl">coverage · '+esc(scopeLabel(headline.scope))+'</div></div>'
+      : (real.length ? '<div class="donutwrap" data-tip="'+esc(JSON.stringify({h:'Resolved '+fixedN+'/'+real.length,d:'real issues fixed during the scan',w:'The share of real issues (false alarms excluded) already fixed. The rest are open or waiting on your call.'}))+' tabindex="0">'+donut(fixedN,real.length,'var(--fixed)')+'<div class="dl">resolved</div></div>' : '');
+    html+='<div class="card"><div class="hero">'+donutHtml+'<div class="txt">'+
       '<span class="kicker story">📖 Scan story'+(done?'':' · live')+'</span>'+
       '<h1>'+esc(s.app)+(s.project&&norm(s.project)!==norm(s.app)?' <span class="muted" style="font-weight:600">· '+esc(s.project)+'</span>':'')+'</h1>'+
       '<div class="sub">'+esc(s.title||'')+'</div>'+
@@ -369,16 +376,16 @@
       '<div class="verdict '+vcls+'">'+(vcls==='ok'?'✓ ':'⚠ ')+esc(vtxt)+'</div>'+
       '<div class="summary" role="group" aria-label="Filter findings by severity or status">'+
         SEVORDER.filter(function(k){return bySev[k]}).map(function(k){return '<button class="chip" type="button" data-filter="sev:'+k+'" data-tip="'+esc(JSON.stringify({h:SEV[k].ic+' '+SEV[k].lbl+' · '+bySev[k],d:SEV[k].do,w:SEV[k].why+' Click to show only these.'}))+'">'+SEV[k].ic+' <span class="n">'+bySev[k]+'</span> '+SEV[k].lbl.toLowerCase()+'</button>'}).join('')+
-        (fixedN?'<button class="chip ok" type="button" data-filter="st:fixed">✓ <span class="n">'+fixedN+'</span> fixed</button>':'')+
+        (fixedN?'<button class="chip fixedc" type="button" data-filter="st:fixed" data-tip="'+esc(JSON.stringify({h:'🔵 Fixed · '+fixedN,d:'Nothing for you to do',w:'Done during the scan; each one says what was changed. Click to show only these.'}))+'">🔵 <span class="n">'+fixedN+'</span> fixed</button>':'')+
         (needN?'<button class="chip" type="button" data-filter="st:needs-call">⚑ <span class="n">'+needN+'</span> need your call</button>':'')+
         (openN?'<button class="chip" type="button" data-filter="st:open">◌ <span class="n">'+openN+'</span> open</button>':'')+
         (fpN?'<button class="chip" type="button" data-filter="st:false-positive">⊘ <span class="n">'+fpN+'</span> false alarm'+(fpN>1?'s':'')+'</button>':'')+
-        (cleans.length?'<button class="chip ok" type="button" data-tab="clean">✅ <span class="n">'+cleans.length+'</span> families clean</button>':'')+
+        (cleans.length?'<button class="chip ok" type="button" data-tab="clean">🟢 <span class="n">'+cleans.length+'</span> families clean</button>':'')+
       '</div></div>'+
       '<div class="meta">'+
         (itemsChecked!=null?tile(itemsChecked,'items checked',''):tile(finds.length,'findings',''))+
         tile(real.length,'real issues',real.length?'warn':'good')+
-        tile(fixedN,'fixed','good')+
+        tile(fixedN,'fixed','fixed')+
         (inspected!=null?tile(Math.round(inspected/itemsChecked*100)+'%','inspected by reading','gray'):tile(adds.length,'added to ledger',''))+
       '</div></div></div>';
 
@@ -400,7 +407,7 @@
     if(fpN){ html+='<div class="tier"><div class="ic">⊘</div><div><b>'+fpN+' detector hit'+(fpN>1?'s':'')+' verified as false alarm'+(fpN>1?'s':'')+'</b><p>The scanner flagged them; the agent read the code and confirmed they are not real. Listed under Findings so you can see the reasoning — nothing to do.</p></div></div>'; }
     if(recN){ html+='<div class="tier"><div class="ic">★</div><div><b>'+recN+' elevation'+(recN>1?'s':'')+' worth applying</b><p>Not bugs — reusable upgrades from the optimiser catalogue this project would genuinely benefit from.</p></div></div>'; }
     if(caveats.length){ html+='<div class="tier"><div class="ic">⚠</div><div><b>'+caveats.length+' honest caveat'+(caveats.length>1?'s':'')+'</b><p>'+esc(caveats.map(fullText).join(' · '))+'</p></div></div>'; }
-    html+='</div>'+progressLine(d,real,fixedN,openN+needN,metrics)+'</div>';
+    html+='</div>'+(noStory?'':progressLine(d,real,fixedN,openN+needN,metrics))+'</div>';
 
     // ---- better since the scan ----
     if(metrics.length||fixedN){
@@ -428,7 +435,7 @@
         '</div>'+
         '<ol class="finds" id="findList">'+finds.map(findCard).join('')+'</ol><div class="empty" id="findEmpty" hidden>No findings match those filters.</div>';
     } else {
-      html+='<div class="center" style="padding:14px 0"><h2 style="justify-content:center;margin:0">✓ No issues raised'+(done?'':' yet')+'</h2><p class="muted" style="margin:6px 0 0">'+(done?'The agent walked the whole catalogue and raised nothing for this project.':'The scan is still running — findings appear here the moment the agent raises them.')+'</p></div>';
+      html+='<div class="center" style="padding:14px 0"><h2 style="justify-content:center;margin:0">'+(noStory?'📭 No story lines':'✓ No issues raised'+(done?'':' yet'))+'</h2><p class="muted" style="margin:6px 0 0">'+(noStory?'Nothing was narrated for this session, so there are no itemised findings to show — see Coverage for what was posted.':done?'The agent walked the whole catalogue and raised nothing for this project.':'The scan is still running — findings appear here the moment the agent raises them.')+'</p></div>';
     }
     html+='</section>';
 
