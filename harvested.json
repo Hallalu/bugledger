@@ -3166,5 +3166,17 @@
     "status": "unverified",
     "session": "cc86f31f",
     "found": "2026-09-02"
+  },
+  {
+    "key": "cc86f31f:regressionclearlightmodeisbyteidenticalthefallbackwasalready",
+    "app": "Hallalu CRM",
+    "title": "Regression clear: light mode is byte-identical (the fallback was already fff), dark…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Regression clear: light mode is byte-identical (the fallback was already `#fff`), dark mode is fixed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc86f31f",
+    "found": "2026-09-03"
   }
 ]
