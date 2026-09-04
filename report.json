@@ -1,52 +1,25 @@
-{"title":"Scan stories — every sweep now narrates itself into an itemised, severity-tagged report",
- "summary":"The chat narrative of a deepscan (phases, triage reasoning, 'real defect confirmed by reading…', fixes, false alarms, before → after numbers, verdict, caveats) was lost the moment the session ended; the /report page showed bare titles. Now every sweep writes an append-only scan story and it renders at /story/<session>: numbered findings tagged 🔴🟠🟡🟢 with icon + text + hover/focus tooltips, fixed / open / needs-your-call / false-alarm status, plain-English what-was-wrong · why-it-matters · what-was-done, file:line and evidence grade, a 'what this means for you' panel, before → after with % improvement, a progress line against the previous scan of the same app, tabs (Findings · How the scan unfolded · Coverage · Added to the ledger · Checked & clean · Reading this report), search, filters, collapse, copy-as-Markdown, per-finding 'copy fix prompt' and print. All six sweep commands narrate automatically. Proven on a real scan of Bug Ledger itself.",
+{"title":"Bug Ledger Admin — the same bug across apps and analyses",
+ "summary":"There was no admin. Now /admin reads every tier of the ledger at once — the curated catalogue, the hourly harvester, scanner findings, agent submissions, every check-log and every scan story — and clusters 1,607 recorded instances into 1,168 bug classes by detector id and fuzzy title, so the same bug popping up in different apps and different analyses is visible as one row: 64 classes recur in 2+ apps and 28 in 3+. Views: bug classes (app chips, source bars, sparklines, instance tables with links to the story or report), an app × bug heatmap, a by-analysis view showing which recurring classes each scan hit, an over-time chart and by-source tiles, plus JSON/CSV export. It reads all reports and keeps re-reading every minute; a since-your-last-visit panel flags new reports, new classes and classes that spread to more apps until you mark them seen. Token-gated, read-only.",
  "tasks":[
-  {"text":"Wave 0 — Read Bug Ledger + the deepscan skill","done":true,"desc":"Worker, report/live/timeline pages, worklog client, live D1 schema and all six sweep commands read; the gap confirmed: narrative never reached the ledger"},
-  {"text":"Wave 1 — Verified research with counter-evidence","done":true,"desc":"Tricorder's <10% false-positive bar, FSE 2025 suppressions (34.4% FPs), Veracode 45% flaw rate flat two years, CVE-2025-48757 (170 Lovable apps), WCAG 1.4.1, and the counter-evidence: severity ≠ risk, reasoning traces ~40% performative. Published as a short+long report on the Analysis app"},
-  {"text":"Wave 2 — Story events: D1 + API + worklog commands","done":true,"desc":"session_events table with no-update/no-delete triggers; POST /api/session/event, GET /api/story, /story/:id; sessionId on checks and bugs; worklog.mjs phase/say/found/fixed/clean/metric/caveat/verdict/story/id/events; board commands narrate too; scan.mjs --story"},
-  {"text":"Wave 2 — Report renderer","done":true,"desc":"Hero + verdict + clickable severity/status chips, what-this-means-for-you per tier, better-since-the-scan rows with %, progress vs last scan, tabs, search, filters, expand/collapse, tooltips on every tag, copy Markdown, copy fix prompt, print"},
-  {"text":"Wave 2 — Sweep skills narrate automatically","done":true,"desc":"/deepscan /fullscan /securitysweep /optimise /bugcheck /showwork carry the protocol incl. 'resolve every scanner item'; AGENT.md + llms.txt updated"},
-  {"text":"Wave 3 — Real scan of Bug Ledger itself","done":true,"desc":"60→39 detector findings, 32→12 high, a11y 15→3, SEO 8→0, CSP + 4 headers served, 8 real fixes, 6 false alarms ruled out by reading, 2 stdout bugs found in the scanner's own --json paths, 3/3 catalogue items clean; story verified in the browser feature by feature"},
-  {"text":"Wave 3 — Ship: commit, push, Aprizely, Analysis report","done":true,"desc":"Two commits pushed to Hallalu/bugledger; research report appended to the Analysis app; before/after screenshots attached"}
+  {"text":"Wave 0 — Check for an existing admin + map every data source","done":true,"desc":"None existed. Six sources mapped; exact titles never repeat across apps in the curated catalogue, so clustering had to be class-level"},
+  {"text":"Wave 1 — Recurrence API","done":true,"desc":"GET /api/admin/recurrence, token-gated, returns every instance with source, app, title, category, severity, file, date, detector and a link back to its analysis"},
+  {"text":"Wave 1 — Admin page","done":true,"desc":"Union-find clustering client-side (31 ms for 1,607 instances) with prototype-free maps; five views, search, filters, sort, export; watch mode + since-last-visit diff"},
+  {"text":"Wave 2 — Deploy + verify in browser","done":true,"desc":"Rendered on real data via a local harness fed by the API (the admin key was never typed into a form); found and fixed a prototype-key crash and a [hidden] pill leak on the way"},
+  {"text":"Wave 2 — Report to Aprizely","done":true,"desc":"Three screenshots + this report"}
  ],
  "metrics":[
-  {"label":"Narrative captured per sweep","before":"0 lines (lost at session end)","after":"56 story lines, immutable"},
-  {"label":"Report shows per finding","before":"title + note","after":"severity · status · what/why/fix · file:line · evidence · phase · fix prompt"},
-  {"label":"Detector findings on Bug Ledger","before":60,"after":39},
-  {"label":"High-confidence findings","before":32,"after":12},
-  {"label":"Accessibility findings","before":15,"after":3},
-  {"label":"SEO findings","before":8,"after":0},
-  {"label":"Security headers served","before":0,"after":5},
-  {"label":"Controls with an accessible name","before":0,"after":11},
-  {"label":"Sweep commands that narrate","before":0,"after":6},
-  {"label":"Ledger items appended this run","before":0,"after":3},
-  {"label":"Worker API routes","before":12,"after":15}
+  {"label":"Admin views","before":0,"after":5},
+  {"label":"Sources read at once","before":"1 (per panel)","after":6},
+  {"label":"Bug instances read","before":0,"after":1607},
+  {"label":"Bug classes","before":"—","after":1168},
+  {"label":"Classes recurring in 2+ apps","before":"unknown","after":64},
+  {"label":"Classes recurring in 3+ apps","before":"unknown","after":28},
+  {"label":"Analyses read (check-logs + stories)","before":0,"after":75},
+  {"label":"Clustering time","before":"—","after":"31 ms"},
+  {"label":"Re-read interval","before":"never","after":"60 s"}
  ],
- "features":[
-  "Scan story: append-only session_events + POST /api/session/event + GET /api/story + /story/<id>",
-  "worklog.mjs phase · say · found · fixed · clean · metric · caveat · verdict · story · id · events",
-  "Story report: numbered findings, 🔴🟠🟡🟢 tags with icon + text + tooltips, status pills, what-it-means panel, before → after %, progress vs last scan, tabs, search, filters, collapse, copy Markdown, copy fix prompt, print",
-  "Live board story feed + story links on timeline and check-log",
-  "scan.mjs --story itemises high-confidence hits; --log attaches the session",
-  "Security headers via public/_headers; OG cards + og.png; accessible names on all controls"
- ],
- "bugfixes":[
-  "scan.mjs --json corrupted by confirmation lines on stdout (--story, --log, --write) — moved to stderr",
-  "Live board rendered an empty coral pill on every card ([hidden] beaten by a display rule)",
-  "Search, filters, checkboxes, file pickers, caption fields and sanitizer textareas had no accessible name",
-  "Sanitizer textareas killed the focus ring with no replacement",
-  "harvest.mjs dated bugs in UTC; worklog events printed UTC clock time",
-  "Scanner did not map repo 'bugledger' to catalogue app 'Bug Ledger' (coverage read 0/0)",
-  "Story page for a legacy session with no events would have read as 'clean'"
- ],
- "issues":["No tests in the Bug Ledger repo (needs your call — one smoke test of scan.mjs --json parsing and of /api/session/event → /api/story would guard both contracts)","The in-app Browser pane became unresponsive mid-scroll; verification was completed with headless Chrome screenshots and DOM checks via the pane's JS tool"],
- "findings":[
-  "The agent's narrative was never persisted anywhere — the 2,000-char notes field on a check was the only free text, so the most useful part of a deepscan evaporated",
-  "Our own scanner's high-confidence hits were ~40% false alarms on the tooling repo (it matched its own rule table) — the reason false alarms stay visible with reasons",
-  "A [hidden] attribute is silently defeated by any author display rule; the class is now in the ledger"
- ],
- "insights":[
-  "A critique is a claim: two counter-evidence sources (severity ≠ risk; reasoning traces are partly performative) reshaped the design toward action-level facts next to the prose rather than replacing it",
-  "Colour is a label, never the meaning — icon + text + a tooltip that says what to do is the minimum (WCAG 1.4.1)",
-  "In zsh, $W with a space does not word-split — a shell function is the safe way to alias a CLI in docs"
- ]}
+ "features":["/admin recurrence board with app × bug heatmap, by-analysis, over-time and by-source views","GET /api/admin/recurrence (token-gated) across catalogue, harvested, scanner, submitted, check-logs, stories","Reads every report and re-reads every minute; since-your-last-visit panel with NEW / +n badges","JSON and CSV export of bug classes","harvested.json + scan-findings.json now published for tooling"],
+ "bugfixes":["Plain-object map keyed by bug-title words collided with Object.prototype ('constructor') and crashed the page — prototype-free maps (ledgered as a bug class)","'watching for new reports' pill showed on the login gate — [hidden] beaten by a display rule (the class ledgered yesterday, caught by our own eyes this time)"],
+ "issues":["Curated catalogue entries carry no date, so they sit outside the over-time chart (they still count in classes and the heatmap)","Fuzzy title clustering is a heuristic (Jaccard ≥ 0.5 on stemmed tokens, or 80% containment); a few near-duplicates may still split or merge — the instance table under each class shows exactly what was grouped"],
+ "findings":["Missing CSP / security headers is the most widespread class: 6 apps, 13 instances, 12 analyses","No tests anywhere and no Open Graph card each recur in 6 apps; empty catch blocks in 5 apps (50 instances); stored/DOM XSS sinks in 4 apps (79 instances)"],
+ "insights":["A bug in 3+ apps is a rule, a detector or a shared module waiting to be written — the heatmap is the backlog for the modules site","Never type an admin token into a page to verify it; feed the page real API data through a local harness instead"]}

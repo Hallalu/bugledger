@@ -3,8 +3,8 @@
   "app": "Bug Ledger",
   "project": "BugLedger",
   "title": "Bug Ledger Admin — the same bug across apps and analyses",
-  "status": "active",
-  "current": "Wave 1 — admin page: clustering by detector + fuzzy title, heatmap, by-analysis, timeline, since-last-visit watch",
+  "status": "done",
+  "current": "Done ✓",
   "note": "",
   "tasks": [
     {
@@ -21,22 +21,23 @@
     },
     {
       "text": "Admin page",
-      "note": "Client-side union-find clustering over ~1,400 instances; five views; NEW / +n badges against the last snapshot you marked as seen; JSON/CSV export",
-      "status": "active",
+      "note": "Admin page live at /admin: 1,607 instances → 1,168 bug classes in 31 ms; 64 classes in 2+ apps, 28 in 3+; five views + export; found and fixed a prototype-key crash in its own clustering (ledgered)",
+      "status": "done",
       "wave": "Wave 1 — Build"
     },
     {
       "text": "Deploy + verify in browser",
-      "note": "open /admin, check every feature, screenshot",
-      "status": "pending",
+      "note": "Classes, heatmap, by-analysis, over-time, gate all rendered and screenshotted from real API data; the token was never typed into a web form",
+      "status": "done",
       "wave": "Wave 2 — Prove it"
     },
     {
       "text": "Report to Aprizely",
       "note": "numbers + shots",
-      "status": "pending",
+      "status": "done",
       "wave": "Wave 2 — Prove it"
     }
   ],
-  "started": 1788551625291
+  "started": 1788551625291,
+  "reported": true
 }
