@@ -1,55 +1,42 @@
 {
-  "id": "936502a9-81d8-40cc-85c0-b62e372ba14a",
+  "id": "fbef973b-b7b6-4e8c-ba3a-299f1cb9033c",
   "app": "Bug Ledger",
   "project": "BugLedger",
-  "title": "Deepscan narrative reports — itemised, severity-tagged findings from the agent's own chat",
-  "status": "done",
-  "current": "Done ✓",
+  "title": "Bug Ledger Admin — the same bug across apps and analyses",
+  "status": "active",
+  "current": "Wave 1 — admin page: clustering by detector + fuzzy title, heatmap, by-analysis, timeline, since-last-visit watch",
   "note": "",
   "tasks": [
     {
-      "text": "Read Bug Ledger + deepscan skill",
-      "note": "Read worker.js (481 lines), report/live/timeline pages, worklog client, live D1 schema and all six sweep commands. Gap confirmed: the agent's narrative never reaches the ledger — /report only shows bare titles + notes",
+      "text": "Check for an existing admin + map every data source",
+      "note": "No admin exists. Six sources mapped: bugs.json 428 (26 apps), harvested 275, scan-findings 99, D1 submitted 200 (17 apps), 64 check-logs with 312 found items, scan stories. Exact titles never repeat across apps — clustering must be by detector id + fuzzy title",
       "status": "done",
       "wave": "Wave 0 — Absorb"
     },
     {
-      "text": "Verify what devs, vibecoders and designers want from a scan report",
-      "note": "Verified from primary sources: Google Tricorder's <10% false-positive bar + understandable/actionable criteria; WCAG 1.4.1 (colour never the only cue); Veracode spring 2026 45% flaw rate, unchanged 2 years; CVE-2025-48757 170 Lovable apps / 303 endpoints; counter-evidence: CVSS severity ≠ risk, reasoning traces ~40% performative (so findings must carry evidence tags, not just narrative)",
+      "text": "Recurrence API",
+      "note": "GET /api/admin/recurrence live (401 without key): gathers catalogue, harvested, scanner, submitted, all check-logs and all story findings + the analyses list; re-read every minute by the page",
       "status": "done",
-      "wave": "Wave 1 — Research"
+      "wave": "Wave 1 — Build"
     },
     {
-      "text": "Narrative finding events in worklog",
-      "note": "Shipped: session_events table (append-only triggers), POST /api/session/event, GET /api/story, /story/<id> route, sessionId on checks+bugs; worklog.mjs gained phase/say/found/fixed/clean/metric/caveat/verdict/story/id/events and every board command now writes itself into the story",
-      "status": "done",
-      "wave": "Wave 2 — Build"
+      "text": "Admin page",
+      "note": "Client-side union-find clustering over ~1,400 instances; five views; NEW / +n badges against the last snapshot you marked as seen; JSON/CSV export",
+      "status": "active",
+      "wave": "Wave 1 — Build"
     },
     {
-      "text": "Report renderer",
-      "note": "Rendered + deployed as version 0908f0a9; now proving it on a real scan",
-      "status": "done",
-      "wave": "Wave 2 — Build"
-    },
-    {
-      "text": "Deepscan + sweep skills emit the narrative",
-      "note": "Every future sweep writes its own itemised story without being asked",
-      "status": "done",
-      "wave": "Wave 2 — Build"
-    },
-    {
-      "text": "Deploy + run a real deepscan",
-      "note": "Real scan of Bug Ledger itself: 60→39 detector findings (32→12 high), a11y 15→3, SEO 8→0, CSP+4 headers served, 8 real fixes, 6 false alarms ruled out by reading, 2 stdout bugs found in the scanner's own --json paths, 3/3 catalogue items clean; story verified in browser: tooltips, filters, search, tabs, fix prompts",
-      "status": "done",
-      "wave": "Wave 3 — Prove it"
+      "text": "Deploy + verify in browser",
+      "note": "open /admin, check every feature, screenshot",
+      "status": "pending",
+      "wave": "Wave 2 — Prove it"
     },
     {
       "text": "Report to Aprizely",
-      "note": "Committed + pushed (7a9057f and the legacy-session guard); research report live on the Analysis app; before/after shots attached",
-      "status": "done",
-      "wave": "Wave 3 — Prove it"
+      "note": "numbers + shots",
+      "status": "pending",
+      "wave": "Wave 2 — Prove it"
     }
   ],
-  "started": 1788474664087,
-  "reported": true
+  "started": 1788551625291
 }

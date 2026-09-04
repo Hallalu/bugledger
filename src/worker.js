@@ -154,6 +154,12 @@ export default {
       } catch (e) { return writeErr(e); }
     }
 
+    // ---- /admin : the recurrence admin (static page; the API it calls is token-gated) ----
+    if (pathname === "/admin" && (request.method === "GET" || request.method === "HEAD")) {
+      const res = await env.ASSETS.fetch(new Request(new URL("/admin.html", request.url), { method: "GET" }));
+      return new Response(request.method === "HEAD" ? null : res.body, { status: res.status, headers: res.headers });
+    }
+
     // ---- /story/:id : the itemised scan story (served by report.html, which reads the path) ----
     if (pathname.startsWith("/story/") && (request.method === "GET" || request.method === "HEAD")) {
       const res = await env.ASSETS.fetch(new Request(new URL("/report", request.url), { method: "GET" }));
@@ -230,6 +236,46 @@ export default {
           }
         } catch {}
         return json({ ok: true, session, events, checks, additions, rollup: rollup(events), previous });
+      } catch (e) { return json({ ok: false, error: String(e) }, 500); }
+    }
+
+    // ---- GET /api/admin/recurrence : every bug INSTANCE from every tier, for the admin recurrence view ----
+    // Token-gated (same x-ledger-key). Returns raw instances; the page clusters them into bug classes
+    // (detector id, then fuzzy title) so the same bug can be seen popping up across apps and analyses.
+    if (pathname === "/api/admin/recurrence" && request.method === "GET") {
+      if (env.LEDGER_WRITE_TOKEN && request.headers.get("x-ledger-key") !== env.LEDGER_WRITE_TOKEN)
+        return json({ ok: false, error: "unauthorized — send x-ledger-key" }, 401);
+      try {
+        const asset = async (name) => { try { const r = await env.ASSETS.fetch(new Request(new URL(name, request.url))); return r.ok ? await r.json() : []; } catch { return []; } };
+        const [bugs, harvested, scans, sub, chk, ev, sess] = await Promise.all([
+          asset("/bugs.json"), asset("/harvested.json"), asset("/scan-findings.json"),
+          env.DB.prepare("SELECT id,ts,app,project,kind,title,category,severity,file,session_id FROM submitted ORDER BY ts DESC LIMIT 10000").all(),
+          env.DB.prepare("SELECT id,ts,app,project,scope,found,session_id FROM checks ORDER BY ts DESC LIMIT 5000").all(),
+          env.DB.prepare("SELECT e.id,e.ts,e.title,e.severity,e.status,e.category,e.file,e.session_id,e.meta,s.app,s.project FROM session_events e JOIN sessions s ON s.id=e.session_id WHERE e.kind='found' ORDER BY e.ts DESC LIMIT 20000").all(),
+          env.DB.prepare("SELECT id,started,updated,app,project,title,status FROM sessions ORDER BY started DESC LIMIT 5000").all(),
+        ]);
+        const inst = [];
+        const dateTs = (d) => { const t = Date.parse(d || ""); return Number.isFinite(t) ? t : null; };
+        for (const b of (Array.isArray(bugs) ? bugs : [])) inst.push({ source: "catalogue", app: b.app, title: b.title, category: b.category, severity: b.severity || null, file: null, ts: dateTs(b.date) , ref: null, refKind: null, note: b.symptom ? String(b.symptom).slice(0, 200) : null });
+        for (const h of (Array.isArray(harvested) ? harvested : [])) inst.push({ source: "harvested", app: h.app, title: h.title, category: h.category, severity: h.severity || null, file: null, ts: dateTs(h.found), ref: null, refKind: null, note: h.symptom ? String(h.symptom).slice(0, 200) : null });
+        for (const f of (Array.isArray(scans) ? scans : [])) inst.push({ source: "scanner", app: f.app, title: f.title, category: f.category, severity: f.severity || null, file: f.file ? f.file + ":" + f.line : null, ts: dateTs(f.found), ref: null, refKind: null, detector: f.detector, note: f.excerpt ? String(f.excerpt).slice(0, 160) : null });
+        for (const r of (sub.results || [])) inst.push({ source: "submitted", app: r.app, title: r.title, category: r.category, severity: r.severity, file: r.file, ts: r.ts, ref: r.session_id ? "/story/" + r.session_id : null, refKind: r.session_id ? "story" : null, kind: r.kind });
+        for (const r of (chk.results || [])) {
+          let found = []; try { found = JSON.parse(r.found) || []; } catch {}
+          for (const f of found) {
+            const m = /^([A-Z][A-Z0-9-]{2,}):\s+(.+)$/.exec(String(f.title || ""));
+            inst.push({ source: "check", app: r.app, title: m ? m[2] : f.title, detector: m ? m[1] : undefined, category: null, severity: null, file: f.file || null, ts: r.ts,
+              ref: r.session_id ? "/story/" + r.session_id : "/report?id=" + r.id, refKind: r.session_id ? "story" : "report", analysis: r.id, scope: r.scope || "app", verifiedBy: f.verifiedBy || null, note: f.note ? String(f.note).slice(0, 160) : null });
+          }
+        }
+        for (const r of (ev.results || [])) {
+          let meta = null; try { meta = JSON.parse(r.meta); } catch {}
+          inst.push({ source: "story", app: r.app, title: String(r.title || "").replace(/\s*×\d+$/, ""), detector: meta && meta.detector || undefined, category: r.category, severity: r.severity, status: r.status, file: r.file, ts: r.ts, ref: "/story/" + r.session_id, refKind: "story", analysis: r.session_id });
+        }
+        const analyses = [];
+        for (const r of (chk.results || [])) analyses.push({ kind: "check", id: r.id, ts: r.ts, app: r.app, project: r.project, scope: r.scope || "app", sessionId: r.session_id || null, url: r.session_id ? "/story/" + r.session_id : "/report?id=" + r.id });
+        for (const r of (sess.results || [])) analyses.push({ kind: "story", id: r.id, ts: r.started, app: r.app, project: r.project, title: r.title, status: r.status, url: "/story/" + r.id });
+        return json({ ok: true, generated: Date.now(), counts: { catalogue: (bugs||[]).length, harvested: (harvested||[]).length, scanner: (scans||[]).length, submitted: (sub.results||[]).length, checks: (chk.results||[]).length, stories: (sess.results||[]).length, instances: inst.length }, instances: inst, analyses });
       } catch (e) { return json({ ok: false, error: String(e) }, 500); }
     }
 

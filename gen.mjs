@@ -281,6 +281,9 @@ for (const app of appOrder)
     .sort((a,b)=>(SEV[a.category]-SEV[b.category])||a.title.localeCompare(b.title))
     .map(b => ({ title: b.title, category: b.category, severity: sevOf(b), symptom: b.symptom || "", fix: b.fix || "" }));
 fs.writeFileSync(p("public","checklist.json"), JSON.stringify(checklist));
+// admin recurrence view reads these raw tiers over HTTP (same data the data-*.js panels carry)
+try { fs.writeFileSync(p("public","harvested.json"), fs.existsSync(p("harvested.json")) ? fs.readFileSync(p("harvested.json"),"utf8") : "[]"); } catch {}
+try { fs.writeFileSync(p("public","scan-findings.json"), fs.existsSync(p("scan-findings.json")) ? fs.readFileSync(p("scan-findings.json"),"utf8") : "[]"); } catch {}
 
 // llms.txt — root index for AI agents (llmstxt.org convention)
 const llms = `# Bug Ledger
