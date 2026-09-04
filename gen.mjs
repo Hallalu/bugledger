@@ -303,7 +303,7 @@ Agent instructions: fetch /AGENT.md and follow the protocol. Report back with PO
 - GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
 - POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
 - Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
-- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session>; human page https://bugledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan
+- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session> (returns the session plus \`history\`: every earlier scan of the same app, each rolled up); human page https://bugledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan, with a Scan history tab spanning every earlier scan
 
 ## Live + history
 - Stream progress (watch): POST /api/session · board https://bugledger.coconvo.workers.dev/live · helper ~/BugLedger/worklog.mjs
@@ -388,7 +388,8 @@ Every sweep has a **story** at \`/story/<session id>\` — the agent's own accou
 with 🟣 critical · 🔴 high · 🟠 medium · 🟡 low tags (text + icon, never colour alone), 🔵 fixed / open /
 needs-your-call / false-alarm status, plain-English *what was wrong · why it matters · what was done*, the
 file:line, the evidence (detector / code-read / test), before → after metrics with % improvement, a comparison
-to the previous scan of the same app, honest caveats, and a verdict. Append-only: \`POST /api/session/event\`.
+to the previous scan of the same app plus a **Scan history** tab listing every earlier scan of that app
+(newest first, each linking to its own full story), honest caveats, and a verdict. Append-only: \`POST /api/session/event\`.
 \`\`\`bash
 W(){ node ~/BugLedger/worklog.mjs "$@"; }   # a function, not $W — zsh does not word-split variables
 W start --app "APP" --project "$(basename "$PWD")" --title "Deep scan" --tasks "Automated pass|Bugs|Security|Optimisers"   # prints 📖 story: …/story/<id>

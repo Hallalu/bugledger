@@ -131,6 +131,26 @@
   .tabs button .cnt{color:var(--muted);font-weight:700;margin-left:4px}
   .panel[hidden]{display:none}
 
+  /* scan history — the whole lineage of this app's scans */
+  ol.hist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .histrow .hcard{display:grid;grid-template-columns:minmax(78px,auto) 1fr auto;gap:14px;align-items:center;text-decoration:none;color:inherit;
+    border:1px solid var(--line);border-radius:16px;background:var(--card2);padding:12px 15px;transition:border-color .15s,transform .12s}
+  a.hcard:hover{border-color:color-mix(in srgb,var(--ink) 24%,transparent);transform:translateY(-1px)}
+  .histrow.cur .hcard{border-color:color-mix(in srgb,var(--coral) 45%,transparent);background:color-mix(in srgb,var(--coral) 7%,transparent)}
+  .hwhen{font-size:12.5px;font-weight:750;color:var(--muted);font-variant-numeric:tabular-nums}
+  .htitle{font-weight:750;font-size:15px;line-height:1.35}
+  .hsub{font-size:13.5px;margin-top:3px} .hsub.ok{color:var(--good)} .hsub.warn{color:var(--coral)}
+  .hbadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;align-items:center}
+  .hd{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .hb{font-size:11.5px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 8px}
+  .hb.fx{color:var(--fixed);border-color:color-mix(in srgb,var(--fixed) 45%,transparent)}
+  .hb.op{color:var(--coral);border-color:color-mix(in srgb,var(--coral) 45%,transparent)}
+  .hgo{font-size:12.5px;font-weight:800;color:var(--coral);white-space:nowrap}
+  .histrow.cur .hgo{color:var(--muted)}
+  .chip.live{color:var(--coral);border-color:color-mix(in srgb,var(--coral) 50%,transparent)}
+  .chip.cur{color:var(--coral);border-color:color-mix(in srgb,var(--coral) 50%,transparent)}
+  @media (max-width:560px){.histrow .hcard{grid-template-columns:1fr auto}.hwhen{grid-column:1/-1}}
+
   /* findings */
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
   .toolbar input{flex:1;min-width:180px;font:inherit;font-size:14px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--ink)}
@@ -419,7 +439,8 @@
     }
 
     // ---- tabs ----
-    var tabs=[['findings','Findings',finds.length],['story','How the scan unfolded',events.length],['coverage','Coverage',checks.length],['added','Added to the ledger',adds.length],['clean','Checked & clean',cleans.length+(headline?(headline.notFound||[]).length:0)],['legend','Reading this report',null]];
+    var hist=d.history||[], histCount=hist.length;
+    var tabs=[['findings','Findings',finds.length],['story','How the scan unfolded',events.length],['coverage','Coverage',checks.length],['added','Added to the ledger',adds.length],['clean','Checked & clean',cleans.length+(headline?(headline.notFound||[]).length:0)],['history','Scan history',histCount?histCount+1:null],['legend','Reading this report',null]];
     html+='<div class="tabs" role="tablist">'+tabs.map(function(t,i){return '<button role="tab" type="button" data-tab="'+t[0]+'" aria-selected="'+(i===0)+'" aria-controls="p-'+t[0]+'">'+esc(t[1])+(t[2]!=null?'<span class="cnt">'+t[2]+'</span>':'')+'</button>'}).join('')+'</div>';
 
     // ---- findings ----
@@ -468,6 +489,20 @@
     if(cleans.length) html+='<h3>Families the agent walked and found clean</h3><ul class="plain">'+cleans.map(function(c){return '<li><div class="ft">'+stPill('clean')+'<b>'+esc(c.title)+'</b>'+(c.meta&&c.meta.checked?'<span class="chip">'+c.meta.checked+' checked</span>':'')+(c.verifiedBy?evChip(c.verifiedBy):'')+'</div>'+(c.detail?'<div class="note">'+esc(c.detail)+'</div>':'')+'</li>'}).join('')+'</ul>';
     if(headline&&(headline.notFound||[]).length){ var nf=headline.notFound; html+='<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:750">'+nf.length+' catalogue items checked &amp; not present</summary><ul class="mini" style="margin-top:10px;columns:2">'+nf.slice(0,600).map(function(t){return '<li>✓ '+esc(String(typeof t==='string'?t:t.title).replace(/ \(static check clean\)$/,''))+'</li>'}).join('')+'</ul></details>'; }
     if(!cleans.length&&!(headline&&(headline.notFound||[]).length)) html+='<p class="muted">No clean-family records'+(done?'':' yet')+'.</p>';
+    html+='</section>';
+
+    // ---- scan history (the whole lineage of this app, this scan + every earlier one) ----
+    html+='<section class="panel card" id="p-history" data-title="Scan history" role="tabpanel" hidden>';
+    if(histCount){
+      var curForHist={id:SESSION,started:s.started,updated:s.updated,title:s.title,status:s.status,verdict:vtxt,
+        rollup:{real:real.length,byStatus:byStatus,bySev:bySev}};
+      var arc=hist.slice().reverse().map(function(h){return (h.rollup&&h.rollup.real)||0}); arc.push(real.length);   // oldest → newest, ending on this scan
+      html+='<h2>Every scan of '+esc(s.app)+' <span class="cnt">'+(histCount+1)+' total · newest first</span></h2>'+
+        '<p class="muted" style="margin-bottom:12px">This scan is the latest chapter — here is the whole lineage, with each earlier scan’s full story one click away. Real issues over time: <b>'+arc.join(' → ')+'</b>.</p>'+
+        '<ol class="hist">'+histRow(curForHist,true)+hist.map(function(h){return histRow(h,false)}).join('')+'</ol>';
+    } else {
+      html+='<h2>Scan history</h2><p class="muted">This is the <b>first</b> recorded scan of '+esc(s.app)+'. When it runs again, every earlier scan’s story will be listed here, newest first, so you can follow the whole arc — not just the latest one.</p>';
+    }
     html+='</section>';
 
     // ---- legend ----
@@ -520,6 +555,24 @@
     if(cmp.length) s+=' Compared on the same yardstick: '+cmp.join('; ')+'.';
     s+=' <a href="/story/'+esc(p.id)+'" style="color:inherit;font-weight:700">previous story →</a>';
     return '<div class="progressline '+(better?'':(dReal>0?'worse':''))+'">'+s+'</div>';
+  }
+  // one row in the Scan history lineage — a prior scan (link to its full story) or this one (isCurrent)
+  function histRow(h,isCurrent){
+    var r=h.rollup||{}, bs=r.bySev||{}, st=r.byStatus||{};
+    var real=r.real!=null?r.real:0;
+    var fixed=(st.fixed||0)+(st.applied||0), open=(st.open||0)+(st['needs-call']||0);
+    var live=h.status&&h.status!=='done';
+    var v=h.verdict||r.verdict||(real?fixed+' fixed'+(open?', '+open+' open':(fixed?'':', '+real+' found')):(live?'Scan in progress':'Clean — nothing from the ledger present'));
+    var vok=!open&&(!bs.critical||fixed)&&!live;
+    var dots=SEVORDER.filter(function(k){return k!=='info'&&bs[k]}).map(function(k){return '<span class="hd" title="'+SEV[k].lbl+' × '+bs[k]+'">'+SEV[k].ic+bs[k]+'</span>'}).join('');
+    var inner='<div class="hwhen">'+shortts(h.started)+'</div>'+
+      '<div class="hmain"><div class="htitle">'+esc(h.title||'Scan')+(live?' <span class="chip live">live</span>':'')+(isCurrent?' <span class="chip cur">this scan</span>':'')+'</div>'+
+      '<div class="hsub '+(vok?'ok':'warn')+'">'+(vok?'✓ ':'⚠ ')+esc(v)+'</div>'+
+      ((dots||real||fixed||open)?'<div class="hbadges">'+dots+(real?'<span class="hb">'+real+' real</span>':'')+(fixed?'<span class="hb fx">'+fixed+' fixed</span>':'')+(open?'<span class="hb op">'+open+' open</span>':'')+'</div>':'')+
+      '</div>';
+    return isCurrent
+      ? '<li class="histrow cur"><div class="hcard">'+inner+'<div class="hgo">▸ you’re here</div></div></li>'
+      : '<li class="histrow"><a class="hcard" href="/story/'+esc(h.id)+'">'+inner+'<div class="hgo">open story →</div></a></li>';
   }
   function findCard(f,i){
     var sv=SEV[f.severity]?f.severity:'info', st=f.status||'open';

@@ -15,7 +15,7 @@ Agent instructions: fetch /AGENT.md and follow the protocol. Report back with PO
 - GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
 - POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
 - Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
-- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session>; human page https://bugledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan
+- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session> (returns the session plus `history`: every earlier scan of the same app, each rolled up); human page https://bugledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan, with a Scan history tab spanning every earlier scan
 
 ## Live + history
 - Stream progress (watch): POST /api/session · board https://bugledger.coconvo.workers.dev/live · helper ~/BugLedger/worklog.mjs

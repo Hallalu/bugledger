@@ -70,7 +70,8 @@ Every sweep has a **story** at `/story/<session id>` — the agent's own account
 with 🟣 critical · 🔴 high · 🟠 medium · 🟡 low tags (text + icon, never colour alone), 🔵 fixed / open /
 needs-your-call / false-alarm status, plain-English *what was wrong · why it matters · what was done*, the
 file:line, the evidence (detector / code-read / test), before → after metrics with % improvement, a comparison
-to the previous scan of the same app, honest caveats, and a verdict. Append-only: `POST /api/session/event`.
+to the previous scan of the same app plus a **Scan history** tab listing every earlier scan of that app
+(newest first, each linking to its own full story), honest caveats, and a verdict. Append-only: `POST /api/session/event`.
 ```bash
 W(){ node ~/BugLedger/worklog.mjs "$@"; }   # a function, not $W — zsh does not word-split variables
 W start --app "APP" --project "$(basename "$PWD")" --title "Deep scan" --tasks "Automated pass|Bugs|Security|Optimisers"   # prints 📖 story: …/story/<id>

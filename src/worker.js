@@ -224,20 +224,29 @@ export default {
         const events = (ev.results || []).map(mapEvent);
         const checks = (ck.results || []).map(mapCheck);
         const additions = (sb.results || []).map(mapSubmitted);
-        // previous story for the same app (the most recent earlier session that has events) → progress line
-        let previous = null;
+        // Every earlier scan of the same app that narrated a story → the full lineage (history),
+        // each summarised to a rollup. `previous` stays the immediately-preceding one for the
+        // progress line. One events query for all of them, grouped in JS.
+        let previous = null, history = [];
         try {
           const prevRows = await env.DB.prepare(
             `SELECT s.id, s.started, s.updated, s.title, s.status FROM sessions s
-             WHERE s.app = ? AND s.started < ? AND EXISTS (SELECT 1 FROM session_events e WHERE e.session_id = s.id AND e.kind IN ('found','metric'))
-             ORDER BY s.started DESC LIMIT 1`).bind(session.app, session.started).all();
-          const p = (prevRows.results || [])[0];
-          if (p) {
-            const pev = await env.DB.prepare("SELECT * FROM session_events WHERE session_id = ? ORDER BY ts ASC LIMIT 2000").bind(p.id).all();
-            previous = { id: p.id, started: p.started, updated: p.updated, title: p.title, rollup: rollup((pev.results || []).map(mapEvent)) };
+             WHERE s.app = ? AND s.started < ? AND s.id <> ?
+               AND EXISTS (SELECT 1 FROM session_events e WHERE e.session_id = s.id AND e.kind IN ('found','metric','verdict','clean'))
+             ORDER BY s.started DESC LIMIT 20`).bind(session.app, session.started, id).all();
+          const rows = prevRows.results || [];
+          if (rows.length) {
+            const ph = rows.map(() => "?").join(",");
+            const allEv = await env.DB.prepare(
+              `SELECT * FROM session_events WHERE session_id IN (${ph}) ORDER BY ts ASC, seq ASC LIMIT 12000`
+            ).bind(...rows.map((r) => r.id)).all();
+            const byS = new Map();
+            for (const e of (allEv.results || [])) { if (!byS.has(e.session_id)) byS.set(e.session_id, []); byS.get(e.session_id).push(mapEvent(e)); }
+            history = rows.map((r) => ({ id: r.id, started: r.started, updated: r.updated, title: r.title, status: r.status, rollup: rollup(byS.get(r.id) || []) }));
+            previous = history[0] || null;
           }
         } catch {}
-        return json({ ok: true, session, events, checks, additions, rollup: rollup(events), previous });
+        return json({ ok: true, session, events, checks, additions, rollup: rollup(events), previous, history });
       } catch (e) { return json({ ok: false, error: String(e) }, 500); }
     }
 
