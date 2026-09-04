@@ -1,43 +1,60 @@
 {
-  "id": "fbef973b-b7b6-4e8c-ba3a-299f1cb9033c",
+  "id": "55787a34-74f0-4d96-b8e8-c60b8d3e1d13",
   "app": "Bug Ledger",
   "project": "BugLedger",
-  "title": "Bug Ledger Admin — the same bug across apps and analyses",
-  "status": "done",
-  "current": "Done ✓",
+  "title": "Close the open items: smoke tests + the full 560-item deep scan of Bug Ledger, narrated",
+  "status": "active",
+  "current": "Phase 3 — security sweep: 52 security bugs + 15 audit findings",
   "note": "",
   "tasks": [
     {
-      "text": "Check for an existing admin + map every data source",
-      "note": "No admin exists. Six sources mapped: bugs.json 428 (26 apps), harvested 275, scan-findings 99, D1 submitted 200 (17 apps), 64 check-logs with 312 found items, scan stories. Exact titles never repeat across apps — clustering must be by detector id + fuzzy title",
+      "text": "Smoke tests",
+      "note": "32 tests, 0 dependencies, all green: pure-JSON contract of scan.mjs --json (even with --story), story found→fixed resolution, every page script parses, no duplicate static ids, worklog guards, admin clustering incl. the constructor case. GitHub Actions workflow runs them on push",
       "status": "done",
-      "wave": "Wave 0 — Absorb"
+      "wave": "Wave 1 — Tests"
     },
     {
-      "text": "Recurrence API",
-      "note": "GET /api/admin/recurrence live (401 without key): gathers catalogue, harvested, scanner, submitted, all check-logs and all story findings + the analyses list; re-read every minute by the page",
+      "text": "Catalogue + counts",
+      "note": "pull the whole ledger and compute the grand total on every axis",
       "status": "done",
-      "wave": "Wave 1 — Build"
+      "wave": "Wave 2 — Deep scan"
     },
     {
-      "text": "Admin page",
-      "note": "Admin page live at /admin: 1,607 instances → 1,168 bug classes in 31 ms; 64 classes in 2+ apps, 28 in 3+; five views + export; found and fixed a prototype-key crash in its own clustering (ledgered)",
+      "text": "Phase 1 — 47 detectors",
+      "note": "48 hits, 13 high: CI workflow added (real), 12 false alarms with reasons",
       "status": "done",
-      "wave": "Wave 1 — Build"
+      "wave": "Wave 2 — Deep scan"
     },
     {
-      "text": "Deploy + verify in browser",
-      "note": "Classes, heatmap, by-analysis, over-time, gate all rendered and screenshotted from real API data; the token was never typed into a web form",
+      "text": "Phase 2 — 16 bug categories",
+      "note": "All 16 categories ✅ N/N server-verified, 428/428, 66% inspected by reading or detector; 5 present: fixed hard-coded scanner date, stacked click handlers, missing .catch; recommended build stamp; open global error handler (needs a sink)",
       "status": "done",
-      "wave": "Wave 2 — Prove it"
+      "wave": "Wave 2 — Deep scan"
     },
     {
-      "text": "Report to Aprizely",
-      "note": "numbers + shots",
-      "status": "done",
-      "wave": "Wave 2 — Prove it"
+      "text": "Phase 3 — Security sweep (67)",
+      "note": "every security item re-confirmed",
+      "status": "active",
+      "wave": "Wave 2 — Deep scan"
+    },
+    {
+      "text": "Phase 4 — Optimisers (117)",
+      "note": "applied / recommended / n-a per elevation",
+      "status": "pending",
+      "wave": "Wave 2 — Deep scan"
+    },
+    {
+      "text": "Close",
+      "note": "grand bar 560/560 confirmed server-side, verdict, story link",
+      "status": "pending",
+      "wave": "Wave 2 — Deep scan"
+    },
+    {
+      "text": "Verify + report",
+      "note": "open the story in the browser, screenshot, Aprizely report",
+      "status": "pending",
+      "wave": "Wave 3 — Prove it"
     }
   ],
-  "started": 1788551625291,
-  "reported": true
+  "started": 1788552906925
 }

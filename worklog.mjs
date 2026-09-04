@@ -35,6 +35,7 @@
    node ~/BugLedger/worklog.mjs verdict "8 fixed, 3 left for your call, 3 new items added to the ledger"
    node ~/BugLedger/worklog.mjs story                        # print the story link
    node ~/BugLedger/worklog.mjs id                           # print the session id (pass as sessionId on /api/checks + /api/bugs)
+   node ~/BugLedger/worklog.mjs events                       # list the story so far (local time)
 
  step / current / done / progress --current / add / note also write themselves into the story, so a
  sweep that only uses the board still gets a readable timeline. Severity: critical | high | medium |

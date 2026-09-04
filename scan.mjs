@@ -644,7 +644,7 @@ if (flags.has("--write")) {
   const OUT = path.join(LEDGER, "scan-findings.json");
   let store = []; try { store = JSON.parse(fs.readFileSync(OUT,"utf8")); } catch {}
   const have = new Set(store.map(s=>s.scanKey));
-  const today = "2026-08-10";
+  const today = (() => { const d = new Date(), p = (x) => String(x).padStart(2, "0"); return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); })();
   let added = 0;
   for (const f of findings) {
     const k = scanKey(f);

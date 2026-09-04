@@ -1,0 +1,9 @@
+{
+  "name": "bugledger",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "gen": "node gen.mjs",
+    "deploy": "npx wrangler@4.28.1 deploy"
+  }
+}

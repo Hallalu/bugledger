@@ -237,6 +237,7 @@
     .panel{page-break-before:auto}
     .panel::before{content:attr(data-title);display:block;font-weight:800;font-size:18px;margin:18px 0 10px}
   }
+  @media (pointer:coarse){input,select,textarea{font-size:16px}}   /* iOS: no focus zoom */
 </style>
 </head>
 <body>
@@ -297,7 +298,7 @@
         .then(function(res){
           if(!res[0]||!res[0].ok){ notFound(!res[0]); return; }
           renderStory(res[0],(res[1]&&res[1].checks)||[],res[2]||{apps:{}},(res[3]&&res[3].submitted)||[]);
-        });
+        }).catch(function(e){ console.error(e); notFound(true); });
       return;
     }
     Promise.all([getJSON('/api/checks?limit=200',{checks:[]}),getJSON('/checklist.json',{apps:{}}),getJSON('/api/bugs?limit=200',{submitted:[]})]).then(function(res){
@@ -603,7 +604,8 @@
   }
   function setFilter(spec){ var kv=spec.split(':'), k=kv[0], v=kv.slice(1).join(':'); activeFilters[k]=activeFilters[k]===v?null:v; selectTab('findings'); applyFilters(); }
   function wire(finds,s){
-    document.addEventListener('click',onClick,{once:false}); document.removeEventListener('click',onClick); document.addEventListener('click',onClick);
+    if(window.__storyClick) document.removeEventListener('click',window.__storyClick);   // one live handler, however often the page re-renders
+    window.__storyClick=onClick; document.addEventListener('click',onClick);
     function onClick(ev){
       var t=ev.target.closest('[data-tab],[data-filter],[data-copy],[data-prompt],[data-md],#expandAll,#collapseAll,#clearFilters,li.find .head'); if(!t)return;
       if(t.dataset.tab){ selectTab(t.dataset.tab); return; }
