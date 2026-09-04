@@ -3238,5 +3238,65 @@
     "status": "unverified",
     "session": "d9735d28",
     "found": "2026-09-03"
+  },
+  {
+    "key": "25fc73ab:whilereworkingicaughtarealbuginthefirstversionthecostperprom",
+    "app": "Listing Lab Pro",
+    "title": "While reworking, I caught a real bug in the first version: the cost-per-prompt slider…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "While reworking, I caught a real bug in the first version: the cost-per-prompt slider was mis-scaled (10×) versus its model defaults.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "25fc73ab",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "cc86f31f:irebasedgitrecognisedtheduplicateanddroppeditandiverifiedthe",
+    "app": "Hallalu CRM",
+    "title": "Rebased; git recognised the duplicate and dropped it, and I verified the working tree…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I rebased; git recognised the duplicate and dropped it, and I verified the **working tree hash was identical before and after** (`974fe2e2…`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc86f31f",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "cc86f31f:torestoredeploysfornexttimeinaninteractiveterminalididntatte",
+    "app": "Hallalu CRM",
+    "title": "To restore deploys for next time, in an interactive terminal: I didn't attempt that…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "To restore deploys for next time, in an interactive terminal: I didn't attempt that myself — it's a browser OAuth flow, and auth isn't something I complete on your behalf.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc86f31f",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "d9735d28:theflashhappensbecausemestartsnullbluenophotosilhouettetheng",
+    "app": "Finished.",
+    "title": "Flash happens because me starts null ( blue NoPhoto silhouette), then getProfile()…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "The flash happens because `me` starts `null` (→ blue `NoPhoto` silhouette), then `getProfile()` resolves async and the photo appears.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d9735d28",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "d9735d28:onerobustnessfixifgetprofilereturnsnullofflinetransientdontb",
+    "app": "Finished.",
+    "title": "One robustness fix: if getProfile() returns null (offline/transient), don't blank the…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "One robustness fix: if `getProfile()` returns null (offline/transient), don't blank the cached `me` back to the silhouette.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d9735d28",
+    "found": "2026-09-04"
   }
 ]
