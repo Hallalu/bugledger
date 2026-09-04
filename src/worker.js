@@ -195,7 +195,9 @@ export default {
             normSev(e.severity), normStatus(e.status), str(e.category, 30) || null,
             e.confidence === "high" || e.confidence === "review" ? e.confidence : null,
             e.verifiedBy ? normVer(e.verifiedBy) : null,
-            cleanStr(e.title, 200), cleanStr(e.detail, 1200), cleanStr(e.impact, 600), cleanStr(e.fix, 800),
+            ...(() => { const t = cleanStr(e.title, 1200), d = cleanStr(e.detail, 1200);   // long headline: trim it, keep the whole text in detail
+              return t.length > 200 ? [t.slice(0, 197).replace(/\s+\S*$/, "") + "…", d || t] : [t, d]; })(),
+            cleanStr(e.impact, 600), cleanStr(e.fix, 800),
             str(e.file, 200), str(e.ref, 60) || null,
             e.before == null ? null : str(e.before, 60), e.after == null ? null : str(e.after, 60),
             e.meta && typeof e.meta === "object" ? JSON.stringify(e.meta).slice(0, 1000) : null));

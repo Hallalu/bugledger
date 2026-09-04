@@ -348,8 +348,8 @@
     finds.forEach(function(f){var sv=f.severity||'info';bySev[sv]=(bySev[sv]||0)+1;var st=f.status||'open';byStatus[st]=(byStatus[st]||0)+1;if(f.category)byCat[f.category]=(byCat[f.category]||0)+1;});
     var fixedN=(byStatus.fixed||0)+(byStatus.applied||0), needN=byStatus['needs-call']||0, openN=byStatus.open||0, fpN=byStatus['false-positive']||0, recN=byStatus.recommended||0;
     var cleans=events.filter(function(e){return e.kind==='clean'});
-    var metrics=events.filter(function(e){return e.kind==='metric'});
-    var caveats=events.filter(function(e){return e.kind==='caveat'});
+    var metrics=(function(){ var by={}; events.filter(function(e){return e.kind==='metric'}).forEach(function(e){by[norm(e.title)]=e}); return Object.keys(by).map(function(k){return by[k]}); })();   // same label posted twice → the latest wins
+    var caveats=(function(){ var all=events.filter(function(e){return e.kind==='caveat'}); return all.filter(function(e,i){ var t=fullText(e).replace(/…$/,''); return !all.some(function(o,j){return j>i&&fullText(o).indexOf(t.slice(0,80))===0&&fullText(o).length>t.length}); }); })();   // a trimmed caveat re-posted in full shows once
     var verdictEv=events.slice().reverse().find(function(e){return e.kind==='verdict'});
     var phases=events.filter(function(e){return e.kind==='phase'});
     var done=s.status==='done';
@@ -413,7 +413,7 @@
     // ---- better since the scan ----
     if(metrics.length||fixedN){
       html+='<div class="card"><h2>Better since the scan <span class="cnt">before → after</span></h2><div class="metrics">';
-      metrics.forEach(function(m){ html+=metricRow(m.title,m.before,m.after,m.detail); });
+      metrics.forEach(function(m){ html+=metricRow(m.title,m.before,m.after,m.detail,m.meta&&m.meta.better==='up'); });
       if(fixedN) html+=metricRow('Issues present in this project',real.length,real.length-fixedN,fixedN+' fixed during the scan'+(openN+needN?'; '+(openN+needN)+' remain':''));
       html+='</div></div>';
     }
@@ -497,11 +497,11 @@
   }
   function tile(n,l,cls){return '<div class="tile '+(cls||'')+'"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
   function scopeLabel(sc){ if(!sc||sc==='app')return 'this app'; if(sc==='all')return 'all bugs (16 categories)'; if(sc==='security')return 'security sweep'; if(sc==='optimisers')return 'optimisers'; if(sc==='full')return 'grand total (everything)'; var m=/^category:(.+)$/.exec(sc); return m?m[1]+' bugs':sc; }
-  function metricRow(label,before,after,note){
+  function metricRow(label,before,after,note,upIsGood){
     var b=isNum(before)?numOf(before):null, a=isNum(after)?numOf(after):null;
     var d=(b!=null&&a!=null)?a-b:null, p=(b!=null&&a!=null&&b)?Math.round((b-a)/b*100):null;
-    var cls=d==null?'flat':(d<0?'down':(d>0?'up':'flat'));
-    var dt=d==null?'changed':(d<0?'↓ '+(-d)+(p!=null?' · '+p+'% better':''):(d>0?'↑ '+d+(p!=null?' · '+(-p)+'% more':''):'no change'));
+    var good=d==null?null:(upIsGood?d>0:d<0), cls=d==null||d===0?'flat':(good?'down':'up');   // 'down' = the good colour
+    var dt=d==null?'changed':(d===0?'no change':(d<0?'↓ '+(-d):'↑ '+d)+(p!=null?' · '+Math.abs(p)+'% '+(good?'better':(upIsGood?'worse':'more')):''));
     var max=Math.max(b||0,a||0,1);
     return '<div class="mrow"><div class="lab">'+esc(label)+(note?'<div class="muted" style="font-size:12.5px;font-weight:500">'+esc(note)+'</div>':'')+'</div>'+
       '<div class="v before">'+esc(before)+'</div><div class="arrow">→</div><div class="v">'+esc(after)+' <span class="delta '+cls+'">'+dt+'</span></div>'+

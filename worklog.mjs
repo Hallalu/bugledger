@@ -31,6 +31,7 @@
    node ~/BugLedger/worklog.mjs clean "accessibility" --n 11 --verified code-read     # a family checked and clean
    node ~/BugLedger/worklog.mjs metric "Detector findings" --before 387 --after 353
    node ~/BugLedger/worklog.mjs metric "High-confidence findings" --before 55 --after 23
+   node ~/BugLedger/worklog.mjs metric "Tests" --before 0 --after 32 --better up          # when a rise is the good news
    node ~/BugLedger/worklog.mjs caveat "_book.html is fetched internally by the worker; fixes verified in deployed source, not via a live booking URL"
    node ~/BugLedger/worklog.mjs verdict "8 fixed, 3 left for your call, 3 new items added to the ledger"
    node ~/BugLedger/worklog.mjs story                        # print the story link
@@ -52,7 +53,7 @@ const argv = process.argv.slice(2);
 const cmd = argv[0];
 const FLAGS_WITH_VALUE = new Set(["app","project","title","tasks","agent","current","note","label","caption","text",
   "sev","severity","cat","category","file","why","detail","impact","fix","status","verified","verifiedBy","confidence",
-  "phase","n","before","after","ref","tag","tags"]);
+  "phase","n","before","after","ref","tag","tags","better"]);
 const positional = (() => { const out = []; for (let i = 1; i < argv.length; i++) { const a = argv[i];
   if (a.startsWith("--")) { if (FLAGS_WITH_VALUE.has(a.slice(2)) && argv[i+1] !== undefined && !argv[i+1].startsWith("--")) i++; continue; }
   out.push(a); } return out; })();
@@ -227,7 +228,8 @@ if (cmd === "start") {
     console.log(`✅ clean: ${text}${flag("n") ? " (" + flag("n") + " checked)" : ""}`);
   } else if (cmd === "metric") {
     if (!text || flag("before") == null || flag("after") == null) die('metric "Detector findings" --before 387 --after 353');
-    await emit(s, { kind: "metric", title: text, before: flag("before"), after: flag("after"), detail: flag("why") || undefined });
+    const better = (flag("better") || "down").toLowerCase() === "up" ? "up" : "down";   // which direction is good news
+    await emit(s, { kind: "metric", title: text, before: flag("before"), after: flag("after"), detail: flag("why") || undefined, meta: { better } });
     console.log(`📈 ${text}: ${flag("before")} → ${flag("after")}`);
   } else if (cmd === "verdict") {
     if (!text) die('verdict "one honest sentence"');
