@@ -252,7 +252,7 @@
       '<select id="min" aria-label="Minimum apps"><option value="1"'+(F.min===1?' selected':'')+'>any number of apps</option><option value="2"'+(F.min===2?' selected':'')+'>in 2+ apps</option><option value="3"'+(F.min===3?' selected':'')+'>in 3+ apps</option><option value="4"'+(F.min===4?' selected':'')+'>in 4+ apps</option></select>'+
       '<select id="sort" aria-label="Sort"><option value="apps"'+(F.sort==='apps'?' selected':'')+'>most apps first</option><option value="inst"'+(F.sort==='inst'?' selected':'')+'>most instances first</option><option value="recent"'+(F.sort==='recent'?' selected':'')+'>most recent first</option><option value="analyses"'+(F.sort==='analyses'?' selected':'')+'>most analyses first</option></select>'+
       '<select id="cat" aria-label="Category"><option value="">all categories</option>'+Object.keys(cats).sort().map(function(k){return '<option value="'+esc(k)+'"'+(F.cat===k?' selected':'')+'>'+esc(k)+' ('+cats[k]+')</option>'}).join('')+'</select>'+
-      '<select id="app" aria-label="App"><option value="">all apps</option>'+appList.map(function(a){return '<option value="'+esc(a)+'"'+(F.app===a?' selected':'')+'>'+esc(a)+' ('+allApps[a]+')</option>'}).join('')+'</select></div>'+
+      '<select id="fapp" aria-label="App"><option value="">all apps</option>'+appList.map(function(a){return '<option value="'+esc(a)+'"'+(F.app===a?' selected':'')+'>'+esc(a)+' ('+allApps[a]+')</option>'}).join('')+'</select></div>'+
       '<div class="toolbar" style="gap:6px">'+SRC.map(function(s){return '<button class="chip" type="button" data-src="'+s+'" aria-pressed="'+(F.src===s)+'"><span class="src '+s+'"></span>'+SRCLBL[s]+'</button>'}).join('')+'</div>'+
       '<ol class="classes" id="clist"></ol><div class="empty" id="cempty" hidden>Nothing matches.</div></section>';
     // heatmap
@@ -329,10 +329,10 @@
     $('#srctiles').innerHTML=SRC.map(function(s){return '<div class="tile"><div class="n" style="color:var(--s-'+s+')">'+(tot[s]||0)+'</div><div class="l">'+esc(SRCLBL[s])+' instances</div><div class="l">'+(only[s]||0)+' classes seen only here</div></div>'}).join('');
   }
   function selectTab(name){$$('.tabs [role="tab"]').forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===name))});$$('.panel').forEach(function(p){p.hidden=(p.id!=='p-'+name)});try{history.replaceState(null,'','#'+name)}catch(e){}}
-  function goClass(ix,app){ F.min=1; if(app){F.app=app;} $('#min').value='1'; if(app)$('#app').value=app; F.q=''; $('#q').value=''; renderClasses(); selectTab('classes'); var el=document.getElementById('c'+ix); if(el){el.dataset.open='true';el.scrollIntoView({behavior:'smooth',block:'start'});} }
+  function goClass(ix,app){ F.min=1; if(app){F.app=app;} $('#min').value='1'; if(app)$('#fapp').value=app; F.q=''; $('#q').value=''; renderClasses(); selectTab('classes'); var el=document.getElementById('c'+ix); if(el){el.dataset.open='true';el.scrollIntoView({behavior:'smooth',block:'start'});} }
   function wire(){
     $('#q').oninput=function(){F.q=this.value;renderClasses()}; $('#min').onchange=function(){F.min=+this.value;renderClasses()}; $('#sort').onchange=function(){F.sort=this.value;renderClasses()};
-    $('#cat').onchange=function(){F.cat=this.value||null;renderClasses()}; var ms=$('#markSeen'); if(ms) ms.onclick=markSeen; $('#app').onchange=function(){F.app=this.value||null;renderClasses()};
+    $('#cat').onchange=function(){F.cat=this.value||null;renderClasses()}; var ms=$('#markSeen'); if(ms) ms.onclick=markSeen; $('#fapp').onchange=function(){F.app=this.value||null;renderClasses()};
     document.onclick=function(ev){ var t=ev.target.closest('[data-tab],[data-src],[data-go],li.cls .head'); if(!t)return;
       if(t.dataset.tab){selectTab(t.dataset.tab);return;} if(t.dataset.src){F.src=F.src===t.dataset.src?null:t.dataset.src;$$('[data-src]').forEach(function(b){b.setAttribute('aria-pressed',String(F.src===b.dataset.src))});renderClasses();return;}
       if(t.dataset.go){goClass(+t.dataset.go,t.dataset.app);return;}
