@@ -1,25 +1,27 @@
-{"title":"Bug Ledger Admin — the same bug across apps and analyses",
- "summary":"There was no admin. Now /admin reads every tier of the ledger at once — the curated catalogue, the hourly harvester, scanner findings, agent submissions, every check-log and every scan story — and clusters 1,607 recorded instances into 1,168 bug classes by detector id and fuzzy title, so the same bug popping up in different apps and different analyses is visible as one row: 64 classes recur in 2+ apps and 28 in 3+. Views: bug classes (app chips, source bars, sparklines, instance tables with links to the story or report), an app × bug heatmap, a by-analysis view showing which recurring classes each scan hit, an over-time chart and by-source tiles, plus JSON/CSV export. It reads all reports and keeps re-reading every minute; a since-your-last-visit panel flags new reports, new classes and classes that spread to more apps until you mark them seen. Token-gated, read-only.",
+{"title":"Open items closed: 32 tests + CI, and the full 560-item deep scan of Bug Ledger, narrated",
+ "summary":"The two items left open by the finish pass are done. Bug Ledger now has a 32-test suite (zero dependencies) running in GitHub Actions, guarding the contracts every sweep depends on: scan.mjs --json stays pure JSON, the story renderer resolves found→fixed without mutation, every page's script parses with no duplicate ids, and the admin clustering survives prototype words. Then the full /deepscan ran against the whole ledger — 47 detectors, all 16 bug categories each server-verified N/N, the 67-item security sweep and 117 optimisers — 560/560 confirmed server-side with 62% inspected by detector or code-read, narrated as the second scan story, which now compares itself to the first (16 → 9 real issues). The walk found five real items: a hard-coded scanner date, a click handler stacking on every live re-render, a missing .catch (all fixed), a missing build stamp (recommended) and no global error handler (open — needs a sink). Idempotency keys on the two mutating endpoints are the one recommendation that matters.",
  "tasks":[
-  {"text":"Wave 0 — Check for an existing admin + map every data source","done":true,"desc":"None existed. Six sources mapped; exact titles never repeat across apps in the curated catalogue, so clustering had to be class-level"},
-  {"text":"Wave 1 — Recurrence API","done":true,"desc":"GET /api/admin/recurrence, token-gated, returns every instance with source, app, title, category, severity, file, date, detector and a link back to its analysis"},
-  {"text":"Wave 1 — Admin page","done":true,"desc":"Union-find clustering client-side (31 ms for 1,607 instances) with prototype-free maps; five views, search, filters, sort, export; watch mode + since-last-visit diff"},
-  {"text":"Wave 2 — Deploy + verify in browser","done":true,"desc":"Rendered on real data via a local harness fed by the API (the admin key was never typed into a form); found and fixed a prototype-key crash and a [hidden] pill leak on the way"},
-  {"text":"Wave 2 — Report to Aprizely","done":true,"desc":"Three screenshots + this report"}
+  {"text":"Wave 1 — Smoke tests","done":true,"desc":"32 tests via node --test, GitHub Actions on push; caught a doc gap (events command) and forced the XSS fixture to be honest"},
+  {"text":"Wave 2 — Catalogue + counts","done":true,"desc":"428 bugs + 15 audit-only + 117 optimisers = 560 distinct; 47 detectors"},
+  {"text":"Wave 2 — Phase 1, 47 detectors","done":true,"desc":"48 hits, 13 high: CI workflow added; 12 false alarms with written reasons (scanner reading its own rule table, test fixture, header-level CSP, exclusive branches)"},
+  {"text":"Wave 2 — Phase 2, 16 categories","done":true,"desc":"Every category ✅ N/N; 66% inspected; 5 real items"},
+  {"text":"Wave 2 — Phase 3, security 67","done":true,"desc":"67/67 ✅, 70% inspected, clean"},
+  {"text":"Wave 2 — Phase 4, optimisers 117","done":true,"desc":"50 applied, 7 recommended, 60 n/a; iOS 16px inputs applied on the spot"},
+  {"text":"Wave 2 — Close","done":true,"desc":"560/560 confirmed server-side; verdict + 2 caveats; session finished"},
+  {"text":"Wave 3 — Verify + report","done":true,"desc":"Story rendered and screenshotted; progress line compares to the first story; committed and pushed"}
  ],
  "metrics":[
-  {"label":"Admin views","before":0,"after":5},
-  {"label":"Sources read at once","before":"1 (per panel)","after":6},
-  {"label":"Bug instances read","before":0,"after":1607},
-  {"label":"Bug classes","before":"—","after":1168},
-  {"label":"Classes recurring in 2+ apps","before":"unknown","after":64},
-  {"label":"Classes recurring in 3+ apps","before":"unknown","after":28},
-  {"label":"Analyses read (check-logs + stories)","before":0,"after":75},
-  {"label":"Clustering time","before":"—","after":"31 ms"},
-  {"label":"Re-read interval","before":"never","after":"60 s"}
+  {"label":"Tests","before":0,"after":32},
+  {"label":"CI","before":"none","after":"GitHub Actions on push"},
+  {"label":"Items checked vs the whole ledger","before":3,"after":560},
+  {"label":"Inspected (detector or code-read)","before":"3","after":"349 of 560 (62%)"},
+  {"label":"Automated-pass high-confidence hits","before":13,"after":0},
+  {"label":"Real issues on the story","before":16,"after":9},
+  {"label":"Real defects found by the walk","before":0,"after":5},
+  {"label":"Optimisers applied / recommended","before":"—","after":"50 / 7"}
  ],
- "features":["/admin recurrence board with app × bug heatmap, by-analysis, over-time and by-source views","GET /api/admin/recurrence (token-gated) across catalogue, harvested, scanner, submitted, check-logs, stories","Reads every report and re-reads every minute; since-your-last-visit panel with NEW / +n badges","JSON and CSV export of bug classes","harvested.json + scan-findings.json now published for tooling"],
- "bugfixes":["Plain-object map keyed by bug-title words collided with Object.prototype ('constructor') and crashed the page — prototype-free maps (ledgered as a bug class)","'watching for new reports' pill showed on the login gate — [hidden] beaten by a display rule (the class ledgered yesterday, caught by our own eyes this time)"],
- "issues":["Curated catalogue entries carry no date, so they sit outside the over-time chart (they still count in classes and the heatmap)","Fuzzy title clustering is a heuristic (Jaccard ≥ 0.5 on stemmed tokens, or 80% containment); a few near-duplicates may still split or merge — the instance table under each class shows exactly what was grouped"],
- "findings":["Missing CSP / security headers is the most widespread class: 6 apps, 13 instances, 12 analyses","No tests anywhere and no Open Graph card each recur in 6 apps; empty catch blocks in 5 apps (50 instances); stored/DOM XSS sinks in 4 apps (79 instances)"],
- "insights":["A bug in 3+ apps is a rule, a detector or a shared module waiting to be written — the heatmap is the backlog for the modules site","Never type an admin token into a page to verify it; feed the page real API data through a local harness instead"]}
+ "features":["32-test suite + CI workflow","Second scan story with progress vs the first","iOS-safe inputs on four pages"],
+ "bugfixes":["scan.mjs --write stamped every finding with a constant date","Story page stacked a new click handler on every live re-render (toggles cancelled themselves)","Story load chain had no .catch (endless spinner on a render error)","worklog.mjs header did not document the events command"],
+ "issues":["No global error handler on the pages — needs an error sink first (your call)","No build/version stamp on pages (recommended)","POST /api/checks and /api/bugs are not idempotent — retried posts become permanent duplicates (recommended: Idempotency-Key)"],
+ "findings":["A third of the 428 bugs are about surfaces this project does not have; they are grep-verified absent or reasoned, never claimed inspected","The scanner blinds itself on its own repo: its project detectors match the regex sources in scan.mjs, so two of the five real findings were caught by reading, not automation"],
+ "insights":["A test caught a documentation gap within its first run — cheap tests earn their keep immediately","Evidence grading (detector / code-read / reasoned) is what keeps 560/560 honest instead of decorative"]}
