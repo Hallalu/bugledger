@@ -3298,5 +3298,113 @@
     "status": "unverified",
     "session": "d9735d28",
     "found": "2026-09-04"
+  },
+  {
+    "key": "17d3ca5a:onlythesmoketestshelpernameiswrong",
+    "app": "Listing Lab Pro",
+    "title": "Only the smoke test's helper name is wrong.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Only the smoke test's helper name is wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "17d3ca5a",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "17d3ca5a:bugfoundandrootedoutmyscriptedpatchhelperusedstringreplacewi",
+    "app": "Listing Lab Pro",
+    "title": "Bug found and rooted out My scripted patch helper used String.replace with a plain…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Bug found and rooted out** My scripted patch helper used `String.replace` with a plain string, which turns `$$` into `$` in JavaScript.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "17d3ca5a",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "17d3ca5a:threeitemsstayopenforyourdecisionnamingfortheduplicatemodule",
+    "app": "Listing Lab Pro",
+    "title": "Three items stay open for your decision: naming for the duplicate modules from the…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "Three items stay open for your decision: naming for the duplicate modules from the parallel session, Reddit/X voice research via the Chrome extension, and a live Etsy API key test.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "17d3ca5a",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "6739dab7:v21259sept2managedmcpserversorgwidehttpssemcppermissionpromp",
+    "app": "Unknown",
+    "title": "- v2.1.259 — Sept 2: managedMcpServers (org-wide HTTP/SSE MCP); --permission-prompts…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "- **v2.1.259 — Sept 2:** `managedMcpServers` (org-wide HTTP/SSE MCP); `--permission-prompts none` for unattended headless; GitLab MR recognition; `--json` for `claude plugin validate`; fix for concur…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6739dab7",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "cc86f31f:ineedtoknowifthatsacaptureartifactorarealdarkmodebugiintrodu",
+    "app": "Hallalu CRM",
+    "title": "Need to know if that's a capture artifact or a real dark-mode bug I introduced with the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I need to know if that's a capture artifact or a real dark-mode bug I introduced with the `--card` fix:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc86f31f",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "cc86f31f:realdarkmodebuganditisntminethesidebarhasahardcodedwhitegrad",
+    "app": "Hallalu CRM",
+    "title": "Real dark-mode bug — and it isn't mine. The sidebar has a hard-coded white gradient…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Real dark-mode bug — and it isn't mine.** The sidebar has a hard-coded white gradient with no dark override.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc86f31f",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "cc86f31f:readingtheactualrulefirstmyearlierpredatesmecheckwasinconclu",
+    "app": "Hallalu CRM",
+    "title": "Reading the actual rule first (my earlier \"predates me\" check was inconclusive — the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Reading the actual rule first (my earlier \"predates me\" check was inconclusive — the pattern didn't match the real formatting, so let me verify properly):",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc86f31f",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "d8a2d889:confirmedalayoutbugletmefixitlogitandlookatava",
+    "app": "Hallalu CRM",
+    "title": "Confirmed a layout bug — let me fix it, log it, and look at Ava.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Confirmed a layout bug — let me fix it, log it, and look at Ava.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d8a2d889",
+    "found": "2026-09-04"
+  },
+  {
+    "key": "d8a2d889:fixedandledgeredasaclasswhenyouflattenacardintoaruleresetthe",
+    "app": "Hallalu CRM",
+    "title": "Fixed, and ledgered as a class: when you flatten a card into a rule, reset the whole…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fixed, and ledgered as a class: when you flatten a card into a rule, reset the whole box, not the properties you happened to be thinking about.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d8a2d889",
+    "found": "2026-09-04"
   }
 ]
