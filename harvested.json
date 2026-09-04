@@ -3178,5 +3178,65 @@
     "status": "unverified",
     "session": "cc86f31f",
     "found": "2026-09-03"
+  },
+  {
+    "key": "0436b9e8:ispottedasyntaxerrorinmycodeimagemodelsfluxschnell",
+    "app": "Finished.",
+    "title": "Spotted a syntax error in my code (imageModels.[\"flux-schnell\"]).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I spotted a syntax error in my code (`imageModels.[\"flux-schnell\"]`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0436b9e8",
+    "found": "2026-09-03"
+  },
+  {
+    "key": "0eff25b7:tworesultsonhitfirednullgoalstotal0aretestartifactsfromremou",
+    "app": "Hallalu CRM",
+    "title": "Two results (onHit fired: null, goals total: 0) are test artifacts from remounting on…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "Two results (`onHit fired: null`, `goals total: 0`) are test artifacts from remounting on the same element before its async load resolved — the clicks hit the old instance's handlers.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0eff25b7",
+    "found": "2026-09-03"
+  },
+  {
+    "key": "17d3ca5a:itisnotbrokentodayjustheavierthanitneedstobe",
+    "app": "Listing Lab Pro",
+    "title": "It is not broken today, just heavier than it needs to be.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It is not broken today, just heavier than it needs to be.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "17d3ca5a",
+    "found": "2026-09-03"
+  },
+  {
+    "key": "d9735d28:onecssbugthoughtheroutinestreakcardisdarkinlightmodeiputthen",
+    "app": "Finished.",
+    "title": "One CSS bug though: the routine streak card is dark in light mode — I put the…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "One CSS bug though: the routine **streak card is dark in light mode** — I put the `:not([data-theme=\"light\"])` dark override outside the `@media` query, so it always applies.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d9735d28",
+    "found": "2026-09-03"
+  },
+  {
+    "key": "d9735d28:butthelistshows0itemsmyaddsdidnttake",
+    "app": "Finished.",
+    "title": "The list shows 0 items — my adds didn't take.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "But the list shows 0 items — my adds didn't take.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d9735d28",
+    "found": "2026-09-03"
   }
 ]
