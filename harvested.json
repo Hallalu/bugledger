@@ -3454,5 +3454,77 @@
     "status": "unverified",
     "session": "3e3cc142",
     "found": "2026-09-05"
+  },
+  {
+    "key": "0436b9e8:howtocheckhowmanyfreeneuronsyouhavelefttodaytheresnosingleap",
+    "app": "Hallalu CRM",
+    "title": "--- How to check how many free Neurons you have left today There's no single API that…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "--- ## How to check how many free Neurons you have left today There's **no single API that returns \"Neurons remaining\"** — you read *used today* and subtract from 10,000 (resets 00:00 UTC).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0436b9e8",
+    "found": "2026-09-05"
+  },
+  {
+    "key": "0436b9e8:graphqlanalyticsapiprogrammaticquerytheworkersaiusagedataset",
+    "app": "Hallalu CRM",
+    "title": "GraphQL Analytics API (programmatic). Query the Workers AI usage dataset for Neurons…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**GraphQL Analytics API (programmatic).** Query the Workers AI usage dataset for Neurons consumed since the last 00:00 UTC reset, then subtract from 10,000.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0436b9e8",
+    "found": "2026-09-05"
+  },
+  {
+    "key": "6739dab7:fixingitthensyntaxcheckingabrokenworkerjswouldtakethewholesi",
+    "app": "Breadcrumb",
+    "title": "Fixing it, then syntax-checking (a broken worker.js would take the whole site down).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fixing it, then syntax-checking (a broken `worker.js` would take the whole site down).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6739dab7",
+    "found": "2026-09-05"
+  },
+  {
+    "key": "aba97122:accuracytherealproblemwasntwhereitlookedthefourimagerateswer",
+    "app": "Stitchhooky",
+    "title": "Accuracy — the real problem wasn't where it looked The four image rates were already…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Accuracy — the real problem wasn't where it looked** The four image rates were already exactly right.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "aba97122",
+    "found": "2026-09-05"
+  },
+  {
+    "key": "aba97122:everythingderivedfromthemwaswrongallfourscenariocostswerehar",
+    "app": "Stitchhooky",
+    "title": "Everything derived from them was wrong: - All four scenario costs were hardcoded and…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Everything *derived* from them was wrong: - **All four scenario costs were hardcoded and none deducted the free 10,000/day.** \"Growing product\" claimed ~$11/mo; the true overage cost is **$6.20/mo**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "aba97122",
+    "found": "2026-09-05"
+  },
+  {
+    "key": "aba97122:analysiscleanworktreebutheadwasacommitididntmakeaddreportwha",
+    "app": "Stitchhooky",
+    "title": "- /analysis — clean worktree, but HEAD was a commit I didn't make: \"Add report: What…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **`~/analysis`** — clean worktree, but **HEAD was a commit I didn't make**: *\"Add report: What actually works in marketing… for Start in Story\"*, co-authored by Claude Fable 5.1.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "aba97122",
+    "found": "2026-09-05"
   }
 ]
