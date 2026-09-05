@@ -3406,5 +3406,29 @@
     "status": "unverified",
     "session": "d8a2d889",
     "found": "2026-09-04"
+  },
+  {
+    "key": "3e3cc142:creditsat905to95grossmarginoneverypaidtierpaidcreditsrollove",
+    "app": "Hallalu CRM",
+    "title": "- Credits at 90.5 to 95% gross margin on every paid tier, paid credits roll over, and a…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- Credits at 90.5 to 95% gross margin on every paid tier, paid credits roll over, and a failed bake is never charged.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3e3cc142",
+    "found": "2026-09-05"
+  },
+  {
+    "key": "3e3cc142:theassumptionthatnoimagetoolisagentnativewaswrong",
+    "app": "Hallalu CRM",
+    "title": "- The assumption that no image tool is agent-native was wrong.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- The assumption that no image tool is agent-native was wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3e3cc142",
+    "found": "2026-09-05"
   }
 ]

@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-284 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+286 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (124)
+## Hallalu CRM (126)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -29,6 +29,7 @@
 - [ ] `medium` `race` (2026-08-26, #1363a864) — "by race and ethnicity not working" — I'll redeploy the topnav change and verify the…
 - [ ] `medium` `logic` (2026-08-30, #8a626956) — That's not wrong, just repeated.
 - [ ] `medium` `logic` (2026-08-30, #847a2e5f) — My shipped entry's claim that it "does not exist in the code" is flat wrong.
+- [ ] `medium` `logic` (2026-09-05, #3e3cc142) — - The assumption that no image tool is agent-native was wrong.
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Assistant (Ava) on mobile confirmed real bug Root cause found: the Ava hero (.ava-stage…
 - [ ] `low` `other` (2026-08-10, #215ee275) — That's exactly why it doesn't match the call.
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Mobile Ava fix + dark-mode contrast sweep (fixes the "invisible on mobile" bug — and…
@@ -128,6 +129,7 @@
 - [ ] `low` `other` (2026-09-04, #cc86f31f) — Reading the actual rule first (my earlier "predates me" check was inconclusive — the…
 - [ ] `low` `ui` (2026-09-04, #d8a2d889) — Confirmed a layout bug — let me fix it, log it, and look at Ava.
 - [ ] `low` `other` (2026-09-04, #d8a2d889) — Fixed, and ledgered as a class: when you flatten a card into a rule, reset the whole…
+- [ ] `low` `other` (2026-09-05, #3e3cc142) — - Credits at 90.5 to 95% gross margin on every paid tier, paid credits roll over, and a…
 
 ## Finished. (80)
 
