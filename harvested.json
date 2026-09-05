@@ -3430,5 +3430,29 @@
     "status": "unverified",
     "session": "3e3cc142",
     "found": "2026-09-05"
+  },
+  {
+    "key": "3e3cc142:bugandoptimiserbothledgered",
+    "app": "Wedding Planner",
+    "title": "Bug and optimiser both ledgered.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Bug and optimiser both ledgered.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3e3cc142",
+    "found": "2026-09-05"
+  },
+  {
+    "key": "3e3cc142:marginleakflux2devisbilledper512pixeltilesoaportraitbakecost",
+    "app": "Wedding Planner",
+    "title": "- Margin leak: FLUX.2 dev is billed per 512-pixel tile, so a portrait bake cost 5,625…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "- **Margin leak**: FLUX.2 dev is billed per 512-pixel tile, so a portrait bake cost 5,625 Neurons while we charged a flat 42 credits (about 90%).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3e3cc142",
+    "found": "2026-09-05"
   }
 ]

@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-286 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+288 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (126)
 
@@ -288,6 +288,16 @@
 - [ ] `low` `other` (2026-09-04, #25fc73ab) — While reworking, I caught a real bug in the first version: the cost-per-prompt slider…
 - [ ] `low` `other` (2026-09-04, #17d3ca5a) — Bug found and rooted out My scripted patch helper used String.replace with a plain…
 
+## Wedding Planner (7)
+
+- [ ] `critical` `data-loss` (2026-08-16, #3e50ec98) — It's not throwaway cache, and here's the catch: it may be the VM backing an active…
+- [ ] `high` `crash` (2026-08-10, #3e50ec98) — If you want to push higher later, the 100 GB in root-owned system dirs is still…
+- [ ] `high` `security` (2026-09-05, #3e3cc142) — - Margin leak: FLUX.2 dev is billed per 512-pixel tile, so a portrait bake cost 5,625…
+- [ ] `low` `other` (2026-08-10, #3e50ec98) — - The sudo du one-liner above will reveal the 100 GB of root-owned space I couldn't…
+- [ ] `low` `other` (2026-08-16, #3e50ec98) — Sudo scan is the bigger prize and doesn't risk anything.
+- [ ] `low` `other` (2026-08-16, #3e50ec98) — This is more "periodic maintenance" than a one-time fix.
+- [ ] `low` `other` (2026-09-05, #3e3cc142) — Bug and optimiser both ledgered.
+
 ## Budget LevelUp (6)
 
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
@@ -296,14 +306,6 @@
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Will do — every genuinely new bug gets appended to the ledger.
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Client fixes — error handlers, focus ring, labels, OG meta:
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI…
-
-## Wedding Planner (5)
-
-- [ ] `critical` `data-loss` (2026-08-16, #3e50ec98) — It's not throwaway cache, and here's the catch: it may be the VM backing an active…
-- [ ] `high` `crash` (2026-08-10, #3e50ec98) — If you want to push higher later, the 100 GB in root-owned system dirs is still…
-- [ ] `low` `other` (2026-08-10, #3e50ec98) — - The sudo du one-liner above will reveal the 100 GB of root-owned space I couldn't…
-- [ ] `low` `other` (2026-08-16, #3e50ec98) — Sudo scan is the bigger prize and doesn't risk anything.
-- [ ] `low` `other` (2026-08-16, #3e50ec98) — This is more "periodic maintenance" than a one-time fix.
 
 ## Planner Studio (2)
 
