@@ -3538,5 +3538,101 @@
     "status": "unverified",
     "session": "aba97122",
     "found": "2026-09-06"
+  },
+  {
+    "key": "1d92f8fb:butijustcaughtarealbughaswordsfalsetheturbomodelreturnssegme",
+    "app": "Hallalu CRM",
+    "title": "I just caught a real bug: hasWords: false — the turbo model returns segments + vtt, not…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**But I just caught a real bug:** `hasWords: false` — the turbo model returns **`segments` + `vtt`, not a top-level `words[]`** (keys: `transcription_info, text, word_count, segments, vtt, usage`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1d92f8fb",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "1d92f8fb:sotheharnesscaughttwobugsthatwouldhavebrokenthelivefeaturean",
+    "app": "Hallalu CRM",
+    "title": "The harness caught two bugs that would have broken the live feature, and proved the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "So the harness caught two bugs that would have broken the live feature, and proved the corrected shapes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1d92f8fb",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "1d92f8fb:theclientfilesdidntchangeonlyworkerjssonoversionbumpneeded",
+    "app": "Hallalu CRM",
+    "title": "Client files didn't change (only worker.js), so no version bump needed.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The client files didn't change (only `worker.js`), so no version bump needed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1d92f8fb",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "6f39a320:oneverificationlookatthelivepagethedesignpassallowsasinglelo",
+    "app": "Finished.",
+    "title": "One verification look at the live page (the design pass allows a single look + one fix…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One verification look at the live page (the design pass allows a single look + one fix if something's visibly broken).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6f39a320",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "6f39a320:afinishlinethethinbaruptopfillsasyouopeneachareaandwhenyouve",
+    "app": "Finished.",
+    "title": "- A \"finish line\" — the thin bar up top fills as you open each area, and when you've…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **A \"finish line\"** — the thin bar up top fills as you open each area, and when you've explored all twelve, the page throws confetti and tells you *\"You finished the atlas ✓\"* — a wink at the app's…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6f39a320",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "6f39a320:onecaveatbecausetheinappbrowserhereisntsignedintoclaudeaiico",
+    "app": "Finished.",
+    "title": "One caveat: because the in‑app browser here isn't signed into claude.ai, I couldn't…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "One caveat: because the in‑app browser here isn't signed into claude.ai, I couldn't screenshot the rendered page to eyeball it — it's published and will render for you.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6f39a320",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "aba97122:livehttpsjoydaycoconvoworkersdevpin101765savedinjoydayconfig",
+    "app": "Hallalu CRM",
+    "title": "Live: https://joy-day.coconvo.workers.dev · PIN 101765 (saved in /.joyday/config.json)…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Live: https://joy-day.coconvo.workers.dev · PIN `101765`** (saved in `~/.joyday/config.json`) You were right, and the reason was worse than a rounding error.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "aba97122",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "aba97122:threethingsihadtosettleratherthanassumeyournotesaidworkerwor",
+    "app": "Hallalu CRM",
+    "title": "Three things I had to settle rather than assume: - Your note said WorkerWorker fetch…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Three things I had to settle rather than assume:** - Your note said Worker→Worker fetch fails on the same account.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "aba97122",
+    "found": "2026-09-06"
   }
 ]
