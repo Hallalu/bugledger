@@ -3670,5 +3670,17 @@
     "status": "unverified",
     "session": "be39af71",
     "found": "2026-09-06"
+  },
+  {
+    "key": "2cf03367:whatwaswrongthementalloadleadusedaklein9bphotowherethemother",
+    "app": "Hallalu CRM",
+    "title": "What was wrong - The mental-load lead used a klein-9b photo where the mother had one…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "**What was wrong** - The mental-load lead used a klein-9b photo where the mother had one hand on the phone and two on the lunchbox.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2cf03367",
+    "found": "2026-09-06"
   }
 ]
