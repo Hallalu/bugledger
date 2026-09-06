@@ -3634,5 +3634,41 @@
     "status": "unverified",
     "session": "aba97122",
     "found": "2026-09-06"
+  },
+  {
+    "key": "0ad8bea4:basedonthesetupsampleimagesgeneratedondemandbyworkersaiblank",
+    "app": "Wedding Planner",
+    "title": "Based on the setup (sample images generated on-demand by Workers AI, blank in local…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Based on the setup (sample images generated on-demand by Workers AI, blank in local dev, served from `/media/sample/`), my best guess is **Pixelbake** itself or one of the studio apps, but I'd rather…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0ad8bea4",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "be39af71:theuseraskedmidturntofixbrokenimages",
+    "app": "Listing Lab Pro",
+    "title": "User asked mid-turn to fix broken images.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The user asked mid-turn to fix broken images.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "be39af71",
+    "found": "2026-09-06"
+  },
+  {
+    "key": "be39af71:thoseblankcardsarethelandingsamplephotosthatworkersaigenerat",
+    "app": "Listing Lab Pro",
+    "title": "Those blank cards are the landing/sample photos that Workers AI generates server-side —…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Those blank cards are the landing/sample photos that Workers AI generates **server-side** — they render on the deployed site but not on local dev (no AI binding here), and two 500s in the console con…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "be39af71",
+    "found": "2026-09-06"
   }
 ]

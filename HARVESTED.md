@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-303 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+306 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (134)
 
@@ -284,7 +284,7 @@
 - [ ] `low` `other` (2026-08-30, #3814d650) — Fail any retire it out loud.
 - [ ] `low` `other` (2026-09-05, #6739dab7) — Fixing it, then syntax-checking (a broken worker.js would take the whole site down).
 
-## Listing Lab Pro (16)
+## Listing Lab Pro (18)
 
 - [ ] `high` `auth` (2026-08-26, #61999ed8) — Two prominent stats in my deck are wrong, and two agents failed on a session limit (now…
 - [ ] `high` `auth` (2026-09-04, #17d3ca5a) — Three items stay open for your decision: naming for the duplicate modules from the…
@@ -302,8 +302,10 @@
 - [ ] `low` `other` (2026-09-03, #17d3ca5a) — It is not broken today, just heavier than it needs to be.
 - [ ] `low` `other` (2026-09-04, #25fc73ab) — While reworking, I caught a real bug in the first version: the cost-per-prompt slider…
 - [ ] `low` `other` (2026-09-04, #17d3ca5a) — Bug found and rooted out My scripted patch helper used String.replace with a plain…
+- [ ] `low` `other` (2026-09-06, #be39af71) — User asked mid-turn to fix broken images.
+- [ ] `low` `ui` (2026-09-06, #be39af71) — Those blank cards are the landing/sample photos that Workers AI generates server-side —…
 
-## Wedding Planner (7)
+## Wedding Planner (8)
 
 - [ ] `critical` `data-loss` (2026-08-16, #3e50ec98) — It's not throwaway cache, and here's the catch: it may be the VM backing an active…
 - [ ] `high` `crash` (2026-08-10, #3e50ec98) — If you want to push higher later, the 100 GB in root-owned system dirs is still…
@@ -312,6 +314,7 @@
 - [ ] `low` `other` (2026-08-16, #3e50ec98) — Sudo scan is the bigger prize and doesn't risk anything.
 - [ ] `low` `other` (2026-08-16, #3e50ec98) — This is more "periodic maintenance" than a one-time fix.
 - [ ] `low` `other` (2026-09-05, #3e3cc142) — Bug and optimiser both ledgered.
+- [ ] `low` `other` (2026-09-06, #0ad8bea4) — Based on the setup (sample images generated on-demand by Workers AI, blank in local…
 
 ## Budget LevelUp (6)
 
