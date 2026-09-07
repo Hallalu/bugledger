@@ -3754,5 +3754,65 @@
     "status": "unverified",
     "session": "53e17fe3",
     "found": "2026-09-07"
+  },
+  {
+    "key": "0a7090bc:thecontainsapplyringserrorsintheconsolebufferallcitev27v30st",
+    "app": "Listing Lab Pro",
+    "title": ".contains/applyRings errors in the console buffer all cite v27/v30 — stale from earlier…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The `.contains`/`applyRings` errors in the console buffer all cite `v27`/`v30` — stale from earlier loads in this long-lived pane, not the current code.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0a7090bc",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "0a7090bc:fixesconfirmedliveifetchedthedeployedappjsv31thenullguardisp",
+    "app": "Listing Lab Pro",
+    "title": "- Fixes confirmed live — I fetched the deployed app.js?v=31: the null-guard is present…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "- **Fixes confirmed live** — I fetched the deployed `app.js?v=31`: the null-guard is present (1 hit), the old unguarded pattern is gone (0), and the crash-causing `root.App.applyRings` export is gone…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0a7090bc",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:twothingsarecurringcantseethisreadabilitybughardcodedlightba",
+    "app": "Hallalu CRM",
+    "title": "Two things: a recurring \"can't see this\" readability bug (hardcoded light backgrounds…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Two things: a recurring \"can't see this\" readability bug (hardcoded light backgrounds in dark mode — I'll sweep the whole codebase for it) and the settings gap (my JS masonry will fix it).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:newselectioncontrastbugspottedhighlightedtextinvisibleillfix",
+    "app": "Hallalu CRM",
+    "title": "New selection-contrast bug spotted (highlighted text invisible) — I'll fix ::selection…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "New selection-contrast bug spotted (highlighted text invisible) — I'll fix `::selection` globally and log it with before/after.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "627c1f78:twostalegallerycardsinindexhtmlneedthesamefix",
+    "app": "Finished.",
+    "title": "Two stale gallery cards in index.html need the same fix.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two stale gallery cards in `index.html` need the same fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "627c1f78",
+    "found": "2026-09-07"
   }
 ]
