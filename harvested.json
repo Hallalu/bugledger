@@ -3682,5 +3682,41 @@
     "status": "unverified",
     "session": "2cf03367",
     "found": "2026-09-06"
+  },
+  {
+    "key": "2cf03367:cliforagentspxbteamspxbteamcreateinvitejoingetroleremoveleav",
+    "app": "Stitchhooky",
+    "title": "- CLI for agents: pxb teams, pxb team…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **CLI for agents:** `pxb teams`, `pxb team create|invite|join|get|role|remove|leave|album|settings`, `pxb album add|rm`, plus `pxb check <id>` which prints the vision glitch score and every issue.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2cf03367",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "2cf03367:thebrowserpaneisshowingtheteampagenowthroughalocalharnessonp",
+    "app": "Stitchhooky",
+    "title": "Browser pane is showing the team page now through a local harness on port 5231, because…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The Browser pane is showing the team page now through a local harness on port 5231, because the Chrome extension isn't connected and I won't type a PIN.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2cf03367",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "b3ad12bd:recordedasunverifiednotguessedreloadlyskybdocumentlist404tru",
+    "app": "Stitchhooky",
+    "title": "Recorded as unverified, not guessed: Reloadly's KYB document list (404), Trustpilot and…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Recorded as unverified, not guessed:** Reloadly's KYB document list (404), Trustpilot and World Bank corridor pages (bot checks), Wam's help centre (Cloudflare error), ECCB capital figures, Thunes …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b3ad12bd",
+    "found": "2026-09-07"
   }
 ]
