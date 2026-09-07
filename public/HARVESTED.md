@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-310 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+313 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (135)
+## Hallalu CRM (138)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -139,6 +139,9 @@
 - [ ] `low` `other` (2026-09-06, #1d92f8fb) — Client files didn't change (only worker.js), so no version bump needed.
 - [ ] `low` `other` (2026-09-06, #aba97122) — Live: https://joy-day.coconvo.workers.dev · PIN 101765 (saved in /.joyday/config.json)…
 - [ ] `low` `other` (2026-09-06, #aba97122) — Three things I had to settle rather than assume: - Your note said WorkerWorker fetch…
+- [ ] `low` `other` (2026-09-07, #53e17fe3) — .call-stage and textareas already have dark overrides, but .draft (the email/message…
+- [ ] `low` `other` (2026-09-07, #53e17fe3) — Core call-notes system is shipped and browser-verified, and the bug/optimiser are logged.
+- [ ] `low` `ui` (2026-09-07, #53e17fe3) — You've flagged a new readability bug: the "Numbers you can trust" card is a white…
 
 ## Finished. (83)
 

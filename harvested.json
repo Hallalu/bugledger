@@ -3718,5 +3718,41 @@
     "status": "unverified",
     "session": "b3ad12bd",
     "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:callstageandtextareasalreadyhavedarkoverridesbutdrafttheemai",
+    "app": "Hallalu CRM",
+    "title": ".call-stage and textareas already have dark overrides, but .draft (the email/message…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "`.call-stage` and textareas already have dark overrides, but `.draft` (the email/message boxes) has a hardcoded near-white gradient with no dark override → white `--ink` text on white = the invisible…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:corecallnotessystemisshippedandbrowserverifiedandthebugoptim",
+    "app": "Hallalu CRM",
+    "title": "Core call-notes system is shipped and browser-verified, and the bug/optimiser are logged.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Core call-notes system is shipped and browser-verified, and the bug/optimiser are logged.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:andyouveflaggedanewreadabilitybugthenumbersyoucantrustcardis",
+    "app": "Hallalu CRM",
+    "title": "You've flagged a new readability bug: the \"Numbers you can trust\" card is a white…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "And you've flagged a **new readability bug**: the \"Numbers you can trust\" card is a white surface with pale text in dark mode.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
   }
 ]
