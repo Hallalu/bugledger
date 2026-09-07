@@ -3814,5 +3814,53 @@
     "status": "unverified",
     "session": "627c1f78",
     "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:confirmedthesystemicbug17elementsusebackgroundvarinkcolorfff",
+    "app": "Hallalu CRM",
+    "title": "Confirmed the systemic bug: 17+ elements use background:var(--ink);color:fff, and --ink…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Confirmed the systemic bug: **17+ elements** use `background:var(--ink);color:#fff`, and `--ink` flips near-white in dark → white-on-white.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "7dfd4c0c:thebugisexactline371sbuttonishardcodedbakethefix2creditsbutt",
+    "app": "Hallalu CRM",
+    "title": "Bug is exact: line 371's button is hardcoded Bake the fix · 2 credits, but the fixmodel…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The bug is exact: line 371's button is hardcoded `Bake the fix · 2 credits`, but the `fixmodel` chips let you pick FLUX.2 dev (42 credits) — the label never updates.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dfd4c0c",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "7dfd4c0c:waittheestimatereturned1creditforflux2devwhichiswrongshouldb",
+    "app": "Hallalu CRM",
+    "title": "Wait — the estimate returned 1 credit for FLUX.2 dev, which is wrong (should be 42).",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Wait — the estimate returned **1 credit for FLUX.2 dev**, which is wrong (should be ~42).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dfd4c0c",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "7dfd4c0c:thatmeanseithermytestjsonismalformedorthefixlabelwouldstillb",
+    "app": "Hallalu CRM",
+    "title": "That means either my test JSON is malformed or the fix label would still be wrong.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "That means either my test JSON is malformed or the fix label would still be wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dfd4c0c",
+    "found": "2026-09-07"
   }
 ]
