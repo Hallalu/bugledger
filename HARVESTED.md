@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-332 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+334 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (149)
+## Hallalu CRM (151)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -153,6 +153,8 @@
 - [ ] `low` `other` (2026-09-07, #44d2fa79) — All 4 external images are dead — a live-broken carousel in the archive, and precisely…
 - [ ] `low` `ui` (2026-09-07, #44d2fa79) — They serve fine to curl (valid JPEGs) but fail to render in-browser — a…
 - [ ] `low` `other` (2026-09-07, #53e17fe3) — If any of it doesn't behave the way you pictured, point me at it and I'll fix it.
+- [ ] `low` `other` (2026-09-07, #124574d9) — OpenReport reads the report data blob from state, so I kept reports at 60 (didn't bloat…
+- [ ] `low` `ui` (2026-09-07, #7b29bece) — Verified live: all 35/35 cards render a loaded thumbnail, 0 broken; detail pages show…
 
 ## Finished. (86)
 

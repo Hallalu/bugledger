@@ -3982,5 +3982,29 @@
     "status": "unverified",
     "session": "7dfd4c0c",
     "found": "2026-09-07"
+  },
+  {
+    "key": "124574d9:openreportreadsthereportdatablobfromstatesoikeptreportsat60d",
+    "app": "Hallalu CRM",
+    "title": "OpenReport reads the report data blob from state, so I kept reports at 60 (didn't bloat…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "`openReport` reads the report `data` blob from state, so I kept reports at 60 (didn't bloat the payload) and raised only worklogs.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "124574d9",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "7b29bece:verifiedliveall3535cardsrenderaloadedthumbnail0brokendetailp",
+    "app": "Hallalu CRM",
+    "title": "Verified live: all 35/35 cards render a loaded thumbnail, 0 broken; detail pages show…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "**Verified live:** all **35/35 cards render a loaded thumbnail, 0 broken**; detail pages show the full-width hero + its caption.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7b29bece",
+    "found": "2026-09-07"
   }
 ]
