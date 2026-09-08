@@ -3898,5 +3898,89 @@
     "status": "unverified",
     "session": "53e17fe3",
     "found": "2026-09-07"
+  },
+  {
+    "key": "124574d9:sothegenuinefixbuildetasupportintotheboarditselfletmeconfirm",
+    "app": "Finished.",
+    "title": "The genuine fix = build ETA support into the board itself. Let me confirm the data path…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "So the genuine fix = **build ETA support into the board itself.** Let me confirm the data path before I choose the least-invasive approach (I want zero risk to your append-only rule).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "124574d9",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "124574d9:thatsexactlythenolagisnottherefixlagisnowvisibleandaliveboar",
+    "app": "Finished.",
+    "title": "That's exactly the \"no lag is not there\" fix: lag is now visible, and a live board…",
+    "category": "performance",
+    "severity": "low",
+    "symptom": "That's exactly the \"no lag is not there\" fix: lag is now *visible*, and a live board proves it's keeping pace.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "124574d9",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "44d2fa79:notethefirstcarouselimageisanexternalgitbagelurlthathasntloa",
+    "app": "Hallalu CRM",
+    "title": "Note the first carousel image is an external GitBagel URL that hasn't loaded…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Note the first carousel image is an **external** GitBagel URL that hasn't loaded (`naturalWidth:0`) — exactly the external-URL fragility self-hosting fixes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "44d2fa79",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "44d2fa79:all4externalimagesaredeadalivebrokencarouselinthearchiveandp",
+    "app": "Hallalu CRM",
+    "title": "All 4 external images are dead — a live-broken carousel in the archive, and precisely…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "All 4 external images are dead — a live-broken carousel in the archive, and precisely the failure self-hosting fixes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "44d2fa79",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "44d2fa79:theyservefinetocurlvalidjpegsbutfailtorenderinbrowseracrosso",
+    "app": "Hallalu CRM",
+    "title": "They serve fine to curl (valid JPEGs) but fail to render in-browser — a…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "They serve fine to curl (valid JPEGs) but fail to render in-browser — a cross-origin/hotlink fragility.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "44d2fa79",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:ifanyofitdoesntbehavethewayyoupicturedpointmeatitandillfixit",
+    "app": "Hallalu CRM",
+    "title": "If any of it doesn't behave the way you pictured, point me at it and I'll fix it.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "If any of it doesn't behave the way you pictured, point me at it and I'll fix it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "7dfd4c0c:butthecoverimageisblankmycoverurlisiidwithoutanextension",
+    "app": "Stitchhooky",
+    "title": "The cover image is blank — my coverurl is /i/<id without an extension.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "But the **cover image is blank** — my `cover_url` is `/i/<id>` without an extension.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dfd4c0c",
+    "found": "2026-09-07"
   }
 ]
