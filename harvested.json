@@ -3862,5 +3862,41 @@
     "status": "unverified",
     "session": "7dfd4c0c",
     "found": "2026-09-07"
+  },
+  {
+    "key": "7dfd4c0c:fixbuttoncreditbugfixedverifiedliveshowingbakethefix8credits",
+    "app": "Wedding Planner",
+    "title": "- Fix-button credit bug — fixed; verified live showing \"Bake the fix · 8 credits\" (real…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- **Fix-button credit bug** — fixed; verified live showing **\"Bake the fix · 8 credits\"** (real cost), not the old static \"2\".",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dfd4c0c",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "7dfd4c0c:onethingthatneedsyounotabugthetruebestinclassmaxdetailprunae",
+    "app": "Wedding Planner",
+    "title": "One thing that needs you (not a bug): the true best-in-class Max detail (Pruna) engine…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**One thing that needs you** (not a bug): the true best-in-class **Max detail (Pruna)** engine is code-complete but returns *\"Insufficient AI Gateway credits\"* — enable **AI Gateway billing** (Cloudf…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dfd4c0c",
+    "found": "2026-09-07"
+  },
+  {
+    "key": "53e17fe3:bothfixesverifiedpresetbugfixedafteracustomfuchsiabackground",
+    "app": "Hallalu CRM",
+    "title": "Both fixes verified: - Preset bug fixed — after a custom fuchsia background, clicking…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Both fixes verified: - **Preset bug fixed** — after a custom fuchsia background, clicking Ocean gave `#ffffff` (the *full* preset, custom colour cleared).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-09-07"
   }
 ]
