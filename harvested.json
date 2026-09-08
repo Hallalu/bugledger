@@ -4006,5 +4006,17 @@
     "status": "unverified",
     "session": "7b29bece",
     "found": "2026-09-07"
+  },
+  {
+    "key": "e63c44d3:tworobustnessfixesgatingtherevealonjssothedeckisneverblankwi",
+    "app": "Hopefil",
+    "title": "Two robustness fixes: gating the reveal on JS (so the deck is never blank without it),…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two robustness fixes: gating the reveal on JS (so the deck is never blank without it), and confirming nothing can stay hidden.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-09-07"
   }
 ]

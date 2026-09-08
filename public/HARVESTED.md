@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-334 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+335 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (151)
 
@@ -365,3 +365,7 @@
 ## Unknown (1)
 
 - [ ] `high` `security` (2026-09-04, #6739dab7) — - v2.1.259 — Sept 2: managedMcpServers (org-wide HTTP/SSE MCP); --permission-prompts…
+
+## Hopefil (1)
+
+- [ ] `low` `other` (2026-09-07, #e63c44d3) — Two robustness fixes: gating the reveal on JS (so the deck is never blank without it),…
