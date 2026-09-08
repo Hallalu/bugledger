@@ -4018,5 +4018,77 @@
     "status": "unverified",
     "session": "e63c44d3",
     "found": "2026-09-07"
+  },
+  {
+    "key": "124574d9:nothingiscachestalelivereportandapzmjsallrevalidate",
+    "app": "Unknown",
+    "title": "Nothing is cache-stale — /live, /report, and /apz.mjs all revalidate.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Nothing is cache-stale** — `/live`, `/report`, and `/apz.mjs` all revalidate.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "124574d9",
+    "found": "2026-09-08"
+  },
+  {
+    "key": "124574d9:rightnowthelocalcopyhappenstomatchbutitllgostalethemomentapz",
+    "app": "Unknown",
+    "title": "(Right now the local copy happens to match, but it'll go stale the moment apz.mjs…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "(Right now the local copy happens to match, but it'll go stale the moment `apz.mjs` changes, and other machines keep whatever they first grabbed.) Your `AGENTS.md` already always-refreshes; `CLAUDE.m…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "124574d9",
+    "found": "2026-09-08"
+  },
+  {
+    "key": "e63c44d3:onehonestslipaghrepocreateranfromthewrongdirectoryandmadethe",
+    "app": "Hallalu CRM",
+    "title": "One honest slip: a gh repo create ran from the wrong directory and made the repo wired…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "One honest slip: a `gh repo create` ran from the wrong directory and made the repo wired to the pitch folder.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-09-08"
+  },
+  {
+    "key": "e63c44d3:thehonestproblemyour356640portraitfilestretchedacrossa1440px",
+    "app": "Hallalu CRM",
+    "title": "Honest problem: your 356×640 portrait file stretched across a 1440px hero throws away…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The honest problem: your 356×640 portrait file stretched across a 1440px hero throws away most of the frame.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-09-08"
+  },
+  {
+    "key": "e63c44d3:themomentyour169renderlandsitsimplycoversedgetoedgethevideot",
+    "app": "Hallalu CRM",
+    "title": "Moment your 16:9 render lands it simply covers edge to edge — the video takes…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The moment your 16:9 render lands it simply covers edge to edge — the video takes `data-src-wide` for landscape and falls back to the portrait file if the wide one isn't deployed yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-09-08"
+  },
+  {
+    "key": "ff83cc6a:a5nailedall4ofitsappscleanlyrealfocusringogfixesxssconfirmed",
+    "app": "Hallalu CRM",
+    "title": "A5 nailed all 4 of its apps cleanly (real focus-ring + OG fixes; XSS confirmed…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "A5 nailed all 4 of its apps cleanly (real focus-ring + OG fixes; XSS confirmed false-positive via consistent `esc()`; and two genuine new ledger items — a gitbagel heatmap UTC bug + an **ABS PII-in-U…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-09-08"
   }
 ]
