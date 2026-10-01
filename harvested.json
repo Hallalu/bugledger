@@ -4162,5 +4162,77 @@
     "status": "unverified",
     "session": "ff83cc6a",
     "found": "2026-10-01"
+  },
+  {
+    "key": "5a0287de:thatmeansaccepteverythingrebookedameetingthatsummarisecallha",
+    "app": "Hallalu CRM",
+    "title": "That means Accept-everything re-booked a meeting that summariseCall had already…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That means Accept-everything re-booked a meeting that `summariseCall` had *already* auto-booked, and clobbered its correct date with a fallback.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "5a0287de:fixconfirmedonlivemeetingstayedthuoct8unchangednoduplicateca",
+    "app": "Hallalu CRM",
+    "title": "Fix confirmed on live: meeting stayed Thu Oct 8 (unchanged), no duplicate calendar…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fix confirmed on live: meeting stayed **Thu Oct 8** (unchanged), **no duplicate** calendar event, and the **2 action items were added** to to-dos.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "5a0287de:highlighttextcolourandfontsizeallapplycorrectlynowthecorenot",
+    "app": "Hallalu CRM",
+    "title": "Highlight, text colour, and font size all apply correctly now — the core \"not working\"…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Highlight, text colour, and font size all apply correctly now — the core \"not working\" bug is fixed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "ff83cc6a:everythingverifiedsafenobrokenorpartialeditsanywherenowcommi",
+    "app": "Hallalu CRM",
+    "title": "Everything verified safe — no broken or partial edits anywhere. Now committing +…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "**Everything verified safe — no broken or partial edits anywhere.** Now committing + pushing all the deep-scan a11y/SEO fixes across the git-backed apps (excluding the board-state noise + any secret …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "ff83cc6a:all24workersdeployedthea11yseofixesareliveacrosstheportfolio",
+    "app": "Hallalu CRM",
+    "title": "All 24 Workers deployed — the a11y/SEO fixes are live across the portfolio (plus…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**All 24 Workers deployed** — the a11y/SEO fixes are live across the portfolio (plus hallalubookings + Aprizely earlier = 26 deployed).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "ff83cc6a:000thoseexactassetpathsarentpubliclyservedworkerroutingdiffe",
+    "app": "Hallalu CRM",
+    "title": "000 = those exact asset paths aren't publicly served (worker routing differs) — not a…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "`000` = those exact asset paths aren't publicly served (worker routing differs) — not a failure of the fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-10-01"
   }
 ]
