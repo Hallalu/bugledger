@@ -4234,5 +4234,29 @@
     "status": "unverified",
     "session": "ff83cc6a",
     "found": "2026-10-01"
+  },
+  {
+    "key": "5a0287de:shippedcommitteddeployedfixedaprizelyonlyautoflagscommittedw",
+    "app": "Hallalu CRM",
+    "title": "Shipped/committed/deployed — fixed. Aprizely only auto-flags \"committed\" when the git…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Shipped/committed/deployed — fixed.** Aprizely only auto-flags \"committed\" when the git tree is 100% clean (it wasn't — there were untracked report/worklog files), and \"deployed\" is opt-in.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "ff83cc6a:therethinkdeliveredwhatijudgedwaswrongwithv1theestimatewasdu",
+    "app": "Hallalu CRM",
+    "title": "Rethink, delivered What I judged was wrong with v1: the estimate was dumb (flat…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "## The rethink, delivered **What I judged was wrong** with v1: the estimate was dumb (flat 15m/task) so it sat uselessly next to real times, every chip was cluttered with both numbers, and it never l…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-10-01"
   }
 ]
