@@ -4090,5 +4090,77 @@
     "status": "unverified",
     "session": "ff83cc6a",
     "found": "2026-09-08"
+  },
+  {
+    "key": "5a0287de:thefixisapersistentfinaltextaccumulatorappendfromeventresult",
+    "app": "Hallalu CRM",
+    "title": "Fix is a persistent finalText accumulator (append from event.resultIndex, never re-read…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The fix is a persistent `finalText` accumulator (append from `event.resultIndex`, never re-read from 0), auto-restart without clearing, **separate** user-typed notes from the auto-transcript, and a r…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "5a0287de:thatsameoverwritealsoclobbersanythingyoutypeintothetranscrip",
+    "app": "Hallalu CRM",
+    "title": "That same overwrite also clobbers anything you type into the transcript box.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That same overwrite also clobbers anything you type into the transcript box.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "5a0287de:textcolourdoesntexistatallyetfontfamilysizedontexisthardcode",
+    "app": "Hallalu CRM",
+    "title": "Text colour doesn't exist at all yet; font family & size don't exist (hardcoded Georgia…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Text colour doesn't exist at all** yet; **font family & size don't exist** (hardcoded Georgia 15.5px).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "ff83cc6a:criticalnowseveralagentswerekilledmideditsoimustverifynofile",
+    "app": "Hallalu CRM",
+    "title": "Critical now: several agents were killed mid-edit, so I must verify no file is…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Critical now: several agents were killed **mid-edit**, so I must verify no file is half-written/broken before deploying anything.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "ff83cc6a:theuncommittedchangesarejustogmetaseotagsthedeepscanagentsap",
+    "app": "Hallalu CRM",
+    "title": "Uncommitted changes are just og/meta SEO tags (the deep-scan agent's Aprizely fixes —…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The uncommitted changes are **just og/meta SEO tags** (the deep-scan agent's Aprizely fixes — benign).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "ff83cc6a:thedeployfailednpxnoinstallcantresolveaprizelyspinnedwrangle",
+    "app": "Hallalu CRM",
+    "title": "Deploy failed — npx --no-install can't resolve Aprizely's pinned wrangler@4.145.0 (not…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The deploy failed — `npx --no-install` can't resolve Aprizely's pinned `wrangler@4.145.0` (not installed locally).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ff83cc6a",
+    "found": "2026-10-01"
   }
 ]
