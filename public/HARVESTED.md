@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-375 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+377 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (182)
+## Hallalu CRM (184)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -186,6 +186,8 @@
 - [ ] `low` `other` (2026-10-01, #ca3adf13) — My recommendation: run the sudo command now — that 115 GB is where the win is; the…
 - [ ] `low` `other` (2026-10-01, #ca3adf13) — 115 GB is still there — and still the real fix 9.7 GB free on a 228 GB disk is better…
 - [ ] `low` `other` (2026-10-01, #ca3adf13) — This command scans every top-level dir plus each user account — it's the definitive…
+- [ ] `low` `other` (2026-10-01, #53e17fe3) — Status — all current - Git: fully pushed (HEAD e435381); working tree clean (only the…
+- [ ] `low` `ui` (2026-10-01, #53e17fe3) — - 13 key views render error-free on live, zero console errors.
 
 ## Finished. (87)
 

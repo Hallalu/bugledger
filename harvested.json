@@ -4498,5 +4498,29 @@
     "status": "unverified",
     "session": "fbb12fd5",
     "found": "2026-10-01"
+  },
+  {
+    "key": "53e17fe3:statusallcurrentgitfullypushedheade435381workingtreecleanonl",
+    "app": "Hallalu CRM",
+    "title": "Status — all current - Git: fully pushed (HEAD e435381); working tree clean (only the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## Status — all current - **Git:** fully pushed (HEAD `e435381`); working tree clean (only the auto-generated board worklog file remains, which isn't code).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-10-01"
+  },
+  {
+    "key": "53e17fe3:13keyviewsrendererrorfreeonlivezeroconsoleerrors",
+    "app": "Hallalu CRM",
+    "title": "- 13 key views render error-free on live, zero console errors.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- **13 key views** render error-free on live, **zero console errors**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53e17fe3",
+    "found": "2026-10-01"
   }
 ]
