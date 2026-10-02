@@ -4618,5 +4618,29 @@
     "status": "unverified",
     "session": "819356c7",
     "found": "2026-10-02"
+  },
+  {
+    "key": "5bd3b322:getthisweekspostspriceincentsandfailedbakescostnothingarethe",
+    "app": "Hallalu CRM",
+    "title": "Get this week's posts.\" Price in cents and \"failed bakes cost nothing\" are the proof.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Get this week's posts.\" Price in cents and \"failed bakes cost nothing\" are the proof.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5bd3b322",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "5bd3b322:adultsonlyappearancepressureisthetoppainforteengirlsandanima",
+    "app": "Hallalu CRM",
+    "title": "- Adults only. Appearance pressure is the top pain for teen girls, and an image tool…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Adults only.** Appearance pressure is the top pain for teen girls, and an image tool doesn't solve it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5bd3b322",
+    "found": "2026-10-02"
   }
 ]

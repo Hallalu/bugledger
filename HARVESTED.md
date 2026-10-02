@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-385 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+387 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (192)
+## Hallalu CRM (194)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -196,6 +196,8 @@
 - [ ] `low` `other` (2026-10-02, #ca3adf13) — Here's where this is heading, so you know the plan: - If it's your Photos library the…
 - [ ] `low` `other` (2026-10-02, #53323280) — - Three bakes were rejected and redone: one came back with a blank white band, one…
 - [ ] `low` `other` (2026-10-02, #819356c7) — Still waiting on you: the live app isn't unlocked in the browser pane, so the signed-in…
+- [ ] `low` `other` (2026-10-02, #5bd3b322) — Get this week's posts." Price in cents and "failed bakes cost nothing" are the proof.
+- [ ] `low` `other` (2026-10-02, #5bd3b322) — - Adults only. Appearance pressure is the top pain for teen girls, and an image tool…
 
 ## Finished. (87)
 
