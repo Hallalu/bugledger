@@ -4534,5 +4534,53 @@
     "status": "unverified",
     "session": "819356c7",
     "found": "2026-10-01"
+  },
+  {
+    "key": "0c4410c7:thecleanfixisthededicatedconsolidatememoryskillitmergesdupli",
+    "app": "Hallalu CRM",
+    "title": "Clean fix is the dedicated /consolidate-memory skill — it merges duplicates, prunes…",
+    "category": "performance",
+    "severity": "low",
+    "symptom": "The clean fix is the dedicated **`/consolidate-memory`** skill — it merges duplicates, prunes stale lines, and gets the index back under limit without losing anything.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0c4410c7",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "3a6f2186:onelayoutbugfoundandfixedthesharedlinksrowsclippedtheirpills",
+    "app": "Hallalu CRM",
+    "title": "- One layout bug found and fixed: the Shared links rows clipped their pills on…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- One layout bug found and fixed: the Shared links rows clipped their pills on medium-width windows.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f2186",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "53323280:thefirstcarouselthenavy30daychallengethatisntaboutyourbodyse",
+    "app": "Hallalu CRM",
+    "title": "First carousel (the navy \"30-day challenge that isn't about your body\" set) is now in…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The first carousel (the navy \"30-day challenge that isn't about your body\" set) is now in Postplan as a third post, alongside version 1 and version 2.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53323280",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "ca3adf13:hereswherethisisheadingsoyouknowtheplanifitsyourphotoslibrar",
+    "app": "Hallalu CRM",
+    "title": "Here's where this is heading, so you know the plan: - If it's your Photos library the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Here's where this is heading, so you know the plan: - **If it's your Photos library** → the safe, *lossless* fix is turning on **iCloud Photos → \"Optimize Mac Storage\"** (System Settings → Apple ID →…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ca3adf13",
+    "found": "2026-10-02"
   }
 ]
