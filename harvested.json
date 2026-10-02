@@ -4642,5 +4642,41 @@
     "status": "unverified",
     "session": "5bd3b322",
     "found": "2026-10-02"
+  },
+  {
+    "key": "5a0287de:thehistorylogiclookscorrectonpaperleadcallsfortheresolvedsui",
+    "app": "Hallalu CRM",
+    "title": "History logic looks correct on paper (lead.calls for the resolved S.ui.callLead), so…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The history logic looks correct on paper (`lead.calls` for the resolved `S.ui.callLead`), so bug #3 needs reproduction.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "5a0287de:bug3rootcausefoundsuicallleadisntpersistedconfirmeduinotpers",
+    "app": "Hallalu CRM",
+    "title": "Bug 3 root cause found: S.ui.callLead isn't persisted (confirmed: \"ui not persisted at…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Bug #3 root cause found:** `S.ui.callLead` isn't persisted (confirmed: *\"ui not persisted at all\"*), so on any refresh the calls view falls back to `find(stage==='call')` — which here is **Kwame Me…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "5a0287de:bug3verifiedfixedthecontactmayasurvivestherefreshnowresolvin",
+    "app": "Hallalu CRM",
+    "title": "Bug 3 verified fixed — the contact (Maya) survives the refresh now, resolving to the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Bug #3 verified fixed — the contact (Maya) **survives the refresh** now, resolving to the right client instead of falling back to another company.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5a0287de",
+    "found": "2026-10-02"
   }
 ]
