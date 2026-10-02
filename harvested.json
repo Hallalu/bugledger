@@ -4582,5 +4582,41 @@
     "status": "unverified",
     "session": "ca3adf13",
     "found": "2026-10-02"
+  },
+  {
+    "key": "53323280:threebakeswererejectedandredoneonecamebackwithablankwhiteban",
+    "app": "Hallalu CRM",
+    "title": "- Three bakes were rejected and redone: one came back with a blank white band, one…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Three bakes were rejected and redone:** one came back with a blank white band, one turned her hair green, and one put the mug where the words go.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "53323280",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "819356c7:versionbeforeaftercleanpdf10of13plus2fieldsthatshouldntexist",
+    "app": "Hallalu CRM",
+    "title": "| Version | Before | After | |---|---|---| | Clean PDF | 10 of 13, plus 2 fields that…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "| Version | Before | After | |---|---|---| | Clean PDF | 10 of 13, plus 2 fields that shouldn't exist | 13 of 13, no extras | | Scanned copy | 8 of 13 | 13 of 13, 1 extra | What was wrong: - **Round …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "819356c7",
+    "found": "2026-10-02"
+  },
+  {
+    "key": "819356c7:stillwaitingonyoutheliveappisntunlockedinthebrowserpanesothe",
+    "app": "Hallalu CRM",
+    "title": "Still waiting on you: the live app isn't unlocked in the browser pane, so the signed-in…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Still waiting on you: the live app isn't unlocked in the browser pane, so the signed-in editor and a full signing run haven't been checked on the live site, and your saved Visa History Form still nee…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "819356c7",
+    "found": "2026-10-02"
   }
 ]
