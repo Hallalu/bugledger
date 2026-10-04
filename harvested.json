@@ -4762,5 +4762,29 @@
     "status": "unverified",
     "session": "e63c44d3",
     "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:onethingthemeasuringcaughtmyfirstdraftofthelowertwotexttiers",
+    "app": "Hallalu CRM",
+    "title": "One thing the measuring caught My first draft of the lower two text tiers passed on the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## One thing the measuring caught My first draft of the lower two text tiers **passed on the base surface and failed on the raised ones** — 4.42:1 and 3.35:1, where cards actually sit.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:checkingatieronlyagainstthebaseisntenough",
+    "app": "Hallalu CRM",
+    "title": "Checking a tier only against the base isn't enough.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Checking a tier only against the base isn't enough.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
   }
 ]
