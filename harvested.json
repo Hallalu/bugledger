@@ -4714,5 +4714,41 @@
     "status": "unverified",
     "session": "e63c44d3",
     "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:findingtheculpritratherthanmaskingitwithoverflowxhidden",
+    "app": "Hallalu CRM",
+    "title": "Finding the culprit rather than masking it with overflow-x:hidden.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Finding the culprit rather than masking it with `overflow-x:hidden`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:twocorrectionsioweyoumymeasuringscriptwaswrongitreadfontsize",
+    "app": "Hallalu CRM",
+    "title": "Two corrections I owe you My measuring script was wrong. It read font-size off one…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "## Two corrections I owe you **My measuring script was wrong.** It read font-size off one element and line-height off another, which invented a \"body line-height 2.21\" gap that doesn't exist.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:threebugswereinsidetheverificationtoolkititselftheworsta11ym",
+    "app": "Hallalu CRM",
+    "title": "Three bugs were inside the verification toolkit itself. The worst: a11y.mjs hardcoded…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Three bugs were inside the verification toolkit itself.** The worst: `a11y.mjs` hardcoded `localhost:8801` and had been auditing Chrome's error page, reporting four specific, plausible, entirely fa…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
   }
 ]
