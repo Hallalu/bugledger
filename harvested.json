@@ -4750,5 +4750,17 @@
     "status": "unverified",
     "session": "e63c44d3",
     "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:oneperformancefixalongthewayprobingsitemapcandidatesinseries",
+    "app": "Hallalu CRM",
+    "title": "One performance fix along the way: probing sitemap candidates in series stalled a…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One performance fix along the way: probing sitemap candidates in series stalled a progress line for **16 seconds**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
   }
 ]

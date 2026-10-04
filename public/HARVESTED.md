@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-396 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+397 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (203)
+## Hallalu CRM (204)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -207,6 +207,7 @@
 - [ ] `low` `ui` (2026-10-04, #e63c44d3) — Key find: the primary button is white on 6B7BFF = 3.56:1, which fails AA — and every…
 - [ ] `low` `ui` (2026-10-04, #e63c44d3) — Finding the culprit rather than masking it with overflow-x:hidden.
 - [ ] `low` `other` (2026-10-04, #e63c44d3) — Three bugs were inside the verification toolkit itself. The worst: a11y.mjs hardcoded…
+- [ ] `low` `other` (2026-10-04, #e63c44d3) — One performance fix along the way: probing sitemap candidates in series stalled a…
 
 ## Finished. (87)
 
