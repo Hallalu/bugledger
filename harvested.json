@@ -4678,5 +4678,41 @@
     "status": "unverified",
     "session": "5a0287de",
     "found": "2026-10-02"
+  },
+  {
+    "key": "e63c44d3:ithardcodedlocalhost8801nothingwaslisteningandithadbeenaudit",
+    "app": "Hallalu CRM",
+    "title": "It hardcoded localhost:8801, nothing was listening, and it had been auditing Chrome's…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It hardcoded `localhost:8801`, nothing was listening, and it had been auditing Chrome's error page.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:ivefixedtheharnesstotakebaseandtorefusetorunwhenthebaseisunr",
+    "app": "Hallalu CRM",
+    "title": "Fixed the harness to take --base and to refuse to run when the base is unreachable, and…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I've fixed the harness to take `--base` and to refuse to run when the base is unreachable, and ledgered it as high severity — a check that cannot fail isn't a check, and this one was shipping to user…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
+  },
+  {
+    "key": "e63c44d3:thekeyfindtheprimarybuttoniswhiteon6b7bff3561whichfailsaaand",
+    "app": "Hallalu CRM",
+    "title": "Key find: the primary button is white on 6B7BFF = 3.56:1, which fails AA — and every…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The key find: the primary button is **white on `#6B7BFF` = 3.56:1**, which fails AA — and every lighter indigo makes white worse.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e63c44d3",
+    "found": "2026-10-04"
   }
 ]
