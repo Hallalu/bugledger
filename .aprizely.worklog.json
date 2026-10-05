@@ -4,7 +4,7 @@
   "project": "BugLedger",
   "title": "Daily Ledger — read Aug 1→Oct 4 in full, scan, research, append (append-only)",
   "status": "active",
-  "current": "Curation pipeline validated on 8/12 batches; deduped vs full 2,115-entry live ledger",
+  "current": "Part 1 committed+pushed: +308 bugs/sec, +176 optimisers (batches 1-9)",
   "note": "",
   "tasks": [
     {
@@ -33,7 +33,7 @@
     },
     {
       "text": "Vet + dedupe findings",
-      "note": "Fetched complete live corpus (428 catalogue + 399 harvested + 99 scanner + 756 submitted); merge dry-run clean (~279 bugs/sec + 162 optimisers survive); awaiting final 4 readers before the real append",
+      "note": "bugs.json 428->736, optimisers 117->293, gen.mjs regenerated. Batches 10-12 still reading; deploy + part 2 pending next turn",
       "status": "active",
       "wave": "Wave 4 — Curate & dedupe"
     },

@@ -2928,5 +2928,745 @@
     "detail": "The 100K req/day free limit is per-account, not per-Worker. A portfolio of 30+ Workers on one account shares a single 100K bucket; KV reads/writes and Cache API ops also count as requests.",
     "why": "Directly relevant: this account runs ~34 Workers. One chatty Worker (polling, hourly crons, live boards) can starve the rest and cause account-wide 1015/quota errors.",
     "how": "Budget requests across the portfolio; cache aggressively; avoid per-second polling and chatty KV; move hot paths to paid or to static assets; watch the account request graph."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "aa7b3b11",
+    "source": "daily-read",
+    "title": "Test a new data-act value against the click-delegate switch with a script that lists every data-act in the markup and the cases handled",
+    "detail": "After adding cards and views the session found two buttons wired to an action name no handler knew, only by luck of a grep",
+    "why": "Delegated-click SPAs fail silently on an unknown action; there is no error to see",
+    "how": "CI/pre-deploy check: collect all data-act values from public/*.js templates, diff against the case labels of the delegate, fail on any orphan"
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "design-elevation",
+    "session": "aa7b3b11",
+    "source": "daily-read",
+    "title": "Use Workers AI FLUX schnell only for photographic mockups and hand text-heavy products to a text-capable model or an editor",
+    "detail": "The photo-proof test produced a convincing flat-lay but garbled text ('birthdy withdAY'); the caveat and Canva hand-off carry the expectation",
+    "why": "Users judge a proof by its readable copy; garbled lettering reads as broken",
+    "how": "Say 'look, not copy' on the result, offer a sharper-text model as a toggle, and overlay real headings with a canvas compose step"
+  },
+  {
+    "app": "Joy Day",
+    "category": "dx",
+    "session": "aba97122",
+    "source": "daily-read",
+    "title": "Move Joy Day off its hand-patched auth-gate (CSS-hidden tabs, prefilled hidden identifier) onto the module passcode mode that shipped later",
+    "detail": "On 6 Sep Joy Day used the full sign-up/sign-in card as a one-person PIN pad by hiding the segmented tabs with CSS, hiding the identifier field and prefilling it because sign-in refuses an empty identifier, and making the fixed overlay backdrop transparent, across three patches. On 1 Oct auth-gate v1.1 gained mode passcode (v1.2 adds remember-me and forgot), which Joy mail uses",
+    "why": "A hidden-but-required field and CSS overrides break on the next module update, and Joy Day does not get remember-me or the shared lockout behaviour",
+    "how": "Replace the three patches with FinishedAuth.mount(..., {mode:\"passcode\", pinLength:6, onPasscode}), keep the HMAC session, and add the per-IP failure counter the Joy mail worker uses"
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "aba97122",
+    "source": "daily-read",
+    "title": "Assert that a gauge's drawn fraction equals the number printed inside it, since 59 green tests still shipped a ring that contradicted its label",
+    "detail": "The ring filled as Neurons were spent while the centre number counted down what was left; only looking at the page found it, after which a test reading the stroke-dasharray from the HTML was added",
+    "why": "Unit assertions on numbers cannot see a visual encoding that disagrees with its label",
+    "how": "For every gauge, bar or ring: render, read the drawn length, and assert it equals the printed value over the maximum, in the empty, full and over-limit cases"
+  },
+  {
+    "app": "Sell skill",
+    "category": "workflow",
+    "session": "5bd3b322",
+    "source": "daily-read",
+    "title": "Fold per-run composer fixes back into the skill's compose.mjs or the next project re-fixes them",
+    "detail": "The receipt chip, sideways scrim, code block and seam fix were written into the project folder's compose.mjs only; the skill's copy stays without them",
+    "why": "Each /sell run re-discovers the same layout defects (12 fixed over four render passes) and the ledger already holds several for this file",
+    "how": "At the end of a run diff the project composer against the skill copy, port the generic changes behind options, and bump a header version so agents can tell which copy they hold"
+  },
+  {
+    "app": "cross-cutting",
+    "category": "workflow",
+    "session": "ca3adf13",
+    "source": "daily-read",
+    "title": "When a command needs the user's sudo, have it write to a file the agent reads instead of asking for a paste",
+    "detail": "read_terminal could not see output that had scrolled past, and pasted blocks arrived truncated or empty; a command that ends with '> /tmp/x.txt; echo done' let the agent read the whole result directly",
+    "why": "Each paste round trip cost minutes to hours of wall-clock in a disk-full emergency",
+    "how": "Standard form: sudo CMD 2>&1 | head -N > /tmp/NAME.txt; echo 'written, say done'; then Read /tmp/NAME.txt; keep the first command small and the file path stable"
+  },
+  {
+    "app": "Bug Ledger",
+    "category": "integrity",
+    "session": "5f9a4f4e",
+    "source": "daily-read",
+    "title": "Cluster near-duplicate catalogue items into canonical classes with per-app instances so coverage is not padded",
+    "detail": "A deep scan reported 67 security items that are really about 30 concepts: SSRF three times, XSS five or more, cross-account local leak five or more, CSP twice. Each item was the same class first seen in a different app, so a pass counts variants separately and inflates both effort and apparent thoroughness",
+    "why": "Coverage numbers are only meaningful per distinct risk",
+    "how": "Add a class key on every item, report 'N classes checked, M instances', and let one detector or one test answer a whole class"
+  },
+  {
+    "app": "Bug Ledger",
+    "category": "integrity",
+    "session": "5f9a4f4e",
+    "source": "daily-read",
+    "title": "Add a per-project applicability fingerprint so the checklist marks items with no matching surface as N/A instead of a hollow pass",
+    "detail": "About 15 of Hallalu's 67 security items concern other apps' features (co-stitch rooms, a cloud vault, a render path) yet were weighted equally and ticked",
+    "why": "A pass on something that cannot apply tells the reader nothing and dilutes the items that do",
+    "how": "Declare has-auth, has-vault, has-AI, has-D1, static-site and similar flags per project, tag items with the surfaces they need, and show non-matching items as N/A with the reason"
+  },
+  {
+    "app": "Bug Ledger",
+    "category": "integrity",
+    "session": "5f9a4f4e",
+    "source": "daily-read",
+    "title": "Match coverage on a stable item id and re-run a detector signature to prove a fix and flag regressions",
+    "detail": "Coverage matches normalised title strings, so credit required reverse-engineering the exact catalogue wording; a submitted fix with file:line is taken on trust and nothing watches whether it stays fixed",
+    "why": "Title matching rewards string gaming, and found-once is not the same as stays-fixed",
+    "how": "Give every item an id used for matching, attach a detector signature, re-run it when a fix is submitted to confirm the pattern is gone, and flag a regression on any later scan where it returns"
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "0c4410c7",
+    "source": "daily-read",
+    "title": "Receive-path smoke test for Email Routing: SMTP to route1.mx.cloudflare.net over IPv4 from a sender domain with no SPF",
+    "detail": "A hand-rolled node:net SMTP session was rejected with 550 'Sender IP reverse lookup rejected' because the connection left over IPv6 without reverse DNS; forcing family:4 delivered, and a sender domain with no SPF record (result none) was accepted. Cloudflare's inbound MX rejects an IPv6 sender with no rDNS and hard-fails only on failing SPF or DKIM, which makes a 40-line script a repeatable end-to-end test of catch-all, Worker, R2 and D1",
+    "why": "Proves the whole receive pipeline without needing a second mail service",
+    "how": "Open the socket with family 4, use a MAIL FROM on a subdomain with no SPF record, poll the authenticated messages API for the marker, then delete the test row"
+  },
+  {
+    "app": "Joy Docs",
+    "category": "dx",
+    "session": "0c4410c7",
+    "source": "daily-read",
+    "title": "Send X-Robots-Tag noindex on public share-by-link doc Workers so a hand-out link is not crawled",
+    "detail": "joy-docs serves the Handbook and the market dossier from a public static-assets Worker so one link works for everyone, with no auth and no robots header; the pages name the live webmail URL, the mail domain and the architecture",
+    "why": "A share link intended for a few readers becomes a search result; the same applies to every static docs Worker in the portfolio",
+    "how": "Add a _headers file with X-Robots-Tag: noindex, nofollow and Referrer-Policy: no-referrer for /*, or a robots.txt Disallow, and keep an opt-in public flag per doc"
+  },
+  {
+    "app": "Joy Day",
+    "category": "integrity",
+    "session": "aba97122",
+    "source": "daily-read",
+    "title": "Copy the vendor's published unit (Neurons) and derive money from it, never re-derive the unit from rounded dollar figures",
+    "detail": "Cloudflare lists both a dollar rate and a Neurons rate; flux-2-dev's rounded $0.00041 implies 37.27 N while the published column says 37.50, and input tiles were priced separately from output tiles",
+    "why": "A rate card that disagrees with the vendor's own unit in the third significant figure makes every derived scenario, projection and budget slightly wrong, and the error compounds with volume",
+    "how": "Store the published Neurons column verbatim with a read date and source URL, compute dollars at request time from one overage constant, and add a test that recomputes each model's cost by hand arithmetic"
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Verify a Supabase-gated app locally by seeding the REAL auth storage key with a far-future expiry and the anon key as the access token",
+    "detail": "Seed localStorage key sb-<project-ref>-auth-token with expires_at far in the future and access_token set to the project's publishable key. getSession() then returns without a network call and edge-function gateways that verify the JWT accept it.",
+    "why": "A made-up key name passes the 'entered' check but cloud.ts raises the auth-expired event and flips the gate back; a token of 'f' makes background calls 401 and bounces to the sign-in screen.",
+    "how": "Write the seed in one javascript_tool call on the dev origin, reload, and treat any 401 from your own edge functions as 'needs a real session' rather than a bug. Never create accounts or type PINs."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Drive React forms from the Browser pane by dispatching events, and read state instead of trusting focus",
+    "detail": "Automation 'type' ignores programmatic focus and caret moves done in requestAnimationFrame, the Return key does not fire React onKeyDown, and same-tick clicks are batched so the DOM is stale between them.",
+    "why": "Caret-insert and keyboard shortcuts looked broken or fine for the wrong reason during verification.",
+    "how": "Set values with the native setter plus a bubbling input event, dispatch a real KeyboardEvent for Enter, click once per call, and assert on textarea.value and selectionStart."
+  },
+  {
+    "app": "Finished.",
+    "category": "architecture",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Make a monthly grant idempotent by putting the period in the ledger reason and indexing it",
+    "detail": "Use reason 'monthly-free:2026-08' with a partial unique index on (user_id, reason) where reason like 'monthly-free:%', insert ... on conflict do nothing, and bump the balance only if a row was actually inserted (GET DIAGNOSTICS row_count).",
+    "why": "date_trunc is not immutable so it cannot sit in an index expression; the reason string carries the period and makes concurrent or repeated calls safe and auditable.",
+    "how": "Call ensure_monthly_free() lazily from the balance RPC so no cron is needed, and skip it in a month that already has a welcome or renewal grant."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Test SECURITY DEFINER functions through execute_sql by setting request.jwt.claims to a real user",
+    "detail": "select set_config('request.jwt.claims', json_build_object('sub', <real uid>)::text, true) then call the function in the same statement batch.",
+    "why": "The function reads auth.uid(); foreign keys need a real user; RAISE NOTICE output is not returned and a rollback cannot span separate calls.",
+    "how": "Pick a throwaway real user, assert results with select statements, and make the function idempotent so re-running is safe."
+  },
+  {
+    "app": "Finished.",
+    "category": "performance",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Lazy-load big word lists: dynamic import for bundled banks and fetch-on-open for the 60k dictionary",
+    "detail": "The 24k-word bundle added about 46KB raw / 19KB gzip to the main chunk until it was split; the 60,000-word A-Z list ships as public/dictionary.txt (about 500KB) fetched the first time that level opens and merged with curated entries (curated definitions win).",
+    "why": "Keeps first load small while the library still reaches dictionary scale.",
+    "how": "Show a 'Loading the full dictionary' note in the plan line while it fetches; connect-src 'self' already allows it."
+  },
+  {
+    "app": "Finished.",
+    "category": "ux",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Forgiving pronunciation scoring: phonetic match, bands, unlimited retries and a self-rate fallback",
+    "detail": "Score with Double Metaphone plus Levenshtein, never exact match; give bands not pass/fail; allow unlimited retries with a TTS model; offer self-rating when the microphone or speech API is unavailable; show an improvement chart instead of streak pressure.",
+    "why": "Speech-recognition error rates are roughly double for some accents, children and non-native speakers, so exact match punishes the learners the app is for.",
+    "how": "Keep the scorer in readscore.ts, feed the same score log to XP, the league and the progress dashboard."
+  },
+  {
+    "app": "Finished.",
+    "category": "design-elevation",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Homework runway bar from date assigned to due date, with colour never carrying meaning alone",
+    "detail": "Draw the assignment window as a bar with today's marker, days left and a text label; pair every colour state with a word or icon (WCAG 1.4.1).",
+    "why": "Shows pacing at a glance and works for colour-blind users.",
+    "how": "Compute progress from assignedAt and dueAt in the schedule model and reuse the bar in the list, calendar and widget views."
+  },
+  {
+    "app": "Finished.",
+    "category": "integrity",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "When asked for '1,000+ per section', publish the honest count against the real full-suite size and let the owner choose",
+    "detail": "A per-section audit table (for example GRE 3,500 canonical, GMAT 750 to 1,000, Latin phrases 300 to 500 authentic, literary terms 300 to 500 real) replaced padding; the owner then chose which gaps to fund.",
+    "why": "Padding with shared banks produced 'dead' in SAT and 'able, about, above' in Travel, which users noticed immediately.",
+    "how": "Count by real membership, flag padded levels, and decline to invent entries; stop at the honest number and say so."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Test third-party fetches under the production CSP with vite preview, not the dev server",
+    "detail": "Keep a launch.json entry that serves the production build with the real public/_headers (a prod-csp configuration) and run new network features through it.",
+    "why": "Dictionary and translate APIs worked on the dev server and would have been blocked in production by connect-src.",
+    "how": "Add each new origin to connect-src in the same commit as the fetch, then verify under the preview."
+  },
+  {
+    "app": "Finished.",
+    "category": "ux",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Adaptive practice from the score log: missed words first, then unseen, close, mastered; soft league tiers without demotion",
+    "detail": "Order the queue 'again', unseen, 'close', 'nailed' with a stable sort after shuffling; show Bronze to Diamond tiers by weekly XP with an 'XP to next tier' bar and no demotion.",
+    "why": "Resurfaces what the learner needs without extra data; gentle tiers motivate without punishing.",
+    "how": "Build the queue from stored scores on level change and once after scores load for a returning learner."
+  },
+  {
+    "app": "Finished.",
+    "category": "ux",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Timed quiz that works under real test conditions: Quick-start, save and resume, deadline auto-score, and choose/type/speak answers",
+    "detail": "One-tap Quick start picks length, mix and answer mode; the quiz state persists so it can be resumed; a 1 hour, 1 day or 1 week deadline auto-scores completed answers; meaning answers can be chosen, typed or spoken and matched with a lenient content-word matcher.",
+    "why": "Lets learners rehearse exam pacing while still fitting life, and feeds the same XP and league as practice.",
+    "how": "Persist quiz progress to localStorage (and sync it if cross-device resume matters), and reuse the speech helpers."
+  },
+  {
+    "app": "Finished.",
+    "category": "dx",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Ship the generator and source packs beside generated data files",
+    "detail": "vocab-extra.ts says 'do not hand-edit, regenerate via gen-extra.mjs' but the generator, the researched lists, build-dict.mjs and words_alpha.txt lived only in a session scratchpad and /tmp.",
+    "why": "Scratchpads can be wiped, which leaves a 3,763-line generated file nobody can regenerate or audit.",
+    "how": "Commit scripts/ with the generator and a SOURCES.md (origin, licence, date) for every pack; keep large raw downloads out of git but record their URLs and hashes."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Unit-test pure parsing code by esbuild-bundling the real source and importing it from a data: URL",
+    "detail": "Bundle src/lib/timetable.ts with esbuild (platform neutral, localStorage shim), import the result via a base64 data: URL and run a fixture table.",
+    "why": "Six spoken-day fixtures (run-on, no-time list, ranges, bare times, food safelist, '3 apples') found four splitter bugs in minutes without a test framework.",
+    "how": "Keep the fixture table in the repo and rerun it after every parser edit."
+  },
+  {
+    "app": "Finished.",
+    "category": "ux",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Speech capture should land in an editable review step, never auto-commit",
+    "detail": "Open a review modal that starts listening, shows Speak / Pause / Resume / Done, keeps the transcript editable and previews the split before adding; offer an optional gated AI tidy (canUseAI and credits) beside rule-based defaults.",
+    "why": "Recognition errors are common and the owner could not correct them when dictation auto-added blocks.",
+    "how": "Reuse the shared useDictation hook for the block editor, bulk add and the day dump; keep rules as the free default."
+  },
+  {
+    "app": "Finished.",
+    "category": "design-elevation",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Make rule-based design the default: category-driven fills and colours with a Settings tick, AI as an optional upgrade",
+    "detail": "A category-to-pattern map (dots, stripes, crosses, confetti, emoji) plus colour and emoji from keyword rules makes a day look designed with no AI call; AI only improves it.",
+    "why": "Free users get a finished look and credits are not spent on cosmetics; a tick lets people choose a flat style.",
+    "how": "Resolve the fill at render time through one helper (blockFill) so it never needs a data migration."
+  },
+  {
+    "app": "Finished.",
+    "category": "architecture",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Pass the 12/24-hour format as a parameter or context instead of a module-level flag set during render",
+    "detail": "fmtTime reads a module-level FMT24 set by setFmt24(!!s.hour24) inside the Timetable render body.",
+    "why": "Memoised children and any other importer of fmtTime can show a stale or foreign format; it only works because the whole tree re-renders.",
+    "how": "Give fmtTime an explicit h24 argument (already supported) and thread the setting through props or a small context."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "workflow",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Give every Worker a never-cached /api/_v route, version static asset paths by content hash, and verify deploys against both",
+    "detail": "A probe route that returns a build marker proves worker code is live; rewriting asset URLs to /_v/<hash>/file gives every release a new cache key; compare the served file's sha with the local sha.",
+    "why": "wrangler's Success output and the deployments list said nothing about stale static files, and a hand-bumped ASSET_VER is easy to forget.",
+    "how": "Derive the version from a hash of public/ at build time, keep the shell HTML no-cache, serve /_v/* as immutable, and add the probe check to the deploy script."
+  },
+  {
+    "app": "Aprizely",
+    "category": "ux",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "One timeline for all work: agent sessions itemised by wave, manual timers and payments on a per-day analysis",
+    "detail": "Work Log shows each agent board with its tasks and descriptions, project link, time and duration, above a per-day bar chart of focused time with spend markers and a week graph on top.",
+    "why": "The owner wanted a single place to see what was achieved, for which project and when, instead of two disconnected lists.",
+    "how": "Merge S.sessions and S.worklogs by day in the client, label agent duration as started to finished-or-updated, and flag boards left active as unreliable."
+  },
+  {
+    "app": "Aprizely",
+    "category": "ux",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Voice-fill forms with a rule-based parser and a visible 'heard' line",
+    "detail": "A mic on the payment and cost forms parses spoken amounts (digits and number words), relative dates, project and note into the fields without AI.",
+    "why": "Voice that only dumps text into a box feels broken; filling fields is what the owner asked for.",
+    "how": "Strip number words from the note, show what was heard, and test the parser with fixtures like 'twenty five dollars for Cloudflare hosting today'."
+  },
+  {
+    "app": "Aprizely",
+    "category": "ux",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Timestamp every shipped item and add a deterministic Fathom-style day summary",
+    "detail": "Each feature, fix and session row shows its clock time, and the day report opens with a plain-English TL;DR (counts per project, focused time, first and last activity) built without AI.",
+    "why": "The logs.at timestamp already existed but was not shown; a short summary answers 'what did I ship today' at a glance.",
+    "how": "Compute from the day's events, keep it deterministic, and list timestamped highlights under it."
+  },
+  {
+    "app": "Finished.",
+    "category": "design-elevation",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Help as a full page: FAQ accordion plus contact form, with the textarea resize grip removed",
+    "detail": "A two-column help centre (common questions and a message form) replaced a small modal; resize: none and a proper focus ring remove the diagonal grip that looked unfinished.",
+    "why": "The owner called the small box low standard and the corner dashes unpolished.",
+    "how": "Stack the columns on mobile, keep Question / Bug / Suggestion / Other kinds, and send to a table that someone actually reads."
+  },
+  {
+    "app": "Finished.",
+    "category": "integrity",
+    "session": "a15dff44",
+    "source": "daily-read",
+    "title": "Build language packs from real bilingual dictionaries with readings, and eyeball every generated pack before bundling",
+    "detail": "Chinese from CC-CEDICT with tone-marked pinyin, Japanese from EDICT2/JMdict with Hepburn romaji (EUC-JP converted with iconv), French/Spanish/German/Italian from FreeDict TEI streamed line by line (the German file is 449MB), each intersected with a frequency list so common words come first.",
+    "why": "Bare frequency words taught nothing, and an LLM-written list of the same size was less accurate; sampling caught a leaked '(P)' marker in the romaji.",
+    "how": "Parse into { w, d } with the meaning, strip markers, print 20 samples per language, and check licences and a profanity filter before shipping (see the licensing entry)."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "After a deploy, prove the browser loaded the new build before testing it (and curl with a unique query first)",
+    "detail": "In one session the Browser pane served the previous index.html after a successful wrangler deploy on more than ten occasions (v97 vs v98, v119 vs v120, v147 vs v148, v151 vs v152, v168 vs v169, v169 vs v170). ?cb= and location.replace(?x=Date.now()) often still loaded the old document; only a brand-new unique URL worked. About ten turns were once spent suspecting wrangler, the wrong directory and a service worker. navigate returns before the old document has finished running.",
+    "why": "Verifying against a stale build produces false failures (feature 'missing', 'S is not defined') and false passes, and burns turns.",
+    "how": "1) curl the page with a unique query and grep the build stamp (?v=NNN). 2) In the page, assert the loaded script's ?v= equals the expected before running any check, and if it does not, navigate to a never-used URL. 3) When a chart or element looks wrong, measure getBoundingClientRect and the computed style before telling the user to hard-refresh; the 16px chart bug was blamed on cache first."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Verify behaviour, visibility and the real route; not element presence, URL strings or function existence",
+    "detail": "This run's misses were all presence-level: DM chips shipped dead because the check counted chips (not clicks); a logo img passed because its src string existed while Clearbit was dead; Edit 'existed' in the toolbar while the user could not see it; Preview was closed without reproducing it; a quiet-week state never rendered because the fixture lead had other activity; a persistence probe error was waved off as 'demo save no-ops'. Techniques that worked: dispatch a real input event then read state; Image() onload for third-party URLs; getBoundingClientRect/elementFromPoint at the user's width; a monkeypatched spy on askAI to prove aiCalls:0; decoding the share-link JSON to audit every field; computing contrast in-page.",
+    "why": "A check that cannot fail for the bug in question is not a check, and 'verified' in a report then misleads the user.",
+    "how": "For each feature, write one assertion that would fail if the user-visible behaviour were broken: click then read state, measure rect and hit-test, spy the side effect, load the third-party asset, and use an isolated fixture for empty and edge states. Also remember harness traps: go(to) takes one arg (use #/client/id), '/' is the marketing page and /app the app, wrap each probe in an IIFE, and navigate to /app before touching S."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "'Could not verify' from a blocked or exhausted researcher is not 'does not exist'; never remove capability on a negative finding",
+    "detail": "A research lane reported it could not verify five effect names while also reporting its web-search budget exhausted (200/200) and bot-gated engines. The names were deleted from the product. All five were real. The user's rule: a critique is a claim too; never invent a restriction.",
+    "why": "Absence of evidence from a broken tool becomes a shipped restriction, and the cost is asymmetric when the field is free text (a stale suggestion is free; a missing famous one is not).",
+    "how": "Require every lane to report its tool health (searches used, blocked domains) and to label results verified-true, verified-false or unreachable. Only act on verified-false. When a lane is unreachable, re-verify yourself or leave the option in. Add the asymmetry note in code where you keep something you could not verify."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Research provenance: say when the primary source was blocked and never present aggregator paraphrase as a quote",
+    "detail": "A voice-of-customer lane could not reach Reddit (WebFetch, .json, mirrors and search all blocked) and returned aggregator-sourced paraphrases explicitly labelled as not verbatim Reddit quotes, with zero threads read. A separate counter-evidence lane re-audited the other lanes' own claims and caught four miscitations (a healthcare adoption stat transplanted to freelancer portals; Etsy; follow-up counts; a Flickr study cited as Instagram).",
+    "why": "Fabricated or transplanted evidence in a product dossier ends up in shipped copy.",
+    "how": "Brief every lane to disclose blocked sources and label FACT / SIGNAL / HYPOTHESIS / VENDOR / FOLKLORE. Add a standing audit lane that opens the cited page for each load-bearing stat and checks the domain, sample and confidence interval. Re-run blocked lanes through a real browser or API."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "copy",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Folklore watchlist: never hard-code these statistics or rules in product copy",
+    "detail": "Traced or checked this run: '$100 per 1,000 followers' (a 10x inflation of a 2017 Digiday quote of $1,000 per 100,000); '3-5 content pillars' (earliest trace Later 2020; Hootsuite publishes seven; HubSpot gives no number); 5-3-2, rule of thirds, 80/20, 4-1-1 (unattributed); '5-7 follow-ups' (source said fifth to twelfth contact); SMS 98% open rate; '98% WhatsApp open'; deposits cut no-shows 65%; 'post daily or be punished' (unsupported, not disproven); skeleton loaders feel 20-30% faster (spinners tested faster); '94% of first impressions are design' (untraceable; 46.1% defensible); 'filters raise reach' (no credible evidence; the 21% figure is a Flickr study); NN/g 'comprehension halves on mobile' (2010, contradicted by NN/g 2016).",
+    "why": "Each of these has been repeated widely and would pass a casual check.",
+    "how": "Keep the list in the research skill. For each claim in copy, record the primary source and date, or phrase it as 'no one has shown'. Use measured data where it exists (for example Collabstr, n=21,000 collaborations: paid medians YouTube $255, Instagram $193, TikTok $186, UGC $154; 80% of deals under $300)."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "workflow",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Research lanes that spawn their own sub-lanes return 'Holding' as their result",
+    "detail": "A premium-design lane completed seven times with results like 'Lanes are still actively researching. Holding.' (about 144k tokens, 22 minutes); its real output came from a different lane. A task-notification fires each time an agent stops with no live children, and TaskStop on a completed task errors. Two other lanes failed mid-flight with 'your computer went to sleep' and two hit a session limit; the assistant correctly reported these as gaps rather than filling them with guesses.",
+    "why": "A notification is not a deliverable, and the user lost half an hour to an empty result.",
+    "how": "Brief lanes not to spawn agents and to end with a final report; treat any 'holding / still researching' result as a failure and re-run it directly; list failed lanes explicitly in the report."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "workflow",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Do not browser-verify while a browser-using subagent is running",
+    "detail": "A parallel research subagent drove the shared Browser pane, navigated to buildertrend.com, and took over the main session's verification even in a freshly created tab (S was undefined). The pane also hits a tab cap, times out on scroll and screenshot, and 'zoom' returns the full image.",
+    "why": "The agent's page state and the verifier's page state are the same pane.",
+    "how": "Wait for browser-using lanes before verifying, or give research lanes WebFetch/WebSearch only; use JS checks instead of scroll/zoom when the pane is unresponsive."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Lint generated CSS custom-property values: AI-written hex tokens were corrupted three times",
+    "detail": "Garbage spliced into colour values: dashboard artifact '--ink-2:#586ersync,#586472' and dark-mode '--win:#2cc1 ae,#2cc1ae'; portal.html '--ink3:#79footer;--ink3:#7c8697'. An invalid custom-property colour silently drops the token. All were caught by eye on self-review; one only hours later.",
+    "why": "Silent token loss shows up as odd greys and missing accents, not an error.",
+    "how": "Before publishing or deploying, regex every --token value that starts with # against ^#[0-9a-fA-F]{3,8}$ and fail on anything else; also reject duplicate declarations of the same token in one block."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "dx",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "node --check cannot catch hallucinated helpers or classes; add a no-undef and class-exists check",
+    "detail": "portal.js was written against micBtn(), openShareSheet() and a .modal-wide class that do not exist; node --check passed because undefined globals only fail at runtime. It was caught only because the assistant grepped the codebase for each helper before deploying (the real patterns were .mic-in[data-mic-target] with attachMics(), and shareClientSummary()). A half-built registry entry (msgDeposit referenced but never defined) was also self-caught.",
+    "why": "Hallucinated APIs pass syntax checks and fail in front of the user.",
+    "how": "Run eslint with no-undef (window globals declared) or a script that extracts called identifiers and class names and greps for their definitions; run it as part of the pre-deploy step."
+  },
+  {
+    "app": "cross-cutting",
+    "category": "accessibility",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Compute contrast for every text token across every theme and both colour schemes in one script",
+    "detail": "A one-off in-page script measured --ink-3 at 2.54:1 on white (WCAG failure) and later caught White 3.03:1, Pastel 3.87:1 and Aurora/Ocean 4.35:1 label text across ten templates. It measured only one scheme, and non-default themes set tokens on :root[data-ptheme] which outranks the plain-:root prefers-color-scheme:dark block, so those themes stay light in dark mode.",
+    "why": "Eyeballing greys misses real failures, and a 'light and dark pass' claim needs both measured.",
+    "how": "Loop themes x schemes (resize_window colorScheme or emulate), read the computed colour of each text token against its real background, flag anything under 4.5:1 for small text, and decide explicitly whether themes should follow the OS dark setting."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "design-elevation",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Premium UI tokens from measured CSS of Linear, Vercel, Raycast, Stripe and Notion",
+    "detail": "Extracted rather than blog-sourced: text ramp primary 17-19:1, secondary 9-13:1, tertiary 4.5-6:1, quaternary about 3.2-3.5:1 (nobody uses pure black on white; Monday does, at 21:1); borders about 1.2-1.4:1; elevation is a 1px hairline before shadows; radii cluster at 4-8px; motion 100-300ms with one shared easing; slightly negative tracking that scales with size. Myth checks: Linear's type is free Inter plus Berkeley Mono, not custom; its look is not gradient-free (205 gradient declarations); Jakob's Law has no supporting data; Arc was admired but abandoned for a 'novelty tax' (feature adoption as low as 0.40%), so be premium in execution and conventional in structure.",
+    "why": "Gives numeric targets for a high-end feel instead of adjectives, and no published A/B test shows distinctive design changes B2B trust either way.",
+    "how": "Set the app's ink tiers to the measured bands (Hallalu now: 18.7 / 9.39 / 4.59), keep hairline borders around 1.25:1, and treat the work as craft and accessibility, not a revenue claim."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "design-elevation",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Pure-white base with aurora washes behind translucent glass cards",
+    "detail": "The user rejected an off-white base. The treatment that worked: body background stays #ffffff; a fixed aurora (coral, blue, mint, purple radial gradients) sits behind the page; cards are rgba(255,255,255,.58) with backdrop-filter blur(18px) saturate(1.6), a hairline edge light and a soft shadow; a 3px brand-gradient hairline crowns the page; print overrides make cards solid white. Verified computed body rgb(255,255,255).",
+    "why": "Glass needs something behind it to blur; on pure white the aurora layer supplies it, and warmth never tints the base.",
+    "how": "Put the aurora on body:before/after, not on the surface; strip aurora, blur and shadows in @media print; keep the same layer for the dark theme at stronger alpha."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Share one design-token file across standalone share pages so locks (pure white, contrast) are inherited",
+    "detail": "portal.html, site.html, kit.html and summary.html are separate documents with their own CSS, so the pure-white lock was lost on the new page and ink tokens had to be fixed again inside it. Contrast fixes in app.css did not reach them.",
+    "why": "Every new client-facing page re-derives colours and re-introduces already-fixed mistakes.",
+    "how": "Extract tokens.css (colour tiers, radii, motion, aurora layer) and link it from every public page; test them against the same contrast script."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Backend-free share pages via fragment-encoded JSON: instant and private, but irrevocable",
+    "detail": "summary.html, kit.html, site.html and portal.html#<b64> render a snapshot encoded in the URL fragment with no database. The data never touches the server, but there is no revocation and the decode uses the deprecated escape(). The portal added a server-side pid for comments and a published snapshot at /portal.html?p=<pid>.",
+    "why": "The tradeoff decides whether a link can ever be taken back.",
+    "how": "Keep fragment links for low-sensitivity shares, show a one-line 'this link cannot be withdrawn' note, and use a server pid with unpublish for anything containing money or client detail."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Auto-assembled client-facing pages should allow known-safe sources and be audited field by field",
+    "detail": "The portal first filtered the timeline list, but the 'next' KPI still carried an internal reminder label; it was found only by decoding the encoded snapshot JSON. Messages are behind a per-send toggle, and the owner's own view marks internal rows 'only you see this'.",
+    "why": "Private CRM cadence ('Friendly nudge') leaking to a client is the worst failure for this feature.",
+    "how": "Build the client snapshot from an allowlist of kinds, add a test that decodes the real link and asserts no internal label, hours or private note appears in any field, and keep a marker on the source events (not a title regex)."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "WhatsApp links: never invent a country code",
+    "detail": "waNumber() prefers a WhatsApp-labelled number, then Mobile, then the first phone, and needs 6 or more digits. A number without a country code produces wa.me/?text= (and a toast tip) instead of a guessed prefix, because a wrong prefix messages a stranger. Six cases verified, including wa.me/447700900123?text=Hi%20Maya!.",
+    "why": "A confident wrong number is worse than asking the user.",
+    "how": "Reuse waNumber/waLink/waOpen from contactfields.js wherever a chat link is built."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Bank details: store identifiers as strings and validate per country; never put them in a URL",
+    "detail": "Researched this run: sort code, BSB, routing number and CLABE keep leading zeros so must be strings; validate an IBAN by country length and MOD-97 but warn rather than block; BIC is optional within SEPA (Regulation 260/2012); a US wire ABA differs from an ACH ABA; show 'verify before the first payment' because invoice-interception fraud is the main risk; use structured fields plus a free-text catch-all. The share-summary snapshot deliberately excludes bank fields.",
+    "why": "Numeric storage corrupts identifiers and URLs leak details.",
+    "how": "Country-driven fields (paydetails.js, 10 countries) feeding one paymentBlock(); exclude bank data from any shareable snapshot or URL."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Do not reuse the platform's billing Stripe to collect users' client payments",
+    "detail": "Payment reminders and deposits let each user paste their own payment link and bank details (payBlock() appended to the drafts). Using the platform Stripe would route a user's client money to the platform account.",
+    "why": "Money would land in the wrong account and create a regulatory problem.",
+    "how": "Keep platform Stripe for subscriptions only; use the user's own link, or Stripe Connect when built."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "No-AI path registry for deterministic reports and editable message drafts, with a spy to prove zero AI calls",
+    "detail": "avapaths.js is a registry of pure-data reports (pipeline snapshot, income recap, dated follow-up agenda, payment plan, daily brief, win-back) plus honest, editable drafts (payment reminder, no-reply nudge, thank-you, review request without incentives). Drafts are pushed as a separate Ava message so Copy gives a clean draft; follow-on chips are path ids, not AI prompts. A monkeypatched spy on askAI proved aiCalls:0.",
+    "why": "Cuts cost and removes hallucination for the common jobs, and respects the draft-and-send, human-in-the-loop house style.",
+    "how": "Add new jobs as registry entries that read existing data only (do not fabricate prices that are not stored), reuse renderArtifactDoc, and verify with an askAI spy."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ux",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Analysis text that only claims what the sample supports",
+    "detail": "The work-log analysis writes plain sentences from the user's own sessions (hours this week vs last, strongest weekday, typical stretch, time per product and client) with guards: strongest weekday needs 5 or more distinct logged days, typical stretch needs 3 or more sessions with segment data, and it says when sessions are not linked to anything. A related analytics sentence at n=1 read awkwardly ('Of the 1 you gave a target, 1 hit it').",
+    "why": "Small samples produce confident nonsense.",
+    "how": "Gate each sentence on a minimum n, say 'not enough yet' otherwise, and special-case n=1 copy."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "conversion",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Living client progress report: verdict-first, freshness-stamped, degrades gracefully, no-login with optional comments",
+    "detail": "Three research lanes plus a counter-evidence lane converged: nobody pairs a beautiful no-login page with easy comments (no-login tools kill commenting, commenting tools force login); nobody pushes via WhatsApp or SMS; the 'clients ignore portals' critique is about login-gated, stale portals ('a stale portal is worse than email because the client believes it'). Design rules: a status verdict as the headline, a work timeline, coming-up-next, 'just needs you', a never-0% progress bar, end on forward motion, coral only for 'you are here', hours and internal tasks off by default, cap summaries at 5-6 items. Transparency backfires on a bad week, so the page falls back to the plan rather than an empty feed.",
+    "why": "The page's job is to relieve client anxiety, not to expose activity, and staleness shifts the burden to the owner.",
+    "how": "Auto-assemble from logged work, show an 'Updated X ago' stamp, and nudge the owner when a portal goes two weeks without an update (still unbuilt)."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ux",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Deliverable card research: approvals, personal note, verb by type, invoice separate from the file",
+    "detail": "Findings: one-click Approve / Request-changes (timestamped, no login) is the most-loved feature; a real preview and a one-line personal note is the signature; the verb follows the file type (Watch, View, Download); a NEW-since-last-visit dot; the card unlocks when paid but never fuse Pay into the file's own button; avoid bare filenames and version-decoding. Also: soft completion-estimate range, book-a-call and a completion moment that gates the testimonial ask. Avoid an in-client kanban, mandatory login and mid-project NPS for a solo operator. For fixed-price work show phase progress, not raw hours.",
+    "why": "Grounds the card in evidence rather than taste.",
+    "how": "Build approvals with a real kind and a verified response (see the open Approve bug) and keep invoice actions visually separate."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ux",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Ship a findable entry for every headline feature in the same release",
+    "detail": "After eight releases the user asked 'where do you access it?' for the client portal, which lived only as a topbar button and an inline card inside each client page; the assistant admitted 'you clearly had to hunt'. The Today entry added afterwards renders nothing unless a client has unread replies.",
+    "why": "A feature nobody can find does not exist, and function tests do not catch it.",
+    "how": "Add the entry to Today (always visible, with an empty-state prompt) and navigation when the feature lands, then test findability from the user's start screen."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Themes as data-attribute token blocks plus tri-state flourish overrides",
+    "detail": "Ten templates are :root[data-ptheme=X] token blocks (fonts, radius, label case and tracking, gap, divider) selected from the snapshot, with layout (data-plyt) and accent override separate. Motion, drop-cap and drifting wash have a per-theme default and a tri-state owner override (unset falls back to the theme), all inside prefers-reduced-motion. Research applied: mono only for labels and figures with neutral sans body, tabular-nums on every figure, system ui-serif/ui-rounded stacks with no webfonts, small-caps labels. 'Monochrome' themes needed an override pass on semantic status colours, and a multicolour opt-in lost to flat-theme !important rules until it used !important itself.",
+    "why": "Distinct personalities without per-theme code, and owner edits layer on top.",
+    "how": "Keep tokens in one block per theme, treat unset as inherit, and test opt-in overrides against flat themes."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Gate hash-routed pages in the route table, not only on the button that opens them",
+    "detail": "Making the portal a #/portal/<id> page meant direct URL navigation would skip the business gate that the old modal opener enforced; the assistant added 'portal' to BIZ_VIEWS so the router shows the upgrade wall.",
+    "why": "A gate that lives only on a button is bypassed by the URL.",
+    "how": "Keep gated views in one list that the router consults, and test a direct hash visit as a free user."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "workflow",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Before replacing a modal with a page, list every surface the modal hosted",
+    "detail": "Moving the portal from a modal to a full-page iframe preview would have removed the owner's only place to reply, hide comments and toggle requests (loadThread targets #ptThread, which only existed in the modal). It was caught pre-ship and a Replies button plus thread modal were added. A line-range sed repoint of handlers also missed two lines (pe-hours, pe-done) and was caught by re-reading.",
+    "why": "Refactors silently drop features that lived inside the thing being replaced.",
+    "how": "Grep every handler and element id the old component owned and map each to the new layout before deleting it; avoid line-number-scoped sed over handler blocks."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "workflow",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Route every destructive action through one confirm helper",
+    "detail": "The portal's remove buttons shipped without a confirmation for nine releases. The fix wrapped them in askDel (confirmDel with Keep it / Yes, delete and an editor re-open); Ava thread delete also had no confirm until added.",
+    "why": "Delete-confirm is a house rule, and per-handler discipline fails.",
+    "how": "Make confirmDel the only path for data-act delete handlers and grep for any remove that bypasses it before release."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "One source of truth for plan prices and an amount-aware Stripe lookup_key",
+    "detail": "The Plus price existed in four hand-mirrored places and a fixed lookup_key meant Stripe's immutable Prices were reused forever. Entitlement already falls back to subscription metadata.plan, so re-minting is safe, and a deployment without pinned PRICE_* env vars auto-mints.",
+    "why": "Prices drift between display and charge, and a price change can silently not apply.",
+    "how": "Define PLANS once and have the pricing grid, billing view and stripe.js read it; keep the lookup_key keyed on amount (plan_interval_amount); if PRICE_* ids are pinned, mint new ones and update them."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Do not fake 'download all'; and pay-to-unlock must withhold the file URL until paid",
+    "detail": "Without a real bundle, 'Download everything' became an owner-set full-pack URL above per-product links. Pay-to-unlock products show 'Buy $29 - Unlocks after payment' until the owner flips a lock chip; the digest does not show whether a locked product's file URL is removed from the base64 snapshot and the stored body.",
+    "why": "A lock that is only a flag over a URL already in the link is cosmetic.",
+    "how": "Omit the file URL from the snapshot while a product is locked, confirm the build does so, and add payment-webhook unlocking when a payment provider is connected."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "copy",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Tell the client when a page notes their activity",
+    "detail": "The portal logs view, download, approve and pulse events (no IP, no cookies, pid as the key) and shows the owner 'viewed 3x, last seen 2h ago' and the emoji pulse, but nothing on the client's page says activity is noted.",
+    "why": "Attributing activity to an identified person without saying so is a transparency gap, whatever the storage.",
+    "how": "Add one line ('this page notes when you open it and what you download') and make the owner-visible stats optional per portal."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "copy",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "No promissory wording and no invented value multipliers in pricing copy",
+    "detail": "Phrases such as 'free whenever you want it', 'forever' and 'always yours to export' were removed from account.js, views4.js and landing.html. A request for '20x / 4x' value multipliers was refused in favour of an honest 'Most complete' label and a sourced $80-90 comparison stack; the Free tier sits last.",
+    "why": "Promises and made-up multiples are a claims and legal risk.",
+    "how": "Review pricing and plan copy for 'forever', 'always', 'unlimited' and ratios without a source; keep comparisons to documented prices."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ux",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Steppers must accept typed numbers, and every number input needs an input handler",
+    "detail": "The follow-up cadence count (+/- only) and then the posting goal both blocked a user who wanted to type 10 or 70. It happened twice, then the typed value still did nothing because the handler listened to change.",
+    "why": "Repeated, user-visible friction; the second occurrence shows it was not swept.",
+    "how": "Make every stepper a number input with + and - buttons, bind input for state and a sentence repaint, bind change for the full render, and sweep all steppers once."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Merge, never replace, when a form saves part of a stored object",
+    "detail": "Two near misses were caught before shipping: the content-calendar day save rebuilt its meta as {goal, notes} and would have dropped the day photo and linked content; sqSave read fields by id and would have thrown once the metrics grid was swapped for story fields. Ids moved into fieldsFor(type) with null guards.",
+    "why": "Partial saves that overwrite are silent data loss.",
+    "how": "Spread the existing object ({...old, ...changes}), iterate the fields actually present, and null-guard element lookups."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Replace guessed rate ranges with disclosed transaction data",
+    "detail": "The brand-deal rate calculator used guessed CPM tiers. A transaction dataset with disclosed methodology (Collabstr, n=21,000) shows paid medians of YouTube $255, Instagram $193, TikTok $186, UGC $154, 80% of deals under $300 and 2% over $1,000.",
+    "why": "Real medians are a better anchor and an honest reality check for creators.",
+    "how": "Show the medians with source and date next to the CPM maths, and keep red-flag prompts (perpetual usage, whitelisting, exclusivity, product-only, no payment terms)."
+  },
+  {
+    "app": "Coco Modules",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Extract dependency-free voice-mic and an Intl-based currency picker as modules, with one manifest",
+    "detail": "voice-mic is a floating button plus inline dictation and a raw listen loop with a graceful fallback when SpeechRecognition is missing; the floating mic was removed from the Hallalu app because it duplicated Ava's. The currency picker now derives each symbol with Intl.NumberFormat (no data table), adds a Popular group and icon search and follows light/dark.",
+    "why": "Both are needed by several apps and were being re-implemented.",
+    "how": "Publish both as modules with the same API (open/button/search), keep one modules.json that deploys to public/, and add a predeploy diff check."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "design-elevation",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Brand logos: clean white tile, real marks, neutral fallback",
+    "detail": "After three iterations (Clearbit, DuckDuckGo icons, a favicon over a colour monogram that the user rejected), the settled pattern is the logo on a clean white tile with a neutral grey-letter fallback, only official single-path glyphs for the seven platforms that have them, and demo brands chosen for visible logos. Hand-drawn logos from memory were rejected and an existing LOGOS table at socials.js:27-42 had been missed, so a parallel module was wasted.",
+    "why": "The user's rule is actual logos only; guessed marks look wrong.",
+    "how": "Grep the codebase before writing a new component, use simple-icons paths, and fall back to a plain initial rather than a coloured monogram."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ux",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Toast conventions: past tense, three words or fewer, no punctuation, about four seconds with pause on hover, undo for destructive",
+    "detail": "Research behind the toast review (see the toast icon bug): error toasts need their own icon, hover pauses the timer, and destructive actions offer undo.",
+    "why": "Cheap polish that affects every action.",
+    "how": "Update toast() once and apply the copy convention app-wide."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "integrity",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Verify domain vocabulary against first-party docs before shipping it",
+    "detail": "VSCO preset codes were assumed wrong (AL is Artificial Lighting, not Analog; P is Instant film; G is Portrait; KP is Kodak Portra) until checked against VSCO's Preset Guide (20 Feb 2026). The Instagram filter list was also wrong (Hudson missing; Fade is an adjustment slider; Duet, Stitch and React are collaboration features, not effects); third-party Instagram AR effects were permanently removed on 14 Jan 2025.",
+    "why": "Plausible names from memory read as errors to the people who use them.",
+    "how": "Cite the first-party page per list, store the date, and keep unverifiable names as free text rather than as presented facts."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "SSRF-guarded link unfurl: oEmbed first, Open Graph scrape second, optional Firecrawl",
+    "detail": "/api/unfurl validates URLs through safeUrl (127.0.0.1 returned bad-url in testing), uses oEmbed for YouTube, TikTok and Vimeo, falls back to OG scraping, rate-limits via tooMany, and treats Instagram, which blocks scrapers, as manual. Metrics stay OCR or manual.",
+    "why": "Auto-pull without exposing internal addresses.",
+    "how": "Keep the allowlist of schemes and block private ranges, and move the rate limit to a global store (see the open security item)."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "architecture",
+    "session": "f256d011",
+    "source": "daily-read",
+    "title": "Never cap an AI artifact generator to a fixed kind list; sanitise and sandbox instead",
+    "detail": "make_artifact was limited to an enum of eight kinds, an artificial limit. It now takes a free-form kind and an 'html' section that strips script and style, rendered in an iframe with no allow-scripts. A fragment without a doctype also rendered in quirks mode in a local preview (compatMode), which made a map screenshot look blank.",
+    "why": "Limits invented by the builder remove capability, and untrusted generated HTML needs a sandbox.",
+    "how": "Allow free-form kinds, strip scripts server and client side, sandbox without allow-scripts, and preview with a doctype."
   }
 ]
