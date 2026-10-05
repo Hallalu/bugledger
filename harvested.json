@@ -4822,5 +4822,17 @@
     "status": "unverified",
     "session": "fba7dfe5",
     "found": "2026-10-04"
+  },
+  {
+    "key": "61020f60:whyyoudidntseeitstartnothingonthewebsitecanlaunchclaudecodeo",
+    "app": "Hopefil",
+    "title": "Why you didn't see it start. Nothing on the website can launch Claude Code on your Mac.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Why you didn't see it start.** Nothing on the website can launch Claude Code on your Mac.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61020f60",
+    "found": "2026-10-05"
   }
 ]
