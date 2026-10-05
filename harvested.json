@@ -4834,5 +4834,17 @@
     "status": "unverified",
     "session": "61020f60",
     "found": "2026-10-05"
+  },
+  {
+    "key": "61020f60:itrefuseswhatthemarquesdowrongautoplaycarousels20to70mbpages",
+    "app": "Hallalu CRM",
+    "title": "It refuses what the marques do wrong: autoplay, carousels, 20 to 70 MB pages, hidden…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "It refuses what the marques do wrong: autoplay, carousels, 20 to 70 MB pages, hidden prices, and pages that render blank without JavaScript.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "61020f60",
+    "found": "2026-10-05"
   }
 ]

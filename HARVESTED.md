@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-403 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+404 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (206)
+## Hallalu CRM (207)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -210,6 +210,7 @@
 - [ ] `low` `other` (2026-10-04, #e63c44d3) — One performance fix along the way: probing sitemap candidates in series stalled a…
 - [ ] `low` `other` (2026-10-04, #e63c44d3) — One thing the measuring caught My first draft of the lower two text tiers passed on the…
 - [ ] `low` `other` (2026-10-04, #e63c44d3) — Checking a tier only against the base isn't enough.
+- [ ] `low` `ui` (2026-10-05, #61020f60) — It refuses what the marques do wrong: autoplay, carousels, 20 to 70 MB pages, hidden…
 
 ## Finished. (87)
 
