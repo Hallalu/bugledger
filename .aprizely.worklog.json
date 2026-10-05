@@ -1,61 +1,48 @@
 {
-  "id": "55787a34-74f0-4d96-b8e8-c60b8d3e1d13",
+  "id": "d017ab00-fd73-49ec-9e13-03b1a964f534",
   "app": "Bug Ledger",
   "project": "BugLedger",
-  "title": "Close the open items: smoke tests + the full 560-item deep scan of Bug Ledger, narrated",
-  "status": "done",
-  "current": "Done ✓",
+  "title": "Daily Ledger — read Aug 1→Oct 4 in full, scan, research, append (append-only)",
+  "status": "active",
+  "current": "Curation pipeline validated on 8/12 batches; deduped vs full 2,115-entry live ledger",
   "note": "",
   "tasks": [
     {
-      "text": "Smoke tests",
-      "note": "32 tests, 0 dependencies, all green: pure-JSON contract of scan.mjs --json (even with --story), story found→fixed resolution, every page script parses, no duplicate static ids, worklog guards, admin clustering incl. the constructor case. GitHub Actions workflow runs them on push",
+      "text": "Extract conversations",
+      "note": "Built extract.mjs; compressed ~1.5GB of transcripts into 32MB of lossless conversation across 109 digests (every user msg, reasoning block, tool action; base64 dropped)",
       "status": "done",
-      "wave": "Wave 1 — Tests"
+      "wave": "Wave 1 — Read the month"
     },
     {
-      "text": "Catalogue + counts",
-      "note": "pull the whole ledger and compute the grand total on every axis",
+      "text": "Read all 109 digests in full",
+      "note": "Disk hit ENOSPC under load but recovered (3GB free); batch5 recovered from inline JSON; merge+dedup pipeline staged",
       "status": "done",
-      "wave": "Wave 2 — Deep scan"
+      "wave": "Wave 1 — Read the month"
     },
     {
-      "text": "Phase 1 — 47 detectors",
-      "note": "48 hits, 13 high: CI workflow added (real), 12 false alarms with reasons",
+      "text": "Run 41-detector scanner",
+      "note": "Ran 41-detector scanner over 23 repos: XSS-INNERHTML HIGH on 18/23, PRIV-NO-DELETE 14/23, PRIV-NO-POLICY 13/23; pinned 3 new app-specific highs (Joy PII-in-URL, GitBagel quote-unsafe esc(), Stitchhooky ~30 a11y). BudgetLevelUp SSRF already logged as Listing Lab Pro.",
       "status": "done",
-      "wave": "Wave 2 — Deep scan"
+      "wave": "Wave 2 — Scan the code"
     },
     {
-      "text": "Phase 2 — 16 bug categories",
-      "note": "All 16 categories ✅ N/N server-verified, 428/428, 66% inspected by reading or detector; 5 present: fixed hard-coded scanner date, stacked click handlers, missing .catch; recommended build stamp; open global error handler (needs a sink)",
+      "text": "Research current external issues",
+      "note": "OWASP-LLM 2025 (output-handling/excessive-agency/unbounded-consumption), Veracode 2025 (45% AI code fails OWASP, XSS 86%), WebAIM Million 2025 six failures, CF Worker 100K/day ACCOUNT-wide + subrequest limits — staged as cross-cutting",
       "status": "done",
-      "wave": "Wave 2 — Deep scan"
+      "wave": "Wave 3 — Deep research"
     },
     {
-      "text": "Phase 3 — Security sweep (67)",
-      "note": "Security 67/67 ✅ (70% inspected): token-gated writes, bound SQL, quote-safe esc(), no outbound fetch of user input, headers from _headers; the 15 audit findings are another app's vault design",
-      "status": "done",
-      "wave": "Wave 2 — Deep scan"
+      "text": "Vet + dedupe findings",
+      "note": "Fetched complete live corpus (428 catalogue + 399 harvested + 99 scanner + 756 submitted); merge dry-run clean (~279 bugs/sec + 162 optimisers survive); awaiting final 4 readers before the real append",
+      "status": "active",
+      "wave": "Wave 4 — Curate & dedupe"
     },
     {
-      "text": "Phase 4 — Optimisers (117)",
-      "note": "Optimisers 117/117 ✅: 50 applied, 7 recommended (idempotency keys on POST /api/checks + /api/bugs is the one that matters — retried posts become permanent duplicates), 60 n/a; iOS 16px inputs applied on the spot",
-      "status": "done",
-      "wave": "Wave 2 — Deep scan"
-    },
-    {
-      "text": "Close",
-      "note": "Grand total 560/560 confirmed server-side, 62% inspected (224 detector, 125 code-read, 211 reasoned); verdict + 2 honest caveats on the story; session finished",
-      "status": "done",
-      "wave": "Wave 2 — Deep scan"
-    },
-    {
-      "text": "Verify + report",
-      "note": "open the story in the browser, screenshot, Aprizely report",
-      "status": "done",
-      "wave": "Wave 3 — Prove it"
+      "text": "Rebuild + deploy + commit",
+      "note": "node gen.mjs, wrangler deploy, git commit/push — append-only so every future sweep gets stricter",
+      "status": "pending",
+      "wave": "Wave 5 — Ship the ledger"
     }
   ],
-  "started": 1788552906925,
-  "reported": true
+  "started": 1791155935285
 }
