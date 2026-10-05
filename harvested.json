@@ -4786,5 +4786,41 @@
     "status": "unverified",
     "session": "e63c44d3",
     "found": "2026-10-04"
+  },
+  {
+    "key": "ac34e569:everyshellcommandandfilewritenowfailswithenospcbecausethehar",
+    "app": "Budget LevelUp",
+    "title": "Every shell command and file write now fails with ENOSPC, because the harness has to…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Every shell command and file write now fails with `ENOSPC`, because the harness has to create a small output/temp file before it can run — so I can't start the dev server to verify in the browser, an…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ac34e569",
+    "found": "2026-10-04"
+  },
+  {
+    "key": "fba7dfe5:spacefreed380mb67gbitwasagenuineemergencysofulltheshellcould",
+    "app": "Hopefil",
+    "title": "Space freed: 380 MB 6.7 GB It was a genuine emergency — so full the shell couldn't even…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## Space freed: 380 MB → 6.7 GB It was a genuine emergency — so full the shell couldn't even create its own scratchpad folder (`ENOSPC`).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-04"
+  },
+  {
+    "key": "fba7dfe5:wantmetoalsocheckacoupleofmidsizeitemsispottedthe554mbcoauth",
+    "app": "Hopefil",
+    "title": "Want me to also check a couple of mid-size items I spotted — the 554 MB…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Want me to also check a couple of mid-size items I spotted — the 554 MB `coauthor-strip-backup-20260902` folder (looks like a stale backup) — or leave project folders alone?",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-04"
   }
 ]

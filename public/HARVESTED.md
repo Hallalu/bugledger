@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-399 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+402 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (206)
 
@@ -406,7 +406,7 @@
 - [ ] `low` `ui` (2026-09-07, #7dfd4c0c) — - Fix-button credit bug — fixed; verified live showing "Bake the fix · 8 credits" (real…
 - [ ] `low` `other` (2026-09-07, #7dfd4c0c) — One thing that needs you (not a bug): the true best-in-class Max detail (Pruna) engine…
 
-## Budget LevelUp (6)
+## Budget LevelUp (7)
 
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — Scanner flagged one genuine trivial issue in the static pitch page (duplicate id="price").
@@ -414,12 +414,19 @@
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Will do — every genuinely new bug gets appended to the ledger.
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Client fixes — error handlers, focus ring, labels, OG meta:
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI…
+- [ ] `low` `other` (2026-10-04, #ac34e569) — Every shell command and file write now fails with ENOSPC, because the harness has to…
 
 ## Unknown (3)
 
 - [ ] `high` `security` (2026-09-04, #6739dab7) — - v2.1.259 — Sept 2: managedMcpServers (org-wide HTTP/SSE MCP); --permission-prompts…
 - [ ] `low` `other` (2026-09-08, #124574d9) — Nothing is cache-stale — /live, /report, and /apz.mjs all revalidate.
 - [ ] `low` `other` (2026-09-08, #124574d9) — (Right now the local copy happens to match, but it'll go stale the moment apz.mjs…
+
+## Hopefil (3)
+
+- [ ] `low` `other` (2026-09-07, #e63c44d3) — Two robustness fixes: gating the reveal on JS (so the deck is never blank without it),…
+- [ ] `low` `other` (2026-10-04, #fba7dfe5) — Space freed: 380 MB 6.7 GB It was a genuine emergency — so full the shell couldn't even…
+- [ ] `low` `other` (2026-10-04, #fba7dfe5) — Want me to also check a couple of mid-size items I spotted — the 554 MB…
 
 ## Planner Studio (2)
 
@@ -429,7 +436,3 @@
 ## Hello Baby (1)
 
 - [ ] `low` `other` (2026-08-22, #a15dff44) — I spot a bug: "percent" shows an Urban Dictionary definition (should be a real…
-
-## Hopefil (1)
-
-- [ ] `low` `other` (2026-09-07, #e63c44d3) — Two robustness fixes: gating the reveal on JS (so the deck is never blank without it),…
