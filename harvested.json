@@ -4894,5 +4894,53 @@
     "status": "unverified",
     "session": "fbad84e5",
     "found": "2026-10-06"
+  },
+  {
+    "key": "5f29f581:switchedsvgpngrenderedviaheadlesschromefixedthemarketchartla",
+    "app": "Hallalu CRM",
+    "title": "- Switched SVGPNG (rendered via headless Chrome), fixed the market-chart label…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- Switched SVG→PNG (rendered via headless Chrome), fixed the market-chart label collisions (and a duplicate label), **viewed each chart to confirm it's clean**, and filed all three in Pixelbake (@rhe…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5f29f581",
+    "found": "2026-10-06"
+  },
+  {
+    "key": "fbad84e5:thereare2isolatedpointsinthecrudeamericastrendthatrenderasst",
+    "app": "Stitchhooky",
+    "title": "There are 2 isolated points in the crude Americas trend that render as stray dots — let…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "There are 2 isolated points in the crude Americas trend that render as stray dots — let me null those so the lines are clean (the \"fix charts\" bit).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fbad84e5",
+    "found": "2026-10-06"
+  },
+  {
+    "key": "fbad84e5:whatifixedthe55confusionthatpermillesymbollookslikethatswhat",
+    "app": "Stitchhooky",
+    "title": "What I fixed - The \"5.5 ‰\" confusion. That ‰ (per-mille) symbol looks like % — that's…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "## What I fixed - **The \"5.5 ‰\" confusion.** That `‰` (per-mille) symbol looks like `%` — that's what made it seem wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fbad84e5",
+    "found": "2026-10-06"
+  },
+  {
+    "key": "fbad84e5:theappnotesthissoitisntmisread",
+    "app": "Stitchhooky",
+    "title": "App notes this so it isn't misread.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The app notes this so it isn't misread.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fbad84e5",
+    "found": "2026-10-06"
   }
 ]
