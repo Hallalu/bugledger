@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-407 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+408 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (210)
 
@@ -420,18 +420,19 @@
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI…
 - [ ] `low` `other` (2026-10-04, #ac34e569) — Every shell command and file write now fails with ENOSPC, because the harness has to…
 
+## Unknown (4)
+
+- [ ] `high` `security` (2026-09-04, #6739dab7) — - v2.1.259 — Sept 2: managedMcpServers (org-wide HTTP/SSE MCP); --permission-prompts…
+- [ ] `low` `other` (2026-09-08, #124574d9) — Nothing is cache-stale — /live, /report, and /apz.mjs all revalidate.
+- [ ] `low` `other` (2026-09-08, #124574d9) — (Right now the local copy happens to match, but it'll go stale the moment apz.mjs…
+- [ ] `low` `other` (2026-10-06, #fbad84e5) — When your limit resets, say "continue the Trends tab" and I'll wire it up, verify…
+
 ## Hopefil (4)
 
 - [ ] `low` `other` (2026-09-07, #e63c44d3) — Two robustness fixes: gating the reveal on JS (so the deck is never blank without it),…
 - [ ] `low` `other` (2026-10-04, #fba7dfe5) — Space freed: 380 MB 6.7 GB It was a genuine emergency — so full the shell couldn't even…
 - [ ] `low` `other` (2026-10-04, #fba7dfe5) — Want me to also check a couple of mid-size items I spotted — the 554 MB…
 - [ ] `low` `other` (2026-10-05, #61020f60) — Why you didn't see it start. Nothing on the website can launch Claude Code on your Mac.
-
-## Unknown (3)
-
-- [ ] `high` `security` (2026-09-04, #6739dab7) — - v2.1.259 — Sept 2: managedMcpServers (org-wide HTTP/SSE MCP); --permission-prompts…
-- [ ] `low` `other` (2026-09-08, #124574d9) — Nothing is cache-stale — /live, /report, and /apz.mjs all revalidate.
-- [ ] `low` `other` (2026-09-08, #124574d9) — (Right now the local copy happens to match, but it'll go stale the moment apz.mjs…
 
 ## Planner Studio (2)
 

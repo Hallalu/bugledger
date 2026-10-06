@@ -4882,5 +4882,17 @@
     "status": "unverified",
     "session": "fbad84e5",
     "found": "2026-10-06"
+  },
+  {
+    "key": "fbad84e5:whenyourlimitresetssaycontinuethetrendstabandillwireitupveri",
+    "app": "Unknown",
+    "title": "When your limit resets, say \"continue the Trends tab\" and I'll wire it up, verify…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "When your limit resets, say \"continue the Trends tab\" and I'll wire it up, verify feature-by-feature, redeploy, and close it out properly.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fbad84e5",
+    "found": "2026-10-06"
   }
 ]
