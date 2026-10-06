@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-404 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+407 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (207)
+## Hallalu CRM (210)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -211,6 +211,9 @@
 - [ ] `low` `other` (2026-10-04, #e63c44d3) — One thing the measuring caught My first draft of the lower two text tiers passed on the…
 - [ ] `low` `other` (2026-10-04, #e63c44d3) — Checking a tier only against the base isn't enough.
 - [ ] `low` `ui` (2026-10-05, #61020f60) — It refuses what the marques do wrong: autoplay, carousels, 20 to 70 MB pages, hidden…
+- [ ] `low` `other` (2026-10-06, #5f29f581) — (LATAM-Spanish, enterprise, quote-priced.) - Gulf isn't empty either (DAZ-TRADE does…
+- [ ] `low` `ui` (2026-10-06, #5f29f581) — - App-store check supports "mobile-first": Tekion's app is 1.9 ("quits weekly," scan…
+- [ ] `low` `other` (2026-10-06, #fbad84e5) — I caught a real data-quality bug: UK shows 115% (top of the ranking).
 
 ## Finished. (87)
 

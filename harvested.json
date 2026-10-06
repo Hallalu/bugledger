@@ -4846,5 +4846,41 @@
     "status": "unverified",
     "session": "61020f60",
     "found": "2026-10-05"
+  },
+  {
+    "key": "5f29f581:latamspanishenterprisequotepricedgulfisntemptyeitherdaztrade",
+    "app": "Hallalu CRM",
+    "title": "(LATAM-Spanish, enterprise, quote-priced.) - Gulf isn't empty either (DAZ-TRADE does…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "(LATAM-Spanish, enterprise, quote-priced.) - **Gulf isn't empty either** (DAZ-TRADE does used-car import/customs, no BHPH); **Africa's real incumbent is Autochek** (2,000+ dealers, but lender-partner…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5f29f581",
+    "found": "2026-10-06"
+  },
+  {
+    "key": "5f29f581:appstorechecksupportsmobilefirsttekionsappis19quitsweeklysca",
+    "app": "Hallalu CRM",
+    "title": "- App-store check supports \"mobile-first\": Tekion's app is 1.9 (\"quits weekly,\" scan…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- **App-store check supports \"mobile-first\":** Tekion's app is **1.9★** (\"quits weekly,\" scan fails), Frazer's app 3.0–3.6★ — but DealerCenter (4.7★) proves good apps exist.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5f29f581",
+    "found": "2026-10-06"
+  },
+  {
+    "key": "fbad84e5:buticaughtarealdataqualitybugukshows115topoftheranking",
+    "app": "Hallalu CRM",
+    "title": "I caught a real data-quality bug: UK shows 115% (top of the ranking).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "But I caught a **real data-quality bug**: UK shows **115%** (top of the ranking).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fbad84e5",
+    "found": "2026-10-06"
   }
 ]
