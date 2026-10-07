@@ -3668,5 +3668,15 @@
     "detail": "make_artifact was limited to an enum of eight kinds, an artificial limit. It now takes a free-form kind and an 'html' section that strips script and style, rendered in an iframe with no allow-scripts. A fragment without a doctype also rendered in quirks mode in a local preview (compatMode), which made a map screenshot look blank.",
     "why": "Limits invented by the builder remove capability, and untrusted generated HTML needs a sandbox.",
     "how": "Allow free-form kinds, strip scripts server and client side, sandbox without allow-scripts, and preview with a doctype."
+  },
+  {
+    "app": "Coconvo",
+    "category": "integrity",
+    "session": "01a056d7",
+    "source": "dailyledger",
+    "title": "Consent-first AI meeting notes: own-mic in-browser transcription + visible banner/chime + real opt-out",
+    "detail": "Each participant transcribes only their own microphone in the browser, only while room notes are on and they have not opted out, with a persistent banner plus a chime for everyone and the speaker's display name as the label.",
+    "why": "Silent AI notetakers are now litigated and blocked by IT teams (Otter/Granola/Fireflies, 2026); invisible central capture with a fake opt-out is a legal and reputational risk.",
+    "how": "Gate per-speaker client-side transcription on a per-person opt-out flag; show a 'notes on' banner and play a chime when capture starts; never send a bot or transcribe a participant who has opted out."
   }
 ]

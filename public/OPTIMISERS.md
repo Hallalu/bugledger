@@ -1,6 +1,6 @@
 # ✨ Optimisers — elevations worth reusing
 
-367 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
+368 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
 
 ## design elevation (35)
 
@@ -1149,7 +1149,7 @@
   <br>*Why:* Hallucinated APIs pass syntax checks and fail in front of the user.
   <br>*How:* Run eslint with no-undef (window globals declared) or a script that extracts called identifiers and class names and greps for their definitions; run it as part of the pre-deploy step.
 
-## integrity (79)
+## integrity (80)
 
 - **Server-verified completeness, not self-report** _(Bug Ledger)_
   When an agent claims it checked everything, verify it server-side and show N/N plus the exact items missed.
@@ -1467,6 +1467,10 @@
   VSCO preset codes were assumed wrong (AL is Artificial Lighting, not Analog; P is Instant film; G is Portrait; KP is Kodak Portra) until checked against VSCO's Preset Guide (20 Feb 2026). The Instagram filter list was also wrong (Hudson missing; Fade is an adjustment slider; Duet, Stitch and React are collaboration features, not effects); third-party Instagram AR effects were permanently removed on 14 Jan 2025.
   <br>*Why:* Plausible names from memory read as errors to the people who use them.
   <br>*How:* Cite the first-party page per list, store the date, and keep unverifiable names as free text rather than as presented facts.
+- **Consent-first AI meeting notes: own-mic in-browser transcription + visible banner/chime + real opt-out** _(Coconvo)_
+  Each participant transcribes only their own microphone in the browser, only while room notes are on and they have not opted out, with a persistent banner plus a chime for everyone and the speaker's display name as the label.
+  <br>*Why:* Silent AI notetakers are now litigated and blocked by IT teams (Otter/Granola/Fireflies, 2026); invisible central capture with a fake opt-out is a legal and reputational risk.
+  <br>*How:* Gate per-speaker client-side transcription on a per-person opt-out flag; show a 'notes on' banner and play a chime when capture starts; never send a bot or transcribe a participant who has opted out.
 
 ## privacy & legal (2)
 

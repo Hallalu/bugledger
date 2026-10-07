@@ -3,8 +3,8 @@
   "app": "Bug Ledger",
   "project": "BugLedger",
   "title": "Daily Ledger — read Aug 1→Oct 4 in full, scan, research, append (append-only)",
-  "status": "active",
-  "current": "Part 1 committed+pushed: +308 bugs/sec, +176 optimisers (batches 1-9)",
+  "status": "done",
+  "current": "Done ✓",
   "note": "",
   "tasks": [
     {
@@ -33,16 +33,17 @@
     },
     {
       "text": "Vet + dedupe findings",
-      "note": "bugs.json 428->736, optimisers 117->293, gen.mjs regenerated. Batches 10-12 still reading; deploy + part 2 pending next turn",
-      "status": "active",
+      "note": "Deduped vs full 2,115-entry live ledger; appended 690 net-new (440 bugs/sec + 250 optimisers) across all 7 families",
+      "status": "done",
       "wave": "Wave 4 — Curate & dedupe"
     },
     {
       "text": "Rebuild + deploy + commit",
-      "note": "node gen.mjs, wrangler deploy, git commit/push — append-only so every future sweep gets stricter",
-      "status": "pending",
+      "note": "bugs.json 428->868, optimisers 117->367; committed 53327d4 + c0b2490, pushed, deployed, live verified 868",
+      "status": "done",
       "wave": "Wave 5 — Ship the ledger"
     }
   ],
-  "started": 1791155935285
+  "started": 1791155935285,
+  "reported": true
 }
