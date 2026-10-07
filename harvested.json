@@ -5254,5 +5254,29 @@
     "status": "unverified",
     "session": "fba7dfe5",
     "found": "2026-10-07"
+  },
+  {
+    "key": "01a056d7:thehubpagescouldntbecheckedsignedinonthelivesitebecauseidont",
+    "app": "Hallalu CRM",
+    "title": "Hub pages couldn't be checked signed-in on the live site, because I don't create…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The hub pages couldn't be checked signed-in on the live site, because I don't create accounts or sign in there.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "01a056d7",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "01a056d7:longrecordingstheuploadwouldhavefailedatthefinalstepbecausec",
+    "app": "Hallalu CRM",
+    "title": "- Long recordings: the upload would have failed at the final step, because Cloudflare…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Long recordings:** the upload would have failed at the final step, because Cloudflare needs every upload chunk except the last to be the same size.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "01a056d7",
+    "found": "2026-10-07"
   }
 ]
