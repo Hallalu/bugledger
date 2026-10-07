@@ -5014,5 +5014,53 @@
     "status": "unverified",
     "session": "e8725186",
     "found": "2026-10-07"
+  },
+  {
+    "key": "1756d671:crmdealershipiusedacanonicalnameiftheoct67mvpbuildregistered",
+    "app": "Hallalu CRM",
+    "title": "- \"CRM (dealership)\" — I used a canonical name; if the Oct 6–7 MVP build registered it…",
+    "category": "sync",
+    "severity": "high",
+    "symptom": "- **\"CRM (dealership)\"** — I used a canonical name; if the Oct 6–7 MVP build registered it under a slightly different name, that entry may read as a near-duplicate you'd want to rename/merge.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1756d671",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "c6c95d36:sidefindingworthyourattentionstartinstorycomiscurrentlydownc",
+    "app": "Stitchhooky",
+    "title": "Side finding worth your attention: startinstory.com is currently down — Cloudflare…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Side finding worth your attention:** **startinstory.com is currently down** — Cloudflare **Error 1000 (DNS points to prohibited IP)**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c6c95d36",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "c6c95d36:thesitemakingtheworldsfirstclaimdoesntresolveonitsapexdomain",
+    "app": "Stitchhooky",
+    "title": "Site making the \"world's first\" claim doesn't resolve on its apex domain right now.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The site making the \"world's first\" claim doesn't resolve on its apex domain right now.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c6c95d36",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "c6c95d36:theverdictnostartinstoryisnottheworldsfirstaiinfluencerstudi",
+    "app": "Stitchhooky",
+    "title": "Verdict: No — Start in Story is not the world's first AI influencer studio The blanket…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## The verdict: No — Start in Story is **not** the world's first AI influencer studio The blanket badge fails on *every* reading of it, and the exact name isn't even distinctive.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c6c95d36",
+    "found": "2026-10-07"
   }
 ]
