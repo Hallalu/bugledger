@@ -4954,5 +4954,17 @@
     "status": "unverified",
     "session": "fbad84e5",
     "found": "2026-10-06"
+  },
+  {
+    "key": "01a056d7:icouldnttestswitchingmicrophonesmidcallbecausethisbrowserblo",
+    "app": "Hallalu CRM",
+    "title": "Couldn't test switching microphones mid-call, because this browser blocks the mic.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I couldn't test switching microphones mid-call, because this browser blocks the mic.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "01a056d7",
+    "found": "2026-10-07"
   }
 ]
