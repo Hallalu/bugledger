@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-415 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+418 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (214)
 
@@ -417,8 +417,9 @@
 - [ ] `low` `ui` (2026-09-07, #7dfd4c0c) — - Fix-button credit bug — fixed; verified live showing "Bake the fix · 8 credits" (real…
 - [ ] `low` `other` (2026-09-07, #7dfd4c0c) — One thing that needs you (not a bug): the true best-in-class Max detail (Pruna) engine…
 
-## Budget LevelUp (7)
+## Budget LevelUp (10)
 
+- [ ] `high` `security` (2026-10-07, #e8725186) — - The Era image with her real PFP in the gold frame is fixed and filed in Pixelbake,…
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — Scanner flagged one genuine trivial issue in the static pitch page (duplicate id="price").
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — 39 "missed" are the category:"security" bugs — they count toward the bug total of 337.
@@ -426,6 +427,8 @@
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Client fixes — error handlers, focus ring, labels, OG meta:
 - [ ] `low` `other` (2026-08-17, #ff5425a5) — Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI…
 - [ ] `low` `other` (2026-10-04, #ac34e569) — Every shell command and file write now fails with ENOSPC, because the harness has to…
+- [ ] `low` `other` (2026-10-07, #e8725186) — Local preview uses a fake user, so database writes fail there.
+- [ ] `low` `other` (2026-10-07, #e8725186) — - If an image doesn't match, users can choose Make it match or Add as a new character.
 
 ## Unknown (4)
 

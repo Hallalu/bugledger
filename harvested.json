@@ -4978,5 +4978,41 @@
     "status": "unverified",
     "session": "231e51ae",
     "found": "2026-10-07"
+  },
+  {
+    "key": "e8725186:thelocalpreviewusesafakeusersodatabasewritesfailthere",
+    "app": "Budget LevelUp",
+    "title": "Local preview uses a fake user, so database writes fail there.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The local preview uses a fake user, so database writes fail there.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e8725186",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "e8725186:theeraimagewithherrealpfpinthegoldframeisfixedandfiledinpixe",
+    "app": "Budget LevelUp",
+    "title": "- The Era image with her real PFP in the gold frame is fixed and filed in Pixelbake,…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "- The Era image with her real PFP in the gold frame is fixed and filed in Pixelbake, but it isn't used on the site; the PFP Vault card uses the nautical version.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e8725186",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "e8725186:ifanimagedoesntmatchuserscanchoosemakeitmatchoraddasanewchar",
+    "app": "Budget LevelUp",
+    "title": "- If an image doesn't match, users can choose Make it match or Add as a new character.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- If an image doesn't match, users can choose **Make it match** or **Add as a new character**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e8725186",
+    "found": "2026-10-07"
   }
 ]
