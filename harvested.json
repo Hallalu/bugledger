@@ -5206,5 +5206,17 @@
     "status": "unverified",
     "session": "e8725186",
     "found": "2026-10-07"
+  },
+  {
+    "key": "9440fcf5:stillopenpixelbakeisat0creditsicouldntgenerateanythingnewsoe",
+    "app": "Hopefil",
+    "title": "Still open: - Pixelbake is at 0 credits. I couldn't generate anything new, so every v2…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Still open:** - **Pixelbake is at 0 credits.** I couldn't generate anything new, so every v2 photo is an existing library image.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9440fcf5",
+    "found": "2026-10-07"
   }
 ]
