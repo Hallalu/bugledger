@@ -4966,5 +4966,17 @@
     "status": "unverified",
     "session": "01a056d7",
     "found": "2026-10-07"
+  },
+  {
+    "key": "231e51ae:evertruesetsyxapikeybugisalreadyloggedwontreaddcrmismassivel",
+    "app": "Hallalu CRM",
+    "title": "Evertrue's Etsy x-api-key bug is already logged (won't re-add); CRM is massively…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Evertrue's Etsy x-api-key bug is **already** logged (won't re-add); CRM is massively covered (160+213).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "231e51ae",
+    "found": "2026-10-07"
   }
 ]

@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-414 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+415 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (213)
+## Hallalu CRM (214)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
@@ -217,6 +217,7 @@
 - [ ] `low` `other` (2026-10-06, #fbad84e5) — I caught a real data-quality bug: UK shows 115% (top of the ranking).
 - [ ] `low` `other` (2026-10-06, #5f29f581) — - Switched SVGPNG (rendered via headless Chrome), fixed the market-chart label…
 - [ ] `low` `other` (2026-10-07, #01a056d7) — Couldn't test switching microphones mid-call, because this browser blocks the mic.
+- [ ] `low` `other` (2026-10-07, #231e51ae) — Evertrue's Etsy x-api-key bug is already logged (won't re-add); CRM is massively…
 
 ## Finished. (87)
 
