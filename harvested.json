@@ -5158,5 +5158,53 @@
     "status": "unverified",
     "session": "ea78c819",
     "found": "2026-10-07"
+  },
+  {
+    "key": "c6c95d36:thereviewsessionreportsonemorehardeningfixdeployedredirecter",
+    "app": "Hallalu CRM",
+    "title": "Review session reports one more hardening fix deployed (redirect: \"error\", worker…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The review session reports one more hardening fix deployed (`redirect: \"error\"`, worker version `d21b3323`) and a frontend batch pushed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c6c95d36",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "c6c95d36:isuggestedredirecterrorinmyhardeningnotewithoutcheckingthatt",
+    "app": "Hallalu CRM",
+    "title": "Suggested redirect: 'error' in my hardening note without checking that the Cloudflare…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**I suggested `redirect: 'error'`** in my hardening note without checking that the Cloudflare Workers runtime supports it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c6c95d36",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "c6c95d36:itdoesnteverycallthrowsinvalidredirectvaluesoversiond21b3323",
+    "app": "Hallalu CRM",
+    "title": "It doesn't: every call throws \"Invalid redirect value.\" So version d21b3323 broke every…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It doesn't: every call throws *\"Invalid redirect value.\"* So **version `d21b3323` broke every uploaded-photo reference fetch for about 2.5 hours**.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c6c95d36",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "e8725186:foundabuganunknownordeletedcharacteridleavesthemediakitstuck",
+    "app": "Hallalu CRM",
+    "title": "Found a bug: an unknown or deleted character id leaves the Media Kit stuck on \"Loading…",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "Found a bug: an unknown or deleted character id leaves the Media Kit stuck on \"Loading character…\" forever.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e8725186",
+    "found": "2026-10-07"
   }
 ]
