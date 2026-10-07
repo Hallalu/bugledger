@@ -5062,5 +5062,101 @@
     "status": "unverified",
     "session": "c6c95d36",
     "found": "2026-10-07"
+  },
+  {
+    "key": "1756d671:thesigninmodaldidntsurfacefromthatclickratherthanfighttheuil",
+    "app": "Hallalu CRM",
+    "title": "Sign-in modal didn't surface from that click; rather than fight the UI, let me prove…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "The sign-in modal didn't surface from that click; rather than fight the UI, let me prove the vault logic executes correctly via the console — directly confirming the token→id derivation the fix depen…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1756d671",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "9440fcf5:wave5isdoneeverysweepfailedatleastonceandwasfixed",
+    "app": "Hopefil",
+    "title": "Wave 5 is done; every sweep failed at least once and was fixed.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Wave 5 is done; every sweep failed at least once and was fixed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9440fcf5",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "9440fcf5:liveappuntouchedtheappatstartinstorycomwasntchanged",
+    "app": "Hopefil",
+    "title": "- Live app untouched: the app at startinstory.com wasn't changed.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Live app untouched:** the app at startinstory.com wasn't changed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9440fcf5",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "9440fcf5:colourcontrastpassesoneverytextcheckedtheoldsitehas6failures",
+    "app": "Hopefil",
+    "title": "- Colour contrast: passes on every text checked (the old site has 6 failures).",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- **Colour contrast:** passes on every text checked (the old site has 6 failures).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9440fcf5",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "e8725186:themcptooldoesntshowdomainbindings",
+    "app": "Hallalu CRM",
+    "title": "MCP tool doesn't show domain bindings.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The MCP tool doesn't show domain bindings.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e8725186",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "ea78c819:thehorizontaloverflowisfixedscrollwidthnowequalstheviewport",
+    "app": "Finished.",
+    "title": "Horizontal overflow is fixed (scroll width now equals the viewport).",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "The horizontal overflow is fixed (scroll width now equals the viewport).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ea78c819",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "ea78c819:earningfromaiinfluencersmostlydoesnthappentherealmoneycamefr",
+    "app": "Finished.",
+    "title": "- Earning from AI influencers mostly doesn't happen. The real money came from product…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Earning from AI influencers mostly doesn't happen.** The real money came from product photos for Etsy and local sellers.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ea78c819",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "ea78c819:iconfirmedalatervisitdoesntoverwriteit",
+    "app": "Finished.",
+    "title": "Confirmed a later visit doesn't overwrite it.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I confirmed a later visit doesn't overwrite it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ea78c819",
+    "found": "2026-10-07"
   }
 ]
