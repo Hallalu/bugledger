@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-435 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+438 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (221)
+## Hallalu CRM (224)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -225,6 +225,9 @@
 - [ ] `low` `other` (2026-10-07, #e8725186) — MCP tool doesn't show domain bindings.
 - [ ] `low` `other` (2026-10-07, #c6c95d36) — Suggested redirect: 'error' in my hardening note without checking that the Cloudflare…
 - [ ] `low` `other` (2026-10-07, #c6c95d36) — It doesn't: every call throws "Invalid redirect value." So version d21b3323 broke every…
+- [ ] `low` `ui` (2026-10-07, #6a0014e0) — Fixed: no sideways overflow, Edit, stats and the link bar all visible, and the people…
+- [ ] `low` `other` (2026-10-07, #fba7dfe5) — Verified the 2 GB each is throwaway simulated-OS cruft, not your work (the real…
+- [ ] `low` `other` (2026-10-07, #fba7dfe5) — Safe to run — it keeps the devices in Xcode, just resets them: 2.
 
 ## Finished. (90)
 

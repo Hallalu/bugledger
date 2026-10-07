@@ -5218,5 +5218,41 @@
     "status": "unverified",
     "session": "9440fcf5",
     "found": "2026-10-07"
+  },
+  {
+    "key": "6a0014e0:fixednosidewaysoverfloweditstatsandthelinkbarallvisibleandth",
+    "app": "Hallalu CRM",
+    "title": "Fixed: no sideways overflow, Edit, stats and the link bar all visible, and the people…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Fixed: no sideways overflow, Edit, stats and the link bar all visible, and the people table scrolls inside its own card.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6a0014e0",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "fba7dfe5:iverifiedthe2gbeachisthrowawaysimulatedoscruftnotyourworkthe",
+    "app": "Hallalu CRM",
+    "title": "Verified the 2 GB each is throwaway simulated-OS cruft, not your work (the real…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I verified the 2 GB each is throwaway simulated-OS cruft, not your work (the real Abba.app is 27 MB).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "fba7dfe5:safetorunitkeepsthedevicesinxcodejustresetsthem2",
+    "app": "Hallalu CRM",
+    "title": "Safe to run — it keeps the devices in Xcode, just resets them: 2.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Safe to run — it keeps the devices in Xcode, just resets them: **2.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-07"
   }
 ]
