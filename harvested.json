@@ -5278,5 +5278,41 @@
     "status": "unverified",
     "session": "01a056d7",
     "found": "2026-10-07"
+  },
+  {
+    "key": "6a0014e0:whatcausesitfrictioninappbrowsersappswitchingbrokendeeplinks",
+    "app": "Social LevelUp",
+    "title": "What causes it? Friction (in-app browsers, app switching, broken deep links), how each…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**What causes it?** Friction (in-app browsers, app switching, broken deep links), how each platform's algorithm works, and demographics.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6a0014e0",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "6a0014e0:onpathswithoutarewardthehighlightedsteppointedtothewrongplac",
+    "app": "Social LevelUp",
+    "title": "- On paths without a reward, the highlighted step pointed to the wrong place.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- On paths without a reward, the highlighted step pointed to the wrong place.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6a0014e0",
+    "found": "2026-10-07"
+  },
+  {
+    "key": "e4d3e6a2:pipsspritewasalsobakedfacingleftwhichwashalfofthatbugnowflip",
+    "app": "Unknown",
+    "title": "Pip's sprite was also baked facing left, which was half of that bug, now flipped.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Pip's sprite was also baked facing left, which was half of that bug, now flipped.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e4d3e6a2",
+    "found": "2026-10-07"
   }
 ]
