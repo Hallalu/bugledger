@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-443 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+444 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (226)
 
@@ -459,13 +459,14 @@
 - [ ] `low` `ui` (2026-10-07, #9440fcf5) — - Colour contrast: passes on every text checked (the old site has 6 failures).
 - [ ] `low` `other` (2026-10-07, #9440fcf5) — Still open: - Pixelbake is at 0 credits. I couldn't generate anything new, so every v2…
 
-## Unknown (5)
+## Unknown (6)
 
 - [ ] `high` `security` (2026-09-04, #6739dab7) — - v2.1.259 — Sept 2: managedMcpServers (org-wide HTTP/SSE MCP); --permission-prompts…
 - [ ] `low` `other` (2026-09-08, #124574d9) — Nothing is cache-stale — /live, /report, and /apz.mjs all revalidate.
 - [ ] `low` `other` (2026-09-08, #124574d9) — (Right now the local copy happens to match, but it'll go stale the moment apz.mjs…
 - [ ] `low` `other` (2026-10-06, #fbad84e5) — When your limit resets, say "continue the Trends tab" and I'll wire it up, verify…
 - [ ] `low` `other` (2026-10-07, #e4d3e6a2) — Pip's sprite was also baked facing left, which was half of that bug, now flipped.
+- [ ] `low` `other` (2026-10-07, #e4d3e6a2) — Lobby currently only says "Switch team", which doesn't tell a joining player that this…
 
 ## Planner Studio (2)
 

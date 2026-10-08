@@ -5314,5 +5314,17 @@
     "status": "unverified",
     "session": "e4d3e6a2",
     "found": "2026-10-07"
+  },
+  {
+    "key": "e4d3e6a2:thelobbycurrentlyonlysaysswitchteamwhichdoesnttellajoiningpl",
+    "app": "Unknown",
+    "title": "Lobby currently only says \"Switch team\", which doesn't tell a joining player that this…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The lobby currently only says \"Switch team\", which doesn't tell a joining player that this is the compete-or-cooperate choice.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e4d3e6a2",
+    "found": "2026-10-07"
   }
 ]
