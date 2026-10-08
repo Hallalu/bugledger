@@ -5350,5 +5350,17 @@
     "status": "unverified",
     "session": "9440fcf5",
     "found": "2026-10-08"
+  },
+  {
+    "key": "c009ca9b:firsttryfailedthefirstbatchkepthersittingupwithherfaceshowin",
+    "app": "Hallalu CRM",
+    "title": "- First try failed: the first batch kept her sitting up with her face showing.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **First try failed:** the first batch kept her sitting up with her face showing.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c009ca9b",
+    "found": "2026-10-08"
   }
 ]
