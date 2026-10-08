@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-447 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+448 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (227)
+## Hallalu CRM (228)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -231,6 +231,7 @@
 - [ ] `low` `other` (2026-10-07, #fba7dfe5) — Safe to run — it keeps the devices in Xcode, just resets them: 2.
 - [ ] `low` `other` (2026-10-07, #01a056d7) — - Long recordings: the upload would have failed at the final step, because Cloudflare…
 - [ ] `low` `other` (2026-10-08, #c009ca9b) — - First try failed: the first batch kept her sitting up with her face showing.
+- [ ] `low` `other` (2026-10-08, #c009ca9b) — Reset the words on every piece (7 statics, the carousel in 4:5 and Instagram 3:4, the 2…
 
 ## Finished. (90)
 
