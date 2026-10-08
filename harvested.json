@@ -5374,5 +5374,29 @@
     "status": "unverified",
     "session": "c009ca9b",
     "found": "2026-10-08"
+  },
+  {
+    "key": "fba7dfe5:erasethetwobloatedsimulators43gbstillsittingthereitsthrowawa",
+    "app": "Hallalu CRM",
+    "title": "Erase the two bloated simulators 4.3 GB (still sitting there; it's throwaway…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Erase the two bloated simulators → ~4.3 GB** (still sitting there; it's throwaway simulated-OS cruft, your Abba.app is only 27 MB): **2.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-08"
+  },
+  {
+    "key": "fba7dfe5:thesimulatorerasethephotossteparewhatstoptheleak",
+    "app": "Hallalu CRM",
+    "title": "Simulator erase + the Photos step are what stop the leak.",
+    "category": "security",
+    "severity": "high",
+    "symptom": "The simulator erase + the Photos step are what stop the leak.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-08"
   }
 ]
