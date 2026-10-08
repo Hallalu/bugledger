@@ -5326,5 +5326,29 @@
     "status": "unverified",
     "session": "e4d3e6a2",
     "found": "2026-10-07"
+  },
+  {
+    "key": "9440fcf5:thecorrectkeynowopensthelabredirectintoitandawrongkeyisstill",
+    "app": "Hopefil",
+    "title": "Correct key now opens the lab (redirect into it), and a wrong key is still refused (401).",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The correct key now opens the lab (redirect into it), and a wrong key is still refused (401).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9440fcf5",
+    "found": "2026-10-08"
+  },
+  {
+    "key": "9440fcf5:whatwaswrongthelabrunningonyourmachinewascheckingadifferentk",
+    "app": "Hopefil",
+    "title": "What was wrong: the lab running on your machine was checking a different key from the…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "**What was wrong:** the lab running on your machine was checking a different key from the one you have.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9440fcf5",
+    "found": "2026-10-08"
   }
 ]

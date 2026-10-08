@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-444 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+446 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (226)
 
@@ -448,8 +448,10 @@
 - [ ] `low` `other` (2026-10-07, #e8725186) — Local preview uses a fake user, so database writes fail there.
 - [ ] `low` `other` (2026-10-07, #e8725186) — - If an image doesn't match, users can choose Make it match or Add as a new character.
 
-## Hopefil (8)
+## Hopefil (10)
 
+- [ ] `medium` `logic` (2026-10-08, #9440fcf5) — Correct key now opens the lab (redirect into it), and a wrong key is still refused (401).
+- [ ] `medium` `logic` (2026-10-08, #9440fcf5) — What was wrong: the lab running on your machine was checking a different key from the…
 - [ ] `low` `other` (2026-09-07, #e63c44d3) — Two robustness fixes: gating the reveal on JS (so the deck is never blank without it),…
 - [ ] `low` `other` (2026-10-04, #fba7dfe5) — Space freed: 380 MB 6.7 GB It was a genuine emergency — so full the shell couldn't even…
 - [ ] `low` `other` (2026-10-04, #fba7dfe5) — Want me to also check a couple of mid-size items I spotted — the 554 MB…
