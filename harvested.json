@@ -5530,5 +5530,29 @@
     "status": "unverified",
     "session": "e9793b5a",
     "found": "2026-10-09"
+  },
+  {
+    "key": "23c352e6:58minuterecordingacleanruncamebackas6partswith0failuresall42",
+    "app": "Hallalu CRM",
+    "title": "- 58-minute recording: a clean run came back as 6 parts with 0 failures, all 420 items…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **58-minute recording:** a clean run came back as 6 parts with 0 failures, all 420 items in order, in about 6 minutes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "23c352e6",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "7e294579:shippedthissessionallbrowserverifiedlayerseditorbecameagenui",
+    "app": "Hallalu CRM",
+    "title": "Shipped this session (all browser-verified) Layers editor became a genuine pro tool: -…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "## Shipped this session (all browser-verified) **Layers editor** became a genuine pro tool: - **Undo/redo** (⌘Z / ⇧⌘Z) over the whole stack including erased pixels, **Delete** key, **drag-to-reorder*…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7e294579",
+    "found": "2026-10-09"
   }
 ]
