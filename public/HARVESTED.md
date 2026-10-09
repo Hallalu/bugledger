@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-463 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+466 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (243)
+## Hallalu CRM (246)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -247,6 +247,9 @@
 - [ ] `low` `other` (2026-10-09, #7e294579) — Both work: B&W adjustment turned skin grey [222,222,222], and double-clicking the photo…
 - [ ] `low` `other` (2026-10-09, #e9793b5a) — They had those changes before this fix and aren't part of it, so I didn't touch them.
 - [ ] `low` `other` (2026-10-09, #23c352e6) — - 58-minute recording: a clean run came back as 6 parts with 0 failures, all 420 items…
+- [ ] `low` `other` (2026-10-09, #7420082e) — - Replies go to info@hallalu.com in your Google mailbox, because hallalu.com's mail…
+- [ ] `low` `other` (2026-10-09, #7420082e) — If it isn't there in a minute, check Promotions or Spam.
+- [ ] `low` `other` (2026-10-09, #7e294579) — Clear ask: every piece of text should be a text box you click into and edit — fix…
 
 ## Finished. (90)
 
