@@ -1,49 +1,60 @@
 {
-  "id": "d017ab00-fd73-49ec-9e13-03b1a964f534",
+  "id": "61e7af45-d8cd-4670-a0c0-7d1597c30a15",
   "app": "Bug Ledger",
   "project": "BugLedger",
-  "title": "Daily Ledger — read Aug 1→Oct 4 in full, scan, research, append (append-only)",
-  "status": "done",
-  "current": "Done ✓",
+  "title": "Daily ledger — October 2026 month pass",
+  "status": "active",
+  "current": "Rebuilding the checklist and site, deploying",
   "note": "",
   "tasks": [
     {
-      "text": "Extract conversations",
-      "note": "Built extract.mjs; compressed ~1.5GB of transcripts into 32MB of lossless conversation across 109 digests (every user msg, reasoning block, tool action; base64 dropped)",
+      "text": "Gather the month's conversations",
+      "note": "179 transcripts touched in October; 67 had real October messages (3.5 MB of conversation text extracted); 4 are Bug Ledger meta-sessions and are skipped",
       "status": "done",
-      "wave": "Wave 1 — Read the month"
+      "wave": "Wave 1 — Read October"
     },
     {
-      "text": "Read all 109 digests in full",
-      "note": "Disk hit ENOSPC under load but recovered (3GB free); batch5 recovered from inline JSON; merge+dedup pipeline staged",
+      "text": "67 had real October work",
+      "note": "All 63 non-meta October conversations read to the end by 9 readers; 301 raw candidates extracted",
       "status": "done",
-      "wave": "Wave 1 — Read the month"
+      "wave": "Wave 1 — Read October"
     },
     {
-      "text": "Run 41-detector scanner",
-      "note": "Ran 41-detector scanner over 23 repos: XSS-INNERHTML HIGH on 18/23, PRIV-NO-DELETE 14/23, PRIV-NO-POLICY 13/23; pinned 3 new app-specific highs (Joy PII-in-URL, GitBagel quote-unsafe esc(), Stitchhooky ~30 a11y). BudgetLevelUp SSRF already logged as Listing Lab Pro.",
+      "text": "Read every conversation and extract new items",
+      "note": "scan.mjs run over 28 repos: 2,096 findings, led by 650 empty catches, 474 innerHTML sinks, 225 uncaught promises",
       "status": "done",
-      "wave": "Wave 2 — Scan the code"
+      "wave": "Wave 1 — Read October"
+    },
+    {
+      "text": "Run the detector suite over October's repos",
+      "note": "Veracode 2026, WebAIM Million 2026 and OWASP Agentic Top 10 checked at source; two Cloudflare claims from search did not verify and were dropped",
+      "status": "done",
+      "wave": "Wave 2 — Scan the repos"
     },
     {
       "text": "Research current external issues",
-      "note": "OWASP-LLM 2025 (output-handling/excessive-agency/unbounded-consumption), Veracode 2025 (45% AI code fails OWASP, XSS 86%), WebAIM Million 2025 six failures, CF Worker 100K/day ACCOUNT-wide + subrequest limits — staged as cross-cutting",
+      "note": "301 candidates → 66 already in the ledger or live table, 9 pruned by hand → 226 appended: +160 bugs (7 security) and +66 optimisers; diff is additions only",
       "status": "done",
-      "wave": "Wave 3 — Deep research"
+      "wave": "Wave 3 — Outside research"
     },
     {
-      "text": "Vet + dedupe findings",
-      "note": "Deduped vs full 2,115-entry live ledger; appended 690 net-new (440 bugs/sec + 250 optimisers) across all 7 families",
-      "status": "done",
-      "wave": "Wave 4 — Curate & dedupe"
+      "text": "Dedupe and append to the ledger",
+      "note": "gen.mjs regenerates every derived surface, then wrangler deploy and git push",
+      "status": "active",
+      "wave": "Wave 4 — Append and ship"
     },
     {
-      "text": "Rebuild + deploy + commit",
-      "note": "bugs.json 428->868, optimisers 117->367; committed 53327d4 + c0b2490, pushed, deployed, live verified 868",
-      "status": "done",
-      "wave": "Wave 5 — Ship the ledger"
+      "text": "Rebuild, deploy and push",
+      "note": "Regenerate the checklist and site, deploy the Worker and push so every future sweep is stricter",
+      "status": "pending",
+      "wave": "Wave 4 — Append and ship"
+    },
+    {
+      "text": "Verify live and publish the report",
+      "note": "Open the live ledger, confirm the new counts, and publish the report with real before and after numbers",
+      "status": "pending",
+      "wave": "Wave 5 — Prove it"
     }
   ],
-  "started": 1791155935285,
-  "reported": true
+  "started": 1791650678479
 }

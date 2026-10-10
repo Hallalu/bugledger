@@ -1,7 +1,7 @@
 # Bug Ledger — Agent Protocol
 
 You are a coding agent working inside a project. This ledger is your regression + security
-memory: **895 bugs across 48 apps**, a security audit (15 findings),
+memory: **1055 bugs across 59 apps**, a security audit (15 findings),
 and 47 static detectors. Use it to debug the current project against every bug we've
 hit before, then **log what you checked** so there's a record.
 
@@ -14,7 +14,7 @@ are immutable at the database level and finished sessions are frozen. Never run 
 `git`, or `wrangler` against `~/BugLedger`; fix bugs in the CURRENT project's files only.
 
 ## Apps in the ledger
-`Finished.` (189) · `Hallalu CRM` (160) · `cross-cutting` (126) · `Aprizely` (38) · `Stitchhooky` (38) · `Abba` (35) · `Pixelbake` (25) · `Breadcrumb` (22) · `Hopefil` (22) · `Budget LevelUp` (19) · `Bug Ledger` (17) · `Evertrue` (17) · `Planner Studio` (16) · `Coco Modules` (14) · `Fullfill` (13) · `Stepapa` (12) · `Hello Baby` (11) · `Coconvo` (10) · `CD Enterprises` (8) · `Prompt Vault` (8) · `Divorce Rates Atlas` (7) · `Hopefil World` (7) · `Joy` (7) · `Ever After` (6) · `Hallalu Bookings` (6) · `Wedding Planner` (6) · `ABS` (5) · `Listing Lab Pro` (5) · `Analysis` (4) · `BirthdayTreat` (4) · `Claude Code Browser pane` (4) · `Joy Day` (4) · `PatentCake` (4) · `Social LevelUp` (4) · `Capital Signal` (3) · `GitBagel` (3) · `Payrails` (2) · `Remembrance` (2) · `Breadcrumb Admin` (1) · `Breadcrumb Plan` (1) · `Bug Ledger Pitch` (1) · `Claude Code` (1) · `Currency Picker` (1) · `Happy Travel` (1) · `Kairos` (1) · `Kindly` (1) · `PostPlan` (1) · `Sell skill` (1) · `SkillSea` (1) · `Unknown` (1)
+`Finished.` (189) · `Hallalu CRM` (176) · `cross-cutting` (152) · `Aprizely` (42) · `Abba` (38) · `Stitchhooky` (38) · `Pixelbake` (36) · `Start in Story` (29) · `Breadcrumb` (22) · `Hopefil` (22) · `Joy` (21) · `Budget LevelUp` (19) · `Coconvo` (19) · `Bug Ledger` (18) · `Fullfill` (18) · `Evertrue` (17) · `Planner Studio` (16) · `Coco Modules` (15) · `Stepapa` (12) · `Divorce Rates Atlas` (11) · `Hello Baby` (11) · `CD Enterprises` (10) · `Hopefil World` (10) · `Prompt Vault` (8) · `Analysis` (7) · `HallaluSocial` (7) · `Ever After` (6) · `Hallalu Bookings` (6) · `Social LevelUp` (6) · `Wedding Planner` (6) · `ABS` (5) · `Listing Lab Pro` (5) · `BirthdayTreat` (4) · `Claude Code Browser pane` (4) · `Joy Day` (4) · `Loopsong` (4) · `PatentCake` (4) · `Capital Signal` (3) · `CRM Dealership` (3) · `GitBagel` (3) · `Hungry Tide` (3) · `Consistency Challenge Carousel` (2) · `Payrails` (2) · `Postfactory` (2) · `Postplan` (2) · `Remembrance` (2) · `Sell skill` (2) · `Bistro Bolt` (1) · `Breadcrumb Admin` (1) · `Breadcrumb Plan` (1) · `Bug Ledger Pitch` (1) · `Claude Code` (1) · `Currency Picker` (1) · `Hallalu` (1) · `Happy Travel` (1) · `Kairos` (1) · `Kindly` (1) · `PostPlan` (1) · `SkillSea` (1) · `Unknown` (1) · `Wedding Woosh` (1)
 
 ## Step 1 — Get the checklist for this project's app
 Pick the app name (ask the user, or infer from the repo). Then either:

@@ -1,8 +1,8 @@
 # ✨ Optimisers — elevations worth reusing
 
-368 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
+434 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
 
-## design elevation (35)
+## design elevation (36)
 
 - **One-shot entrance animations (never re-animate on refresh)** _(Bug Ledger)_
   Put entrance animations on a one-shot class that is stripped after it plays, not on the base element.
@@ -144,8 +144,12 @@
   After three iterations (Clearbit, DuckDuckGo icons, a favicon over a colour monogram that the user rejected), the settled pattern is the logo on a clean white tile with a neutral grey-letter fallback, only official single-path glyphs for the seven platforms that have them, and demo brands chosen for visible logos. Hand-drawn logos from memory were rejected and an existing LOGOS table at socials.js:27-42 had been missed, so a parallel module was wasted.
   <br>*Why:* The user's rule is actual logos only; guessed marks look wrong.
   <br>*How:* Grep the codebase before writing a new component, use simple-icons paths, and fall back to a plain initial rather than a coloured monogram.
+- **Ground a cut-out with a shadow tinted from the backdrop and multiplied, not a flat black drop shadow** _(Pixelbake)_
+  The Layers editor's subject shadow takes its colour from the backdrop underneath (sampled ambient colour, read from the live layer stack) and composites it with Multiply, alongside per-layer opacity and blend modes.
+  <br>*Why:* The research pass on compositing found the contact shadow is the largest single realism gain for a cut-out; a neutral black shadow on a coloured or gradient backdrop is what makes a subject look pasted on.
+  <br>*How:* Sample the backdrop's average colour under the subject, darken it, draw the blurred silhouette with globalCompositeOperation 'multiply', then the subject; recompute when the backdrop changes (including after undo).
 
-## UX (49)
+## UX (57)
 
 - **Live progress counter for long tasks (N / total)** _(Bug Ledger)_
   Stream a running 'checked N / total' counter for long agent work so the user sees exactly where it reached.
@@ -343,8 +347,40 @@
   Research behind the toast review (see the toast icon bug): error toasts need their own icon, hover pauses the timer, and destructive actions offer undo.
   <br>*Why:* Cheap polish that affects every action.
   <br>*How:* Update toast() once and apply the copy convention app-wide.
+- **Carry browser-stored settings across a domain move with a one-time handoff redirect** _(Coconvo)_
+  When the app moved from workers.dev to teams.coconvo.com, old links redirect to the new host carrying the visitor's profile and preferences, which the new origin imports once and then cleans from the URL; www redirects to the canonical host.
+  <br>*Why:* localStorage is per origin, so a domain change silently resets every returning user's name, avatar, theme and admin keys unless they are handed over.
+  <br>*How:* On the old origin, package the known localStorage keys into the redirect (fragment, not query), import on first load at the new origin only if the keys are absent, strip the fragment, and verify with a real old-link visit.
+- **Editing text on an image edits the real words in place, and every text item is a click-to-edit box** _(Pixelbake)_
+  Adding a text layer over an image that already had copy just stacked new words on the old ones, which the owner flagged. Now double-clicking the words in a photo opens the in-image swap editor (erase and redraw into the pixels); overlay text and auto-captions are edited by clicking them and typing; captions render exactly as typed instead of forced uppercase.
+  <br>*Why:* Users expect to click text and type. An 'add text' tool that cannot change existing copy, or a caption they cannot correct after speech recognition gets a word wrong, reads as broken.
+  <br>*How:* Route double-click by layer type (photo to in-image editor, text to inline textarea matched to the layer's font, size, colour and alignment); click a selected text item again to edit; never transform case at render time on user-editable text.
+- **Every count on a dashboard opens the records behind it** _(Joy)_
+  After the owner's demo-parity rule, Joy Broadcast gained a /api/people route (kinds sent, clicked, sales, unsub, bounce, optionally per campaign or period) and a People view. Cockpit tiles for subscribers, attributed sales and click rate, report tiles for delivered, clicked, sales, unsubscribes and bounces, per-link click counts and each list's subscriber count all open the people or orders that make up the number, and each row opens the full contact record.
+  <br>*Why:* A total the user cannot open is unverifiable and reads as a demo. Verified example: the $178 sales tile opens the two orders ($129 and $49) with buyer, order number and email.
+  <br>*How:* For each KPI, add a query that returns the rows the aggregate was computed from and link the tile to it; put secondary links on their own line rather than nesting one anchor inside another; check that the opened rows sum to the tile.
+- **When a search finds more than the requested count, keep the reachable results first** _(Hallalu CRM)_
+  With more businesses in the area than the limit, the finder now fills the limit with rows that have a published email or at least a website before those with neither. On the same 150-row Port of Spain search, rows with an email rose from 8 to 37.
+  <br>*Why:* A hard limit applied in arrival order returns mostly rows the user cannot act on.
+  <br>*How:* Rank candidates by contactability before truncating to the limit, and say in the results heading how many have an email.
+- **Set a habit streak to the frequency people really act at: weekly with a repair, not daily** _(Postplan)_
+  For a posting tool, make the streak weekly and forgiving (one repair), and make the daily action something lighter than publishing: a Today view with the post due, a draft to finish, an idea of the day and comments to answer.
+  <br>*Why:* The study found 93.5% of Instagram accounts (28M sampled) post once a week or less, so a daily posting streak would break for most people in week one. Duolingo's published experiments attribute streak gains to a low daily bar and forgiveness. Among rivals only Buffer has a streak, and it is weekly.
+  <br>*How:* Before adding any streak, find the real base rate of the action from a primary dataset, set the streak period at or above it, add a repair, and pick a smaller daily verb for the home screen.
+- **Put a new admin feature where the request named it: top-level nav item plus a direct hash link, not three tabs deep** _(Hallalu CRM)_
+  Wisdom Marketing first shipped at Socials → Wisdom Admin → Wisdom Marketing. The owner, who had asked for it in 'Hallalu CRM admin', reported 'not seeing it in my crm'. It was then given its own sidebar item under Account (admins only), a button on the Admin page and a direct link /app#/marketing.
+  <br>*Why:* A feature the owner cannot find reads as a failed deploy and cost three debugging round-trips that were partly about navigation rather than caching.
+  <br>*How:* When a request names a location, add the entry point there; give every new surface a deep link and state the exact click path and URL in the hand-off message.
+- **Show the real wake-lock state and re-acquire it when the tab becomes visible** _(Loopsong)_
+  A chip shows whether the Screen Wake Lock is actually held; the browser drops it when the tab is hidden, so the app takes it back on return, and the copy says plainly that closing a laptop lid still sleeps.
+  <br>*Why:* A keep-awake promise that silently lapses is worse than none for an 8-hour playback app.
+  <br>*How:* Request the lock on play, listen for its release event and for visibilitychange, update the chip from the lock object not from intent; test via CDP because the Browser pane reports the page as hidden.
+- **Make a multi-minute client-side job resumable: cache finished pieces by a hash of the input and warn before the tab closes** _(Hallalu CRM)_
+  A 5-hour recording takes 15-25 minutes to transcribe in about 10-minute pieces, three at a time. Finished pieces are now cached on the device under a SHA-256 fingerprint of the recording, a beforeunload warning fires while a job runs, progress reads 'part 3 of 30', and the cache is cleared when the job completes.
+  <br>*Why:* Closing the tab part-way used to throw all the work away. Proven by reloading after two pieces: the rerun started at 2 of 6.
+  <br>*How:* Fingerprint the blob, store each piece's text keyed by fingerprint and index, skip cached indexes on rerun, register beforeunload only while running, delete the cache entry on success.
 
-## performance (8)
+## performance (10)
 
 - **In-place DOM updates for live views (diff, don't re-render)** _(Bug Ledger)_
   Update existing nodes field-by-field each poll and animate only what changed, instead of rewriting innerHTML.
@@ -378,8 +414,16 @@
   The 24k-word bundle added about 46KB raw / 19KB gzip to the main chunk until it was split; the 60,000-word A-Z list ships as public/dictionary.txt (about 500KB) fetched the first time that level opens and merged with curated entries (curated definitions win).
   <br>*Why:* Keeps first load small while the library still reaches dictionary scale.
   <br>*How:* Show a 'Loading the full dictionary' note in the plan line while it fetches; connect-src 'self' already allows it.
+- **Rotate across several Overpass mirrors, fastest first, and retry busy tiles** _(Hallalu CRM)_
+  With the main Overpass endpoint timing out even on small boxes, lz4.overpass-api.de answered a 406-shop query in 2.4 s and maps.mail.ru answered slowly. The finder now tries the fast mirror first, spreads tiles across the rest, marks heavy tiles for a later retry, and carries on in the background.
+  <br>*Why:* A free shared API with one endpoint made a city search take about an hour and look broken.
+  <br>*How:* Keep an ordered mirror list; probe with a tiny bounding box when results stall; treat 429/504 as retry-later per tile rather than failing the job; record which mirror served each tile.
+- **Ask the vision model about one cell per table column and copy the answer down the rows** _(Fullfill)_
+  For a ruled table, only the top cell of each column is sent to the model as a candidate; the rows below inherit its label with a row number. A 30-cell table became 6 questions.
+  <br>*Why:* Cut tokens and latency and removed the row-by-row mislabelling; with the example-row fix it took a scanned form to 45 of 45 in about 10 s for two pages.
+  <br>*How:* Group detected boxes into columns (3 or more aligned cells), send the header-adjacent cell only, then fan the label out as 'Header (row N)'.
 
-## workflow (53)
+## workflow (60)
 
 - **Paste-and-go, zero-question agent prompts (self-install, never interrogate)** _(Breadcrumb)_
   An agent prompt that self-installs its CLI silently, streams if the key is present, and carries on quietly if not — never stopping to ask the user.
@@ -593,8 +637,36 @@
   The portal's remove buttons shipped without a confirmation for nine releases. The fix wrapped them in askDel (confirmDel with Keep it / Yes, delete and an editor re-open); Ava thread delete also had no confirm until added.
   <br>*Why:* Delete-confirm is a house rule, and per-handler discipline fails.
   <br>*How:* Make confirmDel the only path for data-act delete handlers and grep for any remove that bypasses it before release.
+- **QA a bulk AI image batch with captioned contact sheets, twelve per sheet, prompt text under each frame** _(Start in Story)_
+  For 200 per-prompt photos, a script rendered 12-up contact sheets with each image's prompt printed beneath it; every sheet was read and failures appended to a redo file with a sharper prompt, then re-baked and re-sheeted.
+  <br>*Why:* 171 of 199 passed first time and 28–30 needed a re-bake for defects only visible when image and prompt are side by side: misspelled baked-in text, merged objects, extra hands, wrong composition.
+  <br>*How:* Stable id per prompt, resumable baker that skips files already on disk and runs 3 at a time, qa.mjs to build sheets via headless Chrome, redo.txt of 'index|new prompt', repeat until a sheet passes; add negative prompts for text and logos.
+- **Before deploying the single-file reports Worker, fetch and confirm the live deployment is your own last one** _(Analysis)_
+  Several sessions append reports to one worker.js and each deploys the whole file. Before inserting, the session ran git fetch, compared HEAD with origin/main, and read wrangler deployments list (it prints oldest first, so read the tail) to confirm the live version was its own earlier deploy.
+  <br>*Why:* Deploying from a copy that lacks another session's report removes that report from the live site with no error.
+  <br>*How:* git fetch and pull first; if origin has commits you lack, merge before inserting; check the newest wrangler deployment id against your last deploy; confirm the diff is insertions only before wrangler deploy.
+- **Before building on a file a co-editing session hands over, diff it against the deployed Worker code** _(cross-cutting)_
+  When another session passed over worker.js, the deployed script was fetched and compared with the edit base to confirm the on-disk file was 'their deployed version plus my additions'. Later a version-id mismatch between sessions was resolved by listing deployments and re-checking the live code still contained the new function.
+  <br>*Why:* With two sessions deploying the same Worker, a stale base silently reverts the other session's work on the next deploy.
+  <br>*How:* Fetch the live script (Cloudflare workers_get_worker_code or wrangler versions view), compare against your base, and after any peer deploy re-run wrangler deployments list and grep the live code for your change.
+- **Keep expression and angle close to the anchor, and never feed a sub-locked bake back in as a reference** _(Pixelbake)_
+  Against one anchor photo, calm front-on edits scored 80-96%, a big open smile 31%, a frustrated pose in a new scene 31-46%. Adding the best drifted result as a third reference held the score at about 62%; chaining small edits from it reached only 55-59%.
+  <br>*Why:* Expression and pose move a face-embedding score as much as a real identity change, and a drifted reference teaches the model the drift.
+  <br>*How:* Change one thing per edit from a locked image, bake 3 variations, keep only locked ones as future references, and treat expressive scenes as unscored. Root-cause attribution for the third-reference effect is the assistant's reading of the scores, not a controlled test.
+- **Read TikTok's public page JSON for free timestamped captions and full stats before paying for ASR** _(Postfactory)_
+  Logged-out, a TikTok video page's embedded JSON exposes subtitleInfos (a VTT URL with ASR captions) plus plays, likes, comments, shares and saves (collectCount). Music-only clips have no caption track. Instagram returns nothing without a login, so it is handled from a saved file.
+  <br>*Why:* Native captions made the transcript step free (45 timed words on the test clip) and saves are not available from most tools.
+  <br>*How:* curl the video URL with a desktop user agent, parse subtitleInfos and the stats block, fall back to Whisper on 16 kHz mono audio when there is no caption track; keep downloads in the local CLI, never logged in.
+- **Test long-audio transcription with a synthetic recording of numbered items, then count them** _(Hallalu CRM)_
+  A 58-minute spoken test file containing 420 numbered items was generated with the macOS say command and converted to M4A, WebM, MP3, Ogg and WAV. Pass means all 420 come back, none missing and none out of order. The same file, cut to 23:12, reproduced the owner's exact failing case.
+  <br>*Why:* Reading a long transcript by eye cannot show a dropped or reordered chunk; a countable sequence does, and it exposed both the empty-M4A-piece bug and the silent 503 loss.
+  <br>*How:* say -o long.aiff with a numbered word list, ffmpeg to each container, run the real pipeline, regex the numbers out of the result and compare with the expected sequence.
+- **Prove a passcode-gated live app end to end with a one-time ticket and a uniquely tokened file, then leave no trace** _(Joy)_
+  Joy Cloud's signed-in loop had only been proven locally. The session inserted a one-time, 10-minute ticket row into the app's own ticket table through wrangler D1, opened /sso?t=<ticket> to get a real session without typing the passcode, uploaded a 112-byte file containing a random token, shared it, downloaded it from the public share origin and compared bytes, read the owner's activity, revoked the link (download then 404, friendly page), and purged the file so the drive was exactly as found.
+  <br>*Why:* It exercises the real production endpoints across both Workers without the agent handling the owner's passcode, and the unique token makes 'the bytes match' a fact.
+  <br>*How:* Reuse the app's existing ticket mechanism; random hex ticket with a short expiry; unique token in the test payload; screenshot each step; revoke, trash and purge at the end and confirm zero test files remain.
 
-## architecture (37)
+## architecture (48)
 
 - **Marketing landing at root, app at /app** _(Hallalu CRM)_
   Serve a marketing landing at the root and the app at /app; returning users skip the landing.
@@ -744,6 +816,50 @@
   make_artifact was limited to an enum of eight kinds, an artificial limit. It now takes a free-form kind and an 'html' section that strips script and style, rendered in an iframe with no allow-scripts. A fragment without a doctype also rendered in quirks mode in a local preview (compatMode), which made a map screenshot look blank.
   <br>*Why:* Limits invented by the builder remove capability, and untrusted generated HTML needs a sandbox.
   <br>*How:* Allow free-form kinds, strip scripts server and client side, sandbox without allow-scripts, and preview with a doctype.
+- **Serve client-uploaded files sandboxed and accept them only through a signed, per-run upload ticket** _(Hopefil World)_
+  The public Start page lets anyone attach logos, PDFs, video or audio to a run. Uploads go to R2 under the run's prefix via a short-lived HMAC ticket issued when the run is created, and every uploaded object is served with sandboxing headers so it can never execute script on the site's origin.
+  <br>*Why:* An open upload form on the same origin as a key-gated admin area is a stored-XSS and abuse vector: an uploaded HTML or SVG file would otherwise run with the site's cookies and keys.
+  <br>*How:* Issue an HMAC ticket bound to the run id at creation; require it on POST /upload; store under uploads/<run>/; on GET set a sandbox Content-Security-Policy and nosniff, and never serve uploads from a path that shares scope with authenticated pages.
+- **Probe a site with both a plain and a browser user-agent so a bot wall is not reported as a dead site** _(Hopefil World)_
+  The Worker's reachability step fetches the URL twice, once with the default agent and once with a browser user-agent, and compares. capitalsignal.com answered 406 to one and 200 to the other, and the run recorded 'user-agent block' rather than 'unreachable'.
+  <br>*Why:* A single server-side fetch that gets 403/406 makes a healthy client site look down, and every later recon step then runs against an error page.
+  <br>*How:* Fetch with two agents in parallel; if only the browser agent succeeds, record a user-agent block as a finding and continue with that agent; if both fail, report unreachable.
+- **With snapshot-based undo, read layers from the live stack every time instead of holding object references** _(Pixelbake)_
+  Undo/redo in the Layers editor restores whole-stack snapshots (each layer cloned, including its erased-pixel canvas). Before adding it, three places that used a captured `backdrop` variable were changed to read St.layers[0], and cached filter results are invalidated at every point the source pixels change.
+  <br>*Why:* After a restore the stack holds new objects; any closure still holding the old backdrop or a cached filtered bitmap would draw stale state, giving an undo that appears to work for some properties and not others.
+  <br>*How:* Grep for direct references to layer objects captured at init; replace with a lookup at use time; clone pixel canvases in snapshots; record history at action boundaries (pointer up, debounced slider end), and verify undo on the hardest case (an erase) as well as an add.
+- **Use a server-side Whisper pass on the saved recording as the second transcriber, never a second live recogniser** _(cross-cutting)_
+  Keep exactly one live SpeechRecognition for the on-screen feed and run Workers AI whisper-large-v3-turbo on the recording already saved to IndexedDB for an accurate second pass; the same endpoint also serves uploaded recordings.
+  <br>*Why:* Two live recognisers compete for one microphone in Chrome and silenced the visible transcript; a post-hoc pass adds redundancy without touching the mic.
+  <br>*How:* Record with MediaRecorder, store the blob, POST base64 audio to a /api/transcribe Worker route, then feed the text into the same recap pipeline.
+- **Anchor signed records to Bitcoin with OpenTimestamps on a cron instead of asking users to trust the server's signature** _(HallaluSocial)_
+  An hourly scheduled handler hashes new receipts into one digest, posts it to a public OpenTimestamps calendar, stores the proof, and the public receipt page checks it and offers the proof files. Verified against the real calendar and shown as 'Anchored in Bitcoin'.
+  <br>*Why:* Gives the public, un-editable timestamp that blockchain quest tools offered, with no wallet, gas or crypto UI.
+  <br>*How:* Batch with a bounded limit per run, call the calendar directly from the Worker, keep anchors in their own append-only table, and re-verify client-side on the receipt page.
+- **In-house finance module: never take custody of funds — record instalments, let the dealer stay merchant of record** _(CRM Dealership)_
+  The business-case research found the main licensing gate for a dealer-financing feature is money transmission. The MVP's BHPH-lite ledger therefore only schedules, records and receipts payments and sends reminders; it moves no money.
+  <br>*Why:* Holding or routing customer funds turns the SaaS into a money transmitter in most jurisdictions (and UK in-house finance needs FCA permission); a ledger does not.
+  <br>*How:* Keep payments as records against a schedule; if card payments are added use connected accounts where the dealer is merchant of record; gate finance features per country.
+- **Keep every shipped version playable and never rename save keys, so progress follows the player across versions** _(Wedding Woosh)_
+  tools/archive.sh vN "label" freezes the current build with its own art under /archive/vN/ and rebuilds an archive index; archives are never overwritten. All versions read the same ww.* localStorage keys, so weddings, upgrades and budget carry over between v1, v1-1, v2 and v3.
+  <br>*Why:* The owner compares versions side by side and asked that progress carry over; without frozen builds a regression cannot be shown, and a renamed key silently resets a player.
+  <br>*How:* Archive before each upgrade as a self-contained static copy; treat storage key names as a public contract; add new fields with defaults rather than new keys.
+- **Meter paid AI with reserve-then-refund credits, and prove it with a failure-injection harness** _(Start in Story)_
+  Credits are reserved before any model call and refunded for every failed or partially failed item; identity shots cost 2; monthly and daily caps and tier sizes are Worker vars, plan is read from the subscription check and cached 15 min; a /v1/usage endpoint feeds an 'N left' display. An 11-check Node harness ran the real engine code with AI calls forced to fail fully, fail partway and succeed.
+  <br>*Why:* The engine previously checked sign-in only, so failures either cost the user or the owner. Reserve-first closes the race where parallel requests overspend, and refund-on-failure keeps 'failed generations are free' true.
+  <br>*How:* Add usage + plan tables, wrap each paid route in reserve -> run -> refund(failed count), keep limits in env vars, and test with a stubbed AI binding that fails 0/some/all items plus one cheap real run locally with tiny limits.
+- **Split one big JSON-mode analysis into two focused calls (hooks, then blueprint)** _(Postfactory)_
+  A single Llama 3.3 JSON-mode call returning hooks, beats, CTAs, lifecycle and a blueprint kept returning a short shot list and script even after stricter prompt minimums. Splitting into hooks -> blueprint gave complete output.
+  <br>*Why:* Small models under JSON mode truncate the last, largest field; tightening the prompt did not fix it.
+  <br>*How:* Run the extraction pass first, then pass its result into a second call that only writes the blueprint; log each model call's cost separately.
+- **Background removal on Cloudflare: use the Images binding segment:'foreground' (BiRefNet), because Workers AI has no segmentation model** _(Pixelbake)_
+  Workers AI lists no matting or segmentation model. The Images binding transform({ segment: 'foreground' }) runs BiRefNet first-party, returned a true-alpha PNG in about 1.5 s on four real photos (two portraits, a fluffy dog, a glass bottle), and needs no AI Gateway billing.
+  <br>*Why:* It avoids a third-party remover and keeps hair strands; the first reflex (look for a Workers AI model) finds nothing and wastes time.
+  <br>*How:* env.IMAGES.input(bytes).transform({ segment: 'foreground' }) to PNG; file the result as a versioned edit tagged cutout; charge only on success; composite blur, colour or library-image backgrounds from the same matte.
+- **Session history reachable from a shared public board must be an owner-only endpoint, not part of the public board payload** _(Aprizely)_
+  Every live board gained a Past sessions drawer listing all boards for the project or for every project (280 sessions across 52 projects). The list comes from a separate endpoint that requires the owner's signed-in cookie: an anonymous request gets 401 and the drawer shows a sign-in prompt with a same-origin return path to the board.
+  <br>*Why:* Board links are shared with clients. Adding history to the public board response would expose every other project name and session title to anyone holding one link.
+  <br>*How:* Keep the public /live/<id> payload to that single board; serve history from a cookie-checked route; accept only same-origin paths in the post-sign-in redirect; test the anonymous 401 explicitly.
 
 ## accessibility (9)
 
@@ -784,7 +900,7 @@
   <br>*Why:* Eyeballing greys misses real failures, and a 'light and dark pass' claim needs both measured.
   <br>*How:* Loop themes x schemes (resize_window colorScheme or emulate), read the computed colour of each text token against its real background, flag anything under 4.5:1 for small text, and decide explicitly whether themes should follow the OS dark setting.
 
-## copy (12)
+## copy (14)
 
 - **Source-verified stats only (ban folklore)** _(Hallalu CRM)_
   Only show a statistic you can cite to a primary source; ban unsourced 'best practice' numbers.
@@ -834,8 +950,16 @@
   Phrases such as 'free whenever you want it', 'forever' and 'always yours to export' were removed from account.js, views4.js and landing.html. A request for '20x / 4x' value multipliers was refused in favour of an honest 'Most complete' label and a sourced $80-90 comparison stack; the Free tier sits last.
   <br>*Why:* Promises and made-up multiples are a claims and legal risk.
   <br>*How:* Review pricing and plan copy for 'forever', 'always', 'unlimited' and ratios without a source; keep comparisons to documented prices.
+- **Do not show a volume counter while the number is tiny** _(Hopefil World)_
+  The homepage stat row read '2 runs recorded so far'. It was replaced with four measured outcome numbers from the one run done in depth (accessibility routes passing, contrast failures, LCP and similar).
+  <br>*Why:* A usage counter is a brag only when it is large; a live count of 2 advertises that nobody uses the product. Measured results from one real case are both honest and more persuasive.
+  <br>*How:* Gate any 'N customers / runs / users' line behind a threshold and fall back to measured before/after figures from a real case until the count clears it.
+- **Spell the month and four-digit year in labels: 'Sept 26' was read as a date** _(Evertrue)_
+  A form label built from a short month label rendered 'New listings live in Sept 26', which the owner could not parse. It became 'New listings to publish in October 2026' with a one-line monthly-goal versus daily-challenge explainer.
+  <br>*Why:* Abbreviated month plus two-digit year is indistinguishable from day-of-month; the owner reported not knowing what to type.
+  <br>*How:* Use a long-month, full-year formatter for any label that names a period, and say the action in the label.
 
-## conversion (11)
+## conversion (14)
 
 - **Show-but-lock gated features instead of hiding them** _(Hallalu CRM)_
   Premium (Business-tier) rooms stay visible to every user with a lock badge in the nav/menu; clicking opens an upgrade wall rather than the feature
@@ -881,8 +1005,20 @@
   Three research lanes plus a counter-evidence lane converged: nobody pairs a beautiful no-login page with easy comments (no-login tools kill commenting, commenting tools force login); nobody pushes via WhatsApp or SMS; the 'clients ignore portals' critique is about login-gated, stale portals ('a stale portal is worse than email because the client believes it'). Design rules: a status verdict as the headline, a work timeline, coming-up-next, 'just needs you', a never-0% progress bar, end on forward motion, coral only for 'you are here', hours and internal tasks off by default, cap summaries at 5-6 items. Transparency backfires on a bad week, so the page falls back to the plan rather than an empty feed.
   <br>*Why:* The page's job is to relieve client anxiety, not to expose activity, and staleness shifts the burden to the owner.
   <br>*How:* Auto-assemble from logged work, show an 'Updated X ago' stamp, and nudge the owner when a portal goes two weeks without an update (still unbuilt).
+- **In-app browser escape sheet with the right exit per app and platform** _(HallaluSocial)_
+  When the page loads inside Instagram, TikTok, Facebook, Snapchat or LinkedIn's built-in browser it shows that app's own steps: on Android an 'Open in Chrome' intent button fired only on tap, on iPhone the app-specific menu path, an 'Open in Safari' button only for Facebook (it fails in TikTok), plus Copy link and Continue here (remembered for the visit).
+  <br>*Why:* Fans are not signed in inside in-app browsers and Google sign-in does not work there, which is where cross-platform journeys leak.
+  <br>*How:* Detect by user agent, build the intent URL from the page's own scheme, always show manual steps beneath any button, and test each app and OS combination by emulated user agent.
+- **Capture first-touch attribution once and attach it at sign-up** _(Start in Story)_
+  On the first visit the app stores UTM tags, ?ref= or the referrer; a later visit does not overwrite it; the value is attached to the account when the user signs up.
+  <br>*Why:* Launch relies on many creators, clippers and ads; without first-touch capture none of them can be measured separately.
+  <br>*How:* A small attribution module run from main.tsx that writes once to storage, plus one line in the sign-up call; verify in the browser that a second visit with different params leaves the first value intact.
+- **Ship an age-matched cast variant beside the young cast when the audience is 35 to 60** _(cross-cutting)_
+  The brief asked for young models throughout. For the Gen X piece the run produced cast A (a model of the audience's age) and cast B (young) with identical copy, to be tested.
+  <br>*Why:* Research in the session found nothing showing young models winning with women 35 to 60, and AARP stated-intent data favouring advertisers who show their age. Both were graded SIGNAL, not proof of a sales lift.
+  <br>*How:* Keep the owner's requested cast, add one same-copy variant matched to the segment's age, and mark it as an A/B test rather than a decision.
 
-## dev-experience (66)
+## dev-experience (76)
 
 - **Never cache a failure** _(Bug Ledger)_
   Only cache a successful, non-empty fetch; caching a transient failure poisons the isolate until redeploy.
@@ -1148,8 +1284,48 @@
   portal.js was written against micBtn(), openShareSheet() and a .modal-wide class that do not exist; node --check passed because undefined globals only fail at runtime. It was caught only because the assistant grepped the codebase for each helper before deploying (the real patterns were .mic-in[data-mic-target] with attachMics(), and shareClientSummary()). A half-built registry entry (msgDeposit referenced but never defined) was also self-caught.
   <br>*Why:* Hallucinated APIs pass syntax checks and fail in front of the user.
   <br>*How:* Run eslint with no-undef (window globals declared) or a script that extracts called identifiers and class names and greps for their definitions; run it as part of the pre-deploy step.
+- **After a scripted block replacement, audit the removed lines with git diff -U0 before trusting it** _(cross-cutting)_
+  Rebuilding two pages by slicing between markers accidentally deleted about 120 lines of shared helpers that sat inside the replaced range. They were restored from git show HEAD:file, and every removed line was then listed with 'git diff -U0 file | grep ^-' and checked as intended.
+  <br>*Why:* An index-to-index splice passes its own assertions (both anchors exist) while silently removing unrelated code between them; syntax checks may still pass until a helper is called.
+  <br>*How:* Keep a copy of HEAD's file before the splice, run the removed-lines listing afterwards, and confirm each deleted line is one you meant to replace; prefer anchors that bound only the target block.
+- **Before calling a feature broken, prove the test can observe it working** _(cross-cutting)_
+  Three scripted checks reported working features as broken or untestable: a dispatched MouseEvent('mousemove') did not move a slider that listens for pointermove; scrollIntoView did nothing because scroll-behavior:smooth was active; headless Chrome denied clipboard permission so a copy button never confirmed. Each was a test artefact, and one of them hid a genuinely broken scroll-spy.
+  <br>*Why:* A failing synthetic test is a claim too. Acting on these would have meant 'fixing' working code, while the real defect stayed hidden behind an untestable harness.
+  <br>*How:* Read the handler's actual event binding and dispatch that event type (or drive a real mouse via CDP Input.dispatchMouseEvent); set scroll-behavior:auto or use instant scrolls in scripted runs; grant clipboard permission in headless runs. Confirm the positive path once before trusting any negative result.
+- **Verify canvas editors by exporting the canvas to a PNG and probing pixels; make test clips with ffmpeg** _(cross-cutting)_
+  The Browser pane screenshots a <canvas> as black, and when the pane is hidden requestAnimationFrame stops, so canvas.captureStream and MediaRecorder produce nothing and an in-page clip generator fails. Proof came from getImageData pixel probes, exporting toDataURL to a file and viewing it, and from real fixtures made with ffmpeg lavfi (testsrc/colour video plus a sine tone) fetched into the page.
+  <br>*Why:* A black screenshot or an empty recording looks like a broken feature and invites pointless fixes; these methods give evidence that does not depend on the pane painting.
+  <br>*How:* Probe known coordinates with getImageData; write canvas.toDataURL() out and open the PNG; drive draw loops with setInterval rather than rAF in tests; generate short clips with `ffmpeg -f lavfi` outside the deployed assets folder; front the pane before any capture or record step.
+- **Scan the whole git history for the passcode and key patterns before the first push of a local-only repo** _(cross-cutting)_
+  Joy had only ever existed as a local repo. Before creating the private GitHub remote, the session listed tracked files matching env, dev.vars, secret, pem and key, then ran git log -p --all through a grep for the live passcode value and for sk_live_, whsec_ and private-key headers.
+  <br>*Why:* A first push publishes every historical commit at once; a secret removed from the working tree months ago still ships. Creating the repo private limits exposure but does not remove it.
+  <br>*How:* git ls-files | grep -iE for secret-like names; git log -p --all | grep -nE '<known secret values>|sk_live_|whsec_|BEGIN (RSA|PRIVATE)'; only then gh repo create --private --source=. --push. Do not print the secret values in the transcript.
+- **Test mic-dependent flows without a mic: a result-semantics simulator plus synthesized speech** _(cross-cutting)_
+  The Browser pane rejects getUserMedia with NotAllowedError. The accumulation logic was proven with a Node model of webkitSpeechRecognition (per-session cumulative results, resultIndex, restarts), and the transcription endpoint with a clip made by macOS say and afconvert (8 kHz mono WAV keeps the payload small).
+  <br>*Why:* Otherwise speech features ship verified only by reading the code, which is how a dual-recogniser regression reached a real call.
+  <br>*How:* Simulate old versus new logic across restarts in Node; generate audio with say -o x.aiff and afconvert -f WAVE -d LEI16@8000 -c 1; drive the real button by injecting the blob into IndexedDB; state plainly which real-device step remains.
+- **Build a local stand-in for third-party platforms so real OAuth and verification code runs end to end before any keys exist** _(HallaluSocial)_
+  A small mock server mimics each platform's documented consent, token, follow-check and webhook responses; the Worker points at it through a MOCK_BASE dev var, and an e2e script walks every verifier, the unlock and the anti-cheat rules (56 checks on the first run, 108 later).
+  <br>*Why:* Seven providers each need developer keys and app review; without a stand-in none of the sign-in or check code would have been executed before launch.
+  <br>*How:* Keep provider base URLs overridable, mirror the documented response shapes exactly, randomise test identities per run, and label every result as 'tested against the stand-in only' until one real-account test passes.
+- **Check the host app's CSP before loading a shared module from another origin; vendor it when script-src is self-only** _(cross-cutting)_
+  Before adding emoji-picker and goal-celebrate from the modules registry, Broadcast's _headers CSP was read: it only allows its own scripts, so the two modules were copied into the shared maker's vendor folder, and their z-index was checked against the designer's overlay.
+  <br>*Why:* A cross-origin script tag would have worked in dev assumptions and been blocked silently in production.
+  <br>*How:* Read _headers or the Worker's CSP first; if script-src is 'self', vendor the file through the build copy list and note the source version.
+- **Moving a domain's mail onto Cloudflare: enable sending first, expect routing to be blocked by the old MX, and know wrangler's login cannot edit DNS** _(cross-cutting)_
+  For hallalu.com: `wrangler email sending enable` worked immediately and added DKIM, SPF and DMARC p=reject; `wrangler email routing enable` refused while the Google MX existed; the wrangler OAuth login has no DNS scope (`wrangler login --scopes-list` shows none), so the MX could not be read or deleted from the CLI and the owner had to delete it in the dashboard. A background watcher polled the authoritative nameserver and enabled routing when the MX disappeared. Two wrangler config files existed and the one under ~/Library/Preferences held a stale token.
+  <br>*Why:* The switch has an unavoidable manual step and a side effect: once p=reject is published, mail still sent as the domain from the old provider (which had no DKIM for it) is rejected, and inbound keeps going to the old provider until the MX changes.
+  <br>*How:* Back up public DNS with dig first; pre-stage the catch-all rule; enable sending and prove DKIM/DMARC pass with a test; tell the owner exactly which MX to delete and what stops working; poll the authoritative NS, then enable routing and prove receive with a real message.
+- **Full-disk triage: read df first, skip du on a thrashing disk, and check simulator devices** _(cross-cutting)_
+  On a 100% full Mac, du over the home directory stalled and timed out; df answers instantly. Two iOS Simulator devices held 2.2 GB and 2.1 GB of simulated-OS logs and caches around a 27 MB app.
+  <br>*Why:* Three sessions lost minutes to measurement commands that could not finish, and the largest safe reclaim after caches was not in any cache directory.
+  <br>*How:* df for the number; delete known regenerable caches by path without sizing them first; size CoreSimulator/Devices; hand the owner `xcrun simctl erase <udid>` since erasing is theirs to approve; never treat ~/Pictures' reported size as real.
+- **Return 400 for a missing required query parameter instead of an empty 200 list** _(Joy)_
+  During live verification of Joy Cloud, the share-activity endpoint was called with ?id= when it reads ?token=. It answered 200 with events: [] while the link's counters showed 1 view and 1 download, which looked like a tracking bug. A D1 check then showed zero event rows only because purging the test file had already cascaded its link events away. It took a source read and a fresh throwaway share to prove tracking worked.
+  <br>*Why:* An empty success for a malformed request reads as 'no data' and sends the investigator after a bug that does not exist.
+  <br>*How:* Validate the required parameter first and reply 400 naming it; when checking counters against event rows, read the events before deleting the file that owns them.
 
-## integrity (80)
+## integrity (102)
 
 - **Server-verified completeness, not self-report** _(Bug Ledger)_
   When an agent claims it checked everything, verify it server-side and show N/N plus the exact items missed.
@@ -1471,6 +1647,94 @@
   Each participant transcribes only their own microphone in the browser, only while room notes are on and they have not opted out, with a persistent banner plus a chime for everyone and the speaker's display name as the label.
   <br>*Why:* Silent AI notetakers are now litigated and blocked by IT teams (Otter/Granola/Fireflies, 2026); invisible central capture with a fake opt-out is a legal and reputational risk.
   <br>*How:* Gate per-speaker client-side transcription on a per-person opt-out flag; show a 'notes on' banner and play a chime when capture starts; never send a bot or transcribe a participant who has opted out.
+- **Label a recoloured product photo as a recolour, and show only the reviews that actually exist** _(CD Enterprises)_
+  The drag-to-compare figure shows the real lot photograph against a hue-shifted copy; its caption states plainly that the second colour is a recolour to show the shape, not a car in stock. The rating block shows the 4.4 score with 'from 8 reviews' and only the two review texts that are published, including the critical one with the owner's reply.
+  <br>*Why:* A recoloured photo of a vehicle reads as available stock, and padding a reviews band beyond what exists is a fabricated-testimonial risk. Both were avoided without losing the feature.
+  <br>*How:* Any edited or generated product image carries a caption saying what was changed and that it is illustrative; counts and quotes in a social-proof block come only from recorded source data, with the count shown as recorded.
+- **Check every verbatim quote and review score a research subagent returns against its source before publishing** _(cross-cutting)_
+  A market-study lane returned a customer quote that a summarising step had invented; it was caught by re-opening the source and was discarded and listed by name in the report's evidence gaps. The same study found the review-site scores were confounded: every high score belonged to a profile that pays for and solicits reviews, every very low one to an unpaid, non-soliciting profile.
+  <br>*Why:* Quotes and star ratings are the most persuasive items in a research report and the easiest for a summariser to fabricate or misread; one invented quote discredits the whole document.
+  <br>*How:* Treat any quote that came through a summariser as unverified until the exact string is found on the live page; record whether each review profile is paid or soliciting beside its score; list discarded items in an evidence-gaps section instead of dropping them silently.
+- **Guard an AI auto-responder with locked categories, a confidence line, a link allowlist and per-person caps** _(Joy)_
+  Joy Broadcast's reply autopilot sorts each reply into nine categories set to Automatic, Ask me or Off, with three locked: unsubscribe requests always remove the person and get no answer, out-of-office replies are ignored, complaints always wait for a human. An automatic answer is held back if confidence is under 80%, if it needs a fact not in the owner's business notes, if it contains a link that is in neither the notes nor the original email, if that person already got an automatic answer today or the thread already has three, or if the daily cap is reached. Reply text that tries to instruct the model is treated as plain content and held. Automatic answers carry Auto-Submitted: auto-replied so other responders do not answer back.
+  <br>*Why:* An unattended model answering customer email can invent prices, send unknown links, loop with other auto-responders or obey instructions planted in a reply.
+  <br>*How:* Ship with the master switch off; draft only from owner-supplied notes plus the email replied to; implement each guard as a reason to queue for approval rather than a silent drop; test with a booking question, praise, 'remove me', an out-of-office, a complaint, a prompt-injection asking for a discount code and a second reply the same day.
+- **Internal copies of campaign emails must carry no tracking or unsubscribe links** _(Joy)_
+  Broadcast's 'Copies to another inbox' builds each copy with its own small MIME builder: no click-tracking links, no one-click unsubscribe header or link, a visible 'Copy' banner, and for forwarded replies the original sender as Reply-To. A failed copy never blocks the real send, and copies count toward the daily cap.
+  <br>*Why:* Forwarding the recipient's actual email to a second inbox means opening or clicking the copy can unsubscribe the real recipient or record fake clicks and sales against them.
+  <br>*How:* Render copies from the campaign content, not from the per-recipient frozen email; strip List-Unsubscribe and tokenised URLs; test that a two-person campaign yields exactly one copy with none of those links and that an invalid copy address is rejected.
+- **Bulk sender safety set: block before sending with a reason, warm up, auto-brake, and keep bulk off the personal mail domain** _(Joy)_
+  Every Broadcast campaign passes a pre-send check that blocks unsafe sends in plain words (consent record per contact, postal address present, unsubscribe present, sending domain). Volume starts at 200 a day and grows 1.5x daily; everything pauses if bounces pass 2% or complaints pass 0.1% in a week. Sends to more than 50 people are refused while the From domain is the owner's personal inbox domain. Consent rows are append-only, enforced by database triggers, and bounce notices are read from the platform's own inbound mail.
+  <br>*Why:* Review mining for the market study found unexplained suspension is the top complaint about email platforms (64 of 206 low-star reviews), and Gmail and Yahoo require complaints under 0.3% for bulk senders. Complaints on a shared domain also damage the owner's personal mail.
+  <br>*How:* Gate the send endpoint on the preflight result rather than on UI state; store warm-up and brake thresholds as settings; require a dedicated subdomain before list sends; prove the consent table rejects UPDATE and DELETE.
+- **Label every found contact with its country's cold-email rule and default unknown countries to 'Check first'** _(Hallalu CRM)_
+  Each Lead Finder row is marked OK to email, Check first, Needs consent or Depends on the address, with the reason, for 23 researched countries. Examples: US and UK limited companies OK; UK sole traders, Canada, Ireland check first; Germany, Spain, Italy, South Africa need consent; Australia and New Zealand need consent because they ban emailing addresses collected by software, which is what the tool does; France, Belgium, Jamaica and India allow generic inboxes such as info@ but not named people. Company versus sole trader is guessed from the name suffix. The platform's do-not-email list always overrides.
+  <br>*Why:* A lead tool that returns addresses with no legal context invites the user to send mail that is unlawful where it lands. Stating the stricter reading where sources disagree, and 'not checked' elsewhere, avoids both false permission and invented bans.
+  <br>*How:* Keep the rule table in code with the research date; classify generic versus named inboxes; hold back anything not marked OK unless consent is recorded; label the output as research, not legal advice.
+- **Use Google Places only to discover a business's website; store data taken from the business's own site** _(cross-cutting)_
+  Two constraints were checked before designing the finder: a Places text search returns at most 60 results (three pages of 20), so a city has to be tiled; and the Maps service terms forbid storing listing content or building a database from it, with the place ID the only field that may be kept. The design therefore uses Google (optional, key-gated) to find the website, then reads the published email from the business's own pages, with OpenStreetMap and the US NPI register as free sources.
+  <br>*Why:* Saving Google listing fields into a CRM breaches the terms the API key is issued under, and 'get all the businesses on Google' is not achievable from one query.
+  <br>*How:* Split the area into tiles and query each; persist only place_id from Google; record source and date on every stored field; note that a Worker cannot open port 25, so address checking is limited to an MX lookup unless a verification service is added.
+- **Rolling local backup plus a 'Recover unsaved call' banner for any long capture session** _(Hallalu CRM)_
+  On every recognised phrase the in-progress call (transcript, typed note, duration) is written to localStorage; hashchange, beforeunload and visibility change flush it; Cancel clears it. On the next visit a banner offers Recover or Discard and restores the outcome screen.
+  <br>*Why:* A capture that lives only in memory is lost by a refresh, an app-update prompt or forgetting to stop; the user lost a real call this way.
+  <br>*How:* Keep one backup key per capture type, write on each increment, flush on navigation events, clear only on explicit save or cancel, and test by injecting a backup and reloading.
+- **Label every proof with how it was proven: Verified, Corroborated, Attested or Reviewed** _(HallaluSocial)_
+  Each step carries a trust badge reflecting the actual mechanism: API-checked (Verified), indirect evidence such as TikTok following-count rising inside the window (Corroborated), self-confirmed (Attested), or creator-approved upload (Reviewed). A later follower-export match adds a second 'Confirmed' badge without breaking the receipt.
+  <br>*Why:* Competitors blur the difference and users assume giveaways are fake; honest tiers keep the product's claims true where a platform has no follow API.
+  <br>*How:* Store the trust level on the event at write time, render it everywhere the step appears, and never upgrade a label without new evidence.
+- **Ship experiments with sample sizes, a significance read and a 'how many you need' guide** _(HallaluSocial)_
+  The head-start A/B card shows each group's completions and n, the difference, a p-value, and a rule of thumb (about 400 per group to detect a 10-point difference). The UI output was checked against a hand calculation (26/40 vs 17/40, p = 0.044). Fans are assigned at page load so the control group never sees a control that does nothing.
+  <br>*Why:* A bare 'A beat B' on a few dozen visitors invites wrong decisions.
+  <br>*How:* Assign server-side at load, store the variant with the run, compute a two-proportion test, and verify the displayed numbers by hand once before shipping.
+- **Judge A/B winners on clicks, replies and sales, never opens, and show the confidence** _(Joy)_
+  Joy Broadcast sends two subjects or two whole designs to a random slice, waits a chosen number of hours, then sends the leader to the rest. Opens are deliberately not tracked or used; the report shows both arms side by side with a confidence read and typical click-rate benchmarks.
+  <br>*Why:* Apple Mail privacy pre-fetching inflates opens (research in the session put it at roughly 55 to 60 percent of opens), so open-rate winners are noise.
+  <br>*How:* Record variant per send, attribute clicks through the tracker, decide on the cron after the window, and state the confidence instead of a bare winner.
+- **Email-in to template: hold anything from an unknown sender for approval** _(Joy)_
+  Forwarding an email to templates@ has Ava rebuild it as an editable template. Senders not on the trusted list land as 'pending' and need approval in Settings; imported links are cleared so the owner adds their own.
+  <br>*Why:* An open inbound address would let strangers fill the template library or plant links.
+  <br>*How:* Keep an allow-list in settings, store the sender and a pending status on the row, and strip outbound links on import. Verified with a real SMTP message to the live address.
+- **Calibrate a face-identity score against impostors and owner judgements, gate on face quality, and show bands instead of percentages** _(Start in Story)_
+  Score every candidate against owner-approved reference photos; refuse to score faces that are too small, turned or blurred; seed 25 lookalike 'impostor' women and collect the owner's same/different calls; set thresholds from that evidence; show Locked / Close / Drifted rather than a percentage. Cross-check the browser scorer against an offline Node scorer (here they agreed within 0.024).
+  <br>*Why:* With starting thresholds the closest stranger scored 0.337-0.346, right on the 0.34 Close/Drifted line, so an uncalibrated cut-off can label a different woman 'Close'. A bare percentage also implies precision the model does not have.
+  <br>*How:* Keep reference, candidate and impostor sets per character; store every score and human call append-only; recompute thresholds from the impostor maximum and the human labels; run the same pipeline in two runtimes and compare before trusting either.
+- **A within-year ratio is not a lifetime probability: never label 'divorces per 100 marriages' as 'of marriages end in divorce'** _(Divorce Rates Atlas)_
+  While relabelling, the KPI caption was first written as '% of marriages end in divorce' and corrected in the same pass to 'per 100 marriages (this year's divorces ÷ this year's marriages)'. The app now states that 74 per 100 is not '74% of marriages will end in divorce'.
+  <br>*Why:* The cohort-probability reading is the single most common misuse of divorce statistics; shipping it would have been a false claim on the headline number.
+  <br>*How:* For any ratio of two same-year flows, write the denominator into the label and add one 'what this is not' sentence next to the headline figure.
+- **Ship regulatory numbers as a versioned rate pack where every line carries its source and a confirmed/unconfirmed flag** _(CRM Dealership)_
+  The Trinidad duty engine stores duty, VAT, MVT, levy, exemptions and the age limit as a versioned 'TT 2026' pack. Each line has a source and a confirmed flag; unconfirmed lines (MVT per-cc schedule, levy amount, hybrid ≤1599cc exemption) are shown as such and editable in Settings; each save creates a new version.
+  <br>*Why:* Tax and import rules change (the age limit moved from 3 to 8 years during the research) and some figures could not be verified; hard-coding them would present guesses as law in a tool that prices cars.
+  <br>*How:* Model rates as data with {value, source, confirmed, version}; surface the flag in the UI and on the computed breakdown; never overwrite a pack, add a version.
+- **Size a market as a reconciled range and drop broad-scope outliers before quoting a TAM** _(cross-cutting)_
+  Six analyst estimates for dealership-management software clustered at $4–9B, while three others quoted $17–40B because they include hardware, services and non-auto dealers. The report quotes the range with a $5–6B midpoint, states why the larger figures are excluded, and derives SAM/SOM bottom-up from rooftop counts × ARPU.
+  <br>*Why:* A single headline TAM from the widest-scope report inflates the opportunity several-fold and collapses under the first investor or client question.
+  <br>*How:* Collect ≥5 estimates, record each one's scope, cluster like-for-like, name the outliers and their scope difference, then build SAM/SOM from counts × price rather than a percentage of TAM.
+- **Only print an identity % that was measured on that exact image; no chip when the face is hidden or strongly expressive** _(Start in Story)_
+  Every score chip in the creative set is the app's own face-api score for that file against the original. Pieces where the face is hidden, or where a frown/hand-at-temple pose scored 55%, carry no chip; the proof slide shows the real spread including the 42% reject.
+  <br>*Why:* A score copied from a different bake, or from a generator's own 8-9/10 self-rating, would make the consistency claim false on the ad itself.
+  <br>*How:* Run each final PNG through a local Face Match page that loads the app's own models and thresholds, store the number in the spec next to the item, and render the chip only from that field.
+- **Audit a published report against the research section list, and add a companion entry rather than editing** _(Analysis)_
+  After publishing, the report was checked against REPORT.md and found to omit segments, ranked requests, switching reasons, the full competitor list and search signals. Because the archive is append-only, a 'Full Record' companion report was added and the first left untouched.
+  <br>*Why:* 'Nothing dropped' was claimed before it was checked; the short report alone would have lost most of the evidence.
+  <br>*How:* List the research file's headings, tick each against the report blocks before calling it done, and ship gaps as a linked companion slug.
+- **Single-pass BiRefNet drops low-contrast parts (paws under grass); fuse three passes and guide the edge with the photo** _(Pixelbake)_
+  One pass removed the bottoms of a dog's paws wherever grass blades crossed them and kept the grass. The new default runs the frame, its mirror and a 2x crop of the subject box, keeps any pixel a pass found, then applies a guided filter so the uncertain band snaps to real fur edges. On the same photo 1,312 pixels were recovered exactly at the paws, while the glass bottle and portrait masks barely changed.
+  <br>*Why:* The owner compared it with Canva; the accuracy gain had to come from driving the available model harder, at the same 1 credit.
+  <br>*How:* Decode the PNG mattes inside the Worker (src/matte.js), union the three alphas, guided-filter against the source luminance; expect about 5.7 s on a 1024 square instead of 1.5 s, so keep a --fast single-pass option and return recovered-pixel stats so the gain is measurable.
+- **Scan for hard-coded keys before any bulk upload of source, reporting only path and key type, and expect base64 false positives** _(cross-cutting)_
+  Before 65 folders (about 6,000 files) were uploaded to a code host, every candidate file was scanned for live key patterns (Stripe live and webhook keys, AWS, Google and similar). The first scan would have printed matches, so it was rerun to print only the file path and the kind of key. The four hits were 'AIza' substrings inside base64-embedded images in composed HTML, not keys.
+  <br>*Why:* An exclude list for .env, .dev.vars, pepper, access-code and token files does not catch a key pasted into source, and echoing a match into tool output leaks the secret a second time.
+  <br>*How:* Regex per provider over the exact upload set, output path plus pattern name only, then inspect each hit's surrounding context with the value masked; data-URI images are the usual false positive.
+- **Forgot-passcode by emailed code: the limits and side effects that made it safe on a shared passcode** _(Joy)_
+  One shared passcode guards Joy Mail, Cloud and Broadcast. Recovery emails a 6-digit code that works once, lasts 15 minutes, allows 5 tries and at most 3 sends per 15 minutes; a new send retires the previous code. A reset signs every device out of all three apps and emails a 'passcode changed' notice. Saving a recovery address sends a test email first and tells the old address about the change. The recovery inbox must be outside the system being recovered. After the first reset the new passcode lives as a salted hash in the database and the original Worker secret no longer applies.
+  <br>*Why:* A short numeric passcode plus an emailed code is only as strong as its throttles, and a recovery address inside the locked mailbox is unreadable exactly when it is needed.
+  <br>*How:* One recovery module on the auth owner (Mail) with the other apps forwarding to it; refuse with a clear message when no recovery address is saved; prove wrong code, retired code, reused ticket, old passcode, old session and a fourth send are all refused. In wrangler dev the code can be read from the simulated .eml under .wrangler/tmp/email.
+- **Let a logged time entry be corrected after saving, but keep the original figure and mark the row 'adjusted'** _(Hallalu CRM)_
+  A work-log timer left running overstated a session. Each logged row now has a Time button: type the hours and minutes actually worked, or set the real end time and subtract breaks, with a preview of exactly what the row will read. The original timed figure stays on the entry, the row shows an 'adjusted' tag, the change is written to the activity feed, and day, week and analysis totals recompute. Because the recorded pause pattern can no longer be true, the strip collapses to one work stretch plus one break block rather than a stretched copy.
+  <br>*Why:* A log that cannot be corrected is wrong for ever, and one that is silently rewritten cannot be trusted for billing.
+  <br>*How:* Store originalMs alongside the edited value, flag the entry, derive all totals from the edited value, and never scale old interval data to fit a new duration.
 
 ## privacy & legal (2)
 
