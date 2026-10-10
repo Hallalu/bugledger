@@ -5590,5 +5590,113 @@
     "status": "unverified",
     "session": "7e294579",
     "found": "2026-10-09"
+  },
+  {
+    "key": "0cc7f71a:testtheiphoneapplesbugtrackerhasreportsthatwebappaudiocansto",
+    "app": "Hallalu CRM",
+    "title": "Test the iPhone. Apple's bug tracker has reports that web-app audio can stop when the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Test the iPhone.** Apple's bug tracker has reports that web-app audio can stop when the screen locks ([one example](https://bugs.webkit.org/show_bug.cgi?id=291892)).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0cc7f71a",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "0cc7f71a:whaticouldnotverifyxfacebookgroupsinstagramandthreadsbecause",
+    "app": "Hallalu CRM",
+    "title": "What I could not verify - X, Facebook groups, Instagram and Threads, because the Chrome…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## What I could not verify - X, Facebook groups, Instagram and Threads, because the Chrome extension wasn't connected.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0cc7f71a",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "6bfbafe5:thatsareallayoutbugthebuttonwasbuiltasaleftalignedtablewhich",
+    "app": "Hallalu CRM",
+    "title": "That's a real layout bug: the button was built as a left-aligned table, which email…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "That's a real layout bug: the button was built as a left-aligned table, which email clients float out of the card.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6bfbafe5",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "6e3bc715:analyticsinsidewisdommarketingitdoesntpullresultsbackfrompla",
+    "app": "Hallalu CRM",
+    "title": "- Analytics inside Wisdom Marketing. It doesn't pull results back from platforms or…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Analytics inside Wisdom Marketing.** It doesn't pull results back from platforms or suggest posting times.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e3bc715",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "6e3bc715:knownroughedgesadminmismatchanadminaddedthroughtheadminemail",
+    "app": "Hallalu CRM",
+    "title": "Known rough edges - Admin mismatch: an admin added through the ADMINEMAILS secret…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "**Known rough edges** - **Admin mismatch:** an admin added through the `ADMIN_EMAILS` secret passes the server checks but doesn't see any admin tabs, because the screen only recognises your owner ema…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6e3bc715",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "7e294579:captionsareeditablewhispergetswordswrongsonowyoucanclickacap",
+    "app": "Hallalu CRM",
+    "title": "- Captions are editable — Whisper gets words wrong, so now you can click a caption on…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- **Captions are editable** — Whisper gets words wrong, so now you can **click a caption on the video and fix it** (correct the word, add spaces); it writes straight back to that caption.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7e294579",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "ba780a05:areplydoesntmovealeadforward",
+    "app": "Hallalu CRM",
+    "title": "- A reply doesn't move a lead forward.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- A reply doesn't move a lead forward.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ba780a05",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "ba780a05:onlyhallaluhasanewslettertickboxanditisntconnectedtojoybroad",
+    "app": "Hallalu CRM",
+    "title": "Only Hallalu has a newsletter tick-box, and it isn't connected to Joy Broadcast.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Only Hallalu has a newsletter tick-box, and it isn't connected to Joy Broadcast.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ba780a05",
+    "found": "2026-10-09"
+  },
+  {
+    "key": "ba780a05:hunterkeyfindsemailswhenawebsitedoesntlistonewhatitdoesaddsa",
+    "app": "Hallalu CRM",
+    "title": "Hunter key (finds emails when a website doesn't list one) - What it does: adds a \"Find…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Hunter key (finds emails when a website doesn't list one) - **What it does:** adds a \"Find more emails\" button for businesses that have a website but no published email.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ba780a05",
+    "found": "2026-10-09"
   }
 ]
