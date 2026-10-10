@@ -5698,5 +5698,89 @@
     "status": "unverified",
     "session": "ba780a05",
     "found": "2026-10-09"
+  },
+  {
+    "key": "07a38c70:norealresetonliveihaventrunonebecauseitwouldchangeyourrealpa",
+    "app": "Hallalu CRM",
+    "title": "- No real reset on live: I haven't run one because it would change your real passcode.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **No real reset on live:** I haven't run one because it would change your real passcode.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "07a38c70",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "07a38c70:twosmallfixesafailedsendnolongerclosesyourmessageandalinebre",
+    "app": "Hallalu CRM",
+    "title": "- Two small fixes: a failed send no longer closes your message, and a line break in a…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Two small fixes:** a failed send no longer closes your message, and a line break in a subject can no longer add extra mail headers.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "07a38c70",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "6bfbafe5:anythingshedoesntknowisleftinbracketsandtheemailwontsendunti",
+    "app": "Hallalu CRM",
+    "title": "Anything she doesn't know is left in [brackets], and the email won't send until you…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Anything she doesn't know is left in [brackets], and the email won't send until you fill those in.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6bfbafe5",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "6bfbafe5:thetestcaughtonerealbugbeforedeployanemailwithnothingwritten",
+    "app": "Hallalu CRM",
+    "title": "Test caught one real bug before deploy: an email with nothing written in it could be…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The test caught one real bug before deploy: an email with nothing written in it could be sent, because the sign-off and the quoted original counted as content.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6bfbafe5",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "beaf3c88:threefixesnotedtitlebackgroundfitondesktopstartsolopracticen",
+    "app": "Hallalu CRM",
+    "title": "Three fixes noted: title background fit on desktop, \"Start solo practice\" not working,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Three fixes noted: title background fit on desktop, \"Start solo practice\" not working, and \"Open for service\" → \"Start\".",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "beaf3c88",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "fba7dfe5:runningaworkerbuildinthatstatewouldlikelyfailmiddeployandwor",
+    "app": "Hallalu CRM",
+    "title": "Running a Worker build in that state would likely fail mid-deploy and worsen the very…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Running a Worker build in that state would likely fail mid-deploy and worsen the very emergency we're fixing.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "fba7dfe5:wantmetopublishthereporttotheanalysisappnowanywayriskofafail",
+    "app": "Hallalu CRM",
+    "title": "Want me to publish the report to the Analysis app now anyway (risk of a failed deploy…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Want me to publish the report to the Analysis app now anyway (risk of a failed deploy on the full disk), or wait until you've run the simulator erase and freed real space?",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fba7dfe5",
+    "found": "2026-10-10"
   }
 ]
