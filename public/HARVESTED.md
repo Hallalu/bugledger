@@ -1,6 +1,6 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-488 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+490 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
 ## Hallalu CRM (268)
 
@@ -273,7 +273,7 @@
 - [ ] `low` `other` (2026-10-10, #fba7dfe5) — Want me to publish the report to the Analysis app now anyway (risk of a failed deploy…
 - [ ] `low` `other` (2026-10-10, #beaf3c88) — - GitBagel: 226 changed files uploaded, none failed.
 
-## Finished. (90)
+## Finished. (92)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -365,6 +365,8 @@
 - [ ] `low` `ui` (2026-10-07, #ea78c819) — Horizontal overflow is fixed (scroll width now equals the viewport).
 - [ ] `low` `other` (2026-10-07, #ea78c819) — - Earning from AI influencers mostly doesn't happen. The real money came from product…
 - [ ] `low` `other` (2026-10-07, #ea78c819) — Confirmed a later visit doesn't overwrite it.
+- [ ] `low` `other` (2026-10-11, #28a0b8d5) — - PFP error: saving an image tripped a database trigger that calls a function it cannot…
+- [ ] `low` `other` (2026-10-11, #28a0b8d5) — - Earlier failed PFP attempts were generated and charged but never saved.
 
 ## Stitchhooky (38)
 

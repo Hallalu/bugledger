@@ -5854,5 +5854,29 @@
     "status": "unverified",
     "session": "beaf3c88",
     "found": "2026-10-10"
+  },
+  {
+    "key": "28a0b8d5:pfperrorsavinganimagetrippedadatabasetriggerthatcallsafuncti",
+    "app": "Finished.",
+    "title": "- PFP error: saving an image tripped a database trigger that calls a function it cannot…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **PFP error:** saving an image tripped a database trigger that calls a function it cannot see.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "28a0b8d5",
+    "found": "2026-10-11"
+  },
+  {
+    "key": "28a0b8d5:earlierfailedpfpattemptsweregeneratedandchargedbutneversaved",
+    "app": "Finished.",
+    "title": "- Earlier failed PFP attempts were generated and charged but never saved.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Earlier failed PFP attempts** were generated and charged but never saved.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "28a0b8d5",
+    "found": "2026-10-11"
   }
 ]
