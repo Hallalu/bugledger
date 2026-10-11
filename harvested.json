@@ -5782,5 +5782,77 @@
     "status": "unverified",
     "session": "fba7dfe5",
     "found": "2026-10-10"
+  },
+  {
+    "key": "beaf3c88:whattheold6secondpassgotwrongnowcorrectedinthegameanordersco",
+    "app": "Hallalu CRM",
+    "title": "What the old 6-second pass got wrong, now corrected in the game: - An order scores 20,…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "What the old 6-second pass got wrong, now corrected in the game: - An order scores 20, not 50.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "beaf3c88",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "beaf3c88:solopracticefailedbecausetheraceroomforgotitsplayersafterabo",
+    "app": "Hallalu CRM",
+    "title": "Solo practice failed because the race room forgot its players after about 50 seconds idle.",
+    "category": "race",
+    "severity": "medium",
+    "symptom": "Solo practice failed because the race room forgot its players after about 50 seconds idle.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "beaf3c88",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "329c9839:thingsthatwentwrongalongthewayanothersessionsboardgotmynotes",
+    "app": "Hallalu CRM",
+    "title": "Things that went wrong along the way - Another session's board got my notes. A second…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "## Things that went wrong along the way - **Another session's board got my notes.** A second session working in `~/pixelbake` replaced the Aprizely board file, so five of my progress updates were wri…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "329c9839",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "329c9839:thatsessionslastcommitwasmisplacedingitcommit5253324recorded",
+    "app": "Hallalu CRM",
+    "title": "- That session's last commit was misplaced in git. Commit 5253324 recorded its Extend…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "- **That session's last commit was misplaced in git.** Commit `5253324` recorded its Extend changes at the wrong lines.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "329c9839",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "beaf3c88:everycommandfailedandwranglerlostitssavedsigninintheprocess",
+    "app": "Hallalu CRM",
+    "title": "Every command failed, and wrangler lost its saved sign-in in the process.",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "Every command failed, and wrangler lost its saved sign-in in the process.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "beaf3c88",
+    "found": "2026-10-10"
+  },
+  {
+    "key": "beaf3c88:gitbagel226changedfilesuploadednonefailed",
+    "app": "Hallalu CRM",
+    "title": "- GitBagel: 226 changed files uploaded, none failed.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- GitBagel: 226 changed files uploaded, none failed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "beaf3c88",
+    "found": "2026-10-10"
   }
 ]
