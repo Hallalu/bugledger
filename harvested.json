@@ -6226,5 +6226,41 @@
     "status": "unverified",
     "session": "748ca148",
     "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:twoproblemsinpixelbakeyoushouldknowaboutitsstripewebhookcoul",
+    "app": "Hallalu CRM",
+    "title": "Two problems in Pixelbake you should know about - Its Stripe webhook could never have…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## Two problems in Pixelbake you should know about - **Its Stripe webhook could never have worked.** The code read each payment message twice and failed on the second read.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:youcansetthemwithoncetheyreinthebugifixedtodaythewebhookread",
+    "app": "Hallalu CRM",
+    "title": "You can set them with: Once they're in, the bug I fixed today (the webhook reading its…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "You can set them with: Once they're in, the bug I fixed today (the webhook reading its message twice) no longer blocks it, and affiliate shares will record on first payments.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:whatistillneedfromyouyourmessagequotedmyfirstquestionbutthea",
+    "app": "Hallalu CRM",
+    "title": "What I still need from you Your message quoted my first question but the answer didn't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## What I still need from you Your message quoted my first question but the answer didn't come through: 1.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
   }
 ]
