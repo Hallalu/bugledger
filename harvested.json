@@ -6298,5 +6298,65 @@
     "status": "unverified",
     "session": "9666cd90",
     "found": "2026-10-12"
+  },
+  {
+    "key": "22063659:all13areqacleanfullyrebrandedtohallaluartwithzeromodelbacken",
+    "app": "Hallalu CRM",
+    "title": "All 13 are QA-clean, fully rebranded to Hallalu Art with zero model/backend/old-brand…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "All 13 are QA-clean, fully rebranded to **Hallalu Art** with zero model/backend/old-brand leakage.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "22063659",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "22063659:theusvsthemrowswererewrittentocurrentpublicfeaturesfailuresf",
+    "app": "Hallalu CRM",
+    "title": "Us-vs-them rows were rewritten to current public features (failures-free, the record,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The us-vs-them rows were rewritten to current public features (failures-free, the record, private-by-default, agent-usable).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "22063659",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "22063659:all13recomposedqadatfullsizetocleancaughtfixedareceiptctacol",
+    "app": "Hallalu CRM",
+    "title": "- All 13 recomposed, QA'd at full size to clean (caught + fixed a receipt/CTA collision…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- All 13 recomposed, **QA'd at full size to clean** (caught + fixed a receipt/CTA collision and a stray \"model\" on carousel slide 5; final leakage grep: **CLEAN**).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "22063659",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "575f8279:whatgrewsincethelastrunnotabilitynotesfromicloud54gbnowsitsi",
+    "app": "Hallalu CRM",
+    "title": "What grew since the last run: - Notability notes from iCloud: 5.4 GB now sits in…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "**What grew since the last run:** - **Notability notes from iCloud:** 5.4 GB now sits in `~/Library/Mobile Documents`, which wasn't there two days ago.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "575f8279",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:thenosuchcolumntitleerrorthatcamefromthelocalpreviewcopyinth",
+    "app": "Hallalu CRM",
+    "title": "- The \"no such column: title\" error: that came from the local preview copy in the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **The \"no such column: title\" error:** that came from the local preview copy in the Browser pane, not the live site.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
   }
 ]
