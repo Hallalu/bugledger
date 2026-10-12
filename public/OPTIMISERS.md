@@ -1,8 +1,8 @@
 # ✨ Optimisers — elevations worth reusing
 
-434 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
+449 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
 
-## design elevation (36)
+## design elevation (40)
 
 - **One-shot entrance animations (never re-animate on refresh)** _(Bug Ledger)_
   Put entrance animations on a one-shot class that is stripped after it plays, not on the base element.
@@ -148,8 +148,24 @@
   The Layers editor's subject shadow takes its colour from the backdrop underneath (sampled ambient colour, read from the live layer stack) and composites it with Multiply, alongside per-layer opacity and blend modes.
   <br>*Why:* The research pass on compositing found the contact shadow is the largest single realism gain for a cut-out; a neutral black shadow on a coloured or gradient backdrop is what makes a subject look pasted on.
   <br>*How:* Sample the backdrop's average colour under the subject, darken it, draw the blurred silhouette with globalCompositeOperation 'multiply', then the subject; recompute when the backdrop changes (including after undo).
+- **Sender logos in a mail client: BIMI, then site icon, Gravatar for personal mailboxes, stored once server-side** _(Joy Mail)_
+  The inbox showed only coloured initials for every sender, unlike Gmail.
+  <br>*Why:* Real sender logos make an inbox feel finished, but they must be resolved safely, cheaply and without leaking.
+  <br>*How:* Server route /api/logo?e=<address>: DoH TXT lookup of default._bimi.<domain> (then org domain) → fetch the l= SVG; else https://<org>/apple-touch-icon.png; else Google s2 favicons sz=128; personal-mailbox domains get Gravatar (sha256, d=404) only, never the provider logo. Store hits/misses in R2 with a timestamp (misses re-checked weekly); client <img> over the initials circle, opacity 0 until onload, removed onerror. Traps: return 204 not 404 for misses; loading=lazy never loads in a hidden pane; restrict the demo route to seeded senders so it isn't an open lookup proxy.
+- **Measure a tone/colour step ACROSS a seam, not inside the kept region** _(Pixelbake)_
+  On white studio backgrounds the generated sides came out a shade greyer than the photo, leaving visible panels; a correction computed from photo-vs-redrawn-photo was zero because the model kept the photo faithfully.
+  <br>*Why:* The visible defect is the difference between kept and generated regions, so measuring inside the faithfully-kept region finds nothing.
+  <br>*How:* Compare the photo just inside the edge with the generated area just outside it (each averaged with its own mask), carry the difference outward with a squared falloff, and apply the same correction inside the blend ramp to avoid a hairline.
+- **Outpaint canvas: hand the model colour-noise (not blur), no model for plain backdrops, one direction per pass** _(Pixelbake)_
+  A blurred edge-colour canvas made FLUX.2 klein paint smears or invent out-of-focus scenery; a photo floating in the middle of an empty canvas came back unpainted far more often than a strip beside a photo.
+  <br>*Why:* The model reads a soft canvas as 'keep it soft', and a centred photo as 'nothing to do', so the canvas and growth geometry decide success.
+  <br>*How:* Hand the model a colour-noise canvas (reads as empty, gets real scenery), alternating with the soft canvas over four tries; continue plain backdrops (edge detail < 1.2) smoothly with no model; run four-sided growth as two passes; detect leftover noise by colour-channel decorrelation in 24px blocks.
+- **Generated backgrounds look pasted unless camera angle, light and supports are carried over** _(Pixelbake)_
+  Create-background v1 cut the subject out, showed it to the model on grey and pasted the original back: a top-down food shot landed on a side-on table without its plate, and a white-lit studio chair sat in a warm hall like a sticker.
+  <br>*Why:* A new scene that ignores the subject's camera angle, light and what it rests on reads as a cut-out sticker.
+  <br>*How:* Read camera angle, light and the subject's support with a vision model and put them in the prompt; show the model the real photo so plate/stand/hands stay; register the frame to the subject; carry the scene's broad light onto the real subject as a wide-blurred per-channel ratio inside the subject mask; pull the cut-out edge in slightly so the scene render forms the outline.
 
-## UX (57)
+## UX (60)
 
 - **Live progress counter for long tasks (N / total)** _(Bug Ledger)_
   Stream a running 'checked N / total' counter for long agent work so the user sees exactly where it reached.
@@ -379,8 +395,20 @@
   A 5-hour recording takes 15-25 minutes to transcribe in about 10-minute pieces, three at a time. Finished pieces are now cached on the device under a SHA-256 fingerprint of the recording, a beforeunload warning fires while a job runs, progress reads 'part 3 of 30', and the cache is cleared when the job completes.
   <br>*Why:* Closing the tab part-way used to throw all the work away. Proven by reloading after two pieces: the rerun started at 2 of 6.
   <br>*How:* Fingerprint the blob, store each piece's text keyed by fingerprint and index, skip cached indexes on rerun, register beforeunload only while running, delete the cache entry on success.
+- **A dark hero 'stage' must not be sticky, and must soften in the light theme** _(Pixelbake)_
+  Owner feedback: the dark box stuck in place while scrolling and did not move naturally; in the light theme it was too high-contrast.
+  <br>*Why:* A sticky dark panel fights the scroll and a flat dark box looks wrong on a light page, while real media should stay dark.
+  <br>*How:* Use position: relative (not sticky) for stage panels; theme-scoped overrides so light mode gets a soft tinted surface with ink text while dark/midnight keep the dark box; keep real media (video, pictures) dark.
+- **Put a control the user must find before paying next to the thing it changes** _(Pixelbake)_
+  The owner could not find the voice switch on Talk: the 30 voice chips sat in a right-hand panel, far below the script on a narrow screen.
+  <br>*Why:* A control needed before spending money must not be below the fold or in a side panel.
+  <br>*How:* Show the chosen voice beside the script on the stage with a Hear button and a Change-voice grid; place the choice next to the thing it changes.
+- **AI output needs an instruction channel, not just the source text** _(Hallalu CRM)_
+  Ava broke a voice note into notes but the owner could not tell her to leave something out (e.g. remove ChatGPT references); she only repeated what she heard.
+  <br>*Why:* If the only input to an AI transform is the source text, the user can't steer the result (omit, reword, reshape).
+  <br>*How:* Carry owner instructions into the prompt as a numbered block that overrides wording, plus a 'revise' step that resends the current JSON with the accumulated instructions; leave the result untouched if the model is unavailable.
 
-## performance (10)
+## performance (11)
 
 - **In-place DOM updates for live views (diff, don't re-render)** _(Bug Ledger)_
   Update existing nodes field-by-field each poll and animate only what changed, instead of rewriting innerHTML.
@@ -422,8 +450,12 @@
   For a ruled table, only the top cell of each column is sent to the model as a candidate; the rows below inherit its label with a row number. A 30-cell table became 6 questions.
   <br>*Why:* Cut tokens and latency and removed the row-by-row mislabelling; with the example-row fix it took a scanned form to 45 of 45 in about 10 s for two pages.
   <br>*How:* Group detected boxes into columns (3 or more aligned cells), send the header-adjacent cell only, then fan the label out as 'Header (row N)'.
+- **Re-encode raw AI bakes before emailing: ~1200px JPEG q72** _(Sellpost)_
+  FLUX raws are 1–3 MB PNGs — too heavy for an email that must stay under Gmail's clipping limit.
+  <br>*Why:* Heavy inline images push an email past Gmail's ~102 KB clip and slow loads on mobile.
+  <br>*How:* newsletter.mjs auto-optimises with sips to ~1200px JPEG q72 (2 photos ≈ 170 KB total); QA caps any single image at 800 KB.
 
-## workflow (60)
+## workflow (61)
 
 - **Paste-and-go, zero-question agent prompts (self-install, never interrogate)** _(Breadcrumb)_
   An agent prompt that self-installs its CLI silently, streams if the key is present, and carries on quietly if not — never stopping to ask the user.
@@ -665,8 +697,12 @@
   Joy Cloud's signed-in loop had only been proven locally. The session inserted a one-time, 10-minute ticket row into the app's own ticket table through wrangler D1, opened /sso?t=<ticket> to get a real session without typing the passcode, uploaded a 112-byte file containing a random token, shared it, downloaded it from the public share origin and compared bytes, read the owner's activity, revoked the link (download then 404, friendly page), and purged the file so the drive was exactly as found.
   <br>*Why:* It exercises the real production endpoints across both Workers without the agent handling the owner's passcode, and the unique token makes 'the bytes match' a fact.
   <br>*How:* Reuse the app's existing ticket mechanism; random hex ticket with a short expiry; unique token in the test payload; screenshot each step; revoke, trash and purge at the end and confirm zero test files remain.
+- **Import walled videos via a downloader site's direct link — never sign in to fetch media** _(Pixelbake)_
+  Instagram refused a reel to a server, to the Browser pane (login/age wall), to yt-dlp and to Higgsfield; a downloader site (sssinstagram.com) resolved it to a direct fbcdn MP4 that curl fetched with an Instagram referer.
+  <br>*Why:* Login walls block automated fetches, and signing into someone's account to grab media is not acceptable.
+  <br>*How:* Paste-a-link import accepts the direct address a downloader site hands back; the walled-site message now says exactly that; never sign in to anyone's account to fetch media.
 
-## architecture (48)
+## architecture (49)
 
 - **Marketing landing at root, app at /app** _(Hallalu CRM)_
   Serve a marketing landing at the root and the app at /app; returning users skip the landing.
@@ -860,6 +896,10 @@
   Every live board gained a Past sessions drawer listing all boards for the project or for every project (280 sessions across 52 projects). The list comes from a separate endpoint that requires the owner's signed-in cookie: an anonymous request gets 401 and the drawer shows a sign-in prompt with a same-origin return path to the board.
   <br>*Why:* Board links are shared with clients. Adding history to the public board response would expose every other project name and session title to anyone holding one link.
   <br>*How:* Keep the public /live/<id> payload to that single board; serve history from a cookie-checked route; accept only same-origin paths in the post-sign-in redirect; test the anonymous 401 explicitly.
+- **Signed, expiring media links so an external engine can fetch private R2 files** _(Pixelbake)_
+  Video engines need a URL for the source clip, but a data URI of a 10 MB clip bloats the request and the private /v/<id> route needs a cookie.
+  <br>*Why:* External model endpoints can't send your auth cookie and shouldn't get a permanent public link to private media.
+  <br>*How:* Mint HMAC(PIXELBAKE_PEPPER, media.<id>.<exp>) → ?t=<exp>.<mac>, accepted by /i and /v for 2h with a constant-time compare; the Worker mints it per request; fall back to a data URI only when the origin is localhost.
 
 ## accessibility (9)
 
@@ -1325,7 +1365,7 @@
   <br>*Why:* An empty success for a malformed request reads as 'no data' and sends the investigator after a bug that does not exist.
   <br>*How:* Validate the required parameter first and reply 400 naming it; when checking counters against event rows, read the events before deleting the file that owns them.
 
-## integrity (102)
+## integrity (107)
 
 - **Server-verified completeness, not self-report** _(Bug Ledger)_
   When an agent claims it checked everything, verify it server-side and show N/N plus the exact items missed.
@@ -1735,6 +1775,26 @@
   A work-log timer left running overstated a session. Each logged row now has a Time button: type the hours and minutes actually worked, or set the real end time and subtract breaks, with a preview of exactly what the row will read. The original timed figure stays on the entry, the row shows an 'adjusted' tag, the change is written to the activity feed, and day, week and analysis totals recompute. Because the recorded pause pattern can no longer be true, the strip collapses to one work stretch plus one break block rather than a stretched copy.
   <br>*Why:* A log that cannot be corrected is wrong for ever, and one that is silently rewritten cannot be trusted for billing.
   <br>*How:* Store originalMs alongside the edited value, flag the entry, derive all totals from the edited value, and never scale old interval data to fit a new duration.
+- **Judge a character swap on screens, mirrors and reflections too — not just the main subject** _(Pixelbake)_
+  Test swap 1 (P-Video-Replace) replaced the person perfectly, but the camera LCD in the shot still showed the original woman.
+  <br>*Why:* A swap can be perfect on the body yet leave the old identity visible in any reflective surface in frame.
+  <br>*How:* Add to the judging rules: check any screen, mirror or reflection in the frame; crop the shot or note it before delivery.
+- **Animate-mode swaps transfer the face but can miss an arm gesture — check gestures, not just the face** _(Pixelbake)_
+  Test swap 2 (P-Video-Animate, 3s): identity and talking face held in all 4 sampled frames, but a hand wave at 1s did not carry over — hands stayed clasped.
+  <br>*Why:* Face-driven swap models can hold identity while dropping body/gesture motion, so a face-only check passes a broken clip.
+  <br>*How:* Compare the original and the swap at the second of each gesture; for gesture-heavy clips prefer replace mode (which carried the raised hand in test 1), or run again.
+- **Cinematic realism needs a scene engine, not a lip-sync head model** _(Pixelbake)_
+  Pruna P-Video-Avatar renders a clean, CGI-leaning talking head; the owner compared it with Kling and Higgsfield whose top tiers generate the whole scene with native speech.
+  <br>*Why:* Avatar/lip-sync models animate a head, so they can't match a scene-level generator's realism for cinematic shots.
+  <br>*How:* Offer a Cinema engine (e.g. ByteDance Seedance 2.0 on Cloudflare) that renders the scene and the dialogue together from the picture; keep the cheap avatar engine for exact script reads.
+- **Estimate speech length by the voice, not by the letters** _(Pixelbake)_
+  Three talking scenes: 71 letters → 7.0s, 55 → 8.0s, 41 → 8.0s; a 14-letters-per-second estimate undercharged the preview and overshot a 5s target.
+  <br>*Why:* Speech duration tracks pacing/voice, not character count, so a letters-per-second estimate mis-prices and mis-times.
+  <br>*How:* Estimate at ~8 letters/second, show it as 'about', charge the real length; for fixed-length engines (4/6/8s) pick the nearest length and say the line may be paced to fit.
+- **A metric that fails on one photo type may still separate failures on another — test before discarding** _(Pixelbake)_
+  A seam score was dismissed as useless after scoring 10-13 on every food-photo run, good or bad. On a wider test it scored 40-54 where invented figures were cut by the photo edge versus 8-14 on clean ones.
+  <br>*Why:* A signal that looks flat on one input class can be the sharpest discriminator on another, so discarding it early loses a real check.
+  <br>*How:* Test a rejected signal on other input types before discarding it. The seam score now triggers a second attempt above 30 and a refusal above 45.
 
 ## privacy & legal (2)
 

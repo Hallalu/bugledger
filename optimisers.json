@@ -4338,5 +4338,155 @@
     "detail": "Every live board gained a Past sessions drawer listing all boards for the project or for every project (280 sessions across 52 projects). The list comes from a separate endpoint that requires the owner's signed-in cookie: an anonymous request gets 401 and the drawer shows a sign-in prompt with a same-origin return path to the board.",
     "why": "Board links are shared with clients. Adding history to the public board response would expose every other project name and session title to anyone holding one link.",
     "how": "Keep the public /live/<id> payload to that single board; serve history from a cookie-checked route; accept only same-origin paths in the post-sign-in redirect; test the anonymous 401 explicitly."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "architecture",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "Signed, expiring media links so an external engine can fetch private R2 files",
+    "detail": "Video engines need a URL for the source clip, but a data URI of a 10 MB clip bloats the request and the private /v/<id> route needs a cookie.",
+    "why": "External model endpoints can't send your auth cookie and shouldn't get a permanent public link to private media.",
+    "how": "Mint HMAC(PIXELBAKE_PEPPER, media.<id>.<exp>) → ?t=<exp>.<mac>, accepted by /i and /v for 2h with a constant-time compare; the Worker mints it per request; fall back to a data URI only when the origin is localhost."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "integrity",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "Judge a character swap on screens, mirrors and reflections too — not just the main subject",
+    "detail": "Test swap 1 (P-Video-Replace) replaced the person perfectly, but the camera LCD in the shot still showed the original woman.",
+    "why": "A swap can be perfect on the body yet leave the old identity visible in any reflective surface in frame.",
+    "how": "Add to the judging rules: check any screen, mirror or reflection in the frame; crop the shot or note it before delivery."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "integrity",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "Animate-mode swaps transfer the face but can miss an arm gesture — check gestures, not just the face",
+    "detail": "Test swap 2 (P-Video-Animate, 3s): identity and talking face held in all 4 sampled frames, but a hand wave at 1s did not carry over — hands stayed clasped.",
+    "why": "Face-driven swap models can hold identity while dropping body/gesture motion, so a face-only check passes a broken clip.",
+    "how": "Compare the original and the swap at the second of each gesture; for gesture-heavy clips prefer replace mode (which carried the raised hand in test 1), or run again."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "ux",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "A dark hero 'stage' must not be sticky, and must soften in the light theme",
+    "detail": "Owner feedback: the dark box stuck in place while scrolling and did not move naturally; in the light theme it was too high-contrast.",
+    "why": "A sticky dark panel fights the scroll and a flat dark box looks wrong on a light page, while real media should stay dark.",
+    "how": "Use position: relative (not sticky) for stage panels; theme-scoped overrides so light mode gets a soft tinted surface with ink text while dark/midnight keep the dark box; keep real media (video, pictures) dark."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "ux",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "Put a control the user must find before paying next to the thing it changes",
+    "detail": "The owner could not find the voice switch on Talk: the 30 voice chips sat in a right-hand panel, far below the script on a narrow screen.",
+    "why": "A control needed before spending money must not be below the fold or in a side panel.",
+    "how": "Show the chosen voice beside the script on the stage with a Hear button and a Change-voice grid; place the choice next to the thing it changes."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "integrity",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "Cinematic realism needs a scene engine, not a lip-sync head model",
+    "detail": "Pruna P-Video-Avatar renders a clean, CGI-leaning talking head; the owner compared it with Kling and Higgsfield whose top tiers generate the whole scene with native speech.",
+    "why": "Avatar/lip-sync models animate a head, so they can't match a scene-level generator's realism for cinematic shots.",
+    "how": "Offer a Cinema engine (e.g. ByteDance Seedance 2.0 on Cloudflare) that renders the scene and the dialogue together from the picture; keep the cheap avatar engine for exact script reads."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "integrity",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "Estimate speech length by the voice, not by the letters",
+    "detail": "Three talking scenes: 71 letters → 7.0s, 55 → 8.0s, 41 → 8.0s; a 14-letters-per-second estimate undercharged the preview and overshot a 5s target.",
+    "why": "Speech duration tracks pacing/voice, not character count, so a letters-per-second estimate mis-prices and mis-times.",
+    "how": "Estimate at ~8 letters/second, show it as 'about', charge the real length; for fixed-length engines (4/6/8s) pick the nearest length and say the line may be paced to fit."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "workflow",
+    "session": "3d9bfbf4",
+    "source": "dailyledger",
+    "title": "Import walled videos via a downloader site's direct link — never sign in to fetch media",
+    "detail": "Instagram refused a reel to a server, to the Browser pane (login/age wall), to yt-dlp and to Higgsfield; a downloader site (sssinstagram.com) resolved it to a direct fbcdn MP4 that curl fetched with an Instagram referer.",
+    "why": "Login walls block automated fetches, and signing into someone's account to grab media is not acceptable.",
+    "how": "Paste-a-link import accepts the direct address a downloader site hands back; the walled-site message now says exactly that; never sign in to anyone's account to fetch media."
+  },
+  {
+    "app": "Joy Mail",
+    "category": "design-elevation",
+    "session": "c1bfaeaf",
+    "source": "dailyledger",
+    "title": "Sender logos in a mail client: BIMI, then site icon, Gravatar for personal mailboxes, stored once server-side",
+    "detail": "The inbox showed only coloured initials for every sender, unlike Gmail.",
+    "why": "Real sender logos make an inbox feel finished, but they must be resolved safely, cheaply and without leaking.",
+    "how": "Server route /api/logo?e=<address>: DoH TXT lookup of default._bimi.<domain> (then org domain) → fetch the l= SVG; else https://<org>/apple-touch-icon.png; else Google s2 favicons sz=128; personal-mailbox domains get Gravatar (sha256, d=404) only, never the provider logo. Store hits/misses in R2 with a timestamp (misses re-checked weekly); client <img> over the initials circle, opacity 0 until onload, removed onerror. Traps: return 204 not 404 for misses; loading=lazy never loads in a hidden pane; restrict the demo route to seeded senders so it isn't an open lookup proxy."
+  },
+  {
+    "app": "Hallalu CRM",
+    "category": "ux",
+    "session": "8dd938ce",
+    "source": "dailyledger",
+    "title": "AI output needs an instruction channel, not just the source text",
+    "detail": "Ava broke a voice note into notes but the owner could not tell her to leave something out (e.g. remove ChatGPT references); she only repeated what she heard.",
+    "why": "If the only input to an AI transform is the source text, the user can't steer the result (omit, reword, reshape).",
+    "how": "Carry owner instructions into the prompt as a numbered block that overrides wording, plus a 'revise' step that resends the current JSON with the accumulated instructions; leave the result untouched if the model is unavailable."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "design-elevation",
+    "session": "e123130f",
+    "source": "dailyledger",
+    "title": "Measure a tone/colour step ACROSS a seam, not inside the kept region",
+    "detail": "On white studio backgrounds the generated sides came out a shade greyer than the photo, leaving visible panels; a correction computed from photo-vs-redrawn-photo was zero because the model kept the photo faithfully.",
+    "why": "The visible defect is the difference between kept and generated regions, so measuring inside the faithfully-kept region finds nothing.",
+    "how": "Compare the photo just inside the edge with the generated area just outside it (each averaged with its own mask), carry the difference outward with a squared falloff, and apply the same correction inside the blend ramp to avoid a hairline."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "design-elevation",
+    "session": "e123130f",
+    "source": "dailyledger",
+    "title": "Outpaint canvas: hand the model colour-noise (not blur), no model for plain backdrops, one direction per pass",
+    "detail": "A blurred edge-colour canvas made FLUX.2 klein paint smears or invent out-of-focus scenery; a photo floating in the middle of an empty canvas came back unpainted far more often than a strip beside a photo.",
+    "why": "The model reads a soft canvas as 'keep it soft', and a centred photo as 'nothing to do', so the canvas and growth geometry decide success.",
+    "how": "Hand the model a colour-noise canvas (reads as empty, gets real scenery), alternating with the soft canvas over four tries; continue plain backdrops (edge detail < 1.2) smoothly with no model; run four-sided growth as two passes; detect leftover noise by colour-channel decorrelation in 24px blocks."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "design-elevation",
+    "session": "e123130f",
+    "source": "dailyledger",
+    "title": "Generated backgrounds look pasted unless camera angle, light and supports are carried over",
+    "detail": "Create-background v1 cut the subject out, showed it to the model on grey and pasted the original back: a top-down food shot landed on a side-on table without its plate, and a white-lit studio chair sat in a warm hall like a sticker.",
+    "why": "A new scene that ignores the subject's camera angle, light and what it rests on reads as a cut-out sticker.",
+    "how": "Read camera angle, light and the subject's support with a vision model and put them in the prompt; show the model the real photo so plate/stand/hands stay; register the frame to the subject; carry the scene's broad light onto the real subject as a wide-blurred per-channel ratio inside the subject mask; pull the cut-out edge in slightly so the scene render forms the outline."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "integrity",
+    "session": "e123130f",
+    "source": "dailyledger",
+    "title": "A metric that fails on one photo type may still separate failures on another — test before discarding",
+    "detail": "A seam score was dismissed as useless after scoring 10-13 on every food-photo run, good or bad. On a wider test it scored 40-54 where invented figures were cut by the photo edge versus 8-14 on clean ones.",
+    "why": "A signal that looks flat on one input class can be the sharpest discriminator on another, so discarding it early loses a real check.",
+    "how": "Test a rejected signal on other input types before discarding it. The seam score now triggers a second attempt above 30 and a refusal above 45."
+  },
+  {
+    "app": "Sellpost",
+    "category": "performance",
+    "session": "5bd0986b",
+    "source": "dailyledger",
+    "title": "Re-encode raw AI bakes before emailing: ~1200px JPEG q72",
+    "detail": "FLUX raws are 1–3 MB PNGs — too heavy for an email that must stay under Gmail's clipping limit.",
+    "why": "Heavy inline images push an email past Gmail's ~102 KB clip and slow loads on mobile.",
+    "how": "newsletter.mjs auto-optimises with sips to ~1200px JPEG q72 (2 photos ≈ 170 KB total); QA caps any single image at 800 KB."
   }
 ]
