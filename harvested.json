@@ -6178,5 +6178,17 @@
     "status": "unverified",
     "session": "16382522",
     "found": "2026-10-12"
+  },
+  {
+    "key": "d8924905:rootcausefoundtheworklogstatefileiscwdrelativeaprizelyworklo",
+    "app": "Hallalu CRM",
+    "title": "Root cause found: the worklog state file is cwd-relative (./.aprizely.worklog.json),…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "Root cause found: the worklog state file is **cwd-relative** (`./.aprizely.worklog.json`), and both my session and the co-session ran apz from your home dir — so they clobbered the same file.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d8924905",
+    "found": "2026-10-12"
   }
 ]
