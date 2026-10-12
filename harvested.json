@@ -6142,5 +6142,41 @@
     "status": "unverified",
     "session": "92f40e84",
     "found": "2026-10-12"
+  },
+  {
+    "key": "16382522:demophotosfixedletmelogthebeforeaftertoaprizelyandrecordtheb",
+    "app": "Finished.",
+    "title": "Demo photos fixed. Let me log the before/after to Aprizely and record the bug, then…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Demo photos fixed.** Let me log the before/after to Aprizely and record the bug, then move to the travel journal.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "16382522",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "16382522:demophotosfixedthebannerwasemptybecausethesampletriphadcover",
+    "app": "Finished.",
+    "title": "Demo photos fixed — the banner was empty because the sample trip had cover:null.",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "**Demo photos fixed** — the banner was empty because the sample trip had `cover:null`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "16382522",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "16382522:stillopenyourcallcommitpushdeployiveheldoffbecauseayoudidnta",
+    "app": "Finished.",
+    "title": "⏳ Still open — your call Commit / push / deploy. I've held off because (a) you didn't…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "## ⏳ Still open — your call **Commit / push / deploy.** I've held off because (a) you didn't ask me to ship this turn, and (b) **another session is editing this same repo** right now, so I don't want…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "16382522",
+    "found": "2026-10-12"
   }
 ]
