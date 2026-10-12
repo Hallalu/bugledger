@@ -5878,5 +5878,65 @@
     "status": "unverified",
     "session": "28a0b8d5",
     "found": "2026-10-11"
+  },
+  {
+    "key": "28a0b8d5:bothaddressesnowreturntheengineserrornotfound",
+    "app": "Budget LevelUp",
+    "title": "Both addresses now return the engine's {\"error\":\"not found\"}.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Both addresses now return the engine's `{\"error\":\"not found\"}`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "28a0b8d5",
+    "found": "2026-10-11"
+  },
+  {
+    "key": "28a0b8d5:thepfperroricanttellwhichcopyoftheappgaveyouthatmessage",
+    "app": "Budget LevelUp",
+    "title": "PFP error I can't tell which copy of the app gave you that message.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## The PFP error I can't tell which copy of the app gave you that message.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "28a0b8d5",
+    "found": "2026-10-11"
+  },
+  {
+    "key": "3d9bfbf4:thedeployfailedonabuilderrorwhilethecommitwentthroughsothefi",
+    "app": "Hallalu CRM",
+    "title": "Deploy failed on a build error while the commit went through, so the fix is the piece…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The deploy failed on a build error while the commit went through, so the fix is the piece to finish now.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3d9bfbf4",
+    "found": "2026-10-11"
+  },
+  {
+    "key": "ce9bddab:itsthegradientfadeoverlaynotscalingtogetherwiththeimagetheim",
+    "app": "Finished.",
+    "title": "It's the gradient fade-overlay not scaling together with the image (the image gets an…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It's the gradient fade-overlay not scaling together with the image (the image gets an extra `scale-[1.045]`, the overlay doesn't, so a strip of photo peeks past the fade).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ce9bddab",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "ce9bddab:stillafaintlinescalingtheoverlayisntafullfix",
+    "app": "Finished.",
+    "title": "Still a faint line — scaling the overlay isn't a full fix.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Still a faint line — scaling the overlay isn't a full fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ce9bddab",
+    "found": "2026-10-12"
   }
 ]

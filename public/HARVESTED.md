@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-490 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+495 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (268)
+## Hallalu CRM (269)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -272,8 +272,9 @@
 - [ ] `low` `other` (2026-10-10, #fba7dfe5) — Running a Worker build in that state would likely fail mid-deploy and worsen the very…
 - [ ] `low` `other` (2026-10-10, #fba7dfe5) — Want me to publish the report to the Analysis app now anyway (risk of a failed deploy…
 - [ ] `low` `other` (2026-10-10, #beaf3c88) — - GitBagel: 226 changed files uploaded, none failed.
+- [ ] `low` `other` (2026-10-11, #3d9bfbf4) — Deploy failed on a build error while the commit went through, so the fix is the piece…
 
-## Finished. (92)
+## Finished. (94)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -367,6 +368,8 @@
 - [ ] `low` `other` (2026-10-07, #ea78c819) — Confirmed a later visit doesn't overwrite it.
 - [ ] `low` `other` (2026-10-11, #28a0b8d5) — - PFP error: saving an image tripped a database trigger that calls a function it cannot…
 - [ ] `low` `other` (2026-10-11, #28a0b8d5) — - Earlier failed PFP attempts were generated and charged but never saved.
+- [ ] `low` `other` (2026-10-12, #ce9bddab) — It's the gradient fade-overlay not scaling together with the image (the image gets an…
+- [ ] `low` `other` (2026-10-12, #ce9bddab) — Still a faint line — scaling the overlay isn't a full fix.
 
 ## Stitchhooky (38)
 
@@ -466,6 +469,21 @@
 - [ ] `low` `other` (2026-08-30, #3814d650) — Fail any retire it out loud.
 - [ ] `low` `other` (2026-09-05, #6739dab7) — Fixing it, then syntax-checking (a broken worker.js would take the whole site down).
 
+## Budget LevelUp (12)
+
+- [ ] `high` `security` (2026-10-07, #e8725186) — - The Era image with her real PFP in the gold frame is fixed and filed in Pixelbake,…
+- [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
+- [ ] `low` `other` (2026-08-16, #5d4b033a) — Scanner flagged one genuine trivial issue in the static pitch page (duplicate id="price").
+- [ ] `low` `other` (2026-08-16, #5d4b033a) — 39 "missed" are the category:"security" bugs — they count toward the bug total of 337.
+- [ ] `low` `other` (2026-08-17, #ff5425a5) — Will do — every genuinely new bug gets appended to the ledger.
+- [ ] `low` `other` (2026-08-17, #ff5425a5) — Client fixes — error handlers, focus ring, labels, OG meta:
+- [ ] `low` `other` (2026-08-17, #ff5425a5) — Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI…
+- [ ] `low` `other` (2026-10-04, #ac34e569) — Every shell command and file write now fails with ENOSPC, because the harness has to…
+- [ ] `low` `other` (2026-10-07, #e8725186) — Local preview uses a fake user, so database writes fail there.
+- [ ] `low` `other` (2026-10-07, #e8725186) — - If an image doesn't match, users can choose Make it match or Add as a new character.
+- [ ] `low` `other` (2026-10-11, #28a0b8d5) — Both addresses now return the engine's {"error":"not found"}.
+- [ ] `low` `other` (2026-10-11, #28a0b8d5) — PFP error I can't tell which copy of the app gave you that message.
+
 ## Wedding Planner (10)
 
 - [ ] `critical` `data-loss` (2026-08-16, #3e50ec98) — It's not throwaway cache, and here's the catch: it may be the VM backing an active…
@@ -478,19 +496,6 @@
 - [ ] `low` `other` (2026-09-06, #0ad8bea4) — Based on the setup (sample images generated on-demand by Workers AI, blank in local…
 - [ ] `low` `ui` (2026-09-07, #7dfd4c0c) — - Fix-button credit bug — fixed; verified live showing "Bake the fix · 8 credits" (real…
 - [ ] `low` `other` (2026-09-07, #7dfd4c0c) — One thing that needs you (not a bug): the true best-in-class Max detail (Pruna) engine…
-
-## Budget LevelUp (10)
-
-- [ ] `high` `security` (2026-10-07, #e8725186) — - The Era image with her real PFP in the gold frame is fixed and filed in Pixelbake,…
-- [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
-- [ ] `low` `other` (2026-08-16, #5d4b033a) — Scanner flagged one genuine trivial issue in the static pitch page (duplicate id="price").
-- [ ] `low` `other` (2026-08-16, #5d4b033a) — 39 "missed" are the category:"security" bugs — they count toward the bug total of 337.
-- [ ] `low` `other` (2026-08-17, #ff5425a5) — Will do — every genuinely new bug gets appended to the ledger.
-- [ ] `low` `other` (2026-08-17, #ff5425a5) — Client fixes — error handlers, focus ring, labels, OG meta:
-- [ ] `low` `other` (2026-08-17, #ff5425a5) — Cross-cutting walked — found 4 more real items to fix: no rate-limit on the AI…
-- [ ] `low` `other` (2026-10-04, #ac34e569) — Every shell command and file write now fails with ENOSPC, because the harness has to…
-- [ ] `low` `other` (2026-10-07, #e8725186) — Local preview uses a fake user, so database writes fail there.
-- [ ] `low` `other` (2026-10-07, #e8725186) — - If an image doesn't match, users can choose Make it match or Add as a new character.
 
 ## Hopefil (10)
 
