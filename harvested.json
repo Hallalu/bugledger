@@ -5938,5 +5938,89 @@
     "status": "unverified",
     "session": "ce9bddab",
     "found": "2026-10-12"
+  },
+  {
+    "key": "0290d036:readingallrawwouldbegigabytesillextractthehighsignalcontentf",
+    "app": "Hallalu CRM",
+    "title": "Reading all raw would be gigabytes — I'll extract the high-signal content from each…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Reading all raw would be gigabytes — I'll extract the high-signal content from each (the ask, the project path, and bug/fix/security lines) into a compact digest, then read that to judge genuinely-ne…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0290d036",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "0290d036:therichestauthoritativesourceiseachsessionsownbugledgerpostp",
+    "app": "Hallalu CRM",
+    "title": "Richest authoritative source is each session's own Bug-Ledger POST payloads…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The richest authoritative source is each session's own Bug-Ledger POST payloads (symptom→cause→fix it already wrote).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0290d036",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "0290d036:theprefiltermatchedthewrongunescapedform",
+    "app": "Hallalu CRM",
+    "title": "Pre-filter matched the wrong (unescaped) form.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The pre-filter matched the wrong (unescaped) form.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0290d036",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "b29b5656:memoryshowsalightthemestagefixlandedon20261011sothisislikely",
+    "app": "Hallalu CRM",
+    "title": "Memory shows a light-theme stage fix landed on 2026-10-11, so this is likely a…",
+    "category": "performance",
+    "severity": "low",
+    "symptom": "Memory shows a light-theme stage fix landed on 2026-10-11, so this is likely a different box or the fix isn't covering everything.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b29b5656",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "b29b5656:reproducedexactlythisisthebugafterpickingwhiteinthemestudiod",
+    "app": "Hallalu CRM",
+    "title": "Reproduced exactly — this is the bug: - After picking White in Theme Studio:…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "**Reproduced exactly** — this is the bug: - After picking **White** in Theme Studio: `data-theme=null`, inline `--bg:#ffffff`, page white.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b29b5656",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "b29b5656:thatswhytheearlierlavenderfixdidntstopitrecurring",
+    "app": "Hallalu CRM",
+    "title": "That's why the earlier lavender fix didn't stop it recurring.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That's why the earlier lavender fix didn't stop it recurring.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b29b5656",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "ce9bddab:supabaseisntauthenticatedhereandpertheplandeploysareownerrun",
+    "app": "Finished.",
+    "title": "Supabase isn't authenticated here, and per the PLAN deploys are owner-run — so the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Supabase isn't authenticated here, and per the PLAN deploys are owner-run — so the coupon fix is code-complete but needs an owner deploy to go live.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "ce9bddab",
+    "found": "2026-10-12"
   }
 ]
