@@ -6214,5 +6214,17 @@
     "status": "unverified",
     "session": "748ca148",
     "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:onethingwentwrongforaboutaminuteduringthisdeploythereviewdes",
+    "app": "Hallalu CRM",
+    "title": "One thing went wrong: for about a minute during this deploy the review desk returned an…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "One thing went wrong: for about a minute during this deploy the review desk returned an error, because the new code went live before its database change had applied.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
   }
 ]
