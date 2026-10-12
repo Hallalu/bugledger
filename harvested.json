@@ -6262,5 +6262,41 @@
     "status": "unverified",
     "session": "748ca148",
     "found": "2026-10-12"
+  },
+  {
+    "key": "9666cd90:twomoreplacesstillleakthesamecloudflareworkersaifractionofac",
+    "app": "Hallalu CRM",
+    "title": "Two more places still leak the same \"Cloudflare Workers AI / fraction of a cent\"…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "⚠️ **Two more places still leak the same \"Cloudflare Workers AI / fraction of a cent\" wording publicly** — flagging rather than changing them unasked: 1.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9666cd90",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "9666cd90:asecondclaudesessionisactivelydoingthisexactdeleakinthesamer",
+    "app": "Hallalu CRM",
+    "title": "A second Claude session is actively doing this exact de-leak in the same repo right now…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "A **second Claude session is actively doing this exact de-leak in the same repo right now** and committing it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9666cd90",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "9666cd90:twosessionseditingthesamefilelastwriterwinsclobberingnogitpr",
+    "app": "Hallalu CRM",
+    "title": "Two sessions editing the same file = last-writer-wins clobbering (no git protection,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two sessions editing the same file = last-writer-wins clobbering (no git protection, it's a shared folder).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "9666cd90",
+    "found": "2026-10-12"
   }
 ]
