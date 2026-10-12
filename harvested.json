@@ -6190,5 +6190,29 @@
     "status": "unverified",
     "session": "d8924905",
     "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:ithasbeenbrokensincethatchangewentliveafewrequestsago",
+    "app": "Hallalu CRM",
+    "title": "It has been broken since that change went live a few requests ago.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It has been broken since that change went live a few requests ago.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:theproblemwasthatthehinthefooterslogotilewasthesamegreenasth",
+    "app": "Hallalu CRM",
+    "title": "Problem was that the \"H\" in the footer's logo tile was the same green as the tile…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The problem was that the \"H\" in the footer's logo tile was the same green as the tile behind it, so it showed as a blank green square.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
   }
 ]

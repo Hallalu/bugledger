@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-516 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+518 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (283)
+## Hallalu CRM (285)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -287,6 +287,8 @@
 - [ ] `low` `other` (2026-10-12, #92f40e84) — Two fails: - f-podcast — same white-chip-over-bright-window issue (flip + drop URL).
 - [ ] `low` `ui` (2026-10-12, #92f40e84) — Two fails: fun-2 (same podcast chip-over-window), fun-1 (the swipe cue and the 1/5…
 - [ ] `low` `ui` (2026-10-12, #92f40e84) — - QA caught real defects, not just claimed clean: one malformed hand (re-baked), and 10…
+- [ ] `low` `other` (2026-10-12, #748ca148) — It has been broken since that change went live a few requests ago.
+- [ ] `low` `other` (2026-10-12, #748ca148) — Problem was that the "H" in the footer's logo tile was the same green as the tile…
 
 ## Finished. (98)
 
