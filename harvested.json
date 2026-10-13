@@ -6358,5 +6358,17 @@
     "status": "unverified",
     "session": "748ca148",
     "found": "2026-10-12"
+  },
+  {
+    "key": "748ca148:tofixitinthehallalustripedashboardaddanewendpointforhttpsart",
+    "app": "Hallalu CRM",
+    "title": "To fix it, in the Hallalu Stripe dashboard add a new endpoint for…",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "To fix it, in the Hallalu Stripe dashboard add a new endpoint for `https://art.hallalu.com/api/stripe/webhook` with the events `checkout.session.completed`, `invoice.paid` and `customer.subscription.…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-12"
   }
 ]
