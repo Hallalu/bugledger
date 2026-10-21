@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-549 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+550 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (316)
+## Hallalu CRM (317)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -320,6 +320,7 @@
 - [ ] `low` `ui` (2026-10-21, #ca4589bb) — Bug is the overflow-x-auto row, which also clips vertically.
 - [ ] `low` `ui` (2026-10-21, #ca4589bb) — Selected box's outline isn't cut off any more.
 - [ ] `low` `other` (2026-10-21, #ca4589bb) — Made the same change to the Style row further down (Studio.tsx:456), which had the same…
+- [ ] `low` `other` (2026-10-21, #75c7373a) — Small grammar slip, "1 sales", which I'll fix.
 
 ## Finished. (98)
 

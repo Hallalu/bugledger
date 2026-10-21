@@ -6586,5 +6586,17 @@
     "status": "unverified",
     "session": "ca4589bb",
     "found": "2026-10-21"
+  },
+  {
+    "key": "75c7373a:smallgrammarslip1saleswhichillfix",
+    "app": "Hallalu CRM",
+    "title": "Small grammar slip, \"1 sales\", which I'll fix.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Small grammar slip, \"1 sales\", which I'll fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "75c7373a",
+    "found": "2026-10-21"
   }
 ]
