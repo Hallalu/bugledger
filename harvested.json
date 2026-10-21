@@ -6370,5 +6370,41 @@
     "status": "unverified",
     "session": "748ca148",
     "found": "2026-10-12"
+  },
+  {
+    "key": "703e510d:thereportstatesthisinitsfirstpointsonobodyreadsitthewrongway",
+    "app": "Hallalu CRM",
+    "title": "Report states this in its first point so nobody reads it the wrong way.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The report states this in its first point so nobody reads it the wrong way.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "703e510d",
+    "found": "2026-10-21"
+  },
+  {
+    "key": "703e510d:thepricingbugitselfisstillliveinhallaluart",
+    "app": "Hallalu CRM",
+    "title": "Pricing bug itself is still live in Hallalu Art.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The pricing bug itself is still live in Hallalu Art.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "703e510d",
+    "found": "2026-10-21"
+  },
+  {
+    "key": "703e510d:reportsontheanalysissitecantbeeditedafterpublishingsoitcould",
+    "app": "Hallalu CRM",
+    "title": "Reports on the Analysis site can't be edited after publishing, so it couldn't go into…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Reports on the Analysis site can't be edited after publishing, so it couldn't go into the earlier one.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "703e510d",
+    "found": "2026-10-21"
   }
 ]
