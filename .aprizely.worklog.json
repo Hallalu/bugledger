@@ -3,8 +3,8 @@
   "app": "Bug Ledger",
   "project": "BugLedger",
   "title": "Daily ledger — October 2026 month pass",
-  "status": "active",
-  "current": "Rebuilding the checklist and site, deploying",
+  "status": "done",
+  "current": "Done ✓",
   "note": "",
   "tasks": [
     {
@@ -39,22 +39,23 @@
     },
     {
       "text": "Dedupe and append to the ledger",
-      "note": "gen.mjs regenerates every derived surface, then wrangler deploy and git push",
-      "status": "active",
+      "note": "gen.mjs rebuilt all derived files; Worker deployed (version eb70e06c); commit c12729b pushed to origin/main",
+      "status": "done",
       "wave": "Wave 4 — Append and ship"
     },
     {
       "text": "Rebuild, deploy and push",
-      "note": "Regenerate the checklist and site, deploy the Worker and push so every future sweep is stricter",
-      "status": "pending",
+      "note": "Live ledger checked in the browser: 1,055 bugs, 434 optimisers; report published",
+      "status": "done",
       "wave": "Wave 4 — Append and ship"
     },
     {
       "text": "Verify live and publish the report",
       "note": "Open the live ledger, confirm the new counts, and publish the report with real before and after numbers",
-      "status": "pending",
+      "status": "done",
       "wave": "Wave 5 — Prove it"
     }
   ],
-  "started": 1791650678479
+  "started": 1791650678479,
+  "reported": true
 }

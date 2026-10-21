@@ -4488,5 +4488,95 @@
     "detail": "FLUX raws are 1–3 MB PNGs — too heavy for an email that must stay under Gmail's clipping limit.",
     "why": "Heavy inline images push an email past Gmail's ~102 KB clip and slow loads on mobile.",
     "how": "newsletter.mjs auto-optimises with sips to ~1200px JPEG q72 (2 photos ≈ 170 KB total); QA caps any single image at 800 KB."
+  },
+  {
+    "app": "Pixelbake",
+    "category": "integrity",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Price every compute-heavy action, and only take it when the result arrives",
+    "detail": "A study ran a vision read per frame, transcripts and two writing passes for free",
+    "why": "A study ran a vision read per frame, transcripts and two writing passes for free",
+    "how": "Charge = estimated cost × fee ÷ credit value; quote first, show it on the control, debit on arrival; deeper re-reads pay the difference"
+  },
+  {
+    "app": "Pixelbake",
+    "category": "ux",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Trash with a reason turns deletes into quality data",
+    "detail": "People bin bad outputs silently; the reasons are the best signal of what the models get wrong",
+    "why": "People bin bad outputs silently; the reasons are the best signal of what the models get wrong",
+    "how": "One-tap reasons (face, hands, light, text, looks fake, blurry, not asked, frozen) + a voice note, kept per model; restore any time"
+  },
+  {
+    "app": "Pixelbake",
+    "category": "design-elevation",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Draw award badges in SVG whose shape grows with the level",
+    "detail": "200 badges as images would be heavy and off-theme",
+    "why": "200 badges as images would be heavy and off-theme",
+    "how": "Coin → shield → star medal → laurel crown by level, metal gradient per level, the kind's icon in the middle, pips for sub-level; crisp at any size"
+  },
+  {
+    "app": "Pixelbake",
+    "category": "ux",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "A \"+1 <award kind>\" chip rising from the streak on every counted action",
+    "detail": "Progress toward awards is invisible between visits",
+    "why": "Progress toward awards is invisible between visits",
+    "how": "Hook the shared API helper by path; float a small reward chip with a sparkle burst; a bigger badge pop on level-up; respect reduced motion"
+  },
+  {
+    "app": "Pixelbake",
+    "category": "ux",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Batch link entry as one box per link, with + and \"how many?\"",
+    "detail": "A single textarea of links hides mistakes and per-link options",
+    "why": "A single textarea of links hides mistakes and per-link options",
+    "how": "Rows with their own level picker, Set all, paste-many splits into rows, Enter adds a row; total credits shown before running"
+  },
+  {
+    "app": "Pixelbake",
+    "category": "privacy",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Use baked illustrations, not screenshots of your account, in release notes",
+    "detail": "Screenshots of the owner's library would show private work to every user",
+    "why": "Screenshots of the owner's library would show private work to every user",
+    "how": "Bake one on-brand editorial image per entry, QA each at full size for garbled text, file them with the release"
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Scrub prototype names from request bodies at the parser",
+    "detail": "Any TABLE[body.x] lookup on a plain object resolves constructor/__proto__/toString (CWE-1321)",
+    "why": "Any TABLE[body.x] lookup on a plain object resolves constructor/__proto__/toString (CWE-1321)",
+    "how": "Drop values that are (or are one-item arrays of) Object.prototype names before routes see them; or use Object.hasOwn / null-prototype maps"
+  },
+  {
+    "app": "cross-cutting",
+    "category": "integrity",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Make the debit helper refuse NaN and negatives",
+    "detail": "A silent `if (!n) return` turns any price bug into free usage",
+    "why": "A silent `if (!n) return` turns any price bug into free usage",
+    "how": "Throw unless Number.isInteger(n) && n >= 0; treat 0 as an explicit free path"
+  },
+  {
+    "app": "cross-cutting",
+    "category": "architecture",
+    "session": "568edece",
+    "source": "dailyledger",
+    "title": "Rate-limit and budget every free AI endpoint (OWASP LLM10 Unbounded Consumption)",
+    "detail": "Uncharged AI routes are a denial-of-wallet surface",
+    "why": "Uncharged AI routes are a denial-of-wallet surface",
+    "how": "Per-user caps on tokens, calls and spend per hour; validate input size before the model; alert on cost anomalies"
   }
 ]

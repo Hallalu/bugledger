@@ -1,8 +1,8 @@
 # ✨ Optimisers — elevations worth reusing
 
-449 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
+458 reusable patterns (design elevations, UX, performance, workflow…) mined from the build history. Not bugs — things that made an app *better*.
 
-## design elevation (40)
+## design elevation (41)
 
 - **One-shot entrance animations (never re-animate on refresh)** _(Bug Ledger)_
   Put entrance animations on a one-shot class that is stripped after it plays, not on the base element.
@@ -164,8 +164,12 @@
   Create-background v1 cut the subject out, showed it to the model on grey and pasted the original back: a top-down food shot landed on a side-on table without its plate, and a white-lit studio chair sat in a warm hall like a sticker.
   <br>*Why:* A new scene that ignores the subject's camera angle, light and what it rests on reads as a cut-out sticker.
   <br>*How:* Read camera angle, light and the subject's support with a vision model and put them in the prompt; show the model the real photo so plate/stand/hands stay; register the frame to the subject; carry the scene's broad light onto the real subject as a wide-blurred per-channel ratio inside the subject mask; pull the cut-out edge in slightly so the scene render forms the outline.
+- **Draw award badges in SVG whose shape grows with the level** _(Pixelbake)_
+  200 badges as images would be heavy and off-theme
+  <br>*Why:* 200 badges as images would be heavy and off-theme
+  <br>*How:* Coin → shield → star medal → laurel crown by level, metal gradient per level, the kind's icon in the middle, pips for sub-level; crisp at any size
 
-## UX (60)
+## UX (63)
 
 - **Live progress counter for long tasks (N / total)** _(Bug Ledger)_
   Stream a running 'checked N / total' counter for long agent work so the user sees exactly where it reached.
@@ -407,6 +411,18 @@
   Ava broke a voice note into notes but the owner could not tell her to leave something out (e.g. remove ChatGPT references); she only repeated what she heard.
   <br>*Why:* If the only input to an AI transform is the source text, the user can't steer the result (omit, reword, reshape).
   <br>*How:* Carry owner instructions into the prompt as a numbered block that overrides wording, plus a 'revise' step that resends the current JSON with the accumulated instructions; leave the result untouched if the model is unavailable.
+- **Trash with a reason turns deletes into quality data** _(Pixelbake)_
+  People bin bad outputs silently; the reasons are the best signal of what the models get wrong
+  <br>*Why:* People bin bad outputs silently; the reasons are the best signal of what the models get wrong
+  <br>*How:* One-tap reasons (face, hands, light, text, looks fake, blurry, not asked, frozen) + a voice note, kept per model; restore any time
+- **A "+1 <award kind>" chip rising from the streak on every counted action** _(Pixelbake)_
+  Progress toward awards is invisible between visits
+  <br>*Why:* Progress toward awards is invisible between visits
+  <br>*How:* Hook the shared API helper by path; float a small reward chip with a sparkle burst; a bigger badge pop on level-up; respect reduced motion
+- **Batch link entry as one box per link, with + and "how many?"** _(Pixelbake)_
+  A single textarea of links hides mistakes and per-link options
+  <br>*Why:* A single textarea of links hides mistakes and per-link options
+  <br>*How:* Rows with their own level picker, Set all, paste-many splits into rows, Enter adds a row; total credits shown before running
 
 ## performance (11)
 
@@ -702,7 +718,7 @@
   <br>*Why:* Login walls block automated fetches, and signing into someone's account to grab media is not acceptable.
   <br>*How:* Paste-a-link import accepts the direct address a downloader site hands back; the walled-site message now says exactly that; never sign in to anyone's account to fetch media.
 
-## architecture (49)
+## architecture (50)
 
 - **Marketing landing at root, app at /app** _(Hallalu CRM)_
   Serve a marketing landing at the root and the app at /app; returning users skip the landing.
@@ -900,6 +916,10 @@
   Video engines need a URL for the source clip, but a data URI of a 10 MB clip bloats the request and the private /v/<id> route needs a cookie.
   <br>*Why:* External model endpoints can't send your auth cookie and shouldn't get a permanent public link to private media.
   <br>*How:* Mint HMAC(PIXELBAKE_PEPPER, media.<id>.<exp>) → ?t=<exp>.<mac>, accepted by /i and /v for 2h with a constant-time compare; the Worker mints it per request; fall back to a data URI only when the origin is localhost.
+- **Rate-limit and budget every free AI endpoint (OWASP LLM10 Unbounded Consumption)** _(cross-cutting)_
+  Uncharged AI routes are a denial-of-wallet surface
+  <br>*Why:* Uncharged AI routes are a denial-of-wallet surface
+  <br>*How:* Per-user caps on tokens, calls and spend per hour; validate input size before the model; alert on cost anomalies
 
 ## accessibility (9)
 
@@ -1365,7 +1385,7 @@
   <br>*Why:* An empty success for a malformed request reads as 'no data' and sends the investigator after a bug that does not exist.
   <br>*How:* Validate the required parameter first and reply 400 naming it; when checking counters against event rows, read the events before deleting the file that owns them.
 
-## integrity (107)
+## integrity (110)
 
 - **Server-verified completeness, not self-report** _(Bug Ledger)_
   When an agent claims it checked everything, verify it server-side and show N/N plus the exact items missed.
@@ -1795,8 +1815,20 @@
   A seam score was dismissed as useless after scoring 10-13 on every food-photo run, good or bad. On a wider test it scored 40-54 where invented figures were cut by the photo edge versus 8-14 on clean ones.
   <br>*Why:* A signal that looks flat on one input class can be the sharpest discriminator on another, so discarding it early loses a real check.
   <br>*How:* Test a rejected signal on other input types before discarding it. The seam score now triggers a second attempt above 30 and a refusal above 45.
+- **Price every compute-heavy action, and only take it when the result arrives** _(Pixelbake)_
+  A study ran a vision read per frame, transcripts and two writing passes for free
+  <br>*Why:* A study ran a vision read per frame, transcripts and two writing passes for free
+  <br>*How:* Charge = estimated cost × fee ÷ credit value; quote first, show it on the control, debit on arrival; deeper re-reads pay the difference
+- **Scrub prototype names from request bodies at the parser** _(cross-cutting)_
+  Any TABLE[body.x] lookup on a plain object resolves constructor/__proto__/toString (CWE-1321)
+  <br>*Why:* Any TABLE[body.x] lookup on a plain object resolves constructor/__proto__/toString (CWE-1321)
+  <br>*How:* Drop values that are (or are one-item arrays of) Object.prototype names before routes see them; or use Object.hasOwn / null-prototype maps
+- **Make the debit helper refuse NaN and negatives** _(cross-cutting)_
+  A silent `if (!n) return` turns any price bug into free usage
+  <br>*Why:* A silent `if (!n) return` turns any price bug into free usage
+  <br>*How:* Throw unless Number.isInteger(n) && n >= 0; treat 0 as an explicit free path
 
-## privacy & legal (2)
+## privacy & legal (3)
 
 - **Classify data sensitivity before choosing where it lives** _(cross-cutting)_
   Decide up front which fields are sensitive (health, reproductive, financial, precise location, children's data) and let that classification dictate storage, transport and whether any third party may ever see it.
@@ -1806,6 +1838,10 @@
   Build 'download everything' and 'delete everything' as part of the account feature itself, not as a later compliance task.
   <br>*Why:* Both are legal rights and both are trust primitives users increasingly test before committing; adding them late means retrofitting across every table and blob store.
   <br>*How:* One export endpoint serialising the full object graph including media, and one delete path that purges records, backups and third-party copies — with honest disclosure of anything it cannot reach.
+- **Use baked illustrations, not screenshots of your account, in release notes** _(Pixelbake)_
+  Screenshots of the owner's library would show private work to every user
+  <br>*Why:* Screenshots of the owner's library would show private work to every user
+  <br>*How:* Bake one on-brand editorial image per entry, QA each at full size for garbled text, file them with the release
 
 ## claims accuracy (1)
 

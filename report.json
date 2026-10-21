@@ -1,48 +1,24 @@
-{
-  "title": "Daily Ledger — Aug 1 → Oct 4 read in full",
-  "summary": "Read two months of conversations (Aug 1–Oct 4) in full via 12 parallel readers over a lossless conversation extractor, scanned 23 repos with the 41-detector suite, deep-researched current external issues, deduped hard against the complete 2,115-entry live ledger, and appended 690 vetted entries (append-only). The curated catalogue grew from 428→868 bugs/security and 117→367 optimisers, finally giving the newer apps (Abba, Pixelbake, Hopefil, Evertrue, Fullfill, Stepapa, Joy, GitBagel, PatentCake) real coverage. Deployed and verified live.",
-  "tasks": [
-    {"text": "Extract conversations losslessly", "done": true, "desc": "Compressed ~1.5GB of transcripts into 30.5MB of pure conversation across 109 sessions (every user msg, reasoning block, tool action; base64 dropped)"},
-    {"text": "Read all sessions in full", "done": true, "desc": "12 parallel readers each read their batch IN FULL and extracted vetted bugs/security/optimisers with app + file:line"},
-    {"text": "Run 41-detector scanner over 23 repos", "done": true, "desc": "XSS-INNERHTML HIGH on 18/23, PRIV-NO-DELETE 14/23, PRIV-NO-POLICY 13/23; pinned Joy PII-in-URL, GitBagel quote-unsafe esc(), Stitchhooky a11y"},
-    {"text": "Deep-research external issues", "done": true, "desc": "OWASP-LLM 2025, Veracode AI-code (45% fail/86% XSS), WebAIM Million 2025, Cloudflare account-wide 100K/day quota + subrequest limits"},
-    {"text": "Dedupe + curate + append", "done": true, "desc": "Deduped vs the full 2,115-entry live ledger (428 catalogue + 399 harvested + 99 scanner + 756 submitted); appended 690 net-new across all 7 detector families"},
-    {"text": "Rebuild + deploy + commit", "done": true, "desc": "gen.mjs regenerated every surface; committed in 2 parts (53327d4, c0b2490), pushed, deployed, verified live bugs.json=868"}
-  ],
-  "metrics": [
-    {"label": "Conversations read in full", "value": 90},
-    {"label": "Active transcripts (Aug 1–Oct 4)", "value": 109},
-    {"label": "Repos scanned (41 detectors)", "value": 23},
-    {"label": "Raw findings extracted", "value": 696},
-    {"label": "Catalogue bugs", "before": "428", "after": "868"},
-    {"label": "Optimisers", "before": "117", "after": "367"},
-    {"label": "Apps with catalogue coverage", "before": "43", "after": "47"},
-    {"label": "Live ledger dedup corpus", "value": 2115}
-  ],
-  "features": [
-    "Lossless conversation extractor (extract.mjs): keeps every message/reasoning/tool action, drops base64 — makes a month of transcripts actually readable in full",
-    "Dedup+append pipeline with dry-run, skip-logging, and dedup against the complete live ledger (/api/admin/recurrence), not just the stale local file"
-  ],
-  "bugfixes": [
-    "Caught that the local bugs.json (Aug 17) is stale vs the 756-entry live submitted tier; fixed dedup to use the full 2,115-entry live corpus before appending"
-  ],
-  "findings": [
-    "CRITICAL (open): Pixelbake isAdmin() trusts any handle in ADMIN_HANDLES — rhema/rhemajoy are unclaimed on the live app, so anyone could sign up as one and hit /api/admin/grant (1M credits, any plan)",
-    "Pixelbake /api/auth/signin has no rate limit/lockout and leaks handle-exists via different errors",
-    "Hallalu CRM private investor deck was reachable via //_pitch.html and %5F path tricks, and deck.js was a public asset (fixed by moving to Worker modules)",
-    "PatentCake GET /api/inventions is unauthenticated — exposes all 24 disclosures (novelty risk)",
-    "Evertrue stores Etsy OAuth tokens + shared secret as plaintext D1 columns",
-    "Joy mail session cookie is an unsalted SHA-256 of the 6-digit PIN (offline-recoverable, 30-day, no logout); SEND binding unrestricted",
-    "Bug Ledger harvester copied a live Joy Day sign-in PIN into a public append-only row; 73% of harvested rows are mid-sentence fragments",
-    "Fullfill authed() let everyone in when ACCESS_CODE was unset; public submit endpoint had no size cap (denial-of-wallet)",
-    "Finished. bundled CC-CEDICT/JMdict/FreeDict dictionary data with no attribution (GPL COPYING file never read) — open verification task",
-    "Trademark/name clashes flagged (open): Pixelbake, Abba, Joy Day, GitBagel, Evertrue, Kindly, Fullfill, Payrails",
-    "Unsourced marketing claims still live: Instagram 'sends > saves' on a carousel, Analysis '4 Cloudflare video models' (CF lists none), Pixelbake credit figures (42/51/40 vs 42/63 charged), /sell 53.1% figure nobody could source"
-  ],
-  "insights": [
-    "The ledger has two tiers: static bugs.json (canonical, == deployed, curated) and the D1 'submitted' stream (756 session self-logs). The daily pass's job is to promote vetted findings into the catalogue; dedup must run against BOTH, via /api/admin/recurrence.",
-    "Cloudflare's free 100K requests/day is ACCOUNT-wide across all ~34 Workers on this account — one chatty Worker (polling/crons/live boards) can starve the rest.",
-    "Disk hit ENOSPC repeatedly under heavy parallel-agent load; it recovered each time. Add a df preflight before big multi-agent runs; never blanket-delete tasks/*.output or ~/.npm (both caused failures).",
-    "Several 'done'/'verified' claims across sessions were asserted without reproduction, and real TikTok/IG effect names were deleted on a blocked researcher's 'could not verify' — the verify-the-critic doctrine caught and restored them."
-  ]
-}
+{"title":"Daily ledger — October 2026 month pass","summary":"Read every October conversation in full, scanned all 28 repos the month touched, checked three outside sources, and appended 226 vetted entries to the Bug Ledger. Bugs went from 895 to 1,055 and optimisers from 368 to 434. The ledger is live and pushed.",
+"tasks":[
+{"text":"Wave 1 — Gather the month's conversations","done":true,"desc":"179 transcripts were touched in October; 67 had real October messages. 4 Bug Ledger meta-sessions were skipped."},
+{"text":"Wave 1 — Read every conversation and extract new items","done":true,"desc":"63 conversations read to the end by 9 readers, producing 301 candidates."},
+{"text":"Wave 2 — Run the detector suite over October's repos","done":true,"desc":"28 repos scanned: 2,096 findings. Three were verified in source and filed as their own entries."},
+{"text":"Wave 3 — Research current external issues","done":true,"desc":"Veracode 2026, WebAIM Million 2026 and OWASP Agentic Top 10 checked at source. Two Cloudflare claims from search did not verify and were not filed."},
+{"text":"Wave 4 — Dedupe and append to the ledger","done":true,"desc":"66 candidates were already in the ledger or the live agent-submitted table, 9 were pruned by hand, 226 appended. The diff is additions only."},
+{"text":"Wave 4 — Rebuild, deploy and push","done":true,"desc":"gen.mjs, wrangler deploy (version eb70e06c), commit c12729b pushed."},
+{"text":"Wave 5 — Verify live and publish the report","done":true,"desc":"Live site shows 1,055 bugs and 434 optimisers; new entries confirmed in the served bugs.json and data-opt.js."}],
+"metrics":[
+{"label":"Curated bugs","before":"895","after":"1,055"},
+{"label":"Optimisers","before":"368","after":"434"},
+{"label":"Conversations read in full","value":63},
+{"label":"Repos scanned","value":28},
+{"label":"Scanner findings","value":2096},
+{"label":"Candidates extracted","value":301},
+{"label":"Dropped as already filed","value":66},
+{"label":"New security entries","value":7},
+{"label":"New claims entries","value":22},
+{"label":"New testing entries","value":17}],
+"features":["+153 bugs across 28 apps","+7 security entries","+66 optimisers","Newer families: +22 claims, +17 testing, +6 observability, +5 accessibility, +5 privacy, +1 SEO"],
+"findings":["Start in Story carried the most new claims entries: invented testimonials, a '7 days free' trial checkout does not create, and 'same face, proven' copy that the measurements did not support","Hungry Tide first shipped under another publisher's trademarked title and names, then was renamed","Joy Broadcast A/B test declared B the winner but sent A to the rest of the list","Hallalu CRM Whisper 503s silently dropped part of a long transcript","Lead Finder's esc() fallback is an identity function (found by the scanner, verified in source)","Start in Story auth email hook logs user email addresses (found by the scanner, verified in source)"],
+"issues":["Hallalu CRM Wisdom Marketing cron was never seen to run on live; cause undetermined","Start in Story: 200 Prompt Bank images carry no AI provenance mark after the engine swap","Fullfill sign-up is open with no email check or CAPTCHA","Start in Story AI engine Worker folder is not under git","The session restarted mid-run and wiped the scratch folder; batches 1–4 were recovered from reader transcripts and work moved to ~/.bugledger-work/2026-10"],
+"insights":["335 of the live agent-submitted rows were filed in October by the working sessions themselves, so the curated pass must dedupe against the live D1 table, not only bugs.json","Empty catch blocks (650 in 23 repos) and innerHTML sinks (474 in 20) are copied into every new repo; fixing the starter kit once is cheaper than fixing each app","The scanner's CLAIM-PLACEHOLDER and CLAIM-FAKE-SCARCITY detectors fire on identifiers and on anti-urgency copy"]}
