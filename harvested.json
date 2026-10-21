@@ -6406,5 +6406,41 @@
     "status": "unverified",
     "session": "703e510d",
     "found": "2026-10-21"
+  },
+  {
+    "key": "568edece:ididntfinda2026headtoheadtestsothiscomesfromdirectorylisting",
+    "app": "Hallalu CRM",
+    "title": "Didn't find a 2026 head-to-head test, so this comes from directory listings rather than…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I didn't find a 2026 head-to-head test, so this comes from directory listings rather than measured results.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "568edece",
+    "found": "2026-10-21"
+  },
+  {
+    "key": "568edece:ifbothfailkeepyourcurrentpasteadirectlinkbox",
+    "app": "Hallalu CRM",
+    "title": "If both fail, keep your current paste-a-direct-link box.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "If both fail, keep your current paste-a-direct-link box.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "568edece",
+    "found": "2026-10-21"
+  },
+  {
+    "key": "748ca148:thatsoneofthelinesonthecardssoibuiltitratherthanpromisesomet",
+    "app": "Hallalu CRM",
+    "title": "That's one of the lines on the cards, so I built it rather than promise something that…",
+    "category": "race",
+    "severity": "medium",
+    "symptom": "That's one of the lines on the cards, so I built it rather than promise something that wasn't there.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "748ca148",
+    "found": "2026-10-21"
   }
 ]
