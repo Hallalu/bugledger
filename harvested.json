@@ -6442,5 +6442,29 @@
     "status": "unverified",
     "session": "748ca148",
     "found": "2026-10-21"
+  },
+  {
+    "key": "568edece:followingtheledgerslessonsthegripssitoutsideanythingthatscro",
+    "app": "Hallalu CRM",
+    "title": "Following the ledger's lessons, the grips sit outside anything that scrolls, sizes are…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Following the ledger's lessons, the grips sit outside anything that scrolls, sizes are clamped and remembered, double-click resets and arrow keys work.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "568edece",
+    "found": "2026-10-21"
+  },
+  {
+    "key": "568edece:fixedalongthewayaoneframeflashinthecrossfademeasuredframebyf",
+    "app": "Hallalu CRM",
+    "title": "Fixed along the way: - a one-frame flash in the crossfade (measured frame by frame) -…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Fixed along the way: - a one-frame flash in the crossfade (measured frame by frame) - re-clicking the selected transition did nothing - **A layout collapse I caused:** a stale rule made the player 0 …",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "568edece",
+    "found": "2026-10-21"
   }
 ]

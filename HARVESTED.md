@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-537 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+539 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (304)
+## Hallalu CRM (306)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -308,6 +308,8 @@
 - [ ] `low` `other` (2026-10-21, #703e510d) — Reports on the Analysis site can't be edited after publishing, so it couldn't go into…
 - [ ] `low` `other` (2026-10-21, #568edece) — Didn't find a 2026 head-to-head test, so this comes from directory listings rather than…
 - [ ] `low` `other` (2026-10-21, #568edece) — If both fail, keep your current paste-a-direct-link box.
+- [ ] `low` `other` (2026-10-21, #568edece) — Following the ledger's lessons, the grips sit outside anything that scrolls, sizes are…
+- [ ] `low` `ui` (2026-10-21, #568edece) — Fixed along the way: - a one-frame flash in the crossfade (measured frame by frame) -…
 
 ## Finished. (98)
 
