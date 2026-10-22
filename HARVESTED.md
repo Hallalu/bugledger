@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-559 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+561 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (324)
+## Hallalu CRM (326)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -328,6 +328,8 @@
 - [ ] `low` `other` (2026-10-22, #777e40cb) — Doc edit didn't apply, so that commit carries only the hook file.
 - [ ] `low` `other` (2026-10-22, #777e40cb) — - The bug: the CLI read anything that wasn't a --flag as plain text, including the…
 - [ ] `low` `other` (2026-10-22, #777e40cb) — Same bug hit log and project: log --project "X" filed "X" as a stray note.
+- [ ] `low` `other` (2026-10-22, #acc82d3f) — Hashtag suggestions. The research is done; the feature isn't built.
+- [ ] `low` `other` (2026-10-22, #acc82d3f) — - "See the reimagined video next to the original in Recent": I explained it and added…
 
 ## Finished. (98)
 

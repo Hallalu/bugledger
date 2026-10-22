@@ -6706,5 +6706,29 @@
     "status": "unverified",
     "session": "777e40cb",
     "found": "2026-10-22"
+  },
+  {
+    "key": "acc82d3f:hashtagsuggestionstheresearchisdonethefeatureisntbuilt",
+    "app": "Hallalu CRM",
+    "title": "Hashtag suggestions. The research is done; the feature isn't built.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Hashtag suggestions.** The research is done; the feature isn't built.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "acc82d3f:seethereimaginedvideonexttotheoriginalinrecentiexplaineditan",
+    "app": "Hallalu CRM",
+    "title": "- \"See the reimagined video next to the original in Recent\": I explained it and added…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **\"See the reimagined video next to the original in Recent\":** I explained it and added the Videos filter, but Recent still doesn't show the two side by side.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-22"
   }
 ]
