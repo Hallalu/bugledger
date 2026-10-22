@@ -6598,5 +6598,53 @@
     "status": "unverified",
     "session": "75c7373a",
     "found": "2026-10-21"
+  },
+  {
+    "key": "2f439d37:icouldntconfirmbuiltinerroralertsifoundnobuiltinalertmewhene",
+    "app": "Hallalu CRM",
+    "title": "- I couldn't confirm built-in error alerts. I found no built-in \"alert me when errors…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **I couldn't confirm built-in error alerts.** I found no built-in \"alert me when errors rise\" feature for Workers, so the report recommends a health check that runs on a schedule instead.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2f439d37",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "acc82d3f:whatwaswrongwithshowaquickpassinstantlyswitchedontheappfirst",
+    "app": "Hallalu CRM",
+    "title": "What was wrong: with \"Show a quick pass instantly\" switched on, the app first runs a…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "**What was wrong:** with \"Show a quick pass instantly\" switched on, the app first runs a quick pass and then your chosen study in the background.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "acc82d3f:ididntrunastudytoseeitonscreenbecausethatwouldspendcredits",
+    "app": "Hallalu CRM",
+    "title": "Didn't run a study to see it on screen, because that would spend credits.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I didn't run a study to see it on screen, because that would spend credits.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "acc82d3f:thefixworksonyourrealuntitledstudywhentheainamingworksitgive",
+    "app": "Hallalu CRM",
+    "title": "Fix works on your real untitled study: when the AI naming works it gives a proper…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The fix works on your real untitled study: when the AI naming works it gives a proper title, and when it fails the backup builds one from the post's caption.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-22"
   }
 ]
