@@ -160,6 +160,25 @@ export default {
       return new Response(request.method === "HEAD" ? null : res.body, { status: res.status, headers: res.headers });
     }
 
+    // ---- Prompt ledgers: every prompt in a session with its status (add-only, x-ledger-key), shown at /prompts/:id ----
+    if (pathname === "/api/prompts" && request.method === "POST") {
+      if (env.LEDGER_WRITE_TOKEN && request.headers.get("x-ledger-key") !== env.LEDGER_WRITE_TOKEN) return json({ ok: false, error: "unauthorized — send x-ledger-key" }, 401);
+      const d = await request.json().catch(() => ({})); const cl = (v, n) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
+      const ST = ["done", "built", "partial", "not", "waiting", "paused", "answered", "stopped"];
+      const body = { kind: "ledger", title: cl(d.title, 200) || "Prompt ledger", summary: cl(d.summary, 2000), at: Date.now(),
+        items: (Array.isArray(d.items) ? d.items : []).slice(0, 300).map((x, i) => ({ n: +(x && x.n) || i + 1, g: cl(x && x.g, 80), p: cl(x && x.p, 500), s: ST.includes(x && x.s) ? x.s : "not", d: cl(x && x.d, 600) })).filter(x => x.p),
+        photos: Object.fromEntries(Object.entries(d.photos && typeof d.photos === "object" ? d.photos : {}).slice(0, 30).map(([k, v]) => [cl(k, 80), (Array.isArray(v) ? v : [v]).slice(0, 8).map(x => String(x || "")).filter(x => /^\/ledger\/img\/[a-z0-9.\-]+$/i.test(x))])) };
+      const id = "pl" + crypto.randomUUID().replace(/-/g, "").slice(0, 18);
+      await env.DB.prepare("INSERT INTO prompt_ledgers (id, project, title, body, at) VALUES (?, ?, ?, ?, ?)").bind(id, cl(d.project, 80), body.title, JSON.stringify(body), body.at).run();
+      return json({ ok: true, id, url: new URL(request.url).origin + "/prompts/" + id });
+    }
+    if (pathname.startsWith("/prompts/") && (request.method === "GET" || request.method === "HEAD")) {
+      const id = pathname.split("/")[2] || ""; const row = id ? await env.DB.prepare("SELECT project, title, body, at FROM prompt_ledgers WHERE id = ?").bind(id).first() : null;
+      let d = null; if (row) { try { d = JSON.parse(row.body); } catch {} }
+      if (!row || !d) return new Response("No such prompt ledger", { status: 404, headers: { "content-type": "text/plain; charset=utf-8" } });
+      return new Response(request.method === "HEAD" ? null : ledgerPage(row, d), { headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "noindex" } });
+    }
+
     // ---- /story/:id : the itemised scan story (served by report.html, which reads the path) ----
     if (pathname.startsWith("/story/") && (request.method === "GET" || request.method === "HEAD")) {
       const res = await env.ASSETS.fetch(new Request(new URL("/report", request.url), { method: "GET" }));
@@ -667,3 +686,84 @@ function fullTitles(cat) {
   }
   return [...m.values()];
 }
+
+/* ── Prompt ledger page: every prompt, its status, what is done and what is left — chapters with photos, a status ring, filters and search ── */
+function ledgerPage(row, d) {
+  const e = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'), items = d.items || [], photos = d.photos || {};
+  const ST = { done: ['Done · checked', '#12a67a'], built: ['Built · not checked', '#e8960f'], partial: ['Partly done', '#7c5cf0'], not: ['Not started', '#e2507f'], waiting: ['Waiting on you', '#3a78e0'], paused: ['Paused', '#8a93a6'], answered: ['Answered', '#0e9f8f'], stopped: ['Stopped by you', '#6e788c'] };
+  const order = ['done', 'built', 'partial', 'not', 'waiting', 'paused', 'answered', 'stopped'];
+  const cnt = {}; items.forEach(x => { cnt[x.s] = (cnt[x.s] || 0) + 1; }); const tot = items.length || 1;
+  // the ring: one arc per status, drawn to scale
+  const R = 54, C = 2 * Math.PI * R; let off = 0;
+  const arcs = order.filter(k => cnt[k]).map(k => { const len = C * cnt[k] / tot; const a = `<circle r="${R}" cx="70" cy="70" fill="none" stroke="${ST[k][1]}" stroke-width="16" stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 70 70)"><title>${ST[k][0]}: ${cnt[k]}</title></circle>`; off += len; return a; }).join('');
+  const groups = []; items.forEach(x => { let g = groups.find(y => y.name === x.g); if (!g) groups.push(g = { name: x.g, items: [] }); g.items.push(x); });
+  const pic = (g) => { let f = 0, k = 0; return (photos[g] || []).map(u => /\.png$/i.test(u) ? `<img src="${e(u)}" alt="" class="pf pf${f++}">` : `<img src="${e(u)}" alt="" class="ph ph${k++}">`).join(''); };
+  const bar = (list) => { const c = {}; list.forEach(x => { c[x.s] = (c[x.s] || 0) + 1; }); return order.filter(k => c[k]).map(k => `<i style="flex:${c[k]};background:${ST[k][1]}" title="${ST[k][0]}: ${c[k]}"></i>`).join(''); };
+  const when = new Date(d.at || row.at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const hero = photos.__hero || [];
+  const thumb = (g) => { const l = photos[g] || []; return l.find(u => !/\.png$/i.test(u)) || l[0] || ''; };
+  const sheetOrder = ['not', 'partial', 'built', 'waiting', 'paused', 'stopped', 'answered', 'done'];
+  const sheet = sheetOrder.filter(k => cnt[k]).map(k => `<section class="sg" data-sg="${k}"><h3 class="sg-h"><span class="pill" style="--c:${ST[k][1]}"><i></i>${ST[k][0]}</span><em>${cnt[k]}</em></h3><div class="tw"><table class="sheet"><thead><tr><th class="c-ph"><span class="sr">Photo</span></th><th class="c-n">#</th><th>Prompt</th><th class="c-g">Chapter</th><th>Done / left</th></tr></thead><tbody>${items.filter(x => x.s === k).map(x => `<tr class="srow" data-s="${x.s}" data-t="${e((x.p + ' ' + x.d + ' ' + x.g).toLowerCase())}"><td class="c-ph">${thumb(x.g) ? `<img src="${e(thumb(x.g))}" alt="" loading="lazy">` : ''}</td><td class="c-n">${x.n}</td><td class="c-p">${e(x.p)}</td><td class="c-g">${e(x.g)}</td><td class="c-d">${e(x.d)}</td></tr>`).join('')}</tbody></table></div></section>`).join('');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+<title>${e(d.title || 'Prompt ledger')} · Bug Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,650;1,9..144,500&display=swap">
+<style>
+/* layout: a magazine-style ledger — photo hero, a status ring you can filter by, chapters each opened by their own photographs */
+:root{--bg:#f6f5f9;--card:#fff;--ink:#141827;--ink2:#545c70;--ink3:#8d95a8;--line:#e7e6ee;--teal:#0e9f8f;--grad:linear-gradient(120deg,#f0a020,#ec5f8f 52%,#7c5cf0);--serif:'Fraunces',Georgia,'Times New Roman',serif;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0d14;--card:#151722;--ink:#eef0f6;--ink2:#aab1c2;--ink3:#727a8f;--line:#252838;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0d14;--card:#151722;--ink:#eef0f6;--ink2:#aab1c2;--ink3:#727a8f;--line:#252838;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;padding-block:28px 70px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:750;font-size:14.5px;color:var(--ink2)}.brand i{width:26px;height:26px;border-radius:8px;background:var(--grad)}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:center;padding:28px;border-radius:28px;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 60px -40px rgba(60,40,120,.45);overflow:hidden;position:relative}
+.hero:before{content:"";position:absolute;inset:-40% auto auto -20%;width:70%;height:120%;background:radial-gradient(closest-side,rgba(236,95,143,.16),transparent);pointer-events:none}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:11.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3)}.eyebrow b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font:600 clamp(32px,5vw,50px)/1.05 var(--serif);letter-spacing:-.02em;margin:10px 0 12px;text-wrap:balance}h1 em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--ink2);font-size:15.5px;max-width:58ch}
+.collage{position:relative;height:300px}.collage .sky{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:22px}
+.collage .pair{position:absolute;left:-10px;bottom:-14px;display:flex;gap:8px;transform:rotate(-3deg)}.collage .pair img{width:96px;height:170px;object-fit:cover;border-radius:14px;border:3px solid var(--card);box-shadow:0 14px 30px -12px rgba(0,0,0,.5)}
+.collage .gift{position:absolute;width:92px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.35));animation:float 6s ease-in-out infinite}.collage .g1{right:6%;top:6%}.collage .g2{right:28%;top:38%;width:78px;animation-delay:-2s}.collage .g3{right:4%;bottom:6%;width:104px;animation-delay:-4s}
+@keyframes float{50%{transform:translateY(-8px) rotate(3deg)}}@media(prefers-reduced-motion:reduce){.collage .gift{animation:none}}
+.overview{display:grid;grid-template-columns:auto minmax(0,1fr);gap:26px;align-items:center;padding:22px 26px;border-radius:24px;background:var(--card);border:1px solid var(--line)}
+.ring{position:relative;width:140px;height:140px}.ring svg{width:140px;height:140px}.ring .c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.ring .c b{font:650 34px/1 var(--serif)}.ring .c span{font-size:11.5px;color:var(--ink3);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 13.5px var(--sans);cursor:pointer;white-space:nowrap}.chip i{width:10px;height:10px;border-radius:50%}.chip em{font-style:normal;color:var(--ink3);font-variant-numeric:tabular-nums}.chip.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}.chip:focus-visible,.search:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.tools{display:grid;gap:12px}.search{height:42px;width:100%;max-width:420px;padding:0 16px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:15px var(--sans)}
+.ch{border-radius:26px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.ch-head{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:0;min-height:170px}
+.ch-pics{position:relative;background:var(--grad);overflow:hidden}.ch-pics .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.ch-pics .ph1{inset:auto 12px 12px auto;width:38%;height:62%;border-radius:12px;border:3px solid var(--card);box-shadow:0 10px 24px -10px rgba(0,0,0,.6)}.ch-pics .pf{position:absolute;bottom:10px;width:30%;max-width:110px;height:auto;filter:drop-shadow(0 10px 14px rgba(0,0,0,.45));animation:float 6s ease-in-out infinite}.ch-pics .pf0{left:6%}.ch-pics .pf1{left:36%;animation-delay:-2s}.ch-pics .pf2{left:66%;animation-delay:-4s}
+.ch-t{padding:22px 26px;display:grid;align-content:center;gap:8px}.ch-t h2{font:600 26px/1.15 var(--serif);letter-spacing:-.01em}.ch-t p{color:var(--ink3);font-size:13.5px;font-variant-numeric:tabular-nums}
+.sbar{display:flex;gap:2px;height:8px;border-radius:99px;overflow:hidden;max-width:420px}.sbar i{display:block;height:100%}
+.rows{list-style:none;display:grid}.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:16px;align-items:start;padding:16px 26px;border-top:1px solid var(--line)}
+.row .n{font:500 15px var(--serif);color:var(--ink3);font-variant-numeric:tabular-nums;padding-top:2px}
+.row q{display:block;font:500 17px/1.4 var(--serif);quotes:"\\201C" "\\201D"}.row .d{color:var(--ink2);font-size:14px;margin-top:5px}
+.pill{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px;border-radius:99px;font:700 12px var(--sans);white-space:nowrap;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) 78%,var(--ink))}.pill i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.row[hidden],.ch[hidden]{display:none}
+.foot{text-align:center;color:var(--ink3);font-size:12.5px}
+.tbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.vt{display:inline-flex;padding:4px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}.vt button{height:34px;padding:0 16px;border:0;border-radius:99px;background:none;color:var(--ink2);font:600 13.5px var(--sans);cursor:pointer;white-space:nowrap}.vt button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+#v-chapters{display:grid;gap:22px}#v-sheet{display:grid;gap:18px}#v-sheet[hidden]{display:none}
+.sg{border-radius:22px;background:var(--card);border:1px solid var(--line);overflow:hidden}.sg-h{display:flex;align-items:center;gap:10px;padding:14px 18px;font:inherit}.sg-h em{font-style:normal;color:var(--ink3);font-weight:700;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}.sheet{width:100%;border-collapse:collapse;font-size:14px}.sheet th{position:sticky;top:0;background:var(--card);text-align:left;font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);padding:10px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}
+.sheet td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}.sheet tr:last-child td{border-bottom:0}.sheet tbody tr:hover td{background:color-mix(in srgb,var(--ink) 3%,transparent)}
+.sheet .c-ph{width:64px}.sheet .c-ph img{width:52px;height:52px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 0 0 1px var(--line)}.sheet .c-n{width:40px;color:var(--ink3);font:500 14px var(--serif);font-variant-numeric:tabular-nums}.sheet .c-p{font:500 15px/1.4 var(--serif);min-width:220px}.sheet .c-g{color:var(--ink2);font-size:13px;white-space:nowrap}.sheet .c-d{color:var(--ink2);font-size:13.5px;min-width:200px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sheet tr[hidden],.sg[hidden]{display:none}.srow[hidden]{display:none}
+.empty{display:none;text-align:center;color:var(--ink3);padding:30px}
+@media(max-width:760px){.hero{grid-template-columns:minmax(0,1fr);padding:22px}.collage{height:220px}.overview{grid-template-columns:minmax(0,1fr);justify-items:start}.ch-head{grid-template-columns:minmax(0,1fr)}.ch-pics{height:170px}.row{grid-template-columns:34px minmax(0,1fr);padding:14px 18px}.row .pill{grid-column:2;justify-self:start}}
+</style></head><body><div class="wrap">
+<div class="brand"><i></i>Bug Ledger · Prompt ledger</div>
+<header class="hero"><div><span class="eyebrow"><b>${e(row.project || 'Project')}</b> · ${e(when)}</span><h1>${e(d.title || 'Prompt ledger')}</h1><p class="lede">${e(d.summary || '')}</p></div>
+<div class="collage">${hero[0] ? `<img class="sky" src="${e(hero[0])}" alt="">` : ''}${hero[1] && hero[2] ? `<div class="pair"><img src="${e(hero[1])}" alt="Original frame"><img src="${e(hero[2])}" alt="Reimagined frame"></div>` : ''}${hero.slice(3).map((u, i) => `<img class="gift g${i + 1}" src="${e(u)}" alt="">`).join('')}</div></header>
+<section class="overview" aria-label="Status overview"><div class="ring"><svg viewBox="0 0 140 140" aria-hidden="true"><circle r="${R}" cx="70" cy="70" fill="none" stroke="var(--line)" stroke-width="16"/>${arcs}</svg><div class="c"><b>${cnt.done || 0}</b><span>of ${items.length} done</span></div></div>
+<div class="tools"><div class="chips" role="group" aria-label="Filter by status"><button class="chip on" data-f="all" type="button">All <em>${items.length}</em></button>${order.filter(k => cnt[k]).map(k => `<button class="chip" data-f="${k}" type="button"><i style="background:${ST[k][1]}"></i>${ST[k][0]} <em>${cnt[k]}</em></button>`).join('')}</div><div class="tbar"><input class="search" id="q" type="search" placeholder="Search prompts — e.g. calendar, gifts, upscale" aria-label="Search prompts"><div class="vt" role="radiogroup" aria-label="View"><button type="button" role="radio" data-v="chapters" class="on" aria-checked="true">Chapters</button><button type="button" role="radio" data-v="sheet" aria-checked="false">Spreadsheet</button></div></div></div></section>
+<div id="v-chapters">${groups.map(g => `<section class="ch"><div class="ch-head"><div class="ch-pics">${pic(g.name)}</div><div class="ch-t"><span class="eyebrow">Chapter</span><h2>${e(g.name)}</h2><p>${g.items.length} prompt${g.items.length === 1 ? '' : 's'} · ${g.items.filter(x => x.s === 'done').length} done</p><div class="sbar">${bar(g.items)}</div></div></div>
+<ol class="rows">${g.items.map(x => `<li class="row" data-s="${x.s}" data-t="${e((x.p + ' ' + x.d).toLowerCase())}"><span class="n">${x.n}</span><div><q>${e(x.p)}</q><p class="d">${e(x.d)}</p></div><span class="pill" style="--c:${ST[x.s][1]}"><i></i>${ST[x.s][0]}</span></li>`).join('')}</ol></section>`).join('')}</div><div id="v-sheet" hidden>${sheet}</div>
+<p class="empty" id="none">Nothing matches — try another word or status.</p>
+<p class="foot">Add-only record · posted by your agent · ${e(when)}</p></div>
+<script>(function(){var f='all',q='';var rows=[].slice.call(document.querySelectorAll('.row,.srow')),chs=[].slice.call(document.querySelectorAll('.ch'));function apply(){var any=0;rows.forEach(function(r){var ok=(f==='all'||r.dataset.s===f)&&(!q||r.dataset.t.indexOf(q)>-1);r.hidden=!ok;if(ok)any++;});chs.forEach(function(c){c.hidden=!c.querySelector('.row:not([hidden])');});[].forEach.call(document.querySelectorAll('.sg'),function(c){c.hidden=!c.querySelector('.srow:not([hidden])');});document.getElementById('none').style.display=any?'none':'block';}
+[].forEach.call(document.querySelectorAll('.chip'),function(b){b.onclick=function(){f=b.dataset.f;[].forEach.call(document.querySelectorAll('.chip'),function(x){x.classList.toggle('on',x===b);});apply();};});document.getElementById('q').oninput=function(e){q=e.target.value.trim().toLowerCase();apply();};
+function view(v){document.getElementById('v-chapters').hidden=v!=='chapters';document.getElementById('v-sheet').hidden=v!=='sheet';[].forEach.call(document.querySelectorAll('.vt button'),function(b){var on=b.dataset.v===v;b.classList.toggle('on',on);b.setAttribute('aria-checked',on);});try{localStorage.setItem('bl_ledger_view',v)}catch(e){}}
+[].forEach.call(document.querySelectorAll('.vt button'),function(b){b.onclick=function(){view(b.dataset.v);};});var sv=null;try{sv=localStorage.getItem('bl_ledger_view')}catch(e){}if(sv==='sheet')view('sheet');})();</script>
+</body></html>`;
+}
+
