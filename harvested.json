@@ -6730,5 +6730,65 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-22"
+  },
+  {
+    "key": "2febca89:followupdmsentautomaticallyiftheydidnttapthelink",
+    "app": "Hallalu CRM",
+    "title": "- Follow-up DM: sent automatically if they didn't tap the link.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Follow-up DM:** sent automatically if they didn't tap the link.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "2febca89:betterthanmanychatfromtheresearch89reviews15rivalpricingpage",
+    "app": "Hallalu CRM",
+    "title": "Better than ManyChat, from the research (89 reviews, 15 rival pricing pages, Meta's…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Better than ManyChat, from the research** (89 reviews, 15 rival pricing pages, Meta's current docs) - **Delivery health:** explains in plain English why something didn't send.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "7054ce41:fitcheckapanelnexttothepreviewflagslowresolutioncroppingawhi",
+    "app": "Listing Lab Pro",
+    "title": "- Fit check: a panel next to the preview flags low resolution, cropping, a white box,…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- **Fit check:** a panel next to the preview flags low resolution, cropping, a white box, art running off the garment, a shape mismatch (with a link to a scene that suits it) and poor contrast on the…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "7054ce41:mockupsreworkedwave15irenderedall26sceneswithareallogotofind",
+    "app": "Listing Lab Pro",
+    "title": "Mockups reworked (Wave 15) I rendered all 26 scenes with a real logo to find what…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "**Mockups reworked (Wave 15)** I rendered all 26 scenes with a real logo to find what looked wrong: - **Frames** showed stacked boxes: the mat, then grey bars, then the art.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "acc82d3f:itsmuchbetterthanbeforebutthelive3dhairstillisntascleanasana",
+    "app": "Hallalu CRM",
+    "title": "It's much better than before, but the live 3D hair still isn't as clean as an animated…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It's much better than before, but the live 3D hair still isn't as clean as an animated film.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-22"
   }
 ]
