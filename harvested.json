@@ -6646,5 +6646,65 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-22"
+  },
+  {
+    "key": "2f439d37:thesamesourcesalsoshowwherethisfailsconfigpushesthatskipther",
+    "app": "Breadcrumb",
+    "title": "Same sources also show where this fails: - Config pushes that skip the rollout. Google…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The same sources also show where this fails: - **Config pushes that skip the rollout.** Google Cloud's June 2025 outage got through a region-by-region rollout because the failing code was never run d…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2f439d37",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "2f439d37:youcanbuilditasmallwatcherthatcompareserrorratesbetweentheol",
+    "app": "Breadcrumb",
+    "title": "You can build it: a small watcher that compares error rates between the old and new…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "You can build it: a small watcher that compares error rates between the old and new version and rolls back on its own, the way Argo Rollouts and Flagger work.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2f439d37",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "777e40cb:thedoceditdidntapplysothatcommitcarriesonlythehookfile",
+    "app": "Hallalu CRM",
+    "title": "Doc edit didn't apply, so that commit carries only the hook file.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The doc edit didn't apply, so that commit carries only the hook file.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "777e40cb",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "777e40cb:thebugtheclireadanythingthatwasntaflagasplaintextincludingth",
+    "app": "Hallalu CRM",
+    "title": "- The bug: the CLI read anything that wasn't a --flag as plain text, including the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **The bug:** the CLI read anything that wasn't a `--flag` as plain text, including the value right after a flag.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "777e40cb",
+    "found": "2026-10-22"
+  },
+  {
+    "key": "777e40cb:thesamebughitlogandprojectlogprojectxfiledxasastraynote",
+    "app": "Hallalu CRM",
+    "title": "Same bug hit log and project: log --project \"X\" filed \"X\" as a stray note.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The same bug hit `log` and `project`: `log --project \"X\"` filed \"X\" as a stray note.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "777e40cb",
+    "found": "2026-10-22"
   }
 ]
