@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-584 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+592 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (344)
+## Hallalu CRM (350)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -348,6 +348,12 @@
 - [ ] `low` `other` (2026-10-22, #aba2ad45) — Shoe in the listing was grey, and that description leaked into the prompt.
 - [ ] `low` `other` (2026-10-22, #acc82d3f) — Not finished: - The final check isn't confirmed. The last change was deployed and a…
 - [ ] `low` `other` (2026-10-22, #d91256be) — Their server endpoint isn't committed yet, so I didn't deploy that commit.
+- [ ] `low` `other` (2026-10-23, #2febca89) — A failed image now shows as a clean tile.
+- [ ] `low` `other` (2026-10-23, #2febca89) — Running the suite for the stale-field fix, then deploying and pushing this batch.
+- [ ] `low` `other` (2026-10-23, #7c2b7cee) — - Blank answers: now and then the help chat gave a generic "not sure" reply even to…
+- [ ] `low` `other` (2026-10-23, #93601ae9) — Your new request (Wave 136), it doesn't look realistic yet: a research agent is…
+- [ ] `low` `other` (2026-10-23, #acc82d3f) — Both photo sources answer now; the earlier failure was a passing network blip.
+- [ ] `low` `other` (2026-10-23, #d91256be) — That duplicate was what broke their build.
 
 ## Finished. (98)
 
@@ -491,7 +497,7 @@
 - [ ] `low` `other` (2026-10-07, #c6c95d36) — Site making the "world's first" claim doesn't resolve on its apex domain right now.
 - [ ] `low` `other` (2026-10-07, #c6c95d36) — Verdict: No — Start in Story is not the world's first AI influencer studio The blanket…
 
-## Listing Lab Pro (30)
+## Listing Lab Pro (32)
 
 - [ ] `high` `auth` (2026-08-26, #61999ed8) — Two prominent stats in my deck are wrong, and two agents failed on a session limit (now…
 - [ ] `high` `auth` (2026-09-04, #17d3ca5a) — Three items stay open for your decision: naming for the duplicate modules from the…
@@ -500,6 +506,7 @@
 - [ ] `medium` `logic` (2026-08-18, #00ae642b) — Two residual leaks would still produce wrong results — let me fix them.
 - [ ] `medium` `logic` (2026-09-04, #17d3ca5a) — Only the smoke test's helper name is wrong.
 - [ ] `medium` `logic` (2026-10-22, #7054ce41) — Mockups reworked (Wave 15) I rendered all 26 scenes with a real logo to find what…
+- [ ] `medium` `logic` (2026-10-23, #7054ce41) — Restarting to load the fix, then checking three things: a second person trying to claim…
 - [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a CSS bug — display:grid is overriding the hidden attribute so both dialogs show.
 - [ ] `low` `other` (2026-08-10, #2d2c2119) — It needs the LSTM core variants which I didn't copy:
 - [ ] `low` `ui` (2026-08-10, #2d2c2119) — Found a real layout bug — the meal grid breaks below 860px, misaligning days and meals.
@@ -523,6 +530,7 @@
 - [ ] `low` `ui` (2026-10-22, #7054ce41) — - Fit check: a panel next to the preview flags low resolution, cropping, a white box,…
 - [ ] `low` `other` (2026-10-22, #7054ce41) — Candle mockups are live at https://mockup-studio.coconvo.workers.dev, in a new Candles…
 - [ ] `low` `ui` (2026-10-22, #7054ce41) — While checking, I also found that the "Blank" button still drew the mat, so it never…
+- [ ] `low` `other` (2026-10-23, #7054ce41) — One bug to fix before testing: the API reads JSON bodies up front, which would use up…
 
 ## Breadcrumb (27)
 

@@ -7006,5 +7006,101 @@
     "status": "unverified",
     "session": "d91256be",
     "found": "2026-10-22"
+  },
+  {
+    "key": "2febca89:afailedimagenowshowsasacleantile",
+    "app": "Hallalu CRM",
+    "title": "A failed image now shows as a clean tile.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "A failed image now shows as a clean tile.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "2febca89:runningthesuiteforthestalefieldfixthendeployingandpushingthi",
+    "app": "Hallalu CRM",
+    "title": "Running the suite for the stale-field fix, then deploying and pushing this batch.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Running the suite for the stale-field fix, then deploying and pushing this batch.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "7054ce41:onebugtofixbeforetestingtheapireadsjsonbodiesupfrontwhichwou",
+    "app": "Listing Lab Pro",
+    "title": "One bug to fix before testing: the API reads JSON bodies up front, which would use up…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One bug to fix before testing: the API reads JSON bodies up front, which would use up the Stripe webhook's raw body before its signature check.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "7054ce41:restartingtoloadthefixthencheckingthreethingsasecondpersontr",
+    "app": "Listing Lab Pro",
+    "title": "Restarting to load the fix, then checking three things: a second person trying to claim…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Restarting to load the fix, then checking three things: a second person trying to claim an already-claimed order, sign-in with a wrong PIN, and forgot-PIN.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "7c2b7cee:blankanswersnowandthenthehelpchatgaveagenericnotsurereplyeve",
+    "app": "Hallalu CRM",
+    "title": "- Blank answers: now and then the help chat gave a generic \"not sure\" reply even to…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Blank answers:** now and then the help chat gave a generic \"not sure\" reply even to easy questions, because the AI sometimes returned nothing.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7c2b7cee",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "93601ae9:yournewrequestwave136itdoesntlookrealisticyetaresearchagenti",
+    "app": "Hallalu CRM",
+    "title": "Your new request (Wave 136), it doesn't look realistic yet: a research agent is…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Your new request (Wave 136), it doesn't look realistic yet:** a research agent is searching Google, Reddit, the three.js forum and the best showcase demos for what makes browser-rendered people loo…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "93601ae9",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "acc82d3f:bothphotosourcesanswernowtheearlierfailurewasapassingnetwork",
+    "app": "Hallalu CRM",
+    "title": "Both photo sources answer now; the earlier failure was a passing network blip.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Both photo sources answer now; the earlier failure was a passing network blip.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "d91256be:thatduplicatewaswhatbroketheirbuild",
+    "app": "Hallalu CRM",
+    "title": "That duplicate was what broke their build.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That duplicate was what broke their build.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d91256be",
+    "found": "2026-10-23"
   }
 ]
