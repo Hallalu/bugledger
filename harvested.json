@@ -7102,5 +7102,101 @@
     "status": "unverified",
     "session": "d91256be",
     "found": "2026-10-23"
+  },
+  {
+    "key": "93601ae9:stillnotdonethepaleneckbandididntgettoitinthisround",
+    "app": "Hallalu CRM",
+    "title": "Still not done: - The pale neck band: I didn't get to it in this round.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Still not done:** - **The pale neck band:** I didn't get to it in this round.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "93601ae9",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "93601ae9:tightlycoiledhairneedsatleast8samplesperturnsoitdoesntzigzag",
+    "app": "Hallalu CRM",
+    "title": "Tightly coiled hair needs at least 8 samples per turn so it doesn't zig-zag.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Tightly coiled hair needs at least 8 samples per turn so it doesn't zig-zag.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "93601ae9",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "aba2ad45:thelastdeployhitacloudflareapierroronceandwentthroughonthere",
+    "app": "Hallalu CRM",
+    "title": "Last deploy hit a Cloudflare API error once and went through on the retry.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The last deploy hit a Cloudflare API error once and went through on the retry.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "aba2ad45",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "aba2ad45:loralandsisleyblockedautomatedbrowsingandididntgetaroundthat",
+    "app": "Hallalu CRM",
+    "title": "L'Oréal and Sisley blocked automated browsing, and I didn't get around that.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "L'Oréal and Sisley blocked automated browsing, and I didn't get around that.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "aba2ad45",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "acc82d3f:therunserrorcameafterwardsinmyreportingscriptnotinthefix",
+    "app": "Hallalu CRM",
+    "title": "Run's error came afterwards, in my reporting script, not in the fix.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The run's error came afterwards, in my reporting script, not in the fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "acc82d3f:itfailsonwrongstructureanailookplasticglosspaintedsteamstudi",
+    "app": "Hallalu CRM",
+    "title": "It fails on: - wrong structure - an AI look: plastic gloss, painted steam, studio…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "It fails on: - wrong structure - an AI look: plastic gloss, painted steam, studio light, sides not cooked the real way - impossible hands - a changed product shade or skin tone 4.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "acc82d3f:freeredosafailedpictureisremadefreshnevereditedontopupto2mor",
+    "app": "Hallalu CRM",
+    "title": "Free redos. A failed picture is remade fresh (never edited on top), up to 2 more times,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Free redos.** A failed picture is remade fresh (never edited on top), up to 2 more times, and the best is kept.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-23"
+  },
+  {
+    "key": "d91256be:thatruleisntwrittendownanywhereyet",
+    "app": "Hallalu CRM",
+    "title": "That rule isn't written down anywhere yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That rule isn't written down anywhere yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d91256be",
+    "found": "2026-10-23"
   }
 ]

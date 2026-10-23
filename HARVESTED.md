@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-592 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+600 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (350)
+## Hallalu CRM (358)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -74,6 +74,7 @@
 - [ ] `medium` `race` (2026-10-21, #568edece) — Charge race - What was wrong: each paid action checked the balance, did the work, then…
 - [ ] `medium` `logic` (2026-10-21, #96438b05) — Fix applied; the grep pattern was just wrong.
 - [ ] `medium` `logic` (2026-10-22, #acc82d3f) — What was wrong: with "Show a quick pass instantly" switched on, the app first runs a…
+- [ ] `medium` `logic` (2026-10-23, #acc82d3f) — It fails on: - wrong structure - an AI look: plastic gloss, painted steam, studio…
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Assistant (Ava) on mobile confirmed real bug Root cause found: the Ava hero (.ava-stage…
 - [ ] `low` `other` (2026-08-10, #215ee275) — That's exactly why it doesn't match the call.
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Mobile Ava fix + dark-mode contrast sweep (fixes the "invisible on mobile" bug — and…
@@ -354,6 +355,13 @@
 - [ ] `low` `other` (2026-10-23, #93601ae9) — Your new request (Wave 136), it doesn't look realistic yet: a research agent is…
 - [ ] `low` `other` (2026-10-23, #acc82d3f) — Both photo sources answer now; the earlier failure was a passing network blip.
 - [ ] `low` `other` (2026-10-23, #d91256be) — That duplicate was what broke their build.
+- [ ] `low` `other` (2026-10-23, #93601ae9) — Still not done: - The pale neck band: I didn't get to it in this round.
+- [ ] `low` `other` (2026-10-23, #93601ae9) — Tightly coiled hair needs at least 8 samples per turn so it doesn't zig-zag.
+- [ ] `low` `other` (2026-10-23, #aba2ad45) — Last deploy hit a Cloudflare API error once and went through on the retry.
+- [ ] `low` `other` (2026-10-23, #aba2ad45) — L'Oréal and Sisley blocked automated browsing, and I didn't get around that.
+- [ ] `low` `other` (2026-10-23, #acc82d3f) — Run's error came afterwards, in my reporting script, not in the fix.
+- [ ] `low` `other` (2026-10-23, #acc82d3f) — Free redos. A failed picture is remade fresh (never edited on top), up to 2 more times,…
+- [ ] `low` `other` (2026-10-23, #d91256be) — That rule isn't written down anywhere yet.
 
 ## Finished. (98)
 
