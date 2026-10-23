@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-600 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+612 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (358)
+## Hallalu CRM (370)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -42,6 +42,8 @@
 - [ ] `high` `security` (2026-10-12, #9666cd90) — A second Claude session is actively doing this exact de-leak in the same repo right now…
 - [ ] `high` `auth` (2026-10-22, #2febca89) — - Couldn't reach: Capterra (blocked by a bot check), most of G2 (needs a login), Reddit…
 - [ ] `high` `auth` (2026-10-22, #32e684eb) — That board belongs to the other session ("Build the planner"), so I didn't use it.
+- [ ] `high` `security` (2026-10-23, #aba2ad45) — - Auth: as I understand Kling's API, it doesn't take a fixed key.
+- [ ] `high` `auth` (2026-10-23, #acc82d3f) — After the app restart Colima isn't running, so I'm starting it, then pushing and…
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -362,6 +364,16 @@
 - [ ] `low` `other` (2026-10-23, #acc82d3f) — Run's error came afterwards, in my reporting script, not in the fix.
 - [ ] `low` `other` (2026-10-23, #acc82d3f) — Free redos. A failed picture is remade fresh (never edited on top), up to 2 more times,…
 - [ ] `low` `other` (2026-10-23, #d91256be) — That rule isn't written down anywhere yet.
+- [ ] `low` `other` (2026-10-23, #2febca89) — Left: I didn't get a browser screenshot of the corrected estimate message.
+- [ ] `low` `other` (2026-10-23, #3fad4369) — One small fix: the colour picker square doesn't follow a typed hex.
+- [ ] `low` `other` (2026-10-23, #5e44df18) — Failing guard looked for the old auto-fix wording I just replaced.
+- [ ] `low` `other` (2026-10-23, #5e44df18) — Back to the live proof of the fail auto-fix re-check loop on the new port.
+- [ ] `low` `other` (2026-10-23, #8297bc59) — Uploading the evidence shots to Aprizely (the broken drop-zone fixed as a before/after…
+- [ ] `low` `other` (2026-10-23, #93601ae9) — - Phone speed is unmeasured: the browser pane was hidden, which pauses rendering, so I…
+- [ ] `low` `other` (2026-10-23, #aba2ad45) — Deploy didn't run at all: macOS has no timeout command.
+- [ ] `low` `other` (2026-10-23, #aba2ad45) — - Pump macro: it keeps inventing a dropper or pump the product doesn't have.
+- [ ] `low` `other` (2026-10-23, #acc82d3f) — Your usage limit was reached, and the last step didn't go through.
+- [ ] `low` `other` (2026-10-23, #acc82d3f) — If Tax isn't switched on in Stripe yet, checkout goes ahead without tax rather than…
 
 ## Finished. (98)
 
