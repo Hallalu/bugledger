@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-626 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+627 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (384)
+## Hallalu CRM (385)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -388,6 +388,7 @@
 - [ ] `low` `other` (2026-10-23, #d57521fb) — One fix before moving on: a chunk that keeps failing would make the transcription queue…
 - [ ] `low` `other` (2026-10-23, #d57521fb) — It isn't fully browser-tested yet.
 - [ ] `low` `other` (2026-10-23, #d57521fb) — Fix the broken else-chain so the file is at least valid, then stop.
+- [ ] `low` `other` (2026-10-24, #7054ce41) — Testing duplicate, paste, remove and the blanket fix in the studio:
 
 ## Finished. (98)
 

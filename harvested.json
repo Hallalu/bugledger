@@ -7510,5 +7510,17 @@
     "status": "unverified",
     "session": "d57521fb",
     "found": "2026-10-23"
+  },
+  {
+    "key": "7054ce41:testingduplicatepasteremoveandtheblanketfixinthestudio",
+    "app": "Hallalu CRM",
+    "title": "Testing duplicate, paste, remove and the blanket fix in the studio:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Testing duplicate, paste, remove and the blanket fix in the studio:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
   }
 ]
