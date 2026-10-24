@@ -1,13 +1,14 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-627 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+634 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (385)
+## Hallalu CRM (392)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
 - [ ] `critical` `data-loss` (2026-10-10, #beaf3c88) — Every command failed, and wrangler lost its saved sign-in in the process.
 - [ ] `critical` `data-loss` (2026-10-12, #748ca148) — To fix it, in the Hallalu Stripe dashboard add a new endpoint for…
+- [ ] `critical` `data-loss` (2026-10-24, #c8a1be54) — Nothing was lost: - Each session's unfinished, uncommitted work stays in /pixelbake on…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
 - [ ] `high` `crash` (2026-08-10, #55c985af) — Two problems: a crash in the report loop and heavy noise (268 medium — almost certainly…
 - [ ] `high` `auth` (2026-08-11, #55c985af) — Copy, conversion, accessibility) when the session limit resets to catch more.
@@ -389,6 +390,12 @@
 - [ ] `low` `other` (2026-10-23, #d57521fb) — It isn't fully browser-tested yet.
 - [ ] `low` `other` (2026-10-23, #d57521fb) — Fix the broken else-chain so the file is at least valid, then stop.
 - [ ] `low` `other` (2026-10-24, #7054ce41) — Testing duplicate, paste, remove and the blanket fix in the studio:
+- [ ] `low` `other` (2026-10-24, #7054ce41) — All 68 full-quality files uploaded with no failures.
+- [ ] `low` `other` (2026-10-24, #7054ce41) — Resetting the pane and deploying the fixes.
+- [ ] `low` `ui` (2026-10-24, #7054ce41) — No sideways overflow now at 360, 375, 658, 768 and 1024px live.
+- [ ] `low` `other` (2026-10-24, #acc82d3f) — Fixed and proven: the spin won "+100 reward credits", Done closed the wheel, and the…
+- [ ] `low` `other` (2026-10-24, #c8a1be54) — - "Brown hat" hair fix: committed, but it goes live with the support chat's deploy, so…
+- [ ] `low` `other` (2026-10-24, #c8a1be54) — Quickest real fix is the hidden folder in /Pictures from your earlier cleanup notes;…
 
 ## Finished. (98)
 

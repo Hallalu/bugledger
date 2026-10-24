@@ -7522,5 +7522,89 @@
     "status": "unverified",
     "session": "7054ce41",
     "found": "2026-10-24"
+  },
+  {
+    "key": "7054ce41:all68fullqualityfilesuploadedwithnofailures",
+    "app": "Hallalu CRM",
+    "title": "All 68 full-quality files uploaded with no failures.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "All 68 full-quality files uploaded with no failures.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "7054ce41:resettingthepaneanddeployingthefixes",
+    "app": "Hallalu CRM",
+    "title": "Resetting the pane and deploying the fixes.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Resetting the pane and deploying the fixes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "7054ce41:nosidewaysoverflownowat360375658768and1024pxlive",
+    "app": "Hallalu CRM",
+    "title": "No sideways overflow now at 360, 375, 658, 768 and 1024px live.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "No sideways overflow now at 360, 375, 658, 768 and 1024px live.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "acc82d3f:fixedandproventhespinwon100rewardcreditsdoneclosedthewheelan",
+    "app": "Hallalu CRM",
+    "title": "Fixed and proven: the spin won \"+100 reward credits\", Done closed the wheel, and the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fixed and proven: the spin won \"+100 reward credits\", Done closed the wheel, and the card updated from 3 to 2 of 4 left, with both wins under \"Your recent wins\".",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "c8a1be54:brownhathairfixcommittedbutitgoeslivewiththesupportchatsdepl",
+    "app": "Hallalu CRM",
+    "title": "- \"Brown hat\" hair fix: committed, but it goes live with the support chat's deploy, so…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **\"Brown hat\" hair fix:** committed, but it goes live with the support chat's deploy, so it isn't checked in the browser yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8a1be54",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "c8a1be54:thequickestrealfixisthehiddenfolderinpicturesfromyourearlier",
+    "app": "Hallalu CRM",
+    "title": "Quickest real fix is the hidden folder in /Pictures from your earlier cleanup notes;…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The quickest real fix is the hidden folder in ~/Pictures from your earlier cleanup notes; this lists the biggest items:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8a1be54",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "c8a1be54:nothingwaslosteachsessionsunfinisheduncommittedworkstaysinpi",
+    "app": "Hallalu CRM",
+    "title": "Nothing was lost: - Each session's unfinished, uncommitted work stays in /pixelbake on…",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "Nothing was lost: - Each session's unfinished, uncommitted work stays in `~/pixelbake` on disk, and restarting doesn't delete it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8a1be54",
+    "found": "2026-10-24"
   }
 ]
