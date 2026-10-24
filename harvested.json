@@ -7702,5 +7702,29 @@
     "status": "unverified",
     "session": "d57521fb",
     "found": "2026-10-24"
+  },
+  {
+    "key": "2febca89:thereareatmost3resetemailsperaddressand10requestspernetworke",
+    "app": "Hallalu CRM",
+    "title": "There are at most 3 reset emails per address and 10 requests per network each hour.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "There are at most 3 reset emails per address and 10 requests per network each hour.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "2febca89:prooftests257of257localcheckspassincluding13newonesthatopent",
+    "app": "Hallalu CRM",
+    "title": "Proof - Tests: 257 of 257 local checks pass, including 13 new ones that open the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Proof** - **Tests:** 257 of 257 local checks pass, including 13 new ones that open the \"email\", follow its link and reset for real.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-24"
   }
 ]

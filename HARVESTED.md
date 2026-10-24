@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-642 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+644 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (400)
+## Hallalu CRM (402)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -404,6 +404,8 @@
 - [ ] `low` `other` (2026-10-24, #acc82d3f) — - It tested the checker 3 times on 5 known-bad pictures and 4 good ones: all 15 bad…
 - [ ] `low` `other` (2026-10-24, #d57521fb) — Only the Pattern recall screen is open; the screenshot was a stale frame.
 - [ ] `low` `other` (2026-10-24, #d57521fb) — My one-line plural fix didn't apply, so I'll use a direct edit.
+- [ ] `low` `other` (2026-10-24, #2febca89) — There are at most 3 reset emails per address and 10 requests per network each hour.
+- [ ] `low` `other` (2026-10-24, #2febca89) — Proof - Tests: 257 of 257 local checks pass, including 13 new ones that open the…
 
 ## Finished. (98)
 
