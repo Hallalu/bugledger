@@ -7606,5 +7606,101 @@
     "status": "unverified",
     "session": "c8a1be54",
     "found": "2026-10-24"
+  },
+  {
+    "key": "0c0f2a5d:thedeployfailedbecausedockerisntrunningmynotessaycolimastart",
+    "app": "Hallalu CRM",
+    "title": "Deploy failed because Docker isn't running (my notes say colima start fixes this).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The deploy failed because Docker isn't running (my notes say `colima start` fixes this).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0c0f2a5d",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "7054ce41:findingtheblankscenebehindyourscreenshot",
+    "app": "Hallalu CRM",
+    "title": "Finding the blank scene behind your screenshot.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Finding the blank scene behind your screenshot.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "7054ce41:mirrorfixeduploaded2failed0deleted0",
+    "app": "Hallalu CRM",
+    "title": "Mirror fixed: uploaded 2, failed 0, deleted 0.",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "Mirror fixed: uploaded 2, failed 0, deleted 0.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "acc82d3f:thebrowserpaneisntsignedintoyouraccountandiwontenteryourpass",
+    "app": "Hallalu CRM",
+    "title": "Browser pane isn't signed in to your account, and I won't enter your password.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The browser pane isn't signed in to your account, and I won't enter your password.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "acc82d3f:ittestedthechecker3timeson5knownbadpicturesand4goodonesall15",
+    "app": "Hallalu CRM",
+    "title": "- It tested the checker 3 times on 5 known-bad pictures and 4 good ones: all 15 bad…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- It tested the checker 3 times on 5 known-bad pictures and 4 good ones: all 15 bad checks failed and all 12 good checks passed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "acc82d3f:thewebsitessessiondidntloseanythingeitheritsstoreworkwasalre",
+    "app": "Hallalu CRM",
+    "title": "Websites session didn't lose anything either: its store work was already committed when…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The Websites session didn't lose anything either: its store work was already committed when I restored the files.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "d57521fb:onlythepatternrecallscreenisopenthescreenshotwasastaleframe",
+    "app": "Hallalu CRM",
+    "title": "Only the Pattern recall screen is open; the screenshot was a stale frame.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Only the Pattern recall screen is open; the screenshot was a stale frame.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "d57521fb:myonelinepluralfixdidntapplysoilluseadirectedit",
+    "app": "Hallalu CRM",
+    "title": "My one-line plural fix didn't apply, so I'll use a direct edit.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "My one-line plural fix didn't apply, so I'll use a direct edit.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-24"
   }
 ]
