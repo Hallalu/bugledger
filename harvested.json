@@ -7930,5 +7930,41 @@
     "status": "unverified",
     "session": "d57521fb",
     "found": "2026-10-25"
+  },
+  {
+    "key": "5e44df18:ialsospottedlossamountsinredatsmallsizesandthosemayusethefil",
+    "app": "Hallalu CRM",
+    "title": "Also spotted loss amounts in red at small sizes, and those may use the fill red (4.38,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I also spotted loss amounts in red at small sizes, and those may use the fill red (4.38, fails AA).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5e44df18",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "5e44df18:beforetheoldpinkscored354andthecaptiongrey307bothfailing",
+    "app": "Hallalu CRM",
+    "title": "- Before: the old pink scored 3.54 and the caption grey 3.07, both failing.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- Before: the old pink scored 3.54 and the caption grey 3.07, both failing.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5e44df18",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "7054ce41:threefailedrebakesneedsimplerbriefstheterrazzotriothecupsong",
+    "app": "Hallalu CRM",
+    "title": "Three failed rebakes need simpler briefs (the terrazzo trio, the cups on grass, the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Three failed rebakes need simpler briefs (the terrazzo trio, the cups on grass, the luxury bag group).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-25"
   }
 ]

@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-661 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+664 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (414)
+## Hallalu CRM (417)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -418,6 +418,9 @@
 - [ ] `low` `other` (2026-10-25, #60c3a50c) — One photo looked blank at first, but it was only lazy-loading and appeared when…
 - [ ] `low` `other` (2026-10-25, #d57521fb) — Didn't open it myself, because the dashboard's own rules say not to unless you ask.
 - [ ] `low` `other` (2026-10-25, #d57521fb) — Career research (the research done on 23 Oct) - Six headline numbers: - 92% of…
+- [ ] `low` `other` (2026-10-25, #5e44df18) — Also spotted loss amounts in red at small sizes, and those may use the fill red (4.38,…
+- [ ] `low` `other` (2026-10-25, #5e44df18) — - Before: the old pink scored 3.54 and the caption grey 3.07, both failing.
+- [ ] `low` `other` (2026-10-25, #7054ce41) — Three failed rebakes need simpler briefs (the terrazzo trio, the cups on grass, the…
 
 ## Finished. (98)
 
