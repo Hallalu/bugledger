@@ -8038,5 +8038,17 @@
     "status": "unverified",
     "session": "2febca89",
     "found": "2026-10-25"
+  },
+  {
+    "key": "2febca89:discardingthattestdraftthenshippingthefixsincethebrokenswitc",
+    "app": "Hallalu CRM",
+    "title": "Discarding that test draft, then shipping the fix, since the broken switch is live in v49:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Discarding that test draft, then shipping the fix, since the broken switch is live in v49:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-25"
   }
 ]
