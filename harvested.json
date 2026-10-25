@@ -8002,5 +8002,17 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-25"
+  },
+  {
+    "key": "acc82d3f:testingthefixontheexactframesthatfailedswap02sand84sandredra",
+    "app": "Hallalu CRM",
+    "title": "Testing the fix on the exact frames that failed (swap 0.2 s and 8.4 s), and redrawing…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Testing the fix on the exact frames that failed (swap 0.2 s and 8.4 s), and redrawing the aligned face sheet with each column clipped:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-25"
   }
 ]

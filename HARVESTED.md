@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-667 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+668 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (420)
+## Hallalu CRM (421)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -424,6 +424,7 @@
 - [ ] `low` `other` (2026-10-25, #7054ce41) — Three failed rebakes need simpler briefs (the terrazzo trio, the cups on grass, the…
 - [ ] `low` `other` (2026-10-25, #d57521fb) — Fix: wait for wirePet to finish.
 - [ ] `low` `other` (2026-10-25, #acc82d3f) — It moves with her, so I couldn't simply patch it out.
+- [ ] `low` `ui` (2026-10-25, #acc82d3f) — Testing the fix on the exact frames that failed (swap 0.2 s and 8.4 s), and redrawing…
 
 ## Finished. (98)
 
