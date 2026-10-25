@@ -7990,5 +7990,17 @@
     "status": "unverified",
     "session": "d57521fb",
     "found": "2026-10-25"
+  },
+  {
+    "key": "acc82d3f:itmoveswithhersoicouldntsimplypatchitout",
+    "app": "Hallalu CRM",
+    "title": "It moves with her, so I couldn't simply patch it out.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It moves with her, so I couldn't simply patch it out.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-25"
   }
 ]
