@@ -7966,5 +7966,29 @@
     "status": "unverified",
     "session": "7054ce41",
     "found": "2026-10-25"
+  },
+  {
+    "key": "cc8e9f22:appcssicommittedmyonelinethestagecanvasnevershownoutofpropor",
+    "app": "Hallalu CRM",
+    "title": "- app.css: I committed my one line (the stage canvas never shown out of proportion),…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "- **app.css:** I committed my one line (the stage canvas never shown out of proportion), built from git's copy so the other session's work wasn't included.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc8e9f22",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "d57521fb:fixwaitforwirepettofinish",
+    "app": "Hallalu CRM",
+    "title": "Fix: wait for wirePet to finish.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fix: wait for `wirePet` to finish.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-25"
   }
 ]
