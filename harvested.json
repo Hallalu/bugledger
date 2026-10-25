@@ -7726,5 +7726,65 @@
     "status": "unverified",
     "session": "2febca89",
     "found": "2026-10-24"
+  },
+  {
+    "key": "3fad4369:theplainfloodleakedintothebackgroundsmostlabelsarewhiteonlig",
+    "app": "Hallalu CRM",
+    "title": "Plain flood leaked into the backgrounds (most labels are white on light scenes).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The plain flood leaked into the backgrounds (most labels are white on light scenes).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3fad4369",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "acc82d3f:thelivesitedoesnthavethefixesyetthedeployprintednoversion",
+    "app": "Hallalu CRM",
+    "title": "Live site doesn't have the fixes yet: the deploy printed no version.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The live site doesn't have the fixes yet: the deploy printed no version.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "fb778f49:checkthatthegatenowfailsthepaleboxfiximage",
+    "app": "Hallalu CRM",
+    "title": "- Check that the gate now fails the pale-box fix image.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- Check that the gate now fails the pale-box fix image.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fb778f49",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "fb778f49:runningbothchecksinthebackgroundthegateonthefailedpaleboxima",
+    "app": "Hallalu CRM",
+    "title": "Running both checks in the background: the gate on the failed pale-box image (3 runs,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Running both checks in the background: the gate on the failed pale-box image (3 runs, expected to fail), and a fresh paint-a-fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fb778f49",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "fb778f49:thenewpaintafixfailedall3triessoimcheckingwhatthegatesawandw",
+    "app": "Hallalu CRM",
+    "title": "New paint-a-fix failed all 3 tries, so I'm checking what the gate saw and what the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The new paint-a-fix failed all 3 tries, so I'm checking what the gate saw and what the research said about size.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "fb778f49",
+    "found": "2026-10-24"
   }
 ]

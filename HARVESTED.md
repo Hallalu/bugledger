@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-644 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+649 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (402)
+## Hallalu CRM (407)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -406,6 +406,11 @@
 - [ ] `low` `other` (2026-10-24, #d57521fb) — My one-line plural fix didn't apply, so I'll use a direct edit.
 - [ ] `low` `other` (2026-10-24, #2febca89) — There are at most 3 reset emails per address and 10 requests per network each hour.
 - [ ] `low` `other` (2026-10-24, #2febca89) — Proof - Tests: 257 of 257 local checks pass, including 13 new ones that open the…
+- [ ] `low` `other` (2026-10-24, #3fad4369) — Plain flood leaked into the backgrounds (most labels are white on light scenes).
+- [ ] `low` `other` (2026-10-24, #acc82d3f) — Live site doesn't have the fixes yet: the deploy printed no version.
+- [ ] `low` `other` (2026-10-24, #fb778f49) — - Check that the gate now fails the pale-box fix image.
+- [ ] `low` `other` (2026-10-24, #fb778f49) — Running both checks in the background: the gate on the failed pale-box image (3 runs,…
+- [ ] `low` `other` (2026-10-24, #fb778f49) — New paint-a-fix failed all 3 tries, so I'm checking what the gate saw and what the…
 
 ## Finished. (98)
 
