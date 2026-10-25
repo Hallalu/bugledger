@@ -7846,5 +7846,89 @@
     "status": "unverified",
     "session": "7054ce41",
     "found": "2026-10-24"
+  },
+  {
+    "key": "60c3a50c:onephotolookedblankatfirstbutitwasonlylazyloadingandappeared",
+    "app": "Hallalu CRM",
+    "title": "One photo looked blank at first, but it was only lazy-loading and appeared when…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One photo looked blank at first, but it was only lazy-loading and appeared when scrolled into view.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "60c3a50c",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "cc8e9f22:thebugisntlivethelivesitestillrunstheolderscript",
+    "app": "Listing Lab Pro",
+    "title": "Bug isn't live: the live site still runs the older script.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The bug isn't live: the live site still runs the older script.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc8e9f22",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "cc8e9f22:thefixiswrittenbutcouldntbesavedbecauseofthefulldisk",
+    "app": "Listing Lab Pro",
+    "title": "Fix is written but couldn't be saved because of the full disk.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The fix is written but couldn't be saved because of the full disk.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc8e9f22",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "cc8e9f22:ialsofixedabugfromitseditthatsenteveryvisittothehomepagetoth",
+    "app": "Listing Lab Pro",
+    "title": "Also fixed a bug from its edit that sent every visit to the home page to the studio.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I also fixed a bug from its edit that sent every visit to the home page to the studio.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cc8e9f22",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "d57521fb:ididntopenitmyselfbecausethedashboardsownrulessaynottounless",
+    "app": "Hallalu CRM",
+    "title": "Didn't open it myself, because the dashboard's own rules say not to unless you ask.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I didn't open it myself, because the dashboard's own rules say not to unless you ask.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "d57521fb:careerresearchtheresearchdoneon23octsixheadlinenumbers92ofre",
+    "app": "Hallalu CRM",
+    "title": "Career research (the research done on 23 Oct) - Six headline numbers: - 92% of…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Career research** (the research done on 23 Oct) - **Six headline numbers:** - 92% of recruiters say their applicant tracking system doesn't auto-reject on content.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "d57521fb:thebuiltinbrowserwasntsignedintoclaudeaiandididntsigninforyo",
+    "app": "Hallalu CRM",
+    "title": "Built-in browser wasn't signed in to claude.ai, and I didn't sign in for you.",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The built-in browser wasn't signed in to claude.ai, and I didn't sign in for you.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-25"
   }
 ]
