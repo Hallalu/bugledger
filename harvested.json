@@ -7786,5 +7786,65 @@
     "status": "unverified",
     "session": "fb778f49",
     "found": "2026-10-24"
+  },
+  {
+    "key": "2febca89:theanalysisappispublicsothereportdoesntnameanypartofourstack",
+    "app": "Hallalu CRM",
+    "title": "- The Analysis app is public, so the report doesn't name any part of our stack.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- The Analysis app is public, so the report doesn't name any part of our stack.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "2febca89:thenewcodeisincpaasandisntdeployedyet",
+    "app": "Hallalu CRM",
+    "title": "- The new code is in /cpaas and isn't deployed yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- The new code is in `~/cpaas` and isn't deployed yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "3fad4369:thelivepageisntallowedtoposttomylocalreceiversothechecknowru",
+    "app": "Hallalu CRM",
+    "title": "Live page isn't allowed to post to my local receiver, so the check now runs inside the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The live page isn't allowed to post to my local receiver, so the check now runs inside the page itself, the same way on live (old radius) and local (fixed).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3fad4369",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "7054ce41:theautomaticprintareaswerewrongonmostofthemsoifixedthemfront",
+    "app": "Listing Lab Pro",
+    "title": "Automatic print areas were wrong on most of them, so I fixed them: front-facing labels…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The automatic print areas were wrong on most of them, so I fixed them: front-facing labels are found from the white label itself, and the rest I measured by hand on zoomed grids.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
+  },
+  {
+    "key": "7054ce41:biggerthingsididnttouchifyouwantmoreroompinterestpinimages88",
+    "app": "Listing Lab Pro",
+    "title": "Bigger things I didn't touch, if you want more room: - Pinterest pin images: 880 MB in…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Bigger things I didn't touch, if you want more room: - **Pinterest pin images:** 880 MB in `research/`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7054ce41",
+    "found": "2026-10-24"
   }
 ]
