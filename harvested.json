@@ -8014,5 +8014,29 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-25"
+  },
+  {
+    "key": "2febca89:itstillhasnoconsolescreensandisntdeployed",
+    "app": "Hallalu CRM",
+    "title": "It still has no console screens and isn't deployed.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It still has no console screens and isn't deployed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "2febca89:thelocaldevservercrashedpartwaythroughsothefirstshipattempts",
+    "app": "Hallalu CRM",
+    "title": "Local dev server crashed partway through, so the first ship attempt stopped itself…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The local dev server crashed partway through, so the first ship attempt stopped itself before deploying; after a restart it went through.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-25"
   }
 ]
