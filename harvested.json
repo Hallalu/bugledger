@@ -8278,5 +8278,53 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:thefixissmallanemptybalanceerrorshouldcountasthisrouteisdown",
+    "app": "Hallalu CRM",
+    "title": "Fix is small: an empty-balance error should count as \"this route is down\", so it moves…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The fix is small: an empty-balance error should count as \"this route is down\", so it moves on to the gateway like any other outage.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "c31d6f8c:onlyyourownaccountwaschargedthewrongamount5photosmadebythepr",
+    "app": "Hallalu CRM",
+    "title": "- Only your own account was charged the wrong amount (5 photos made by the Products…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "- Only your own account was charged the wrong amount (5 photos made by the Products session).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c31d6f8c",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "c31d6f8c:anythingover12mbisntputinyourlibrarythescreensayssoandkeepsi",
+    "app": "Hallalu CRM",
+    "title": "Anything over 12 MB isn't put in your library; the screen says so and keeps it for 2…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Anything over 12 MB isn't put in your library; the screen says so and keeps it for 2 hours to save.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c31d6f8c",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "c31d6f8c:abadlinkshowsakinderrorwithnostatuscodes",
+    "app": "Hallalu CRM",
+    "title": "- A bad link shows a kind error with no status codes.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- A bad link shows a kind error with no status codes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c31d6f8c",
+    "found": "2026-10-26"
   }
 ]

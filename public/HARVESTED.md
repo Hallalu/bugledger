@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-690 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+694 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (443)
+## Hallalu CRM (447)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -52,6 +52,7 @@
 - [ ] `high` `auth` (2026-10-25, #cc8e9f22) — - app.css: I committed my one line (the stage canvas never shown out of proportion),…
 - [ ] `high` `security` (2026-10-25, #2febca89) — ID isn't secret; it's what Reply asks for.
 - [ ] `high` `security` (2026-10-26, #2febca89) — Database stores only a hash of each one, so a database leak can't be used to sign in.
+- [ ] `high` `auth` (2026-10-26, #c31d6f8c) — - Only your own account was charged the wrong amount (5 photos made by the Products…
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -447,6 +448,9 @@
 - [ ] `low` `other` (2026-10-26, #2febca89) — Core is built correctly, but it isn't hardened to today's standard yet.
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — - You can add, move or duplicate pages and pick from three looks.
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Didn't send a real email, so your first real buyer will be the first one sent.
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — Fix is small: an empty-balance error should count as "this route is down", so it moves…
+- [ ] `low` `other` (2026-10-26, #c31d6f8c) — Anything over 12 MB isn't put in your library; the screen says so and keeps it for 2…
+- [ ] `low` `other` (2026-10-26, #c31d6f8c) — - A bad link shows a kind error with no status codes.
 
 ## Finished. (98)
 
