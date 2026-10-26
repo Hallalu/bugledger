@@ -8158,5 +8158,65 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-26"
+  },
+  {
+    "key": "2febca89:mirroringtogitbagelandloggingthefacebookpathtwinofthebug",
+    "app": "Hallalu CRM",
+    "title": "Mirroring to GitBagel and logging the Facebook-path twin of the bug.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Mirroring to GitBagel and logging the Facebook-path twin of the bug.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "2febca89:iftherulewasntmeanttocoverthistherearetwoeasywaysback1",
+    "app": "Hallalu CRM",
+    "title": "If the rule wasn't meant to cover this, there are two easy ways back: 1.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "If the rule wasn't meant to cover this, there are two easy ways back: 1.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:iproveditfirstonthreevideosthatmustfail",
+    "app": "Hallalu CRM",
+    "title": "Proved it first on three videos that must fail.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I proved it first on three videos that must fail.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:beforethefixesthestudiosshortformfailed5checksandthelongform",
+    "app": "Hallalu CRM",
+    "title": "Before the fixes, the studio's short form failed 5 checks and the long form failed 3.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Before the fixes, the studio's short form failed 5 checks and the long form failed 3.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:twofixesneededontheerrorscreen404hasadoublefullstopandastatu",
+    "app": "Hallalu CRM",
+    "title": "Two fixes needed on the error screen: \"404..\" has a double full stop, and a status code…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two fixes needed on the error screen: \"404..\" has a double full stop, and a status code is jargon.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
   }
 ]

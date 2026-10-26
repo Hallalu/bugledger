@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-680 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+685 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (433)
+## Hallalu CRM (438)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -437,6 +437,11 @@
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Studio header shows where it's saved, for example "saved to your account · 14:05", or…
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — "Download a post" is built and committed (125f648), but it isn't live yet: the deploy…
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — A real bug in my wiring: the shared handle was built before some studio values (FX0)…
+- [ ] `low` `other` (2026-10-26, #2febca89) — Mirroring to GitBagel and logging the Facebook-path twin of the bug.
+- [ ] `low` `other` (2026-10-26, #2febca89) — If the rule wasn't meant to cover this, there are two easy ways back: 1.
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — Proved it first on three videos that must fail.
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — Before the fixes, the studio's short form failed 5 checks and the long form failed 3.
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — Two fixes needed on the error screen: "404.." has a double full stop, and a status code…
 
 ## Finished. (98)
 
