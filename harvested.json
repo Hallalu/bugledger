@@ -8146,5 +8146,17 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:arealbuginmywiringthesharedhandlewasbuiltbeforesomestudioval",
+    "app": "Hallalu CRM",
+    "title": "A real bug in my wiring: the shared handle was built before some studio values (FX0)…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "A real bug in my wiring: the shared handle was built before some studio values (`FX0`) existed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
   }
 ]

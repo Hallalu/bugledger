@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-679 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+680 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (432)
+## Hallalu CRM (433)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -436,6 +436,7 @@
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Edits now auto-save to your account as well as the browser, but it isn't live yet.
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Studio header shows where it's saved, for example "saved to your account · 14:05", or…
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — "Download a post" is built and committed (125f648), but it isn't live yet: the deploy…
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — A real bug in my wiring: the shared handle was built before some studio values (FX0)…
 
 ## Finished. (98)
 
