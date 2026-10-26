@@ -8074,5 +8074,41 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-25"
+  },
+  {
+    "key": "2febca89:theidisntsecretitswhatreplyasksfor",
+    "app": "Hallalu CRM",
+    "title": "ID isn't secret; it's what Reply asks for.",
+    "category": "security",
+    "severity": "high",
+    "symptom": "The ID isn't secret; it's what Reply asks for.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "2febca89:tellmewhenyouredoneorifanystepshowsanerrorascreenshotoftheer",
+    "app": "Hallalu CRM",
+    "title": "Tell me when you're done, or if any step shows an error (a screenshot of the error is…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Tell me when you're done, or if any step shows an error (a screenshot of the error is fine).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "2febca89:plainwordsforerrorstherawinstagramtextyousawnowreadsinstagra",
+    "app": "Hallalu CRM",
+    "title": "- Plain words for errors. The raw Instagram text you saw now reads \"Instagram didn't…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- **Plain words for errors.** The raw Instagram text you saw now reads \"Instagram didn't accept this connection\" plus what to do, with the technical part behind **Show details** and a **Copy details*…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-25"
   }
 ]

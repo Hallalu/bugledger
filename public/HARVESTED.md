@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-673 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+676 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (426)
+## Hallalu CRM (429)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -50,6 +50,7 @@
 - [ ] `high` `auth` (2026-10-24, #acc82d3f) — Websites session didn't lose anything either: its store work was already committed when…
 - [ ] `high` `auth` (2026-10-25, #d57521fb) — Built-in browser wasn't signed in to claude.ai, and I didn't sign in for you.
 - [ ] `high` `auth` (2026-10-25, #cc8e9f22) — - app.css: I committed my one line (the stage canvas never shown out of proportion),…
+- [ ] `high` `security` (2026-10-25, #2febca89) — ID isn't secret; it's what Reply asks for.
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -430,6 +431,8 @@
 - [ ] `low` `other` (2026-10-25, #2febca89) — Discarding that test draft, then shipping the fix, since the broken switch is live in v49:
 - [ ] `low` `ui` (2026-10-25, #acc82d3f) — Fixed: all four badges fit inside their column, and the page doesn't scroll sideways.
 - [ ] `low` `other` (2026-10-25, #acc82d3f) — Resetting the viewport, then reading the boomerang and long-form results:
+- [ ] `low` `other` (2026-10-25, #2febca89) — Tell me when you're done, or if any step shows an error (a screenshot of the error is…
+- [ ] `low` `ui` (2026-10-25, #2febca89) — - Plain words for errors. The raw Instagram text you saw now reads "Instagram didn't…
 
 ## Finished. (98)
 
