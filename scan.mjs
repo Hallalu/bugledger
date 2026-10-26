@@ -423,6 +423,7 @@ const HIGH_CONF = new Set([
   "A11Y-POSITIVE-TABINDEX","A11Y-CLICK-NONINTERACTIVE","A11Y-FOCUS-KILLED",
   "SEO-NO-TITLE","SEO-NO-DESC","SEO-NO-OG","SEO-NO-VIEWPORT",
   "TEST-ONLY","TEST-SKIPPED","TEST-NONE","TEST-NO-CI",
+  "AUTH-NO-MFA","AUTH-NO-SEC-HEADERS","AUTH-NO-BOT-CHECK","AUTH-NO-BREACH-CHECK",
   "PRIV-3P-TRACKER","PRIV-NO-POLICY","PRIV-NO-DELETE","PRIV-PII-IN-URL","CLAIM-PLACEHOLDER",
   "INVIS-SMUGGLE","INVIS-BIDI","INVIS-HIDDEN","INVIS-HOMOGLYPH","INVIS-EXOTIC-SPACE",
 ]);
@@ -511,7 +512,7 @@ for (const fp of files) {
 }
 
 // ---------- project-level detectors (only visible across the whole repo) ----------
-const PROJECT_DETECTORS = 5; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-DELETE, OBS-NO-ERROR-HANDLER
+const PROJECT_DETECTORS = 13; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-DELETE, OBS-NO-ERROR-HANDLER, + 8 AUTH-* sign-in checks
 {
   const all = corpus.join("\n");
   const proj = (detector, severity, category, bug, advice, file, excerpt) =>
@@ -551,6 +552,46 @@ const PROJECT_DETECTORS = 5; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-D
     proj("OBS-NO-ERROR-HANDLER","medium","observability","No global error handler — front-end crashes are invisible",
       "Add window.addEventListener('error') and ('unhandledrejection') to log/report failures; without them a white screen produces no signal at all.",
       ".", "no window.onerror / unhandledrejection / error reporter found");
+
+  // --- sign-in hardening (added 2026-10-26 from the Hallalu Reply auth audit; OWASP Password Storage + NIST SP 800-63B-4) ---
+  // Only for apps with their own password sign-in: a password field/compare plus a login or sign-up route.
+  const ownPasswords = /pass(?:word)?_?hash|hashPassword|verifyPassword|bcrypt|argon2|scrypt|PBKDF2/i.test(all) && /\/(?:api\/)?(?:login|signin|sign-in|signup|register)\b/i.test(all);
+  if (ownPasswords) {
+    if (!/webauthn|navigator\.credentials\.(?:create|get)|passkey|totp|otpauth|authenticator app/i.test(all))
+      proj("AUTH-NO-MFA","high","security","Password sign-in with no two-factor option",
+        "Add passkeys (WebAuthn, e.g. SimpleWebAuthn) and authenticator-app codes (TOTP) with recovery codes; require them for admin accounts. A reused or phished password is the most common account takeover.",
+        ".", "own password sign-in found, no WebAuthn / passkey / TOTP");
+    if (!/strict-transport-security/i.test(all) || !/frame-ancestors|x-frame-options/i.test(all))
+      proj("AUTH-NO-SEC-HEADERS","high","security","Missing HSTS and/or anti-framing headers on a sign-in app",
+        "Send Strict-Transport-Security (max-age>=1 year, includeSubDomains), Content-Security-Policy with frame-ancestors 'none', X-Content-Type-Options: nosniff and a Referrer-Policy on every response. Confirm with curl -I on the live site.",
+        ".", "no Strict-Transport-Security or no frame-ancestors / X-Frame-Options anywhere");
+    if (!/turnstile|recaptcha|hcaptcha|friendlycaptcha/i.test(all))
+      proj("AUTH-NO-BOT-CHECK","medium","security","Sign-in / sign-up / reset with no bot check",
+        "Add Cloudflare Turnstile (or equivalent) to sign-up, sign-in and password reset, verified server-side with siteverify.",
+        ".", "no Turnstile / reCAPTCHA / hCaptcha");
+    if (!/cf-connecting-ip|x-forwarded-for|x-real-ip|remoteAddress/i.test(all))
+      proj("AUTH-NO-IP-LIMIT","medium","security","No per-network sign-in limit (password spraying)",
+        "A per-account lockout alone lets one attacker try a few common passwords on every account. Also limit failed sign-ins per IP (and add a Cloudflare rate-limit rule on the login route).",
+        ".", "no client IP read anywhere, so no per-network limit is possible");
+    if (!/pwnedpasswords|haveibeenpwned|zxcvbn|breached.?password/i.test(all))
+      proj("AUTH-NO-BREACH-CHECK","medium","security","Leaked / common passwords are accepted",
+        "NIST SP 800-63B-4 requires a blocklist of commonly used and compromised passwords. Check new passwords against Have I Been Pwned's Pwned Passwords range API (k-anonymity: only 5 hash characters leave the server).",
+        ".", "no Pwned Passwords / zxcvbn / blocklist check");
+    if (!/argon2|scrypt|bcrypt/i.test(all))
+      proj("AUTH-WEAK-HASH","medium","security","Password hash is not OWASP's first choice",
+        "OWASP ranks Argon2id first (min 19 MiB, t=2, p=1), then scrypt; PBKDF2-SHA256 needs >=600,000 rounds. Add a secret pepper held outside the database, store a version in each hash, and upgrade old hashes silently on the next successful sign-in.",
+        ".", "no Argon2 / scrypt / bcrypt found");
+    const minRe = /(?:pw|pass(?:word)?|new_password)[\w.()'"\]]*\.length\s*<\s*(\d+)/gi; let mm, shortMin = null;
+    while ((mm = minRe.exec(all))) if (Number(mm[1]) < 15) { shortMin = mm[0]; break; }
+    if (shortMin && !/webauthn|totp|otpauth/i.test(all))
+      proj("AUTH-SHORT-MIN","medium","security","Password minimum under 15 characters without two-factor",
+        "NIST SP 800-63B-4: passwords used alone must be at least 15 characters (8 is allowed only when part of MFA); allow at least 64; no composition rules.",
+        ".", shortMin.slice(0, 80));
+    if (/\/(?:api\/)?(?:signup|register)\b/i.test(all) && !/verify[_-]?email|email_verified|verified_at|confirm(?:ation)? (?:your )?email/i.test(all))
+      proj("AUTH-NO-EMAIL-VERIFY","low","security","Sign-up never verifies the email address",
+        "Send a one-time link before the address is trusted (resets, notifications, team invites); otherwise anyone can register someone else's email.",
+        ".", "sign-up route found, no email verification step");
+  }
 }
 
 // ---------- classify vs ledger ----------
