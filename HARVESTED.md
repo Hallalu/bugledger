@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-676 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+679 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (429)
+## Hallalu CRM (432)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -433,6 +433,9 @@
 - [ ] `low` `other` (2026-10-25, #acc82d3f) — Resetting the viewport, then reading the boomerang and long-form results:
 - [ ] `low` `other` (2026-10-25, #2febca89) — Tell me when you're done, or if any step shows an error (a screenshot of the error is…
 - [ ] `low` `ui` (2026-10-25, #2febca89) — - Plain words for errors. The raw Instagram text you saw now reads "Instagram didn't…
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — Edits now auto-save to your account as well as the browser, but it isn't live yet.
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — Studio header shows where it's saved, for example "saved to your account · 14:05", or…
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — "Download a post" is built and committed (125f648), but it isn't live yet: the deploy…
 
 ## Finished. (98)
 

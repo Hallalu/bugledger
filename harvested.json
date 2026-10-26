@@ -8110,5 +8110,41 @@
     "status": "unverified",
     "session": "2febca89",
     "found": "2026-10-25"
+  },
+  {
+    "key": "acc82d3f:editsnowautosavetoyouraccountaswellasthebrowserbutitisntlive",
+    "app": "Hallalu CRM",
+    "title": "Edits now auto-save to your account as well as the browser, but it isn't live yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Edits now auto-save to your account as well as the browser, but it isn't live yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:thestudioheadershowswhereitssavedforexamplesavedtoyouraccoun",
+    "app": "Hallalu CRM",
+    "title": "Studio header shows where it's saved, for example \"saved to your account · 14:05\", or…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The studio header shows where it's saved, for example \"saved to your account · 14:05\", or \"saved on this device · clips still uploading\" when a clip isn't in your library yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:downloadapostisbuiltandcommitted125f648butitisntliveyetthede",
+    "app": "Hallalu CRM",
+    "title": "\"Download a post\" is built and committed (125f648), but it isn't live yet: the deploy…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "\"Download a post\" is built and committed (`125f648`), but it isn't live yet: the deploy needs your OK again.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
   }
 ]
