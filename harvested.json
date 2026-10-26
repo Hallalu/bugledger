@@ -8050,5 +8050,29 @@
     "status": "unverified",
     "session": "2febca89",
     "found": "2026-10-25"
+  },
+  {
+    "key": "acc82d3f:fixedallfourbadgesfitinsidetheircolumnandthepagedoesntscroll",
+    "app": "Hallalu CRM",
+    "title": "Fixed: all four badges fit inside their column, and the page doesn't scroll sideways.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Fixed: all four badges fit inside their column, and the page doesn't scroll sideways.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-25"
+  },
+  {
+    "key": "acc82d3f:resettingtheviewportthenreadingtheboomerangandlongformresult",
+    "app": "Hallalu CRM",
+    "title": "Resetting the viewport, then reading the boomerang and long-form results:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Resetting the viewport, then reading the boomerang and long-form results:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-25"
   }
 ]

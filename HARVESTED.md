@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-671 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+673 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (424)
+## Hallalu CRM (426)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -428,6 +428,8 @@
 - [ ] `low` `other` (2026-10-25, #2febca89) — It still has no console screens and isn't deployed.
 - [ ] `low` `other` (2026-10-25, #2febca89) — Local dev server crashed partway through, so the first ship attempt stopped itself…
 - [ ] `low` `other` (2026-10-25, #2febca89) — Discarding that test draft, then shipping the fix, since the broken switch is live in v49:
+- [ ] `low` `ui` (2026-10-25, #acc82d3f) — Fixed: all four badges fit inside their column, and the page doesn't scroll sideways.
+- [ ] `low` `other` (2026-10-25, #acc82d3f) — Resetting the viewport, then reading the boomerang and long-form results:
 
 ## Finished. (98)
 
