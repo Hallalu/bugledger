@@ -8254,5 +8254,29 @@
     "status": "unverified",
     "session": "2febca89",
     "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:youcanaddmoveorduplicatepagesandpickfromthreelooks",
+    "app": "Hallalu CRM",
+    "title": "- You can add, move or duplicate pages and pick from three looks.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- You can add, move or duplicate pages and pick from three looks.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "acc82d3f:ididntsendarealemailsoyourfirstrealbuyerwillbethefirstonesen",
+    "app": "Hallalu CRM",
+    "title": "Didn't send a real email, so your first real buyer will be the first one sent.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I didn't send a real email, so your first real buyer will be the first one sent.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "acc82d3f",
+    "found": "2026-10-26"
   }
 ]

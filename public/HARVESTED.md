@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-688 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+690 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (441)
+## Hallalu CRM (443)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -445,6 +445,8 @@
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Two fixes needed on the error screen: "404.." has a double full stop, and a status code…
 - [ ] `low` `other` (2026-10-26, #2febca89) — - Password resets: links expire after 30 minutes, work once, and sign you out everywhere.
 - [ ] `low` `other` (2026-10-26, #2febca89) — Core is built correctly, but it isn't hardened to today's standard yet.
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — - You can add, move or duplicate pages and pick from three looks.
+- [ ] `low` `other` (2026-10-26, #acc82d3f) — Didn't send a real email, so your first real buyer will be the first one sent.
 
 ## Finished. (98)
 
