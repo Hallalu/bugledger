@@ -8218,5 +8218,41 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-26"
+  },
+  {
+    "key": "2febca89:thedatabasestoresonlyahashofeachonesoadatabaseleakcantbeused",
+    "app": "Hallalu CRM",
+    "title": "Database stores only a hash of each one, so a database leak can't be used to sign in.",
+    "category": "security",
+    "severity": "high",
+    "symptom": "The database stores only a hash of each one, so a database leak can't be used to sign in.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "2febca89:passwordresetslinksexpireafter30minutesworkonceandsignyouout",
+    "app": "Hallalu CRM",
+    "title": "- Password resets: links expire after 30 minutes, work once, and sign you out everywhere.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Password resets:** links expire after 30 minutes, work once, and sign you out everywhere.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-26"
+  },
+  {
+    "key": "2febca89:thecoreisbuiltcorrectlybutitisnthardenedtotodaysstandardyet",
+    "app": "Hallalu CRM",
+    "title": "Core is built correctly, but it isn't hardened to today's standard yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The core is built correctly, but it isn't hardened to today's standard yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "2febca89",
+    "found": "2026-10-26"
   }
 ]

@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-685 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+688 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (438)
+## Hallalu CRM (441)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -51,6 +51,7 @@
 - [ ] `high` `auth` (2026-10-25, #d57521fb) — Built-in browser wasn't signed in to claude.ai, and I didn't sign in for you.
 - [ ] `high` `auth` (2026-10-25, #cc8e9f22) — - app.css: I committed my one line (the stage canvas never shown out of proportion),…
 - [ ] `high` `security` (2026-10-25, #2febca89) — ID isn't secret; it's what Reply asks for.
+- [ ] `high` `security` (2026-10-26, #2febca89) — Database stores only a hash of each one, so a database leak can't be used to sign in.
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -442,6 +443,8 @@
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Proved it first on three videos that must fail.
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Before the fixes, the studio's short form failed 5 checks and the long form failed 3.
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Two fixes needed on the error screen: "404.." has a double full stop, and a status code…
+- [ ] `low` `other` (2026-10-26, #2febca89) — - Password resets: links expire after 30 minutes, work once, and sign you out everywhere.
+- [ ] `low` `other` (2026-10-26, #2febca89) — Core is built correctly, but it isn't hardened to today's standard yet.
 
 ## Finished. (98)
 
