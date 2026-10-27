@@ -8338,5 +8338,77 @@
     "status": "unverified",
     "session": "acc82d3f",
     "found": "2026-10-27"
+  },
+  {
+    "key": "379b7b89:thesmallendofthemarketisleftoutsoletradersandteamsof215peopl",
+    "app": "Hallalu CRM",
+    "title": "Small end of the market is left out. Sole traders and teams of 2–15 people are turned…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The small end of the market is left out.** Sole traders and teams of 2–15 people are turned away or overcharged: - Soldo doesn't serve sole traders.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "379b7b89",
+    "found": "2026-10-27"
+  },
+  {
+    "key": "379b7b89:themainreasonpeopleleaveisntpriceitsanaccountfrozenorclosedw",
+    "app": "Hallalu CRM",
+    "title": "Main reason people leave isn't price. It's an account frozen or closed with no human to…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The main reason people leave isn't price.** It's an account frozen or closed with no human to talk to: - Tide: 15 of 20 one-star reviews.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "379b7b89",
+    "found": "2026-10-27"
+  },
+  {
+    "key": "379b7b89:closetheisitrealgapagreatdemostillisntaproduct",
+    "app": "Hallalu CRM",
+    "title": "Close the \"is it real?\" gap A great demo still isn't a product.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Close the \"is it real?\" gap A great demo still isn't a product.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "379b7b89",
+    "found": "2026-10-27"
+  },
+  {
+    "key": "66f3ce8a:makereceiptsneverfailtheresearchcallsreceiptcapturethedailyq",
+    "app": "Hallalu CRM",
+    "title": "Make receipts never fail The research calls receipt capture \"the daily quality bar\": -…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Make receipts never fail The research calls receipt capture \"the daily quality bar\": - **Several photos for one receipt, plus multi-page PDFs.** That gap is one of Pleo's known complaints.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "66f3ce8a",
+    "found": "2026-10-27"
+  },
+  {
+    "key": "66f3ce8a:thefileisntcommittedyet",
+    "app": "Hallalu CRM",
+    "title": "File isn't committed yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The file isn't committed yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "66f3ce8a",
+    "found": "2026-10-27"
+  },
+  {
+    "key": "66f3ce8a:icheckedthisagainstpaypalsownannouncementicouldntconfirmtheu",
+    "app": "Hallalu CRM",
+    "title": "Checked this against PayPal's own announcement; I couldn't confirm the UK start date.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I checked this against PayPal's own announcement; I couldn't confirm the UK start date.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "66f3ce8a",
+    "found": "2026-10-27"
   }
 ]

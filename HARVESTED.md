@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-695 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+701 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (448)
+## Hallalu CRM (454)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -452,6 +452,12 @@
 - [ ] `low` `other` (2026-10-26, #c31d6f8c) — Anything over 12 MB isn't put in your library; the screen says so and keeps it for 2…
 - [ ] `low` `other` (2026-10-26, #c31d6f8c) — - A bad link shows a kind error with no status codes.
 - [ ] `low` `other` (2026-10-27, #acc82d3f) — Couldn't see the cover image on the library page in my test copy, because it loads from…
+- [ ] `low` `other` (2026-10-27, #379b7b89) — Small end of the market is left out. Sole traders and teams of 2–15 people are turned…
+- [ ] `low` `other` (2026-10-27, #379b7b89) — Main reason people leave isn't price. It's an account frozen or closed with no human to…
+- [ ] `low` `other` (2026-10-27, #379b7b89) — Close the "is it real?" gap A great demo still isn't a product.
+- [ ] `low` `other` (2026-10-27, #66f3ce8a) — Make receipts never fail The research calls receipt capture "the daily quality bar": -…
+- [ ] `low` `other` (2026-10-27, #66f3ce8a) — File isn't committed yet.
+- [ ] `low` `other` (2026-10-27, #66f3ce8a) — Checked this against PayPal's own announcement; I couldn't confirm the UK start date.
 
 ## Finished. (98)
 
