@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-694 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+695 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (447)
+## Hallalu CRM (448)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -451,6 +451,7 @@
 - [ ] `low` `other` (2026-10-26, #acc82d3f) — Fix is small: an empty-balance error should count as "this route is down", so it moves…
 - [ ] `low` `other` (2026-10-26, #c31d6f8c) — Anything over 12 MB isn't put in your library; the screen says so and keeps it for 2…
 - [ ] `low` `other` (2026-10-26, #c31d6f8c) — - A bad link shows a kind error with no status codes.
+- [ ] `low` `other` (2026-10-27, #acc82d3f) — Couldn't see the cover image on the library page in my test copy, because it loads from…
 
 ## Finished. (98)
 
