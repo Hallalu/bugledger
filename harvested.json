@@ -8626,5 +8626,41 @@
     "status": "unverified",
     "session": "8cd9c5d3",
     "found": "2026-10-28"
+  },
+  {
+    "key": "49a73e5c:crashrecoveryfixliveandtestedkindlynowrecordsyourscreeninweb",
+    "app": "Hallalu CRM",
+    "title": "Crash-recovery fix: live and tested. Kindly now records your screen in WebM instead of…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "Crash-recovery fix: live and tested.** Kindly now records your screen in WebM instead of MP4, so the recording is saved every second while it runs.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "49a73e5c",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "49a73e5c:stillnotdonekindlystillisntsavedingitsothisfolderistheonlyco",
+    "app": "Hallalu CRM",
+    "title": "- Still not done: /kindly still isn't saved in git, so this folder is the only copy of…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Still not done:** `~/kindly` still isn't saved in git, so this folder is the only copy of the app.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "49a73e5c",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "49a73e5c:thefixdidntactuallyapplymysearchpatternwasoffsonameswithouts",
+    "app": "Hallalu CRM",
+    "title": "Fix didn't actually apply (my search pattern was off), so names without spaces work and…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The fix didn't actually apply (my search pattern was off), so names without spaces work and names with spaces don't.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "49a73e5c",
+    "found": "2026-10-28"
   }
 ]
