@@ -8614,5 +8614,17 @@
     "status": "unverified",
     "session": "ab57f2c6",
     "found": "2026-10-27"
+  },
+  {
+    "key": "8cd9c5d3:twoattemptsfailedfirstandarerecordedawindowaroundthereadersh",
+    "app": "Hallalu CRM",
+    "title": "Two attempts failed first and are recorded: a window around the reader's hint pinned…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two attempts failed first and are recorded: a window around the reader's hint pinned the seam 10 px inside the R's leg (the hint was 30 px off), and the unwindowed seam hugged the left end of the fla…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8cd9c5d3",
+    "found": "2026-10-28"
   }
 ]

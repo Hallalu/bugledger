@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-718 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+719 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (471)
+## Hallalu CRM (472)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -475,6 +475,7 @@
 - [ ] `low` `other` (2026-10-27, #8d9a24ea) — A bug in the proxy was dropping most icons (a reply without a content-length header…
 - [ ] `low` `other` (2026-10-27, #8d9a24ea) — Reset is now a calm pill with a circular-arrow icon.
 - [ ] `low` `other` (2026-10-27, #ab57f2c6) — Couldn't confirm that against the regulator's own pages.
+- [ ] `low` `other` (2026-10-28, #8cd9c5d3) — Two attempts failed first and are recorded: a window around the reader's hint pinned…
 
 ## Finished. (98)
 
