@@ -8662,5 +8662,41 @@
     "status": "unverified",
     "session": "49a73e5c",
     "found": "2026-10-28"
+  },
+  {
+    "key": "1dc68bbe:everycommandandfilewritenowfailswithnospaceleftondevicesoica",
+    "app": "Hallalu CRM",
+    "title": "Every command and file write now fails with \"no space left on device\", so I cannot run,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Every command and file write now fails with \"no space left on device\", so I cannot run, build, deploy or even list folders until some space is cleared.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "1dc68bbe:fixed11itemsyoucouldntbuythe5washipacksand6ministickerpackss",
+    "app": "Hallalu CRM",
+    "title": "- Fixed, 11 items you couldn't buy: the 5 washi packs and 6 mini sticker packs showed a…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Fixed, 11 items you couldn't buy:** the 5 washi packs and 6 mini sticker packs showed a price, but the server refused to sell them.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "1dc68bbe:the12partlydonepromptsmakingskinsandstickerswithhallaluartin",
+    "app": "Hallalu CRM",
+    "title": "12 partly-done prompts - Making skins and stickers with Hallalu Art inside the app is…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**The 12 partly-done prompts** - Making skins and stickers with Hallalu Art inside the app is waiting on its connection key, which isn't set on the app yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-28"
   }
 ]
