@@ -8698,5 +8698,41 @@
     "status": "unverified",
     "session": "1dc68bbe",
     "found": "2026-10-28"
+  },
+  {
+    "key": "d57521fb:anewcompanionstartswith100coinsandthegiftdoesntaddasecond100",
+    "app": "Hallalu CRM",
+    "title": "A new companion starts with 100 coins, and the gift doesn't add a second 100.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "A new companion starts with **100 coins**, and the gift doesn't add a second 100.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "d57521fb:theonlyconsoleerroristheearlierbingocrashloggedbeforethefixb",
+    "app": "Hallalu CRM",
+    "title": "Only console error is the earlier Bingo crash, logged before the fix; Bingo ran a full…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "The only console error is the earlier Bingo crash, logged before the fix; Bingo ran a full game after it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "d57521fb:icheckedthelivefilesandtheyincludefruitcardmatchbingotheriva",
+    "app": "Hallalu CRM",
+    "title": "Checked the live files and they include Fruit card match, Bingo, the rival profile and…",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "I checked the live files and they include Fruit card match, Bingo, the rival profile and the fix for the crash when Bingo opened.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-28"
   }
 ]
