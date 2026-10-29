@@ -79,3 +79,20 @@ test('repo scan: shipped AI image with a prompt → AI-MEDIA-STACK high; unshipp
   assert.ok(asScanFindings(r.hits).every(f => f.detector && f.severity && f.bug && f.advice));
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test('--log never repeats provider / model names in the public ledger text', async () => {
+  const { logToLedger } = await import('../aiscan.mjs');
+  const sent = [], realFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => { if (String(url).endsWith('/checklist.json')) return new Response('{"apps":{}}'); sent.push(JSON.parse(init.body)); return new Response('{}'); };
+  try {
+    await logToLedger('Demo', 'demo', [
+      { id: 'AI-COPY-STACK', where: 'public/index.html', detail: 'Workers AI×1, FLUX.2×1, Pruna×1', conf: 'high' },
+      { id: 'AI-MEDIA-STACK', where: 'public/hero.png', detail: 'Generator / model name: Grok Imagine', conf: 'high' },
+      { id: 'AI-COPY-STACK', where: 'public/app.js', detail: 'Seedance×4', conf: 'review' },
+    ]);
+  } finally { globalThis.fetch = realFetch; }
+  const text = JSON.stringify(sent);
+  assert.equal(sent.length, 2, 'one entry per detector, review-only leads stay out');
+  for (const word of ['Workers AI', 'FLUX', 'Pruna', 'Grok', 'Seedance']) assert.ok(!text.includes(word), `ledger text leaked ${word}`);
+  assert.match(text, /3 provider\/model\/hosting term\(s\)/);
+});

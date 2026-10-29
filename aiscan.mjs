@@ -183,7 +183,7 @@ export function asScanFindings(hits) {
 
 // ---------- ledger + story ----------
 function grouped(hits) { const g = {}; for (const h of hits) (g[h.id] = g[h.id] || []).push(h); return g; }
-async function logToLedger(app, project, hits) {
+export async function logToLedger(app, project, hits) {
   const cfg = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.bugledger.json'), 'utf8'));
   let existing = new Set();
   try { const c = await (await fetch(`${cfg.base}/checklist.json`)).json(); for (const k in c.apps || {}) for (const b of c.apps[k]) existing.add(`${k}|${b.title}`.toLowerCase()); } catch {}
@@ -192,8 +192,10 @@ async function logToLedger(app, project, hits) {
     const d = AI_DETECTORS[id], high = hs.filter(h => h.conf === 'high'); if (!high.length) continue;   /* review-only leads stay out of the ledger until read */
     const title = `AI footprint: ${d.bug}`;
     if (existing.has(`${app}|${title}`.toLowerCase())) { posted.push({ id, status: 'already in ledger' }); continue; }
+    /* the ledger is public: never repeat the provider / model / tool names a finding is about — counts and paths only */
+    const safe = (h) => (id === 'AI-COPY-STACK' ? `${h.detail.split(', ').length} provider/model/hosting term(s)` : id === 'AI-MEDIA-STACK' ? 'metadata names the generator or carries its prompt/seed' : h.detail);
     const body = { app, project, kind: d.kind, title, category: d.cat, severity: d.sev,
-      symptom: `${high.length} place(s): ` + high.slice(0, 8).map(h => `${h.where} — ${h.detail}`).join(' · ').slice(0, 1500),
+      symptom: `${high.length} place(s): ` + high.slice(0, 8).map(h => `${h.where} — ${safe(h)}`).join(' · ').slice(0, 1500),
       fix: d.advice, file: high.slice(0, 5).map(h => h.where).join(', ').slice(0, 300) };
     const r = await fetch(`${cfg.base}/api/bugs`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-ledger-key': cfg.token }, body: JSON.stringify(body) });
     posted.push({ id, status: r.ok ? 'logged' : `error ${r.status}` });
@@ -205,7 +207,8 @@ function narrate(hits) {
   run(['phase', 'AI footprint pass — media metadata, provenance, watermark, public copy']);
   for (const [id, hs] of Object.entries(grouped(hits))) {
     const d = AI_DETECTORS[id], high = hs.filter(h => h.conf === 'high');
-    run(['found', `${d.bug} ×${hs.length}`, '--sev', d.sev, '--cat', d.cat, '--file', hs[0].where.slice(0, 200), '--why', hs.slice(0, 4).map(h => `${h.where}: ${h.detail}`).join(' · ').slice(0, 600), '--fix', d.advice, '--confidence', high.length ? 'high' : 'review', '--status', 'open']);
+    const safe = (h) => (id === 'AI-COPY-STACK' ? `${h.detail.split(', ').length} provider/model/hosting term(s)` : id === 'AI-MEDIA-STACK' ? 'metadata names the generator or carries its prompt/seed' : h.detail);
+    run(['found', `${d.bug} ×${hs.length}`, '--sev', d.sev, '--cat', d.cat, '--file', hs[0].where.slice(0, 200), '--why', hs.slice(0, 4).map(h => `${h.where}: ${safe(h)}`).join(' · ').slice(0, 600), '--fix', d.advice, '--confidence', high.length ? 'high' : 'review', '--status', 'open']);
   }
 }
 
