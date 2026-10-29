@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-742 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+747 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (491)
+## Hallalu CRM (495)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -62,6 +62,7 @@
 - [ ] `high` `crash` (2026-10-28, #d57521fb) — Only console error is the earlier Bingo crash, logged before the fix; Bingo ran a full…
 - [ ] `high` `crash` (2026-10-28, #d57521fb) — Checked the live files and they include Fruit card match, Bingo, the rival profile and…
 - [ ] `high` `auth` (2026-10-28, #c8c7222e) — Nothing was built, committed or deployed, and I didn't sign in anywhere.
+- [ ] `high` `security` (2026-10-29, #16d4b621) — It isn't live on art.hallalu.com yet because the deploy command was blocked by the…
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -495,6 +496,9 @@
 - [ ] `low` `other` (2026-10-28, #c8c7222e) — - Hallalu Art: the Sofia orbit work isn't committed and isn't live, and your hair and…
 - [ ] `low` `other` (2026-10-29, #c8c7222e) — Fullfill didn't need a fix: you can already get in without a hidden code.
 - [ ] `low` `other` (2026-10-29, #c8c7222e) — Didn't change anything this turn.
+- [ ] `low` `other` (2026-10-29, #1dc68bbe) — That part didn't happen on screen.
+- [ ] `low` `other` (2026-10-29, #16d4b621) — That kind of window wasn't allowed in the browser pane, so I haven't seen it yet.
+- [ ] `low` `other` (2026-10-29, #67a5388a) — $5 is the fixed monthly Cloudflare plan.
 
 ## Finished. (98)
 
@@ -597,7 +601,7 @@
 - [ ] `low` `other` (2026-10-12, #ce9bddab) — Supabase isn't authenticated here, and per the PLAN deploys are owner-run — so the…
 - [ ] `low` `other` (2026-10-12, #16382522) — Demo photos fixed. Let me log the before/after to Aprizely and record the bug, then…
 
-## Listing Lab Pro (41)
+## Listing Lab Pro (42)
 
 - [ ] `critical` `data-loss` (2026-10-29, #3d18c147) — A first render of the hero and iPad photos lost their layout; I fixed it and confirmed…
 - [ ] `high` `auth` (2026-08-26, #61999ed8) — Two prominent stats in my deck are wrong, and two agents failed on a session limit (now…
@@ -640,6 +644,7 @@
 - [ ] `low` `other` (2026-10-28, #3d18c147) — Listing every flower rule to remove the stale ones.
 - [ ] `low` `other` (2026-10-29, #3d18c147) — Buyers' files are always blank, and the report labels that tracker image as an example.
 - [ ] `low` `other` (2026-10-29, #3d18c147) — - Some column headings didn't line up with their values.
+- [ ] `low` `other` (2026-10-29, #3d18c147) — First attempt had run away because of a scripting bug that made frames four times too…
 
 ## Stitchhooky (38)
 

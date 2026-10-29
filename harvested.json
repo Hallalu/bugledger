@@ -8902,5 +8902,65 @@
     "status": "unverified",
     "session": "c8c7222e",
     "found": "2026-10-29"
+  },
+  {
+    "key": "1dc68bbe:thatpartdidnthappenonscreen",
+    "app": "Hallalu CRM",
+    "title": "That part didn't happen on screen.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That part didn't happen on screen.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "16d4b621:itisntliveonarthallalucomyetbecausethedeploycommandwasblocke",
+    "app": "Hallalu CRM",
+    "title": "It isn't live on art.hallalu.com yet because the deploy command was blocked by the…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "It isn't live on art.hallalu.com yet because the deploy command was blocked by the permission check.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "16d4b621",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "16d4b621:thatkindofwindowwasntallowedinthebrowserpanesoihaventseenity",
+    "app": "Hallalu CRM",
+    "title": "That kind of window wasn't allowed in the browser pane, so I haven't seen it yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That kind of window wasn't allowed in the browser pane, so I haven't seen it yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "16d4b621",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "3d18c147:thefirstattempthadrunawaybecauseofascriptingbugthatmadeframe",
+    "app": "Listing Lab Pro",
+    "title": "First attempt had run away because of a scripting bug that made frames four times too…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The first attempt had run away because of a scripting bug that made frames four times too big and slowed everything down.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3d18c147",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "67a5388a:the5isthefixedmonthlycloudflareplan",
+    "app": "Hallalu CRM",
+    "title": "$5 is the fixed monthly Cloudflare plan.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The $5 is the fixed monthly Cloudflare plan.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "67a5388a",
+    "found": "2026-10-29"
   }
 ]
