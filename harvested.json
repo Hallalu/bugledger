@@ -8746,5 +8746,65 @@
     "status": "unverified",
     "session": "1dc68bbe",
     "found": "2026-10-28"
+  },
+  {
+    "key": "1dc68bbe:itestedthemwithathrowawayplannerthatisntonyourpageandyourpag",
+    "app": "Hallalu CRM",
+    "title": "Tested them with a throwaway planner that isn't on your page, and your page was…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I tested them with a throwaway planner that isn't on your page, and your page was unchanged afterwards.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "1dc68bbe:bugfixedduringtestingpressingescapeclosedthewholeplanneralon",
+    "app": "Hallalu CRM",
+    "title": "- Bug fixed during testing: pressing Escape closed the whole planner along with the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Bug fixed during testing:** pressing Escape closed the whole planner along with the pop-up.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "1dc68bbe:thewalkthroughrecordingdidntsaveyourdiskranoutofspacewhileki",
+    "app": "Hallalu CRM",
+    "title": "Walkthrough recording didn't save: your disk ran out of space while Kindly was recording.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The walkthrough recording didn't save: your disk ran out of space while Kindly was recording.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "3d18c147:listingeveryflowerruletoremovethestaleones",
+    "app": "Listing Lab Pro",
+    "title": "Listing every flower rule to remove the stale ones.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Listing every flower rule to remove the stale ones.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3d18c147",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "d57521fb:itfitsonaphonescreenifixedacssorderingbugthatpushedthekeyboa",
+    "app": "Hallalu CRM",
+    "title": "- It fits on a phone screen; I fixed a CSS ordering bug that pushed the keyboard down.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- It fits on a phone screen; I fixed a CSS ordering bug that pushed the keyboard down.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d57521fb",
+    "found": "2026-10-28"
   }
 ]

@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-729 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+734 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (482)
+## Hallalu CRM (486)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -486,6 +486,10 @@
 - [ ] `low` `other` (2026-10-28, #1dc68bbe) — 12 partly-done prompts - Making skins and stickers with Hallalu Art inside the app is…
 - [ ] `low` `other` (2026-10-28, #d57521fb) — A new companion starts with 100 coins, and the gift doesn't add a second 100.
 - [ ] `low` `other` (2026-10-28, #1dc68bbe) — All three fixes are live and checked in the browser.
+- [ ] `low` `other` (2026-10-28, #1dc68bbe) — Tested them with a throwaway planner that isn't on your page, and your page was…
+- [ ] `low` `other` (2026-10-28, #1dc68bbe) — - Bug fixed during testing: pressing Escape closed the whole planner along with the…
+- [ ] `low` `other` (2026-10-28, #1dc68bbe) — Walkthrough recording didn't save: your disk ran out of space while Kindly was recording.
+- [ ] `low` `ui` (2026-10-28, #d57521fb) — - It fits on a phone screen; I fixed a CSS ordering bug that pushed the keyboard down.
 
 ## Finished. (98)
 
@@ -629,7 +633,7 @@
 - [ ] `low` `other` (2026-10-07, #c6c95d36) — Site making the "world's first" claim doesn't resolve on its apex domain right now.
 - [ ] `low` `other` (2026-10-07, #c6c95d36) — Verdict: No — Start in Story is not the world's first AI influencer studio The blanket…
 
-## Listing Lab Pro (37)
+## Listing Lab Pro (38)
 
 - [ ] `high` `auth` (2026-08-26, #61999ed8) — Two prominent stats in my deck are wrong, and two agents failed on a session limit (now…
 - [ ] `high` `auth` (2026-09-04, #17d3ca5a) — Three items stay open for your decision: naming for the duplicate modules from the…
@@ -668,6 +672,7 @@
 - [ ] `low` `other` (2026-10-25, #cc8e9f22) — Bug isn't live: the live site still runs the older script.
 - [ ] `low` `other` (2026-10-25, #cc8e9f22) — Fix is written but couldn't be saved because of the full disk.
 - [ ] `low` `other` (2026-10-25, #cc8e9f22) — Also fixed a bug from its edit that sent every visit to the home page to the studio.
+- [ ] `low` `other` (2026-10-28, #3d18c147) — Listing every flower rule to remove the stale ones.
 
 ## Breadcrumb (27)
 
