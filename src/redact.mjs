@@ -22,7 +22,7 @@ const CATEGORIES = [
   ['[video model]', ['Seedance', 'Kling', 'Hailuo', 'MiniMax', 'P-Video', 'Runway', 'Veo', 'Sora', 'Wan2', 'Hunyuan']],
   ['[speech model]', ['Grok STT', 'Whisper', 'Deepgram', 'Nova-3', 'Aura-2', 'Inworld', 'TTS-2', 'ElevenLabs']],
   ['[language model]', ['Claude Opus', 'Claude Sonnet', 'Claude Haiku', 'Opus 5.5', 'Sonnet 5.5', 'Haiku 5.5', 'GPT-5', 'GPT-4o', 'GPT-4',
-    'ChatGPT', 'Llama', 'Gemini', 'Qwen', 'Mistral', 'Grok', 'Claude']],
+    'ChatGPT', 'Llama', 'Gemini', 'Qwen', 'Mistral', 'Grok', 'Claude', 'Opus', 'Sonnet', 'Haiku', 'Fable']],
   ['[model provider]', ['Black Forest Labs', 'Stability AI', 'ByteDance', 'Anthropic', 'OpenAI', 'Google AI', 'xAI', 'Pruna',
     'Replicate', 'fal.ai', 'Together AI', 'Higgsfield', 'Leonardo.Ai', 'Leonardo', 'Hugging Face']],
   ['[cut-out model]', ['BiRefNet']],

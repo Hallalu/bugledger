@@ -3521,7 +3521,7 @@
     "title": "- /analysis — clean worktree, but HEAD was a commit I didn't make: \"Add report: What…",
     "category": "other",
     "severity": "low",
-    "symptom": "- **`~/analysis`** — clean worktree, but **HEAD was a commit I didn't make**: *\"Add report: What actually works in marketing… for Start in Story\"*, co-authored by [language model] Fable 5.1.",
+    "symptom": "- **`~/analysis`** — clean worktree, but **HEAD was a commit I didn't make**: *\"Add report: What actually works in marketing… for Start in Story\"*, co-authored by [language model] [language model].",
     "source": "auto-harvest",
     "status": "unverified",
     "session": "aba97122",

@@ -60,3 +60,7 @@ test('camelCase code names and short model names are caught', () => {
 test('model versions and provider watermarks do not give the model away', () => {
   assert.equal(r('first shipped on Gemini 3.1 Flash Image, which carries SynthID'), 'first shipped on [language model] [image model], which carries [provider watermark]');
 });
+
+test('bare model family names are caught', () => {
+  assert.equal(r('10 prompts/day Sonnet = $13/mo; Haiku tokens; Fable at the top'), '10 prompts/day [language model] = $13/mo; [language model] tokens; [language model] at the top');
+});
