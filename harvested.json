@@ -9106,5 +9106,29 @@
     "status": "unverified",
     "session": "7dda19ea",
     "found": "2026-10-29"
+  },
+  {
+    "key": "1484393e:soyourinstinctisrightthisistheproblemgitbagelissupposedtosol",
+    "app": "Hallalu CRM",
+    "title": "Your instinct is right: this is the problem GitBagel is supposed to solve, but the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "So your instinct is right: **this is the problem GitBagel is *supposed* to solve, but the remote-build/remote-edit capability doesn't exist yet.** Until it's built, every edit still taxes local disk.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1484393e",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "1484393e:bottomlinenothingyoudidwaswrongandgitbagelisthefixitjustneed",
+    "app": "Hallalu CRM",
+    "title": "Bottom line: nothing you did was wrong, and GitBagel is the fix — it just needs its…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "**Bottom line:** nothing you did was wrong, and GitBagel *is* the fix — it just needs its remote-build capability actually built.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1484393e",
+    "found": "2026-10-29"
   }
 ]
