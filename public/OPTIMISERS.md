@@ -116,7 +116,7 @@
   Remembrance shows a per-entry contested flag, named perpetrators including inter-faith cases, a debate and counter-evidence section, ranges instead of single figures, and explicit labelling of the one continuous annual series (about 13 per day) versus episodic events; the Nigeria framing is shown with ACLED and HRW counter-evidence and a debunked narrative is labelled as such.
   <br>*Why:* Sensitive numbers get quoted without context; building the caveat into the data model keeps every card honest and stops a headline figure outrunning its sources.
   <br>*How:* Extract the pattern (contested flag plus note, low, high and representative values, basis, perpetrator and sources fields, and a methodology panel) into a Coco module so Payrails-style ranking pages and future research sites start with it.
-- **Use [AI platform] [image model] schnell only for photographic mockups and hand text-heavy products to a text-capable model or an editor** _(Hallalu CRM)_
+- **Use [AI platform] [image model] [image model] only for photographic mockups and hand text-heavy products to a text-capable model or an editor** _(Hallalu CRM)_
   The photo-proof test produced a convincing flat-lay but garbled text ('birthdy withdAY'); the caveat and Canva hand-off carry the expectation
   <br>*Why:* Users judge a proof by its readable copy; garbled lettering reads as broken
   <br>*How:* Say 'look, not copy' on the result, offer a sharper-text model as a toggle, and overlay real headings with a canvas compose step
@@ -442,8 +442,8 @@
   Treat every [database]/KV/R2/fetch call as a metered subrequest with hard caps (100 bound params per [database] statement, per-invocation subrequest limit). Design writes and reads to stay well under them.
   <br>*Why:* AI codegen writes per-row queries and giant multi-row inserts that pass on demo data and then hit 'too many SQL variables' or 'too many subrequests' under real volume — a silent scaling cliff.
   <br>*How:* Use db.batch([...]) in one transaction; keep (rows x cols) under 100 placeholders per statement and chunk beyond that; replace N+1 loops with a single JOIN or bulk read; cache repeated fetches; push large fan-out to Queues/Workflows.
-- **A/B one motif on klein-9b vs [image model] before baking a large abstract set: klein-9b matched the look at ~1.7s and 16 credits** _(Pixelbake)_
-  For 34 dark, textless glass-sculpture hero images, klein-9b matched [image model]'s premium look at 1.7s and 16 credits each versus ~4 minutes and timeout risk for dev; the whole set cost about 544 credits and was fault-checked at full size.
+- **A/B one motif on [image model] vs [image model] before baking a large abstract set: [image model] matched the look at ~1.7s and 16 credits** _(Pixelbake)_
+  For 34 dark, textless glass-sculpture hero images, [image model] matched [image model]'s premium look at 1.7s and 16 credits each versus ~4 minutes and timeout risk for dev; the whole set cost about 544 credits and was fault-checked at full size.
   <br>*Why:* Dev is needed for photoreal people but not for abstract renders; picking the model per image class saves minutes per image and avoids 3046 timeouts.
   <br>*How:* Bake the same motif on both models, read both at full size, choose the cheaper that matches the house look, then run pxb with a shared STYLE suffix and a per-topic accent tint, followed by a full-size fault check of every PNG.
 - **Compress hero video with macOS avconvert and hard-mute it by dropping the audio track** _(cross-cutting)_
@@ -542,9 +542,9 @@
   <br>*Why:* Killed agents can leave half-written files and lost bookkeeping; trusting 'it probably finished' ships broken code. A census against the expected app list also caught an app (PlannerStudio) that no agent had been assigned.
   <br>*How:* Keep parallel agents at four or fewer, forbid sub-delegation in the prompt, write each result to a file as it finishes, and after any interruption run the diff-stat plus syntax plus added-line-whitelist audit before committing or deploying.
 - **Preview a creative set on the 3-credit [image model]-4b model and re-bake only approved frames on the 63-credit dev model** _(Pixelbake)_
-  With the accounts at 36 and 21 credits, a full dev re-bake of seven photos (~441 credits) was unaffordable and one dev square needed 42 credits. A full set 2 was composed and QA'd on klein-4b previews at 3 credits each, with the dev re-bake stated as one re-runnable command.
+  With the accounts at 36 and 21 credits, a full dev re-bake of seven photos (~441 credits) was unaffordable and one dev square needed 42 credits. A full set 2 was composed and QA'd on [image model] previews at 3 credits each, with the dev re-bake stated as one re-runnable command.
   <br>*Why:* Layout, copy and safe-zone defects are found at composition time and do not depend on the model; spending dev credits before QA wastes them, and a mid-batch 402 leaves a set half-baked.
-  <br>*How:* Check pxb whoami balance against the batch total first, bake previews on klein-4b with --ref for character consistency, run the composer QA passes, then re-bake only the approved frames on [model id], budgeting one extra bake per set for 3046 timeouts.
+  <br>*How:* Check pxb whoami balance against the batch total first, bake previews on [image model] with --ref for character consistency, run the composer QA passes, then re-bake only the approved frames on [model id], budgeting one extra bake per set for 3046 timeouts.
 - **Strip commit attribution trailers across repos safely on macOS: portable awk --msg-filter, self-test, verify on the branch, drop refs/original, force-push** _(cross-cutting)_
   Write the filter as a script (grep -v the trailer, then awk to trim trailing blank lines; BSD sed multi-line forms fail with 'unexpected EOF (pending }'s)), pipe a sample message through it first, run filter-branch from each repo's top level, check `git log main --grep` rather than --all, delete refs/original, reflog expire plus gc, then push --force and confirm origin/main trailer count and commit counts.
   <br>*Why:* Four traps (BSD sed, wrong working directory with swallowed stderr, backup refs inflating counts, force-with-lease 'stale info') each looked like success or a random failure.
@@ -810,7 +810,7 @@
   <br>*How:* env.IMAGES.input(stream).transform({width,height,fit:'scale-up'}).transform({sharpen:4,contrast:1.06,saturation:1.08}).output({format}); cap the long edge at 8192px; store as a versioned child image.
 - **Spend a model's small reference-image budget on the face: Images gravity:face crop at about 500px** _(Pixelbake)_
   [image model] accepts up to 4 references, each under 512px. A full portrait wastes those pixels on background, so references are face-cropped before they are sent.
-  <br>*Why:* Reference resolution is the identity-fidelity ceiling on first-party klein.
+  <br>*Why:* Reference resolution is the identity-fidelity ceiling on first-party [image model].
   <br>*How:* env.IMAGES.input(src).transform({width:500,height:500,fit:'cover',gravity:'face'}) before building input_image_0..3.
 - **Give copied-whole modules a version stamp and a drift check** _(Coco Modules)_
   The activity-timeline module now exists as three copies (modules registry, Aprizely public/, Breadcrumb public/) because the registry philosophy is to copy modules whole, and the apz.mjs CLI is likewise kept in three places that are synced by hand and compared with md5.
@@ -1482,7 +1482,7 @@
 - **paint-a-fix should show a before/after diff and warn when the masked region barely changed** _(Pixelbake)_
   An [model id] fix on a third hand returned a success line and cost one credit, but the extra hand was still there; a [model id] re-bake fixed the pose.
   <br>*Why:* A fix that silently does nothing wastes credits and leaves a visible AI artefact in a shipped creative.
-  <br>*How:* Compare pixels inside the rectangle before and after, warn below a change threshold, and offer a remove-object mode using a klein edit with the original as reference.
+  <br>*How:* Compare pixels inside the rectangle before and after, warn below a change threshold, and offer a remove-object mode using a [image model] edit with the original as reference.
 - **Reports are append-only, so republishing creates a new id and the already-shared link keeps saying 'Not shipped yet'** _(Aprizely)_
   Republishing the report with a ship block (committed, deployed, version) produced a second report; the first, which the user had opened, still showed the stale status.
   <br>*Why:* The link the user holds is the one they trust; a stale 'not shipped' chip undermines the evidence.
@@ -1576,7 +1576,7 @@
   <br>*Why:* It stopped a costlier, slower pipeline from shipping on a false win, and it was reverted openly.
   <br>*How:* Change one variable at a time on the same low-res source and compare matched crops at equal display size. Keep a result only if it survives the controlled re-run, and revert and say so if it does not.
 - **Price labels must come from the same function that bills (live /api/estimate), never hardcoded** _(Pixelbake)_
-  The 'Bake the fix - 2 credits' button hardcoded a price while creditsFor() scaled by model and size (42 for [image model], 8 for klein-4b at 2048 square). The same static-label pattern was reported on the re-engineer compare and carousel fix buttons but not verified.
+  The 'Bake the fix - 2 credits' button hardcoded a price while creditsFor() scaled by model and size (42 for [image model], 8 for [image model] at 2048 square). The same static-label pattern was reported on the re-engineer compare and carousel fix buttons but not verified.
   <br>*Why:* A wrong price label on a credit product is a trust and refund problem.
   <br>*How:* Render the button without a number, call the estimate endpoint on open and on every model or size change, and write credits_needed into the label; grep every button that triggers a billable bake.
 - **Show a VLM identity-match score, label it an estimate, and require a likeness-consent acknowledgement** _(Pixelbake)_

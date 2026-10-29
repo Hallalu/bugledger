@@ -17,7 +17,7 @@ const CATEGORIES = [
   ['[runtime]', ['workerd']],
   ['[compute units]', ['Neurons', 'neurons', 'Neuron', 'neuron']],
   ['[image model]', ['Black Forest Labs FLUX', 'FLUX.2 klein', 'FLUX.2 dev', 'FLUX.2', 'FLUX.1', 'FLUX', 'Stable Diffusion', 'SDXL',
-    'Lucid Origin', 'Seedream', 'Imagen', 'DALL-E', 'DALL·E', 'Nano Banana']],
+    'Lucid Origin', 'Seedream', 'Imagen', 'DALL-E', 'DALL·E', 'Nano Banana', 'klein 9B', 'klein 4B', 'klein-9b', 'klein-4b', 'klein', 'schnell']],
   ['[video model]', ['Seedance', 'Kling', 'Hailuo', 'MiniMax', 'P-Video', 'Runway', 'Veo', 'Sora', 'Wan2', 'Hunyuan']],
   ['[speech model]', ['Grok STT', 'Whisper', 'Deepgram', 'Nova-3', 'Aura-2', 'Inworld', 'TTS-2', 'ElevenLabs']],
   ['[language model]', ['Claude Opus', 'Claude Sonnet', 'Claude Haiku', 'Opus 5.5', 'Sonnet 5.5', 'Haiku 5.5', 'GPT-5', 'GPT-4o', 'GPT-4',
@@ -33,6 +33,8 @@ const EXACT = [['[database]', 'D1'], ['[file storage]', 'R2'], ['[key-value stor
 const KEEP = /Claude Code|claude-code|\.claude\b/g;   /* incl. its ~/.claude config folder in paths */
 const MODEL_ID = /@cf\/[\w./-]+|\b(?:claude-(?:opus|sonnet|haiku|3|4|5)[\w.:-]*|gpt-[\w.:-]+|llama-[\w.:-]+|gemini-[\w.:-]+|qwen[\w.:-]*\d[\w.:-]*|mistral-[\w.:-]+|flux-[\w.:-]+|sdxl[\w.:-]*|sd15[\w.:-]*|whisper-[\w.:-]+|black-forest-labs\/[\w.:-]+|anthropic\/[\w.:-]+|openai\/[\w.:-]+|pruna\/[\w.:-]+)/gi;
 const URL_RE = /https?:\/\/[^\s"'<>)\]]+/g;
+/* camelCase code names that start with a provider or model (geminiModel, claudeKey, whisperUrl) */
+const IDENT = /(?<![A-Za-z0-9])(?:[Gg]emini|[Cc]laude|[Oo]pen[Aa][Ii]|[Aa]nthropic|[Ww]hisper|[Ff]lux|[Ll]lama|[Qq]wen|[Mm]istral|[Gg]rok|[Pp]runa|[Ii]nworld|[Dd]eepgram|[Ee]leven[Ll]abs|[Ss]eedance|[Kk]ling)(?=[A-Z0-9])[A-Za-z0-9]*/g;
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -56,6 +58,7 @@ export function makeRedactor(extra = []) {
     let s = text.replace(KEEP, (m) => `\u0000${kept.push(m) - 1}\u0000`);
     s = s.replace(URL_RE, (u) => (sensitive(u) ? '[link removed]' : u));
     s = s.replace(MODEL_ID, '[model id]');
+    s = s.replace(IDENT, '[code name]');
     s = s.replace(words, (m) => label.get(m.toLowerCase()) || '[AI model or provider]');
     s = s.replace(exact, (m) => exactLabel.get(m) || m);
     return s.replace(/\u0000(\d+)\u0000/g, (_, i) => kept[+i]);

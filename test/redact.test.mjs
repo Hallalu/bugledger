@@ -50,3 +50,9 @@ test('provider names inside env var names are caught', () => {
 test('Claude Code config paths are kept', () => {
   assert.equal(r('read the home ~/.claude/launch.json, not .claude/settings.json'), 'read the home ~/.claude/launch.json, not .claude/settings.json');
 });
+
+test('camelCase code names and short model names are caught', () => {
+  assert.equal(r('Cause: geminiModel(env) and claudeKey; klein 9B worked; a klein generation; schnell drafts'),
+    'Cause: [code name](env) and [code name]; [image model] worked; a [image model] generation; [image model] drafts');
+  assert.equal(r('Claude Code wrote claudeCode notes'), 'Claude Code wrote [code name] notes');
+});
