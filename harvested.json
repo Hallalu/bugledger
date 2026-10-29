@@ -8734,5 +8734,17 @@
     "status": "unverified",
     "session": "d57521fb",
     "found": "2026-10-28"
+  },
+  {
+    "key": "1dc68bbe:allthreefixesareliveandcheckedinthebrowser",
+    "app": "Hallalu CRM",
+    "title": "All three fixes are live and checked in the browser.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "All three fixes are live and checked in the browser.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1dc68bbe",
+    "found": "2026-10-28"
   }
 ]

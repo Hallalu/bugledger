@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-728 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+729 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (481)
+## Hallalu CRM (482)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -485,6 +485,7 @@
 - [ ] `low` `other` (2026-10-28, #1dc68bbe) — - Fixed, 11 items you couldn't buy: the 5 washi packs and 6 mini sticker packs showed a…
 - [ ] `low` `other` (2026-10-28, #1dc68bbe) — 12 partly-done prompts - Making skins and stickers with Hallalu Art inside the app is…
 - [ ] `low` `other` (2026-10-28, #d57521fb) — A new companion starts with 100 coins, and the gift doesn't add a second 100.
+- [ ] `low` `other` (2026-10-28, #1dc68bbe) — All three fixes are live and checked in the browser.
 
 ## Finished. (98)
 
