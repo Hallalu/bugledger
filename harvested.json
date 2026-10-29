@@ -8806,5 +8806,29 @@
     "status": "unverified",
     "session": "d57521fb",
     "found": "2026-10-28"
+  },
+  {
+    "key": "c8c7222e:nothingwasbuiltcommittedordeployedandididntsigninanywhere",
+    "app": "Hallalu CRM",
+    "title": "Nothing was built, committed or deployed, and I didn't sign in anywhere.",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "Nothing was built, committed or deployed, and I didn't sign in anywhere.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8c7222e",
+    "found": "2026-10-28"
+  },
+  {
+    "key": "c8c7222e:hallaluartthesofiaorbitworkisntcommittedandisntliveandyourha",
+    "app": "Hallalu CRM",
+    "title": "- Hallalu Art: the Sofia orbit work isn't committed and isn't live, and your hair and…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Hallalu Art:** the Sofia orbit work isn't committed and isn't live, and your hair and likeness complaints are still open.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8c7222e",
+    "found": "2026-10-28"
   }
 ]
