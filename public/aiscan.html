@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Drop an image, video, audio or text file to see the traces AI leaves in it: Content Credentials (C2PA), the IPTC AI tag, generator prompts and seeds, location data, hidden characters. Nothing leaves your browser.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bug Ledger · AI footprint — what your files say about how they were made">
+<meta property="og:description" content="Content Credentials, the IPTC AI tag, generator prompts, location data and hidden characters — read in your browser, nothing uploaded.">
+<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>AI Footprint — Bug Ledger</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --panel:#ffffff; --ink:#141726; --muted:#5b6178; --line:#e7e9f2;
+    --accent:#6b5cff; --accent2:#00b4a6; --chip:#f0f1f8;
+    --shadow:0 1px 2px rgba(20,23,38,.06),0 8px 24px rgba(20,23,38,.06);
+    --bad:#e5484d; --warn:#d1620a; --info:#2f6feb; --good:#12a150; --ok:#e8f7ee;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0d0f18; --panel:#151826; --ink:#eef0fa; --muted:#9aa1bd; --line:#242940;
+      --chip:#1d2135; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35); --ok:#12291d; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 20px 96px}
+  .topnav{display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-bottom:20px}
+  .topnav .brand{font-weight:800;color:var(--ink);letter-spacing:-.01em;font-size:15px}
+  .topnav .dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:inline-block;margin-right:7px}
+  .topnav a[aria-current]{color:var(--ink);font-weight:700}
+  header.hero{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+  .hero h1{font-size:32px;letter-spacing:-.02em;margin:0;font-weight:850}
+  .hero h1 .g{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero .sub{color:var(--muted);max-width:74ch;font-size:15.5px;margin:0}
+  .badges{display:flex;gap:8px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13px;color:var(--muted)}
+  .badge b{color:var(--ink)} .badge .lk{width:8px;height:8px;border-radius:50%;background:var(--good)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-top:16px}
+  .card .hd{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line);font-weight:700}
+  .card .hd .tag{margin-left:auto;font-weight:600;font-size:13px;color:var(--muted)}
+  .card .bd{padding:14px 16px}
+  #drop{display:block;border:1.5px dashed var(--line);border-radius:14px;padding:34px 18px;text-align:center;cursor:pointer;background:var(--chip);transition:border-color .15s,background .15s}
+  #drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--chip))}
+  #drop b{display:block;font-size:16.5px;margin-bottom:4px} #drop span{color:var(--muted);font-size:13.5px}
+  textarea{width:100%;min-height:150px;resize:none;font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--panel);color:var(--ink)}
+  textarea:focus-visible,.btn:focus-visible,#drop:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+  .btn{font:inherit;font-size:14px;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px;color:var(--ink)}
+  .btn:hover{border-color:var(--accent)} .btn.solid{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .file .sub{color:var(--muted);font-size:13.5px;margin:2px 0 10px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .chip{font-size:13px;font-weight:700;padding:4px 11px;border-radius:99px;border:1px solid var(--line)}
+  .chip.good{color:var(--good);background:color-mix(in srgb,var(--good) 10%,transparent)} .chip.bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,transparent)}
+  .chip.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent)} .chip.info{color:var(--muted)}
+  .row{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+  .layer{font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+  .layer.provenance{color:#7b3fbf} .layer.metadata{color:var(--warn)} .layer.text{color:var(--info)} .layer.watermark{color:var(--accent)}
+  .term{font-weight:700} .where{color:var(--muted);font-size:13px}
+  .detail{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-word;margin-top:3px}
+  .empty{color:var(--muted);font-size:14.5px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .note{color:var(--muted);font-size:14px;max-width:80ch}
+  .note li{margin:4px 0}
+  code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--chip);padding:1px 6px;border-radius:6px}
+  .file .hd{flex-wrap:wrap;overflow-wrap:anywhere}
+  @media (max-width:720px){ .grid2{grid-template-columns:1fr} .row{grid-template-columns:1fr;gap:2px} .hero h1{font-size:26px} .file .hd .tag{margin-left:0;width:100%} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topnav">
+    <span class="brand"><span class="dot"></span>Bug Ledger</span>
+    <a href="/">Ledger</a>
+    <a href="/sanitize">Sanitizer</a>
+    <a href="/aiscan" aria-current="page">AI footprint</a>
+    <a href="/timeline">Activity</a>
+    <a href="/live">Live</a>
+  </nav>
+
+  <header class="hero">
+    <h1>AI <span class="g">footprint</span></h1>
+    <p class="sub">Drop a picture, clip, sound or text file to see what it says about how it was made: <b>Content Credentials (C2PA)</b>, the <b>IPTC AI tag</b>, prompts and seeds left by image generators, the software that wrote it, <b>location data</b>, hidden characters — and the <b>Pixelbake invisible watermark</b>.</p>
+    <div class="badges">
+      <span class="badge"><span class="lk"></span><b>100% local</b>&nbsp;— files never leave this page</span>
+      <span class="badge">Same engine as the ledger's <code>aiscan</code> sweep</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="hd">Check files <span class="tag" id="fileTag"></span></div>
+    <div class="bd">
+      <label id="drop"><b>Drop files here, or click to choose</b><span>PNG · JPEG · WebP · MP4 · MOV · HEIC · AVIF · MP3 · WAV · TXT · HTML</span>
+        <input id="pick" type="file" multiple hidden></label>
+    </div>
+  </section>
+  <div id="files"></div>
+
+  <section class="card">
+    <div class="hd">Check copy <span class="tag" id="copyTag"></span></div>
+    <div class="bd">
+      <textarea id="copy" spellcheck="false" aria-label="Copy to check" placeholder="Paste page copy, a README or an answer — this lists AI providers and models it names, and any invisible characters in it."></textarea>
+      <div class="actions"><button class="btn solid" id="checkCopy">Check this copy</button><a class="btn" href="/sanitize">Clean hidden characters →</a></div>
+      <div id="copyOut" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="hd">What it can and can't see</div>
+    <div class="bd grid2">
+      <ul class="note">
+        <li><b>Reads:</b> C2PA manifests in JPEG, PNG, WebP, MP4/MOV/HEIC (who signed, what tool, <code>digitalSourceType</code>), IPTC <code>DigitalSourceType</code>, A1111 prompts, ComfyUI graphs, EXIF/XMP tool names, GPS, encoder tags.</li>
+        <li><b>Hidden text:</b> zero-width, tag and bidi characters. The C2PA 2.3 text manifest is reported as provenance, not junk.</li>
+        <li><b>Pixelbake watermark:</b> read straight from the pixels; survives re-saving and resizing, not cropping.</li>
+      </ul>
+      <ul class="note">
+        <li><b>Can't see</b> other invisible watermarks (Google SynthID, Meta Video Seal, Adobe TrustMark): those need their maker's detector. A clean result never proves a file wasn't made with AI.</li>
+        <li>Most platforms strip metadata on upload, so a downloaded social-media copy usually shows nothing.</li>
+        <li>For a whole project or live site: <code>node ~/BugLedger/aiscan.mjs . </code> or <code>--url https://…</code>, or the <code>/aiscan</code> sweep.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<script>
+/* the shared engine (also used by aiscan.mjs and scan.mjs), loaded as a module from a classic script */
+(async () => {
+const { inspectBytes, stackTerms, textFindings, WM_N } = await import('/aimarks-core.mjs');
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* 256×256 brightness for the watermark reader: the browser's high-quality downscale, stretched to the grid */
+async function grayOf(file) {
+  try {
+    const bmp = await createImageBitmap(file, { resizeWidth: WM_N, resizeHeight: WM_N, resizeQuality: 'high' });
+    const c = new OffscreenCanvas(WM_N, WM_N), g = c.getContext('2d'); g.drawImage(bmp, 0, 0);
+    const d = g.getImageData(0, 0, WM_N, WM_N).data, out = new Uint8Array(WM_N * WM_N);
+    for (let i = 0; i < out.length; i++) out[i] = Math.round(0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2]);
+    return out;
+  } catch { return null; }
+}
+function rows(findings) {
+  if (!findings.length) return '<div class="row"><div class="layer">none</div><div class="empty">No readable AI marks or metadata in this file.</div></div>';
+  return findings.map(f => `<div class="row"><div class="layer ${f.layer}">${esc(f.layer)}</div><div><span class="term">${esc(f.term)}</span>
+    <div class="where">${esc(f.where)}</div><div class="detail">${esc(f.detail)}</div></div></div>`).join('');
+}
+async function check(file) {
+  const card = document.createElement('section'); card.className = 'card file';
+  card.innerHTML = `<div class="hd">${esc(file.name)}<span class="tag">Reading…</span></div>`; $('files').prepend(card);
+  const u8 = new Uint8Array(await file.arrayBuffer());
+  const gray = /^image\/(png|jpeg|webp)/.test(file.type) || /\.(png|jpe?g|webp)$/i.test(file.name) ? await grayOf(file) : null;
+  const r = await inspectBytes(u8, file.name, { gray }), s = r.summary, wm = r.findings.some(f => f.layer === 'watermark');
+  const chips = [
+    s.disclosure ? '<span class="chip good">Says it is AI-made</span>' : '<span class="chip info">No machine-readable AI flag</span>',
+    s.leaksStack ? '<span class="chip bad">Names the tools behind it</span>' : '<span class="chip good">Names no tools</span>',
+    s.privacy ? '<span class="chip warn">Contains location</span>' : '',
+    wm ? '<span class="chip good">Pixelbake watermark</span>' : '',
+  ].join('');
+  card.innerHTML = `<div class="hd">${esc(r.name)}<span class="tag">${esc(r.kind)} · ${(r.bytes / 1024).toFixed(1)} KB · ${r.findings.length} finding${r.findings.length === 1 ? '' : 's'}</span></div>
+    <div class="bd"><div class="chips">${chips}</div>${rows(r.findings)}</div>`;
+  $('fileTag').textContent = `${$('files').children.length} checked`;
+}
+const run = (list) => [...list].forEach(check);
+$('pick').onchange = (e) => run(e.target.files);
+['dragenter', 'dragover'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.remove('over'); }));
+$('drop').addEventListener('drop', e => run(e.dataTransfer.files));
+
+$('checkCopy').onclick = () => {
+  const t = $('copy').value, terms = stackTerms(t), hidden = textFindings(t, 'copy');
+  const parts = [];
+  parts.push(terms.length ? `<div class="chips"><span class="chip bad">Names ${terms.length} AI provider${terms.length === 1 ? '' : 's'} / model${terms.length === 1 ? '' : 's'}</span></div>` +
+    terms.map(x => `<div class="row"><div class="layer metadata">stack</div><div><span class="term">${esc(x.term)}</span><div class="where">named ${x.count}×</div></div></div>`).join('')
+    : '<div class="chips"><span class="chip good">Names no AI providers or models</span></div>');
+  parts.push(hidden.length ? rows(hidden) : '');
+  $('copyOut').innerHTML = t.trim() ? parts.join('') : '<div class="empty">Paste some copy first.</div>';
+  $('copyTag').textContent = t.trim() ? `${terms.length + hidden.length} finding${terms.length + hidden.length === 1 ? '' : 's'}` : '';
+};
+})();
+</script>
+</body>
+</html>

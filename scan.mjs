@@ -25,6 +25,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { createRequire } from "node:module";
+import { aiScanDir, asScanFindings, AI_DETECTORS } from "./aiscan.mjs";
 
 const LEDGER = path.dirname(fileURLToPath(import.meta.url));
 // Shared sanitizer engine — SAME rules as the /sanitize tool and the ledger API,
@@ -511,8 +512,12 @@ for (const fp of files) {
   }
 }
 
+// ---------- AI-footprint detectors (aiscan.mjs): shipped media metadata, provenance, watermark, public copy ----------
+try { const ai = await aiScanDir(TARGET); findings.push(...asScanFindings(ai.hits)); }
+catch (e) { if (!AS_JSON) console.error("AI-footprint pass skipped:", e.message); }
+
 // ---------- project-level detectors (only visible across the whole repo) ----------
-const PROJECT_DETECTORS = 13; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-DELETE, OBS-NO-ERROR-HANDLER, + 8 AUTH-* sign-in checks
+const PROJECT_DETECTORS = 13 + Object.keys(AI_DETECTORS).length; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-DELETE, OBS-NO-ERROR-HANDLER, + 8 AUTH-* sign-in checks, + 5 AI-* footprint checks (aiscan.mjs)
 {
   const all = corpus.join("\n");
   const proj = (detector, severity, category, bug, advice, file, excerpt) =>
