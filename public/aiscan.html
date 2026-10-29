@@ -131,6 +131,15 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* 256×256 brightness for the watermark reader: the browser's high-quality downscale, stretched to the grid */
+/* full-resolution RGBA for the pixel rules (Stable Diffusion/SDXL/FLUX watermark, stealth metadata); capped at 16 MP */
+async function pixelsOf(file) {
+  try {
+    const bmp = await createImageBitmap(file, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
+    if (bmp.width * bmp.height > 16e6) return null;
+    const c = new OffscreenCanvas(bmp.width, bmp.height), g = c.getContext('2d'); g.drawImage(bmp, 0, 0);
+    return { width: bmp.width, height: bmp.height, data: g.getImageData(0, 0, bmp.width, bmp.height).data };
+  } catch { return null; }
+}
 async function grayOf(file) {
   try {
     const bmp = await createImageBitmap(file, { resizeWidth: WM_N, resizeHeight: WM_N, resizeQuality: 'high' });
@@ -150,12 +159,13 @@ async function check(file) {
   card.innerHTML = `<div class="hd">${esc(file.name)}<span class="tag">Reading…</span></div>`; $('files').prepend(card);
   const u8 = new Uint8Array(await file.arrayBuffer());
   const gray = /^image\/(png|jpeg|webp)/.test(file.type) || /\.(png|jpe?g|webp)$/i.test(file.name) ? await grayOf(file) : null;
-  const r = await inspectBytes(u8, file.name, { gray }), s = r.summary, wm = r.findings.some(f => f.layer === 'watermark');
+  const r = await inspectBytes(u8, file.name, { gray, pixels: gray ? await pixelsOf(file) : null }), s = r.summary, wm = r.findings.some(f => /Pixelbake invisible watermark/.test(f.term)), iw = r.findings.some(f => /Invisible watermark consistent|Declared watermark/.test(f.term));
   const chips = [
     s.disclosure ? '<span class="chip good">Says it is AI-made</span>' : '<span class="chip info">No machine-readable AI flag</span>',
     s.leaksStack ? '<span class="chip bad">Names the tools behind it</span>' : '<span class="chip good">Names no tools</span>',
     s.privacy ? '<span class="chip warn">Contains location</span>' : '',
     wm ? '<span class="chip good">Pixelbake watermark</span>' : '',
+    iw ? '<span class="chip warn">Invisible watermark</span>' : '',
   ].join('');
   card.innerHTML = `<div class="hd">${esc(r.name)}<span class="tag">${esc(r.kind)} · ${(r.bytes / 1024).toFixed(1)} KB · ${r.findings.length} finding${r.findings.length === 1 ? '' : 's'}</span></div>
     <div class="bd"><div class="chips">${chips}</div>${rows(r.findings)}</div>`;

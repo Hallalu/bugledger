@@ -55,7 +55,8 @@ test('hidden characters flagged; C2PA text manifest kept as provenance; emoji se
   const vs = Array.from({ length: 10 }, (_, i) => String.fromCodePoint(0xE0100 + i)).join('');
   const f = textFindings('Hi​ there ❤️' + '﻿' + vs);
   assert.ok(f.some(x => x.term.startsWith('Invisible') && /ZERO WIDTH SPACE/.test(x.detail)));
-  assert.ok(f.some(x => x.layer === 'provenance'));
+  /* C2PA 2.4 Annex A.8: without the C2PATXT header a selector run is NOT provenance — reported as possible hidden data */
+  assert.ok(f.some(x => /no C2PA header/.test(x.term)) && !f.some(x => x.layer === 'provenance'));
   assert.ok(!f.some(x => /VARIATION SELECTOR/.test(x.detail)));
 });
 

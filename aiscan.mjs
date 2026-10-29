@@ -60,6 +60,14 @@ function grayOf(file) {
   if (!hasFfmpeg()) return null;
   try { const g = new Uint8Array(execFileSync('ffmpeg', ['-nostdin', '-v', 'error', '-i', file, '-vf', `scale=${WM_N}:${WM_N}:flags=area,format=gray`, '-frames:v', '1', '-f', 'rawvideo', '-'], { maxBuffer: 1 << 21, stdio: ['ignore', 'pipe', 'ignore'] })); return g.length === WM_N * WM_N ? g : null; } catch { return null; }
 }
+/* full-resolution RGBA for the pixel rules (SD/SDXL/FLUX watermark, stealth pnginfo); capped at 16 MP */
+function pixelsOf(file) {
+  if (!hasFfmpeg()) return null;
+  try { const [w, h] = execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', file], { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim().split(',').map(Number);
+    if (!(w * h) || w * h > 16e6) return null;
+    const data = new Uint8Array(execFileSync('ffmpeg', ['-nostdin', '-v', 'error', '-i', file, '-frames:v', '1', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-'], { maxBuffer: w * h * 4 + 1024, stdio: ['ignore', 'pipe', 'ignore'] }));
+    return data.length === w * h * 4 ? { width: w, height: h, data } : null; } catch { return null; }
+}
 const stillImage = (name) => /\.(png|jpe?g|webp)$/i.test(name) || /^(PNG|JPEG|WEBP)/.test(name);
 function walk(dir, out = []) {
   let ents; try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch { return out; }
@@ -99,8 +107,9 @@ export async function aiScanDir(dir, opts = {}) {
     if (size > MAX_FILE || size === 0) continue;
     if (MEDIA_EXT.test(fp)) {
       stats.media++;
-      const res = await inspectBytes(fs.readFileSync(fp), rel, { gray: opts.watermark !== false && stillImage(fp) && size < (30 << 20) ? grayOf(fp) : null });
-      if (res.summary.disclosure) stats.withDisclosure++; if (res.summary.leaksStack) stats.namingStack++; if (res.findings.some(x => x.layer === 'watermark')) stats.watermarked++;
+      const still = opts.watermark !== false && stillImage(fp) && size < (30 << 20);
+      const res = await inspectBytes(fs.readFileSync(fp), rel, { gray: still ? grayOf(fp) : null, pixels: still ? pixelsOf(fp) : null });
+      if (res.summary.disclosure) stats.withDisclosure++; if (res.summary.leaksStack) stats.namingStack++; if (res.findings.some(x => /Pixelbake invisible watermark/.test(x.term))) stats.watermarked++; if (res.findings.some(x => /Invisible watermark consistent|Declared watermark|Stealth metadata/.test(x.term))) stats.otherMarks = (stats.otherMarks || 0) + 1;
       hits.push(...mediaHits(rel, res, shipped));
     } else if ((shipped && PUBLIC_TEXT.test(fp)) || /^(README|readme)\.md$|^llms\.txt$/.test(rel)) {
       const repoDoc = !shipped; /* a root README is read on the forge, not on the site: a lead, not a finding */
@@ -168,8 +177,9 @@ export async function aiScanUrl(start, opts = {}) {
       const buf = new Uint8Array(await r.arrayBuffer()); if (buf.length < 200) continue; n++; stats.media++;
       const name = new URL(u).pathname.split('/').pop() || 'file', tf = path.join(tmp, `m${n}-${name.replace(/[^\w.-]/g, '_').slice(-60)}`);
       fs.writeFileSync(tf, buf);
-      const res = await inspectBytes(buf, name, { gray: opts.watermark !== false && (stillImage(name) || /image\/(png|jpeg|webp)/.test(r.headers.get('content-type') || '')) ? grayOf(tf) : null });
-      if (res.summary.disclosure) stats.withDisclosure++; if (res.summary.leaksStack) stats.namingStack++; if (res.findings.some(x => x.layer === 'watermark')) stats.watermarked++;
+      const still = opts.watermark !== false && (stillImage(name) || /image\/(png|jpeg|webp)/.test(r.headers.get('content-type') || ''));
+      const res = await inspectBytes(buf, name, { gray: still ? grayOf(tf) : null, pixels: still ? pixelsOf(tf) : null });
+      if (res.summary.disclosure) stats.withDisclosure++; if (res.summary.leaksStack) stats.namingStack++; if (res.findings.some(x => /Pixelbake invisible watermark/.test(x.term))) stats.watermarked++; if (res.findings.some(x => /Invisible watermark consistent|Declared watermark|Stealth metadata/.test(x.term))) stats.otherMarks = (stats.otherMarks || 0) + 1;
       hits.push(...mediaHits(u, res, true));
     }
   } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
@@ -225,7 +235,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
     const s = res.stats, g = grouped(res.hits);
     console.log(`\nAI footprint scan — ${res.target}`);
     console.log(url ? `pages ${s.pages} · scripts ${s.scripts} · files ${s.files || 0} · media ${s.media}` : `files ${res.files} · media ${s.media} · public text ${s.publicText}`);
-    console.log(`media with an AI disclosure ${s.withDisclosure} · naming tools/stack ${s.namingStack} · Pixelbake watermark ${s.watermarked}${s.stopped ? `\n⚠ stopped politely: ${s.stopped}` : ''}`);
+    console.log(`media with an AI disclosure ${s.withDisclosure} · naming tools/stack ${s.namingStack} · Pixelbake watermark ${s.watermarked} · other invisible marks ${s.otherMarks || 0}${s.stopped ? `\n⚠ stopped politely: ${s.stopped}` : ''}`);
     if (!res.hits.length) console.log('\n✓ no AI-footprint findings');
     for (const [id, hs] of Object.entries(g)) {
       const d = AI_DETECTORS[id];

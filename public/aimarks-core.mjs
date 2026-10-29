@@ -12,8 +12,10 @@
    Plain ES module, byte arrays only — no Node Buffer, no dependencies. Latent watermarks other than Pixelbake's
    (SynthID, Video Seal, TrustMark, SD DWT-DCT) live in pixels or samples and need their vendor's detector. */
 
+/* C2PA soft-binding algorithm registry (c2pa-org/softbinding-algorithm-list, 57 entries, fetched 2026-10-29) */
+export const SOFT_BINDINGS = {"com.digimarc.validate.1":["watermark","Digimarc Validate Digital Watermarking algorithm"],"org.atsc.a336":["watermark","ATSC watermarking (A/334, A/335, A/336)"],"io.iscc.v0":["fingerprint","ISO 24138 - International Standard Content Code (ISCC) V0 algorithm"],"com.adobe.trustmark.Q":["watermark","Adobe Trustmark variant Q"],"com.adobe.trustmark.C":["watermark","Adobe Trustmark variant C"],"com.adobe.icn.dense":["fingerprint","Adobe Image Comparator Network Dense Fingerprint"],"ai.steg.api":["watermark","Steg.AI invisible watermarking"],"ai.trufo.pawprint.watermark":["watermark","PawPrint neural watermarking for images, audio, and video. Imperceptib"],"ai.trufo.pawprint.fingerprint":["fingerprint","PawPrint neural fingerprinting for images, audio, and video. Generates"],"app.overlai.watermark.1":["watermark","Overlai Watermark version 1"],"tv.kinetiq.watercast.48.1":["watermark","Teletrax Watermarking algorithm"],"castLabs.watermark.1":["watermark","castLabs Single Frame Forensic Watermarking"],"com.adobe.trustmark.P":["watermark","Adobe Trustmark variant P"],"com.imatag.lamark.v1":["watermark","Imatag invisible watermarking for images"],"com.nagra.nexguard.watermark.1":["watermark","NAGRA NexGuard Watermarking with Single Frame Detection Capability"],"com.mentaport.watermark.1":["watermark","Mentaport Watermarking Engine"],"com.digicaps.fingerprint.1":["fingerprint","DigiCAP Fingerprint Engine"],"com.sonicorigin.watermark.1":["watermark","SonicOrigin Watermarking Engine"],"com.microsoft.invismark.1":["watermark","Microsoft Responsible AI InvisMark"],"com.microsoft.wavmark.1":["watermark","Microsoft Responsible AI WavMark"],"ai.contentlens.image.basewmk":["watermark","ContentLens Image Watermarking (Base)"],"ai.contentlens.image.ensemblewmk":["watermark","ContentLens Image Watermarking (Ensemble)"],"ai.contentlens.image.customwmk":["watermark","ContentLens Image Watermarking (Custom)"],"ai.contentlens.audio.mono":["watermark","ContentLens Audio Watermarking (Mono)"],"ai.contentlens.audio.stereo":["watermark","ContentLens Audio Watermarking (Stereo)"],"es.lumatrace":["watermark","Java-native Adaptive Spatial Watermarking using Blue-channel injection"],"com.markany.watermark.1":["watermark","MarkAny invisible watermarking with robustness against cropping, resiz"],"com.verimatrix.watermark.1":["watermark","Verimatrix watermarking algorithm: provides an essence-based forensic "],"com.writerslogic.zwc-watermark.1":["watermark","WritersLogic CPOP zero-width character (ZWC) watermark for text conten"],"com.aiwatermark.videoseal.1":["watermark","Neural video watermarking using Meta FAIR's VideoSeal model, providing"],"com.aiwatermark.pixelseal.1":["watermark","Neural image watermarking using Meta FAIR's PixelSeal model, providing"],"com.aiwatermark.audioseal.1":["watermark","Neural audio watermarking using Meta FAIR's AudioSeal model, providing"],"eu.sasha.softbinding.v1":["watermark","Invisible watermarking technology for image and video assets, enabling"],"ai.verda.watermark.image.1":["watermark","VerdaAI invisible image watermarking"],"ai.verda.watermark.video.1":["watermark","VerdaAI invisible video watermarking"],"ai.verda.watermark.audio.1":["watermark","VerdaAI invisible audio watermarking"],"com.evixar.eaw.1":["watermark","EAW (Evixar Audio Watermark) is an audible-range audio watermarking al"],"com.evixar.efp.type3.1":["fingerprint","EFP Type 3 (Evixar Finger Print Type 3) is an audio fingerprinting alg"],"com.cognitive-proof.vsrmark.1":["watermark","VSRMark hides a structured byte payload inside visible Unicode text by"],"me.deepmark.audio.vigil.128":["watermark","Vigil is a 128-bit-per-second neural audio watermarking algorithm deve"],"com.writerslogic.text-fingerprint.1":["fingerprint","WritersLogic CPoE robust text fingerprint. Computes a 256-bit SimHash "],"com.writerslogic.zwc-watermark.2":["watermark","Revision of com.writerslogic.zwc-watermark.1. Embeds an HMAC-SHA256 ro"],"com.writerslogic.text-structure.1":["fingerprint","WritersLogic CPoE structural text fingerprint. Computes a deterministi"],"com.writerslogic.text-minhash.1":["fingerprint","WritersLogic CPoE lexical MinHash text fingerprint for excerpt and quo"],"io.blockfact.audio.watermark.32":["watermark","BlockFact invisible watermarking for audio, image, and video provenanc"],"com.doverunner.watermark.1":["watermark","DoveRunner's forensic watermarking solution delivers invisible, tamper"],"com.writerslogic.text-watermark-semantic.1":["watermark","WritersLogic CPoE post-hoc semantic embedding watermark for paraphrase"],"com.joinmonolith.sha256":["fingerprint","Monolith SHA-256 content fingerprint for C2PA manifest recovery"],"com.museblossom.contentsdefence.1":["watermark","Contents Defence invisible image watermark, used to recover the associ"],"me.reconize.videoseal.1":["watermark","Reconize deployment of the VideoSeal invisible watermark (Meta AI open"],"io.diker.sigi.v1":["watermark","Sigi invisible watermarking engine by Okeanos B.V."],"com.adobe.hiermark.A":["watermark","Adobe Hierarchical Audio watermark (HierMark) variant A"],"com.adobe.flowmark.A":["watermark","Adobe FlowMark video watermarking variant A"],"be.immostory.videoseal.1":["watermark","ImmoStory AI deployment of Meta FAIR's Video Seal 1.0 invisible video "],"com.adobe.trustmark.F":["watermark","Adobe FiLMCAM Conditional Access Watermarking / Trustmark variant F"],"com.quatvision.quatmark.1":["watermark","QuatMark keyed invisible image watermark. The watermark carries a comp"],"studio.aidr.silentcipher.1":["watermark","AIDR Studio deployment of Sony Research's open SilentCipher 44.1 kHz a"]};
 export const IPTC_DST = 'http://cv.iptc.org/newscodes/digitalsourcetype/';
-export const DST_TERMS = ['trainedAlgorithmicMedia', 'compositeWithTrainedAlgorithmicMedia', 'algorithmicMedia',
+export const DST_TERMS = ['trainedAlgorithmicMedia', 'compositeWithTrainedAlgorithmicMedia', 'trainedAlgorithmicData', 'algorithmicMedia',
   'compositeSynthetic', 'algorithmicallyEnhanced', 'digitalCapture', 'computationalCapture',
   'compositeCapture', 'screenCapture', 'virtualRecording', 'humanEdits', 'dataDrivenMedia'];
 const AI_DST = /Algorithmic|Synthetic|dataDriven/;
@@ -23,7 +25,7 @@ export const GENERATORS = ['OpenAI', 'DALL-E', 'DALL·E', 'ChatGPT', 'GPT-4o', '
   'Stable Diffusion', 'StableDiffusion', 'SDXL', 'Stability AI', 'ComfyUI', 'AUTOMATIC1111', 'InvokeAI',
   'NovelAI', 'Fooocus', 'Forge', 'FLUX', 'Black Forest Labs', 'Imagen', 'Gemini', 'Google AI', 'Veo',
   'Nano Banana', 'SynthID', 'Firefly', 'Adobe Firefly', 'Leonardo', 'Ideogram', 'Runway', 'Pika', 'Kling',
-  'Luma', 'Hailuo', 'MiniMax', 'Seedance', 'Seedream', 'ByteDance', 'Grok', 'xAI', 'Aurora', 'Meta AI',
+  'Luma', 'Hailuo', 'MiniMax', 'Seedream', 'ByteDance', 'Grok', 'xAI', 'Aurora', 'Meta AI',
   'Imagine with Meta', 'Bing Image Creator', 'Microsoft Designer', 'Copilot', 'Canva', 'ElevenLabs',
   'Suno', 'Udio', 'Replicate', 'fal.ai', 'Together AI',
   'Recraft', 'HiDream', 'Qwen', 'Wan2', 'Hunyuan', 'Phoenix'];
@@ -87,20 +89,67 @@ export function stackTerms(text) {
   return out;
 }
 
-function scanText(s, where, out) {
+function scanText(s, where, out, inManifest = false) {
   if (!s) return;
-  for (const t of DST_TERMS) if (s.includes(IPTC_DST + t) || new RegExp(`DigitalSourceType[^<>]{0,40}${t}`).test(s))
+  if (!inManifest) for (const t of DST_TERMS) if (s.includes(IPTC_DST + t) || new RegExp(`DigitalSourceType[^<>]{0,40}${t}`).test(s))
     out.push(finding('metadata', 'IPTC Digital Source Type', where, t, { disclosure: AI_DST.test(t) }));
   const hits = GEN_RE.filter(([, re]) => re.test(s)).map(([g]) => g);
   if (hits.length) out.push(finding('metadata', 'Generator / model name', where, [...new Set(hits)].join(', '), { leaksStack: true }));
   if (SD_PARAMS.test(s)) out.push(finding('metadata', 'Generation parameters (prompt, seed, sampler)', where, clip(s), { leaksStack: true }));
+  else { /* the same parameters as JSON (Draw Things, Fooocus, InvokeAI…): two or more generation keys, one of them seed/steps/sampler */
+    const keys = new Set([...s.matchAll(/"(seed|steps|sampler|sampler_name|cfg|cfg_scale|guidance_scale|scheduler|negative_prompt|denoising_strength)"\s*:/gi)].map(x => x[1].toLowerCase()));
+    if (keys.size >= 2 && [...keys].some(k => /seed|steps|sampler/.test(k))) out.push(finding('metadata', 'Generation parameters (prompt, seed, sampler)', where, `JSON keys: ${[...keys].join(', ')}`, { leaksStack: true })); }
   if (/"class_type"\s*:/.test(s)) out.push(finding('metadata', 'ComfyUI workflow graph', where, 'node graph JSON', { leaksStack: true }));
+  const fl = s.match(/AI generated;(txt2img|img2img)(?:;([\w.-]+))?/);   /* FLUX reference code: EXIF Software (black-forest-labs/flux util.py) */
+  if (fl) out.push(finding('metadata', 'AI label in EXIF Software (FLUX reference code)', where, fl[0], { disclosure: true, leaksStack: true }));
+  if (/sui_image_params/.test(s)) out.push(finding('metadata', 'SwarmUI generation parameters', where, 'sui_image_params JSON', { leaksStack: true }));
+  if (/(?:^|[^A-Za-z])(?:prompt|workflow):\{"/.test(s)) out.push(finding('metadata', 'ComfyUI graph in EXIF (AVIF/WebP output)', where, 'prompt:/workflow: JSON', { leaksStack: true }));
+  aigcLabels(s, where, out);
   if (/c2pa\.(created|edited|opened|actions|ingredient)|stds\.schema-org\.CreativeWork|c2pa\.claim/.test(s))
     out.push(finding('provenance', 'C2PA assertion text', where, clip([...new Set(s.match(/c2pa\.(?:actions(?:\.v2)?|claim(?:\.v2)?|created|edited|opened|ingredient|hash\.(?:data|bmff|boxes))/g) || [])].slice(0, 6).join(' ') || ''), { disclosure: true }));
   const rp = s.match(/dcterms:provenance[^>]{0,4}>?\s*["']?([^"'<\s]{6,200})/);
   if (rp) out.push(finding('provenance', 'Remote C2PA manifest pointer (dcterms:provenance)', where, rp[1], { disclosure: true, leaksStack: true }));
   const m = s.match(/(CreatorTool|Software|claim_generator|xmp:CreatorTool|photoshop:Credit)["'=>:\s]+([^"'<\n]{2,80})/);
   if (m) out.push(finding('metadata', 'Software / creator tool', where, `${m[1]} = ${m[2].trim()}`, { leaksStack: GEN_RE.some(([, re]) => re.test(m[2])) }));
+}
+
+/* China GB 45438-2025 implicit label: an "AIGC" JSON object (XMP namespace http://www.tc260.org.cn/ns/AIGC/1.0/,
+   PNG chunk "AIGC", EXIF UserComment, container tags), sometimes base64 ("QUlHQz" = "AIGC"). Field names vary
+   in vendor docs (ReserveCode1 / PropatorID), so keys are matched loosely. Label 1 = AI-generated, 2 = possibly, 3 = suspected. */
+const AIGC_LABEL = { 1: 'AI-generated', 2: 'possibly AI-generated', 3: 'suspected AI-generated' };
+function b64text(x) { try { const bin = atob(x.replace(/[^A-Za-z0-9+/=]/g, '')); let o = ''; for (let i = 0; i < bin.length; i++) o += bin[i]; return o; } catch { return ''; } }
+function aigcLabels(s, where, out) {
+  let text = s;
+  for (const m of s.matchAll(/QUlHQz[A-Za-z0-9+/=]{10,4000}/g)) text += '\n' + b64text(m[0]);
+  const seen = new Set();
+  for (const m of text.matchAll(/AIGC["']?\s*[:=>]?\s*["']?\s*(\{)/g)) {   /* AIGC={…}, "AIGC":{…}, AIGC="{…}" or <x:AIGC>{…} */
+    let depth = 0, end = -1; for (let i = m.index + m[0].length - 1; i < Math.min(text.length, m.index + 4000); i++) { const c = text[i]; if (c === '{') depth++; else if (c === '}' && --depth === 0) { end = i + 1; break; } }
+    if (end < 0) continue;
+    const raw = text.slice(m.index + m[0].length - 1, end).replace(/&quot;/g, '"');
+    let j = null; try { j = JSON.parse(raw); } catch { continue; }
+    if (j && j.AIGC && typeof j.AIGC === 'object') j = j.AIGC;
+    const get = (re) => { for (const k of Object.keys(j || {})) if (re.test(k)) return String(j[k]); return ''; };
+    const label = get(/^label$/i); if (!label && !get(/content\s*producer/i)) continue;
+    const key = label + get(/produce\s*id/i); if (seen.has(key)) continue; seen.add(key);
+    out.push(finding('provenance', 'China AIGC implicit label (GB 45438-2025)', where,
+      [`Label ${label}${AIGC_LABEL[label] ? ' = ' + AIGC_LABEL[label] : ''}`, get(/content\s*producer/i) && `producer ${get(/content\s*producer/i)}`, get(/produce\s*id/i) && `id ${get(/produce\s*id/i).slice(0, 40)}`,
+       get(/content\s*propagator/i) && `propagator ${get(/content\s*propagator/i)}`].filter(Boolean).join(' · '), { disclosure: true, leaksStack: !!get(/content\s*producer/i) }));
+  }
+  if (/www\.tc260\.org\.cn\/ns\/AIGC/.test(s) && !seen.size) out.push(finding('provenance', 'China AIGC implicit label (GB 45438-2025)', where, 'TC260 AIGC XMP namespace present', { disclosure: true }));
+}
+
+/* X.509 names in the COSE certificate chain: who signed the manifest (O= / CN=) */
+function certNames(b) {
+  const names = [];
+  for (const oid of [[0x55, 0x04, 0x0A], [0x55, 0x04, 0x03]]) {
+    let p = 0;
+    while ((p = indexOf(b, Uint8Array.of(0x06, 0x03, ...oid), p)) >= 0) {
+      const tag = b[p + 5], len = b[p + 6];
+      if ([0x0C, 0x13, 0x14, 0x16, 0x1E].includes(tag) && len > 1 && len < 120) { const v = latin1(b, p + 7, p + 7 + len).replace(/[^ -~]/g, ''); if (v && !names.includes(v)) names.push(v); }
+      p += 5;
+    }
+  }
+  return names;
 }
 
 function exifComment(d) {        /* EXIF UserComment with the UNICODE prefix is UTF-16 (A1111 writes prompts here) */
@@ -126,15 +175,24 @@ function scanC2PA(buf, where, out) {
   const labels = [...new Set(txt.match(C2PA_LABELS) || [])].slice(0, 12);
   const dst = DST_TERMS.find(t => txt.includes(t));
   const named = (s) => !!s && GEN_RE.some(([, re]) => re.test(s));
+  const signers = certNames(buf).filter(n => !/^(Root|Intermediate|CA)$/i.test(n)).slice(0, 4);
+  const sb = []; for (let i = txt.indexOf('c2pa.soft-binding'); i >= 0; i = txt.indexOf('c2pa.soft-binding', i + 1)) { const a = cbor('alg', i); if (a && !sb.includes(a)) sb.push(a); }
+  const desc = cbor('description', txt.indexOf('c2pa.created') >= 0 ? txt.indexOf('c2pa.created') : 0);
   out.push(finding('provenance', 'C2PA manifest store (Content Credentials, JUMBF)', where,
     [gen && `claim generator: ${gen[1].replace(/[^ -~]/g, '').trim()}`, agent && `softwareAgent: ${agent}`,
      sdk && `signed with c2pa-rs ${sdk[1]}`, labels.length && `assertions: ${labels.join(' ')}`,
-     dst && `digitalSourceType: ${dst}`].filter(Boolean).join(' · ') || 'manifest present',
+     dst && `digitalSourceType: ${dst}`, desc && /AI|generat/i.test(desc) && `action: ${desc}`, signers.length && `signed by: ${signers.join(' / ')}`].filter(Boolean).join(' · ') || 'manifest present',
     { disclosure: !!dst ? AI_DST.test(dst) : true, leaksStack: named(gen && gen[1]) || named(agent) }));
-  scanText(txt.replace(/[^\x20-\x7e\n]/g, ' '), where + ' (manifest text)', out);
+  if (dst && /Capture$/.test(dst)) out.push(finding('provenance', 'Camera capture provenance (C2PA)', where, `${dst}: says the picture was captured, not generated (forgeable on rooted phones; revocation is rarely checked)`));
+  for (const a of sb) { const r = SOFT_BINDINGS[a]; out.push(finding('watermark', `Declared ${r ? r[0] : 'soft binding'} (C2PA soft binding)`, where, `${a}${r ? ' — ' + r[1] : ' (not in the C2PA registry)'}; declared in the manifest, not decoded here`, { disclosure: true, survives: true })); }
+  if (signers.some(n => /Google|OpenAI|ElevenLabs|NVIDIA|Kakao/i.test(n))) out.push(finding('watermark', 'SynthID possible (cannot be checked locally)', where, `signed by ${signers.join(' / ')}: these makers also add SynthID, readable only at synthid.com or the maker's verify page; a missing result here proves nothing`));
+  scanText(txt.replace(/[^\x20-\x7e\n]/g, ' '), where + ' (manifest text)', out, true); /* digitalSourceType there is part of the C2PA finding */
 }
 
 // ---------- containers ----------
+const PNG_TOOLS = { parameters: 'A1111 / Forge', postprocessing: 'A1111 extras', prompt: 'ComfyUI', workflow: 'ComfyUI',
+  invokeai_metadata: 'InvokeAI', invokeai_workflow: 'InvokeAI', invokeai_graph: 'InvokeAI', 'sd-metadata': 'InvokeAI (legacy)', Dream: 'InvokeAI (legacy)',
+  fooocus_scheme: 'Fooocus', negative_prompt: 'Easy Diffusion', 'Negative Prompt': 'Easy Diffusion', AIGC: 'China AIGC label (GB 45438)' };
 async function png(b, out) {
   let o = 8;
   while (o + 8 <= b.length) {
@@ -147,7 +205,8 @@ async function png(b, out) {
         else if (t === 'zTXt') val = latin1(await inflate(d.subarray(k + 2)));
         else { const comp = d[k + 1]; let p = k + 3; p = d.indexOf(0, p) + 1; p = d.indexOf(0, p) + 1; val = comp ? utf8(await inflate(d.subarray(p))) : utf8(d, p); }
       } catch { val = ''; }
-      out.push(finding('metadata', `PNG ${t} chunk`, `PNG ${t} "${key}"`, clip(val), { leaksStack: ['parameters', 'prompt', 'workflow', 'Comment', 'Software', 'Source'].includes(key) }));
+      const tool = PNG_TOOLS[key] || (key === 'Software' && /NovelAI/.test(val) ? 'NovelAI' : key === 'Comment' && /^\s*\{/.test(val) ? (/fooocus/i.test(val) ? 'Fooocus' : 'NovelAI / Fooocus') : null);
+      out.push(finding('metadata', `PNG ${t} chunk${tool ? ' — ' + tool : ''}`, `PNG ${t} "${key}"`, clip(val), { leaksStack: !!tool || ['Comment', 'Software', 'Source'].includes(key) }));
       scanText(val, `PNG ${t} "${key}"`, out);
     } else if (t === 'caBX') scanC2PA(d, 'PNG caBX chunk', out);
     else if (t === 'eXIf') { out.push(finding('metadata', 'EXIF block', 'PNG eXIf chunk', `${n} bytes`)); scanText(latin1(d), 'PNG eXIf', out); }
@@ -208,9 +267,23 @@ function bmff(b, out, base = 0, end = b.length, depth = 0) {
 }
 
 const C2PA_TEXT = /\uFEFF(?:[\uFE00-\uFE0F]|\uDB40[\uDD00-\uDDEF]){8,}/g;   /* C2PA 2.3 C2PATextManifestWrapper */
+/* C2PA 2.4 Annex A.8: U+FEFF, then bytes as variation selectors (0x00–0x0F → U+FE00–FE0F, 0x10–0xFF → U+E0100–E01EF):
+   magic "C2PATXT\0", version 1, a big-endian u32 length, then the JUMBF manifest (wire format from dualeai/c2patxt) */
+function decodeTextWrapper(w) {
+  const bytes = []; for (const ch of [...w].slice(1)) { const c = ch.codePointAt(0); bytes.push(c <= 0xFE0F ? c - 0xFE00 : c - 0xE0100 + 16); }
+  const b = Uint8Array.from(bytes), magic = latin1(b, 0, 8);
+  if (magic !== 'C2PATXT\0') return null;
+  const len = ((b[9] << 24) >>> 0) + (b[10] << 16) + (b[11] << 8) + b[12];
+  return { version: b[8], length: len, jumbf: b.subarray(13, 13 + len) };
+}
 export function textFindings(s, where = 'text', out = []) {
-  for (const w of s.match(C2PA_TEXT) || []) out.push(finding('provenance', 'C2PA text manifest (variation-selector wrapper, C2PA 2.3)', where,
-    `${[...w].length - 1} selectors after U+FEFF: a signed provenance manifest, not stray characters`, { disclosure: true, survives: true }));
+  for (const w of s.match(C2PA_TEXT) || []) {
+    const d = decodeTextWrapper(w);
+    if (d) { const inner = []; scanC2PA(d.jumbf, where + ' (C2PA text wrapper)', inner);
+      out.push(finding('provenance', 'C2PA text manifest (C2PA 2.4 Annex A.8)', where, `header C2PATXT v${d.version}, ${d.length}-byte manifest${inner[0] ? ' · ' + inner[0].detail : ''}`, { disclosure: true, survives: true }));
+      out.push(...inner.slice(1)); }
+    else out.push(finding('text', 'Long variation-selector run after U+FEFF (no C2PA header)', where, `${[...w].length - 1} selectors: could carry hidden data`, { survives: true }));
+  }
   s = s.replace(C2PA_TEXT, '');
   const counts = new Map(); let prev = 0;
   for (const ch of s) {
@@ -226,8 +299,40 @@ export function textFindings(s, where = 'text', out = []) {
   return out;
 }
 
-export const MEDIA_EXT = /\.(png|jpe?g|webp|gif|avif|heic|heif|mp4|mov|m4v|m4a|mp3|wav|webm)$/i;
+export const MEDIA_EXT = /\.(png|jpe?g|webp|gif|avif|heic|heif|mp4|mov|m4v|m4a|mp3|wav|webm|pdf)$/i;
 const TEXT_EXT = /\.(txt|md|html?|json|csv|rtf|srt|vtt)$/i;
+
+/* PDF: Content Credentials for the PDF itself live in an embedded file of type application/c2pa (C2PA spec, PDF);
+   a manifest inside an embedded JPEG belongs to that picture, not the document. XMP and the Info dictionary
+   (Producer / Creator) can name the tool. */
+function pdf(b, out) {
+  const t = latin1(b);
+  const docManifest = /\/Subtype\s*\/application#2Fc2pa|application\/c2pa|\/AFRelationship\s*\/C2PA_Manifest/.test(t);
+  if (docManifest) { const i = indexOf(b, 'jumb'); scanC2PA(i >= 0 ? b.subarray(Math.max(0, i - 8)) : b, 'PDF embedded C2PA manifest (document)', out); }
+  let imgs = 0; const ranges = [];
+  for (let p = indexOf(b, Uint8Array.of(0xFF, 0xD8, 0xFF)); p >= 0 && imgs < 50; p = indexOf(b, Uint8Array.of(0xFF, 0xD8, 0xFF), p + 3)) {
+    const end = indexOf(b, 'endstream', p); ranges.push([p, end < 0 ? b.length : end]);
+    imgs++; const seg = b.subarray(p, Math.min(b.length, p + (1 << 20))), inner = [];
+    jpeg(seg, inner);
+    for (const f of inner) if (f.layer === 'provenance' || f.leaksStack || (f.term === 'IPTC Digital Source Type')) out.push({ ...f, where: `PDF embedded image ${imgs}: ${f.where}`, term: f.layer === 'provenance' ? f.term.replace('C2PA manifest store', 'C2PA manifest in an embedded image (not the PDF itself)') : f.term });
+  }
+  for (const m of t.matchAll(/<x:xmpmeta[\s\S]{0,20000}?<\/x:xmpmeta>/g)) { if (ranges.some(([a, z]) => m.index >= a && m.index < z)) continue; /* an embedded image's own XMP, counted above */ out.push(finding('metadata', 'XMP packet', 'PDF metadata stream', `${m[0].length} bytes`)); scanText(m[0], 'PDF XMP', out); }
+  for (const m of t.matchAll(/\/(Producer|Creator)\s*\(([^)]{1,200})\)/g)) { out.push(finding('metadata', 'Software / creator tool', `PDF Info /${m[1]}`, m[2], { leaksStack: GEN_RE.some(([, re]) => re.test(m[2])) })); }
+}
+
+/* Some formats keep metadata where the box readers don't look (AVIF/HEIC EXIF items in mdat, MKV tags, odd
+   chunks). A raw sweep looks ONLY for patterns that cannot occur by chance in compressed bytes — never bare names. */
+function strongSweep(b, kind, out) {
+  const span = b.length > (20 << 20) ? [latin1(b, 0, 16 << 20), latin1(b, b.length - (4 << 20))] : [latin1(b)];
+  const have = (re) => out.some(f => re.test(f.term));
+  for (const t of span) {
+    const where = `${kind} (raw sweep)`;
+    if (!have(/ComfyUI/) && /(?:^|[^A-Za-z])(?:prompt|workflow):\{"\d*"?/.test(t) && /"class_type"\s*:/.test(t)) out.push(finding('metadata', 'ComfyUI graph in EXIF (AVIF/WebP output)', where, 'prompt:/workflow: JSON with class_type nodes', { leaksStack: true }));
+    if (!have(/SwarmUI/) && /sui_image_params/.test(t)) out.push(finding('metadata', 'SwarmUI generation parameters', where, 'sui_image_params JSON', { leaksStack: true }));
+    if (!have(/AI label in EXIF Software/)) { const fl = t.match(/AI generated;(txt2img|img2img)(?:;[\w.-]+)?/); if (fl) out.push(finding('metadata', 'AI label in EXIF Software (FLUX reference code)', where, fl[0], { disclosure: true, leaksStack: true })); }
+    if (!have(/China AIGC/) && /AIGC|QUlHQz/.test(t)) aigcLabels(t, where, out);   /* only reports a label that parses as JSON */
+  }
+}
 
 export async function inspectBytes(u8, name = 'file', opts = {}) {
   const b = u8 instanceof Uint8Array ? u8 : new Uint8Array(u8), out = [];
@@ -236,9 +341,22 @@ export async function inspectBytes(u8, name = 'file', opts = {}) {
   else if (b[0] === 0xFF && b[1] === 0xD8) { kind = 'JPEG'; jpeg(b, out); }
   else if (latin1(b, 0, 4) === 'RIFF') { kind = latin1(b, 8, 12).trim(); riff(b, out); }
   else if (latin1(b, 4, 8) === 'ftyp') { kind = 'ISO BMFF (' + latin1(b, 8, 12).trim() + ')'; bmff(b, out); }
+  else if (latin1(b, 0, 5) === '%PDF-') { kind = 'PDF'; pdf(b, out); }
   else if (latin1(b, 0, 3) === 'ID3') { kind = 'MP3'; scanText(latin1(b, 0, Math.min(b.length, 1 << 16)), 'ID3 tag', out); }
-  else if (TEXT_EXT.test(name) || b.subarray(0, 4096).indexOf(0) < 0) { kind = 'text'; textFindings(utf8(b), 'text', out); }
+  else if (TEXT_EXT.test(name) || /\.svg$/i.test(name) || b.subarray(0, 4096).indexOf(0) < 0) {
+    const t = utf8(b); kind = /<svg[\s>]/i.test(t.slice(0, 4000)) ? 'SVG' : 'text';
+    if (kind === 'SVG') { for (const m of t.matchAll(/<c2pa:manifest[^>]*>([\s\S]*?)<\/c2pa:manifest>/gi)) { const bin = b64text(m[1]); scanC2PA(Uint8Array.from(bin, c => c.charCodeAt(0) & 255), 'SVG <c2pa:manifest>', out); }
+      scanText(t, 'SVG metadata', out); }
+    textFindings(t, 'text', out);
+  }
   if (kind !== 'text' && !out.some(f => f.layer === 'provenance') && (indexOf(b, 'c2pa.claim') >= 0 || indexOf(b, 'c2pa.actions') >= 0)) scanC2PA(b, `${kind} (raw scan)`, out);
+  if (kind !== 'text' && kind !== 'SVG') strongSweep(b, kind, out);
+  if (opts.pixels && /^(PNG|JPEG|WEBP)/.test(kind)) {
+    const { data, width, height } = opts.pixels;
+    for (const m of imwmDetect(data, width, height)) if (m.agreement >= 0.9) out.push(finding('watermark', `Invisible watermark consistent with the ${m.name}`, 'pixels (U channel, Haar LL, 4×4 blocks)', `${Math.round(m.agreement * 100)}% of ${m.bits} bits agree (chance ≈ 50%)`, { disclosure: true, leaksStack: true, survives: false }));
+    const st = await stealthDetect(data, width, height);
+    if (st) { out.push(finding('metadata', `Stealth metadata in pixel low bits (${st.magic})`, `pixels (${st.mode} LSB)`, clip(st.payload || 'payload unreadable'), { leaksStack: true })); if (st.payload) scanText(st.payload, `stealth ${st.mode} payload`, out); }
+  }
   if (opts.gray && /^(PNG|JPEG|WEBP)/.test(kind)) {
     const r = wmDetect(opts.gray);
     if (r.found) out.push(finding('watermark', 'Pixelbake invisible watermark (PBWM v1)', 'pixels', `${WM_LABEL[r.type] || r.type} · id hash ${r.idHash} · strength ${r.strength}`, { disclosure: true, survives: true }));
@@ -250,6 +368,71 @@ export async function inspectBytes(u8, name = 'file', opts = {}) {
 export function summarise(f) {
   return { disclosure: f.some(x => x.disclosure), leaksStack: f.some(x => x.leaksStack), privacy: f.some(x => x.privacy),
     generatorEvidence: f.some(x => x.leaksStack || /Generation parameters|ComfyUI|Generator/.test(x.term)) };
+}
+
+// ---------- Stable Diffusion / SDXL / FLUX invisible watermark (imwatermark dwtDct) ----------
+// A line-for-line port of ShieldMnt/invisible-watermark maxDct.py decode(): OpenCV BGR→YUV, only the U channel
+// (scales [0,36,36] with range(2)), Haar DWT LL band, 4×4 blocks; each block's largest non-DC |value| mod 36 > 18
+// is a 1; bits repeat block by block and are averaged. Keyless. Measured with the reference library: reads
+// untouched PNGs (93–100% on 2 of 3 photos), not JPEG q90 or resized copies — a miss proves nothing.
+export const IMWM_MARKS = [
+  { name: 'SDXL / diffusers reference watermark', bits: '101100111110110010010000011110111011000110011110' },
+  { name: 'FLUX.1 reference watermark', bits: '1010101111111010000111100111001111010100101110' },
+  { name: 'Stable Diffusion 1.x reference watermark', bits: Array.from('StableDiffusionV1', c => c.charCodeAt(0).toString(2).padStart(8, '0')).join('') },
+];
+function imwmBlocks(rgba, w, h) {
+  const W = (w >> 2) << 2, H = (h >> 2) << 2, cw = W >> 1, ch = H >> 1;
+  /* OpenCV's own 8-bit fixed-point BGR→YUV (coefficients × 2^14, round half up), so the U values match cv2 exactly */
+  const u = (x, y) => { const i = (y * w + x) * 4, r = rgba[i], g = rgba[i + 1], b = rgba[i + 2], Y = (r * 4899 + g * 9617 + b * 1868 + 8192) >> 14;
+    return Math.max(0, Math.min(255, ((b - Y) * 8061 + (128 << 14) + 8192) >> 14)); };
+  const ll = new Float64Array(cw * ch);
+  /* PyWavelets' Haar: filter √½ = 0.7071067811865476, rows (axis -2) first, then columns — in double precision, because
+     √½·√½ = 0.5000000000000001 and flat areas land exactly on the mod-36 boundary, where that last bit decides */
+  const hq = 0.7071067811865476;
+  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
+    const c0 = u(2 * x, 2 * y) * hq + u(2 * x, 2 * y + 1) * hq, c1 = u(2 * x + 1, 2 * y) * hq + u(2 * x + 1, 2 * y + 1) * hq;
+    ll[y * cw + x] = c0 * hq + c1 * hq;
+  }
+  const scores = [];
+  for (let by = 0; by < (ch >> 2); by++) for (let bx = 0; bx < (cw >> 2); bx++) {
+    let best = -1, val = 0;
+    for (let k = 1; k < 16; k++) { const v = ll[(by * 4 + (k >> 2)) * cw + bx * 4 + (k & 3)]; if (Math.abs(v) > best) { best = Math.abs(v); val = v; } }
+    scores.push((Math.abs(val) % 36) > 18 ? 1 : 0);
+  }
+  return scores;
+}
+export function imwmDetect(rgba, w, h) {
+  if (!rgba || w < 64 || h < 64) return [];
+  const sc = imwmBlocks(rgba, w, h), out = [];
+  for (const m of IMWM_MARKS) {
+    const n = m.bits.length, sum = new Float64Array(n), cnt = new Float64Array(n);
+    sc.forEach((v, i) => { sum[i % n] += v; cnt[i % n]++; });
+    let agree = 0; for (let i = 0; i < n; i++) agree += ((sum[i] / (cnt[i] || 1)) * 255 > 127 ? '1' : '0') === m.bits[i] ? 1 : 0;
+    out.push({ name: m.name, bits: n, agreement: agree / n });
+  }
+  return out;
+}
+
+// ---------- stealth pnginfo (NovelAI and the A1111 extension): metadata hidden in pixel low bits ----------
+// Column-major (x outer, y inner), alpha LSBs or r,g,b LSBs; 15-byte magic, 32-bit bit length, then the payload
+// (gzip for *comp). Order taken from ashen-sensored/sd_webui_stealth_pnginfo.
+export async function stealthDetect(rgba, w, h) {
+  if (!rgba || w * h < 160) return null;
+  const read = (mode, nbits, skip = 0) => { const bits = []; let k = 0;
+    for (let x = 0; x < w && bits.length < nbits; x++) for (let y = 0; y < h && bits.length < nbits; y++) { const i = (y * w + x) * 4;
+      if (mode === 'alpha') { if (k++ >= skip) bits.push(rgba[i + 3] & 1); } else for (let c = 0; c < 3 && bits.length < nbits; c++) if (k++ >= skip) bits.push(rgba[i + c] & 1); }
+    return bits; };
+  const bytes = (bits) => { const o = new Uint8Array(bits.length >> 3); for (let i = 0; i < o.length; i++) for (let j = 0; j < 8; j++) o[i] = (o[i] << 1) | bits[i * 8 + j]; return o; };
+  for (const mode of ['alpha', 'rgb']) {
+    const magic = latin1(bytes(read(mode, 120)));
+    if (!/^stealth_(png|rgb)(info|comp)$/.test(magic)) continue;
+    const len = parseInt(read(mode, 32, 120).join(''), 2);
+    let payload = '';
+    if (len > 0 && len < 8e6) { const data = bytes(read(mode, len, 152));
+      try { payload = /comp$/.test(magic) ? new TextDecoder().decode(new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer())) : new TextDecoder().decode(data); } catch { payload = ''; } }
+    return { magic, mode, payload };
+  }
+  return null;
 }
 
 // ---------- Pixelbake invisible watermark (PBWM v1) — same maths as Pixelbake src/provenance.js ----------
