@@ -47,7 +47,7 @@ test('whole-word matching: "Studio" is not "Udio", "Illuminate" is not "Luma"', 
 });
 
 test('copy: stack names counted, competitor-free copy is clean', () => {
-  assert.deepEqual(stackTerms('Runs FLUX.2 on Workers AI. Workers AI is fast.').map(t => t.term + t.count).sort(), ['FLUX.21', 'Workers AI2']);
+  assert.deepEqual(stackTerms('Runs FLUX.2 with Gemini. Gemini is fast.').map(t => t.term + t.count).sort(), ['FLUX.21', 'Gemini2']);
   assert.equal(stackTerms('Beautiful pictures for your shop, made in seconds.').length, 0);
 });
 
@@ -69,7 +69,7 @@ test('repo scan: shipped AI image with a prompt → AI-MEDIA-STACK high; unshipp
   fs.mkdirSync(path.join(dir, 'public')); fs.mkdirSync(path.join(dir, 'fixtures'));
   const img = png([chunk('tEXt', Buffer.from('parameters\0a cat\nSteps: 20, Seed: 7', 'latin1'))]);
   fs.writeFileSync(path.join(dir, 'public', 'hero.png'), img); fs.writeFileSync(path.join(dir, 'fixtures', 'x.png'), img);
-  fs.writeFileSync(path.join(dir, 'public', 'index.html'), '<p>Powered by Workers AI and FLUX.2</p>');
+  fs.writeFileSync(path.join(dir, 'public', 'index.html'), '<p>Powered by Stability AI and FLUX.2</p>');
   const r = await aiScanDir(dir, { watermark: false });
   const by = (id, where) => r.hits.find(h => h.id === id && h.where === where);
   assert.equal(by('AI-MEDIA-STACK', 'public/hero.png').conf, 'high');

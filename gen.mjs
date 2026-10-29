@@ -15,7 +15,10 @@ const p = (...a) => path.join(DIR, ...a);
 // The owner's own extra terms are read from this machine only, never from the repo.
 const redact = makeRedactor((() => { try { return JSON.parse(fs.readFileSync(path.join(os.homedir(), ".bugledger-stack.json"), "utf8")).terms || []; } catch { return []; } })());
 const PUBLIC_DIR = p("public") + path.sep, writeRaw = fs.writeFileSync;
-fs.writeFileSync = (f, d, ...rest) => writeRaw(f, typeof d === "string" && String(f).startsWith(PUBLIC_DIR) ? redact(d) : d, ...rest);
+/* harvested entries carry a dedupe key "id:the-whole-sentence-squashed-together"; word redaction can't see inside it,
+   and no page reads the sentence part, so the public copy keeps only the id (the harvester reads the repo copy) */
+const publicText = (d) => redact(d.replace(/("key"\s*:\s*")([0-9a-f]{6,12}):[^"]*"/g, '$1$2"'));
+fs.writeFileSync = (f, d, ...rest) => writeRaw(f, typeof d === "string" && String(f).startsWith(PUBLIC_DIR) ? publicText(d) : d, ...rest);
 const GEN = "2026-08-10";
 
 const CATLABEL = { crash:"crash","data-loss":"data-loss",logic:"logic",ui:"ui",security:"security",

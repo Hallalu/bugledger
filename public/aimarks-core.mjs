@@ -25,14 +25,14 @@ export const GENERATORS = ['OpenAI', 'DALL-E', 'DALL·E', 'ChatGPT', 'GPT-4o', '
   'Nano Banana', 'SynthID', 'Firefly', 'Adobe Firefly', 'Leonardo', 'Ideogram', 'Runway', 'Pika', 'Kling',
   'Luma', 'Hailuo', 'MiniMax', 'Seedance', 'Seedream', 'ByteDance', 'Grok', 'xAI', 'Aurora', 'Meta AI',
   'Imagine with Meta', 'Bing Image Creator', 'Microsoft Designer', 'Copilot', 'Canva', 'ElevenLabs',
-  'Suno', 'Udio', 'Workers AI', 'Cloudflare', '@cf/', 'Replicate', 'fal.ai', 'Together AI',
+  'Suno', 'Udio', 'Replicate', 'fal.ai', 'Together AI',
   'Recraft', 'HiDream', 'Qwen', 'Wan2', 'Hunyuan', 'Phoenix'];
 
 /* Public-copy terms: well-known AI providers, models and AI hosting a visitor should not be told about (narrower
    than GENERATORS, so ordinary words like "Forge", "Aurora" or "Canva" in marketing copy don't flood the report).
    Deliberately generic: this file is public. A project's own private list is passed in as `extra` (aiscan.mjs reads
    it from ~/.bugledger-stack.json on the machine, never from the repo). */
-export const STACK_TERMS = ['Workers AI', '@cf/', 'AI Gateway', 'Black Forest Labs', 'FLUX.1', 'FLUX.2', 'flux-1', 'flux-2',
+export const STACK_TERMS = ['Black Forest Labs', 'FLUX.1', 'FLUX.2', 'flux-1', 'flux-2',
   'Stability AI', 'Stable Diffusion', 'SDXL', 'Leonardo.Ai', 'ByteDance', 'Seedream', 'MiniMax', 'Hailuo', 'Kling', 'Runway',
   'ElevenLabs', 'OpenAI', 'gpt-image', 'GPT-4', 'GPT-5', 'Anthropic', 'Claude Opus', 'Claude Sonnet', 'Claude Haiku',
   'Llama', 'Gemini', 'Qwen', 'Mistral', 'Grok', 'xAI', 'Replicate', 'fal.ai', 'Together AI', 'Midjourney'];
