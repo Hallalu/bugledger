@@ -9034,5 +9034,65 @@
     "status": "unverified",
     "session": "c8c7222e",
     "found": "2026-10-29"
+  },
+  {
+    "key": "1484393e:somyrecommendationisleavethemtheywerealmostcertainlystale",
+    "app": "Hallalu CRM",
+    "title": "My recommendation is leave them — they were almost certainly stale.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "So my recommendation is **leave them** — they were almost certainly stale.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1484393e",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "15f76615:correctiontomylastlinethatfixproposalwasntcreatedyoureonremo",
+    "app": "Hallalu CRM",
+    "title": "Correction to my last line: that fix proposal wasn't created (you're on Remote Control,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Correction to my last line: that fix proposal **wasn't created** (you're on Remote Control, where proposal cards don't appear).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "15f76615",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "15f76615:oneofmynamemappingswaswrongyourprojectisjustcalledhopefilsoi",
+    "app": "Hallalu CRM",
+    "title": "One of my name mappings was wrong: your project is just called \"Hopefil\", so I fixed it…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "One of my name mappings was wrong: your project is just called \"Hopefil\", so I fixed it before the real run.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "15f76615",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "67a5388a:loggingthebugandtheimprovedfeature",
+    "app": "Hallalu CRM",
+    "title": "Logging the bug and the improved feature:",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Logging the bug and the improved feature:",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "67a5388a",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "8cd9c5d3:loggingthebugwhileitruns",
+    "app": "Hallalu CRM",
+    "title": "Logging the bug while it runs.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Logging the bug while it runs.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8cd9c5d3",
+    "found": "2026-10-29"
   }
 ]

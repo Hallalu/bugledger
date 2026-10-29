@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-753 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+758 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (501)
+## Hallalu CRM (506)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -101,6 +101,7 @@
 - [ ] `medium` `logic` (2026-10-27, #ab57f2c6) — - Checks on the live link: all 7 routes return the right status (/guide redirects to…
 - [ ] `medium` `logic` (2026-10-29, #c8c7222e) — Yesterday's "still open" verdict was wrong, and I've corrected it in Aprizely.
 - [ ] `medium` `logic` (2026-10-29, #7dda19ea) — Testing a wrong password, then the right one.
+- [ ] `medium` `logic` (2026-10-29, #15f76615) — One of my name mappings was wrong: your project is just called "Hopefil", so I fixed it…
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Assistant (Ava) on mobile confirmed real bug Root cause found: the Ava hero (.ava-stage…
 - [ ] `low` `other` (2026-08-10, #215ee275) — That's exactly why it doesn't match the call.
 - [ ] `low` `ui` (2026-08-10, #215ee275) — Mobile Ava fix + dark-mode contrast sweep (fixes the "invisible on mobile" bug — and…
@@ -505,6 +506,10 @@
 - [ ] `low` `other` (2026-10-29, #c8c7222e) — Correction: the fix isn't on a branch yet.
 - [ ] `low` `other` (2026-10-29, #c4a44205) — Couldn't verify this from code.
 - [ ] `low` `other` (2026-10-29, #c8c7222e) — Two remaining false alarms both came from the steam question. It failed your good mug…
+- [ ] `low` `other` (2026-10-29, #1484393e) — My recommendation is leave them — they were almost certainly stale.
+- [ ] `low` `other` (2026-10-29, #15f76615) — Correction to my last line: that fix proposal wasn't created (you're on Remote Control,…
+- [ ] `low` `other` (2026-10-29, #67a5388a) — Logging the bug and the improved feature:
+- [ ] `low` `other` (2026-10-29, #8cd9c5d3) — Logging the bug while it runs.
 
 ## Finished. (98)
 
