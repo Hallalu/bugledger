@@ -9094,5 +9094,17 @@
     "status": "unverified",
     "session": "8cd9c5d3",
     "found": "2026-10-29"
+  },
+  {
+    "key": "7dda19ea:thefournewfeaturesarenowliveonhttpskindlycoconvoworkersdevcu",
+    "app": "Hallalu CRM",
+    "title": "Four new features are now live on https://kindly.coconvo.workers.dev: - Cut by…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "The four new features are now live on https://kindly.coconvo.workers.dev: - **Cut by transcript:** tick transcript lines to cut them, and fix any wrong words.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-29"
   }
 ]
