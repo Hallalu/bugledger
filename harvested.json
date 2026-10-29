@@ -8830,5 +8830,77 @@
     "status": "unverified",
     "session": "c8c7222e",
     "found": "2026-10-28"
+  },
+  {
+    "key": "3d18c147:buyersfilesarealwaysblankandthereportlabelsthattrackerimagea",
+    "app": "Listing Lab Pro",
+    "title": "Buyers' files are always blank, and the report labels that tracker image as an example.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Buyers' files are always blank, and the report labels that tracker image as an example.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3d18c147",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "3d18c147:afirstrenderoftheheroandipadphotoslosttheirlayoutifixeditand",
+    "app": "Listing Lab Pro",
+    "title": "A first render of the hero and iPad photos lost their layout; I fixed it and confirmed…",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "A first render of the hero and iPad photos lost their layout; I fixed it and confirmed the Birth Flower photos didn't change.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3d18c147",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "3d18c147:somecolumnheadingsdidntlineupwiththeirvalues",
+    "app": "Listing Lab Pro",
+    "title": "- Some column headings didn't line up with their values.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- Some column headings didn't line up with their values.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3d18c147",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "c8c7222e:fullfilldidntneedafixyoucanalreadygetinwithoutahiddencode",
+    "app": "Hallalu CRM",
+    "title": "Fullfill didn't need a fix: you can already get in without a hidden code.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fullfill didn't need a fix: you can already get in without a hidden code.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8c7222e",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "c8c7222e:yesterdaysstillopenverdictwaswrongandivecorrecteditinaprizel",
+    "app": "Hallalu CRM",
+    "title": "Yesterday's \"still open\" verdict was wrong, and I've corrected it in Aprizely.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Yesterday's \"still open\" verdict was wrong, and I've corrected it in Aprizely.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8c7222e",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "c8c7222e:ididntchangeanythingthisturn",
+    "app": "Hallalu CRM",
+    "title": "Didn't change anything this turn.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I didn't change anything this turn.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8c7222e",
+    "found": "2026-10-29"
   }
 ]
