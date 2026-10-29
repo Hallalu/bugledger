@@ -8998,5 +8998,41 @@
     "status": "unverified",
     "session": "c8c7222e",
     "found": "2026-10-29"
+  },
+  {
+    "key": "7dda19ea:testingawrongpasswordthentherightone",
+    "app": "Hallalu CRM",
+    "title": "Testing a wrong password, then the right one.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Testing a wrong password, then the right one.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "c4a44205:icouldntverifythisfromcode",
+    "app": "Hallalu CRM",
+    "title": "Couldn't verify this from code.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I couldn't verify this from code.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c4a44205",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "c8c7222e:thetworemainingfalsealarmsbothcamefromthesteamquestionitfail",
+    "app": "Hallalu CRM",
+    "title": "Two remaining false alarms both came from the steam question. It failed your good mug…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**The two remaining false alarms both came from the steam question.** It failed your good mug for a \"column-like steam plume\" and the good jerk plate for steam rising behind the sauce bowls, but visi…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8c7222e",
+    "found": "2026-10-29"
   }
 ]
