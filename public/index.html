@@ -203,6 +203,37 @@
     details.app[open] ul.bugs{display:block}
     body{background:#fff}
   }
+  /* ---- pricing + sign-up ---- */
+  #pricing{margin:4px 0 24px;scroll-margin-top:16px}
+  #pricing h2{font-size:21px;letter-spacing:-.015em;margin:0 0 4px}
+  #pricing .lead{color:var(--muted);margin:0 0 16px;max-width:70ch}
+  .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .plan{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:10px}
+  .plan.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+  .plan .pn{font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px}
+  .plan .pill{font-size:12.5px;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:99px;padding:2px 9px}
+  .plan .price{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .plan .price small{font-size:13.5px;font-weight:600;color:var(--muted);letter-spacing:0}
+  .plan ul{margin:0;padding:0 0 0 18px;display:grid;gap:5px;color:var(--ink);font-size:14.5px}
+  .plan .note{color:var(--muted);font-size:13.5px;margin:0}
+  .plan .btn{margin-top:auto;justify-content:center;font-weight:700}
+  .compare{color:var(--muted);font-size:13.5px;margin:12px 0 0}
+  .signup{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;margin-top:14px;scroll-margin-top:16px}
+  .signup h3{margin:0 0 4px;font-size:17px}
+  .signup form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px;align-items:end;margin-top:12px}
+  .signup label{display:grid;gap:5px;font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .signup input,.signup select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;text-transform:none;letter-spacing:normal;font-weight:400}
+  .signup input:focus,.signup select:focus{border-color:var(--accent)}
+  .signup .btn{justify-content:center;font-weight:700;padding:10px 14px}
+  .signup .fine{color:var(--muted);font-size:13.5px;margin:10px 0 0}
+  .signup .msg{font-size:14px;font-weight:600;margin:10px 0 0}.signup .msg.err{color:#e5484d}
+  .keybox{display:none;margin-top:14px;border:1px solid var(--accent2);border-radius:12px;padding:14px;background:color-mix(in srgb,var(--accent2) 8%,var(--panel))}
+  .keybox.show{display:block}
+  .keybox .kh{font-weight:800;margin:0 0 6px}
+  .keybox .krow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .keybox code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;word-break:break-all;flex:1;min-width:0}
+  .keybox p{margin:8px 0 0;color:var(--muted);font-size:14px}
+  @media print{#pricing{display:none}}
   @media (pointer:coarse){input,select,textarea{font-size:16px}}   /* iOS: no focus zoom */
 </style>
 </head>
@@ -212,11 +243,72 @@
     <div class="title">
       <span class="dot"></span>
       <h1>Bug Ledger</h1>
-      <nav class="topnav"><a href="/sanitize">🧹 Sanitizer</a><a href="/aiscan">🔎 AI footprint</a><a href="/timeline">🕘 Activity</a><a href="/live">● Live</a></nav>
+      <nav class="topnav"><a href="#pricing">Pricing</a><a href="/sanitize">🧹 Sanitizer</a><a href="/aiscan">🔎 AI footprint</a><a href="/timeline">🕘 Activity</a><a href="/live">● Live</a></nav>
     </div>
     <p class="sub">Every bug fixed across the portfolio — mined from the full conversation history and organized into one comprehensive checklist. Tick items as you re-verify them; progress is saved in your browser.</p>
     <div class="kpis" id="kpis"></div>
   </header>
+
+  <section id="pricing" aria-labelledby="pricing-h">
+    <h2 id="pricing-h">Plans</h2>
+    <p class="lead">Start free with the full public catalogue and tools. Team and Business add a private workspace for your own findings. You are never charged until your private workspace is switched on, and we email you before that happens.</p>
+    <div class="plans">
+      <div class="plan" data-plan="free">
+        <div class="pn">Free</div>
+        <div class="price">$0 <small>no card needed</small></div>
+        <ul>
+          <li>Search the full catalogue of bugs, security items and optimisers</li>
+          <li>Run the scanner on your own repository</li>
+          <li>Sanitizer and AI footprint check</li>
+          <li>Your own workspace key</li>
+        </ul>
+        <button class="btn" type="button" data-choose="free">Create a free account</button>
+      </div>
+      <div class="plan" data-plan="team">
+        <div class="pn">Team <span class="pill">Early access</span></div>
+        <div class="price">$12 <small>per developer a month</small></div>
+        <ul>
+          <li>Everything in Free</li>
+          <li>A private workspace for your team's findings</li>
+          <li>Your own live boards and scan stories</li>
+          <li>Check-log history for every project</li>
+        </ul>
+        <p class="note">No charge until your workspace opens.</p>
+        <button class="btn solid" type="button" data-choose="team">Join Team early access</button>
+      </div>
+      <div class="plan" data-plan="business">
+        <div class="pn">Business <span class="pill">Early access</span></div>
+        <div class="price">$29 <small>per developer a month</small></div>
+        <ul>
+          <li>Everything in Team</li>
+          <li>Recurrence view across all your projects</li>
+          <li>Security sweep reports you can share</li>
+          <li>Priority email support and invoice billing</li>
+        </ul>
+        <p class="note">No charge until your workspace opens.</p>
+        <button class="btn" type="button" data-choose="business">Join Business early access</button>
+      </div>
+    </div>
+    <p class="compare">For comparison, automated code review tools typically charge $24 to $72 per developer a month.</p>
+
+    <div class="signup" id="signup">
+      <h3>Create your account</h3>
+      <p class="fine" style="margin:0">Takes ten seconds. No card needed.</p>
+      <form id="signupForm" novalidate>
+        <label>Your name or team<input name="name" required maxlength="80" autocomplete="organization" placeholder="Acme engineering"></label>
+        <label>Work email<input name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@company.com"></label>
+        <label>Plan<select name="plan"><option value="free">Free</option><option value="team">Team, early access</option><option value="business">Business, early access</option></select></label>
+        <button class="btn solid" type="submit">Create account</button>
+      </form>
+      <p class="msg" id="signupMsg" role="status" aria-live="polite"></p>
+      <div class="keybox" id="keybox">
+        <p class="kh">Your account is ready.</p>
+        <div class="krow"><code id="keyval"></code><button class="btn" type="button" id="keycopy">Copy key</button></div>
+        <p>This is your workspace key. Save it now, because we only show it once and cannot recover it. The free tools on this page work straight away. We will contact you at your email when your private workspace opens.</p>
+      </div>
+      <p class="fine">We use your email only to contact you about your account. We do not sell it or pass it to anyone else.</p>
+    </div>
+  </section>
 
   <div class="progress">
     <div class="row"><strong>Re-verification progress</strong><small id="pct">0%</small></div>
@@ -257,6 +349,40 @@
 
 <div id="kpimodal" onclick="if(event.target===this)this.classList.remove('show')"><div class="km-card"></div></div>
 <div id="shotlb" onclick="if(event.target===this)window.BL_closeShot&&window.BL_closeShot()"><button class="lbx" aria-label="Close">×</button><button class="lbnav lbprev" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lbnav lbnext" aria-label="Next">›</button></div>
+<script>
+(function(){
+  var form=document.getElementById('signupForm'); if(!form) return;
+  var msg=document.getElementById('signupMsg'), box=document.getElementById('keybox');
+  function pick(plan){
+    form.plan.value=plan;
+    document.querySelectorAll('.plan').forEach(function(c){c.classList.toggle('pick',c.dataset.plan===plan);});
+  }
+  document.querySelectorAll('[data-choose]').forEach(function(b){
+    b.addEventListener('click',function(){pick(b.dataset.choose);document.getElementById('signup').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){form.name.focus({preventScroll:true});},350);});
+  });
+  form.plan.addEventListener('change',function(){pick(form.plan.value);});
+  form.addEventListener('submit',function(e){
+    e.preventDefault(); msg.className='msg'; msg.textContent='';
+    var name=form.name.value.trim(), email=form.email.value.trim();
+    if(!name){msg.className='msg err';msg.textContent='Please enter your name or team.';form.name.focus();return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.className='msg err';msg.textContent='Please enter a valid email address.';form.email.focus();return;}
+    var btn=form.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Creating…';
+    fetch('/api/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name,email:email,plan:form.plan.value})})
+      .then(function(r){return r.json().catch(function(){return {ok:false,error:'Something went wrong. Please try again.'};});})
+      .then(function(d){
+        if(!d.ok){msg.className='msg err';msg.textContent=d.error||'Something went wrong. Please try again.';return;}
+        document.getElementById('keyval').textContent=d.key; box.classList.add('show'); form.reset(); pick(d.plan);
+        form.style.display='none';
+      })
+      .catch(function(){msg.className='msg err';msg.textContent='Could not reach the server. Please try again.';})
+      .finally(function(){btn.disabled=false;btn.textContent='Create account';});
+  });
+  document.getElementById('keycopy').addEventListener('click',function(){
+    var k=document.getElementById('keyval').textContent, b=this;
+    (navigator.clipboard?navigator.clipboard.writeText(k):Promise.reject()).then(function(){b.textContent='Copied';},function(){b.textContent='Select and copy';});
+  });
+})();
+</script>
 <script>document.addEventListener('keydown',function(e){if(e.key==='Escape'){var m=document.getElementById('kpimodal');if(m)m.classList.remove('show');}});</script>
 <script src="data-sec.js"></script>
 <script src="data-opt.js"></script>

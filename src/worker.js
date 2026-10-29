@@ -101,6 +101,25 @@ async function catalog(env, request) {
   } catch { return { apps: {} }; }
 }
 
+// ---- accounts: a front-page sign-up creates a workspace with its own write key ----
+// Keys look like blk_<40 hex>; only the SHA-256 is stored, so a key is shown exactly once.
+// Writes stay owner-only (LEDGER_WRITE_TOKEN): every write lands in the shared public ledger that
+// agents read, so a workspace key unlocks nothing until private workspaces exist. Sign-ups are
+// capped per hour so the form can't be used to flood the accounts table.
+const KEY_RE = /^blk_[a-f0-9]{40}$/;
+const PLANS = ["free", "team", "business"];
+const SIGNUPS_PER_HOUR = 60;
+async function sha256hex(s) {
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function account(request, env) {
+  const key = request.headers.get("x-ledger-key") || "";
+  if (!KEY_RE.test(key) || !env.DB) return null;
+  try { return await env.DB.prepare("SELECT id, name, plan, ts FROM accounts WHERE key_hash = ?").bind(await sha256hex(key)).first(); }
+  catch { return null; }
+}
+
 export default {
   /* public reads go out with the owner's confidential stack names replaced by categories (src/redact.mjs) */
   async fetch(request, env) { return redactPublic(request, env, await handle(request, env)); },
@@ -157,6 +176,39 @@ async function handle(request, env) {
         if (!url) return json({ ok: false, error: "no valid image (send an image/* body or JSON {dataUrl})" }, 400);
         return json({ ok: true, url, view: "https://bugledger.coconvo.workers.dev" + url });
       } catch (e) { return writeErr(e); }
+    }
+
+
+    // ---- POST /api/signup : create a workspace → { key } (shown once; only its hash is kept) ----
+    if (pathname === "/api/signup" && request.method === "POST") {
+      let body;
+      try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
+      const email = str(body && body.email, 120).trim().toLowerCase();
+      const name = cleanStr(body && body.name, 80).trim();
+      const plan = PLANS.includes(body && body.plan) ? body.plan : "free";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ ok: false, error: "a valid email is required" }, 400);
+      if (!name) return json({ ok: false, error: "a name is required" }, 400);
+      if (!env.DB) return json({ ok: false, error: "sign-up is not available right now" }, 503);
+      try {
+        const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM accounts WHERE ts > ?").bind(Date.now() - 3600_000).first();
+        if (r && r.n >= SIGNUPS_PER_HOUR) return json({ ok: false, error: "too many sign-ups right now — please try again in an hour" }, 429);
+      } catch (e) { return writeErr(e); }
+      const key = "blk_" + [...crypto.getRandomValues(new Uint8Array(20))].map((b) => b.toString(16).padStart(2, "0")).join("");
+      const id = crypto.randomUUID(), ts = Date.now();
+      try {
+        await env.DB.prepare("INSERT INTO accounts (id, ts, email, name, plan, key_hash, key_prefix) VALUES (?, ?, ?, ?, ?, ?, ?)")
+          .bind(id, ts, email, name, plan, await sha256hex(key), key.slice(0, 10)).run();
+      } catch (e) {
+        if (/UNIQUE/i.test(String(e))) return json({ ok: false, error: "that email already has a workspace — use the key you were given at sign-up" }, 409);
+        return writeErr(e);
+      }
+      return json({ ok: true, id, name, plan, key });
+    }
+    // ---- GET /api/whoami : check a workspace key → { plan, name } ----
+    if (pathname === "/api/whoami" && request.method === "GET") {
+      const a = await account(request, env);
+      if (!a) return json({ ok: false, error: "unknown key" }, 401);
+      return json({ ok: true, name: a.name, plan: a.plan, since: a.ts });
     }
 
     // ---- /admin : the recurrence admin (static page; the API it calls is token-gated) ----
