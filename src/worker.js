@@ -7,6 +7,7 @@
 // Unicode first, so the ledger itself never stores an invisible payload. The "safe" preset
 // keeps emoji and multilingual text intact.
 import Sanitize from "../public/sanitize.js";
+import { redactPublic } from "./redact.mjs";
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -101,7 +102,11 @@ async function catalog(env, request) {
 }
 
 export default {
-  async fetch(request, env) {
+  /* public reads go out with the owner's confidential stack names replaced by categories (src/redact.mjs) */
+  async fetch(request, env) { return redactPublic(request, env, await handle(request, env)); },
+};
+
+async function handle(request, env) {
     const url = new URL(request.url);
     const { pathname } = url;
 
@@ -566,8 +571,7 @@ export default {
 
     // everything else → static assets
     return env.ASSETS.fetch(request);
-  },
-};
+}
 
 function safeParse(s, dflt) { try { return JSON.parse(s); } catch { return dflt; } }
 

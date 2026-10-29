@@ -63,7 +63,7 @@ because the ciphertext is publicly retrievable *and* the password behind it is o
   per-account *retrieval secret* to GET the blob — a random token generated at signup, printed in the
   recovery kit, and mixed into the id (e.g. `id = SHA-256(handle + ":" + retrievalToken)`), so
   possessing only the handle is not enough. New devices already need the recovery kit, so this fits.
-- **Add a server-side pepper** to the KDF or to KV access, so the offline ciphertext alone cannot be
+- **Add a server-side pepper** to the KDF or to [key-value store] access, so the offline ciphertext alone cannot be
   attacked. (This trades a little of the zero-knowledge posture for real confidentiality.)
 - **Rate-limit `/api/backup` GET per id/IP** so account-existence probing and repeated pulls are slow.
 - Increase PIN entropy (allow an optional passphrase) — a 6-digit PIN cannot protect a downloadable
@@ -129,7 +129,7 @@ auto-firing, unauthenticated stored XSS distributable by URL. `href` injection a
 `"` (`core.js:176`) — port that behavior. Consider server-side schema-validating `/api/study` payloads
 rather than storing arbitrary JSON.
 
-### H3 — Unauthenticated, unthrottled access to billable compute (Browser Rendering + Workers AI + Google Translate)
+### H3 — Unauthenticated, unthrottled access to billable compute (Browser Rendering + [AI platform] + Google Translate)
 **Files:** `listinglab/worker.js:553-561` (`/api/open`), `:445-460` (`browserOpen`, "each browser
 session is billable"), `:563-569` + `:78-197` (`/api/analyze`, ~5+ LLM generations per call);
 `webapp/worker.js:6-22` (`/api/translate`, uses the owner's Google key), `:23-49` (`/api/vision`).
@@ -142,16 +142,16 @@ exists in either worker).
   paid key*. It accepts up to 128 texts × 500 chars per call (`worker.js:11`). An attacker scripts
   this endpoint to run up the owner's Google Cloud bill / exhaust quota. This is the classic "open
   proxy someone could bill you for."
-- **`/api/open`** launches Cloudflare Browser Rendering for up to 12 URLs per request
+- **`/api/open`** launches [host] Browser Rendering for up to 12 URLs per request
   (`listinglab:465`, `:451-455`) — the code itself notes each session is billable. Unlimited
   unauthenticated calls = direct financial DoS.
 - **`/api/analyze`** fans out to ~5+ Workers-AI generations (per-listing recipes + patterns + gaps +
-  description + image brief, `listinglab:83-173`), up to 1400 tokens each — metered "neurons" burned
+  description + image brief, `listinglab:83-173`), up to 1400 tokens each — metered "[compute units]" burned
   per anonymous request.
 - **`/api/vision`** runs a 70B model per call.
 
 **Fix:** put these behind the same unlock/session token the storefront already mints, or at minimum a
-per-IP rate limit (Cloudflare Rate Limiting rules or a KV/DO counter) and a Turnstile challenge on the
+per-IP rate limit ([host] Rate Limiting rules or a [key-value store]/DO counter) and a Turnstile challenge on the
 public UI. Cap total AI calls per request and per client per hour.
 
 ---
@@ -173,7 +173,7 @@ public UI. Cap total AI calls per request and per client per hour.
   the response body is returned to the caller (`:610`).
 
 Reachability of cloud-metadata endpoints (`169.254.169.254`) and loopback is likely blocked by the
-Cloudflare Workers / Browser-Rendering network sandbox — I did not confirm it is reachable and I'm not
+[host] Workers / Browser-Rendering network sandbox — I did not confirm it is reachable and I'm not
 claiming a metadata read. But the **open-proxy behavior is definitely present**: both endpoints will
 fetch/render arbitrary third-party hosts and hand the content back, laundering the request through your
 origin and your bill.
@@ -204,15 +204,15 @@ in practice because its passphrase is ~85 bits (C1 note). The auth path's real p
 PIN (C1), which more iterations cannot rescue. Raise to ≥600k as defense-in-depth, but treat C1's
 retrieval-secret/pepper as the actual fix.
 
-### M4 — Two apps share one KV namespace
-**Files:** `webapp/wrangler.jsonc` and `listinglab/wrangler.jsonc` both bind KV id
+### M4 — Two apps share one [key-value store] namespace
+**Files:** `webapp/[deploy tool].jsonc` and `listinglab/[deploy tool].jsonc` both bind [key-value store] id
 `317711894b0341c2af9e64e837efc82b`.
 
 The budget worker stores user vault backups (`b:`), the revocation list (`revoked:`) and Stripe session
 codes (`session:`) in the same namespace the listing-lab worker uses for studies (`lab:`). Prefixes
 isolate them today, and I confirmed listing-lab's study GET only reads `lab:<32-hex>` so it cannot
 reach `b:` vault blobs. But a future key-handling bug in *either* worker now has the other app's data in
-blast radius, including users' encrypted vaults. **Fix:** give Listing Lab its own KV namespace.
+blast radius, including users' encrypted vaults. **Fix:** give Listing Lab its own [key-value store] namespace.
 
 ---
 
@@ -296,8 +296,8 @@ or fold it in.
   Unlock-code verification uses constant-time `ctEqual` on the HMAC tag (`worker.js:265`).
 - **Secrets.** No committed keys/tokens/passwords anywhere in the tree or recent git history. Every
   secret is an `env.*` binding (`GOOGLE_TRANSLATE_API_KEY`, `ETSY_API_KEY`, `STRIPE_SECRET_KEY`,
-  `STRIPE_WEBHOOK_SECRET`, `UNLOCK_SECRET`, `ADMIN_TOKEN`), and the `wrangler.jsonc` files contain only
-  a public KV namespace id and bindings. No `.env`/`.dev.vars` files exist. No secret is written to
+  `STRIPE_WEBHOOK_SECRET`, `UNLOCK_SECRET`, `ADMIN_TOKEN`), and the `[deploy tool].jsonc` files contain only
+  a public [key-value store] namespace id and bindings. No `.env`/`.dev.vars` files exist. No secret is written to
   `console.*`.
 - **No secret logging.** The only places a secret is rendered are local and intentional: the TOTP setup
   key shown instead of a QR (`core.js:1036-1039`, explicitly to avoid sending the secret to a QR

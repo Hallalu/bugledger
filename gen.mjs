@@ -4,9 +4,18 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import os from "node:os";
+import { makeRedactor } from "./src/redact.mjs";
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const p = (...a) => path.join(DIR, ...a);
+
+// Everything written into public/ is what visitors read: the owner's AI models, providers and infrastructure
+// become categories there (src/redact.mjs). The repo copies (BUGS.md, bugs.json…) keep the full text.
+// The owner's own extra terms are read from this machine only, never from the repo.
+const redact = makeRedactor((() => { try { return JSON.parse(fs.readFileSync(path.join(os.homedir(), ".bugledger-stack.json"), "utf8")).terms || []; } catch { return []; } })());
+const PUBLIC_DIR = p("public") + path.sep, writeRaw = fs.writeFileSync;
+fs.writeFileSync = (f, d, ...rest) => writeRaw(f, typeof d === "string" && String(f).startsWith(PUBLIC_DIR) ? redact(d) : d, ...rest);
 const GEN = "2026-08-10";
 
 const CATLABEL = { crash:"crash","data-loss":"data-loss",logic:"logic",ui:"ui",security:"security",
@@ -313,6 +322,8 @@ Agent instructions: fetch /AGENT.md and follow the protocol. Report back with PO
 - [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, Agent-submitted, and Check-log panels
 `;
 fs.writeFileSync(p("public","llms.txt"), llms);
+/* the security audit is hand-kept at the repo root; visitors get the redacted copy */
+try { fs.writeFileSync(p("public","SECURITY-AUDIT.md"), fs.readFileSync(p("SECURITY-AUDIT.md"),"utf8")); } catch {}
 
 // AGENT.md — the protocol an AI coding agent follows
 const appListMd = appOrder.map(a => `\`${a}\` (${count[a]})`).join(" · ");

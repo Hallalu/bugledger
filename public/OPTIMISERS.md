@@ -88,10 +88,10 @@
   Places the subject at centre and auto-orbits people onto rings by closeness, with rings fading outward, even spacing per ring, staggered spokes, and a legend
   <br>*Why:* Communicates relationship closeness at a glance far better than a flat grid
   <br>*How:* Map each role to a ring radius, distribute members evenly with a per-ring angular offset so nobody stacks, dim guide circles with distance
-- **Portrait preset for realistic people: flux-2-dev, clean seamless backdrop and an equipment negative list** _(Pixelbake)_
-  flux-1-schnell portraits read as hand-drawn; flux-2-dev gave the realism, but backdrops showed light stands and the top edge of the paper. The recipe that worked: 'clean seamless soft neutral grey studio background, evenly lit, absolutely no photography equipment' plus a negative list (light stand, softbox, tripod, backdrop edge, backdrop seam, plastic skin), then a fault check of every PNG.
+- **Portrait preset for realistic people: [model id], clean seamless backdrop and an equipment negative list** _(Pixelbake)_
+  [model id] portraits read as hand-drawn; [model id] gave the realism, but backdrops showed light stands and the top edge of the paper. The recipe that worked: 'clean seamless soft neutral grey studio background, evenly lit, absolutely no photography equipment' plus a negative list (light stand, softbox, tripod, backdrop edge, backdrop seam, plastic skin), then a fault check of every PNG.
   <br>*Why:* The user rejected the first sets as not looking like true professional photos; a baked-in preset avoids repeating the rework.
-  <br>*How:* Ship it as a pxb preset (portrait-pro) with the negative list prefilled, flux-2-dev as default and a post-bake checklist (hands, props, equipment, edges).
+  <br>*How:* Ship it as a pxb preset (portrait-pro) with the negative list prefilled, [model id] as default and a post-bake checklist (hands, props, equipment, edges).
 - **Build a dashboard primitives module (card, stat, sparkline, empty state) and study live category leaders first** _(Evertrue)_
   Dashboard screens were assembled from ad hoc markup, so spacing and states drifted between views.
   <br>*Why:* Consistent primitives make every new screen premium by default and cut regression surface.
@@ -116,11 +116,11 @@
   Remembrance shows a per-entry contested flag, named perpetrators including inter-faith cases, a debate and counter-evidence section, ranges instead of single figures, and explicit labelling of the one continuous annual series (about 13 per day) versus episodic events; the Nigeria framing is shown with ACLED and HRW counter-evidence and a debunked narrative is labelled as such.
   <br>*Why:* Sensitive numbers get quoted without context; building the caveat into the data model keeps every card honest and stops a headline figure outrunning its sources.
   <br>*How:* Extract the pattern (contested flag plus note, low, high and representative values, basis, perpetrator and sources fields, and a methodology panel) into a Coco module so Payrails-style ranking pages and future research sites start with it.
-- **Use Workers AI FLUX schnell only for photographic mockups and hand text-heavy products to a text-capable model or an editor** _(Hallalu CRM)_
+- **Use [AI platform] [image model] schnell only for photographic mockups and hand text-heavy products to a text-capable model or an editor** _(Hallalu CRM)_
   The photo-proof test produced a convincing flat-lay but garbled text ('birthdy withdAY'); the caveat and Canva hand-off carry the expectation
   <br>*Why:* Users judge a proof by its readable copy; garbled lettering reads as broken
   <br>*How:* Say 'look, not copy' on the result, offer a sharper-text model as a toggle, and overlay real headings with a canvas compose step
-- **Homework runway bar from date assigned to due date, with colour never carrying meaning alone** _(Finished.)_
+- **Homework [video model] bar from date assigned to due date, with colour never carrying meaning alone** _(Finished.)_
   Draw the assignment window as a bar with today's marker, days left and a text label; pair every colour state with a word or icon (WCAG 1.4.1).
   <br>*Why:* Shows pacing at a glance and works for colour-blind users.
   <br>*How:* Compute progress from assignedAt and dueAt in the schedule model and reuse the bar in the list, calendar and widget views.
@@ -151,13 +151,13 @@
 - **Sender logos in a mail client: BIMI, then site icon, Gravatar for personal mailboxes, stored once server-side** _(Joy Mail)_
   The inbox showed only coloured initials for every sender, unlike Gmail.
   <br>*Why:* Real sender logos make an inbox feel finished, but they must be resolved safely, cheaply and without leaking.
-  <br>*How:* Server route /api/logo?e=<address>: DoH TXT lookup of default._bimi.<domain> (then org domain) → fetch the l= SVG; else https://<org>/apple-touch-icon.png; else Google s2 favicons sz=128; personal-mailbox domains get Gravatar (sha256, d=404) only, never the provider logo. Store hits/misses in R2 with a timestamp (misses re-checked weekly); client <img> over the initials circle, opacity 0 until onload, removed onerror. Traps: return 204 not 404 for misses; loading=lazy never loads in a hidden pane; restrict the demo route to seeded senders so it isn't an open lookup proxy.
+  <br>*How:* Server route /api/logo?e=<address>: DoH TXT lookup of default._bimi.<domain> (then org domain) → fetch the l= SVG; else https://<org>/apple-touch-icon.png; else Google s2 favicons sz=128; personal-mailbox domains get Gravatar (sha256, d=404) only, never the provider logo. Store hits/misses in [file storage] with a timestamp (misses re-checked weekly); client <img> over the initials circle, opacity 0 until onload, removed onerror. Traps: return 204 not 404 for misses; loading=lazy never loads in a hidden pane; restrict the demo route to seeded senders so it isn't an open lookup proxy.
 - **Measure a tone/colour step ACROSS a seam, not inside the kept region** _(Pixelbake)_
   On white studio backgrounds the generated sides came out a shade greyer than the photo, leaving visible panels; a correction computed from photo-vs-redrawn-photo was zero because the model kept the photo faithfully.
   <br>*Why:* The visible defect is the difference between kept and generated regions, so measuring inside the faithfully-kept region finds nothing.
   <br>*How:* Compare the photo just inside the edge with the generated area just outside it (each averaged with its own mask), carry the difference outward with a squared falloff, and apply the same correction inside the blend ramp to avoid a hairline.
 - **Outpaint canvas: hand the model colour-noise (not blur), no model for plain backdrops, one direction per pass** _(Pixelbake)_
-  A blurred edge-colour canvas made FLUX.2 klein paint smears or invent out-of-focus scenery; a photo floating in the middle of an empty canvas came back unpainted far more often than a strip beside a photo.
+  A blurred edge-colour canvas made [image model] paint smears or invent out-of-focus scenery; a photo floating in the middle of an empty canvas came back unpainted far more often than a strip beside a photo.
   <br>*Why:* The model reads a soft canvas as 'keep it soft', and a centred photo as 'nothing to do', so the canvas and growth geometry decide success.
   <br>*How:* Hand the model a colour-noise canvas (reads as empty, gets real scenery), alternating with the soft canvas over four tries; continue plain backdrops (edge detail < 1.2) smoothly with no model; run four-sided growth as two passes; detect leftover noise by colour-channel decorrelation in 24px blocks.
 - **Generated backgrounds look pasted unless camera angle, light and supports are carried over** _(Pixelbake)_
@@ -268,7 +268,7 @@
   <br>*Why:* A wrong brief makes every concept off-brand and the user only finds out after paying for the bake.
   <br>*How:* If extracted text or product count is below a threshold, render the page in a browser fetch or show a banner 'I only saw N characters - check palette and audience' and require brief confirmation before the first paid bake.
 - **Always-on plain-English explainer for every backtest and scan result, computed from the user's own numbers** _(Abba)_
-  The strategy bot showed jargon (out-of-sample, PF, max DD) and only a demo-only walkthrough. A computed panel now says, for example, that $10,000 became $16,257 (+62.57%) but buy-and-hold made +92.15%, that out-of-sample profit is the real test, and what to do next, with a one-line gloss on every term plus an Ask Ava to go deeper button using Cloudflare AI; the whole-watchlist opportunity scan and the explainer were ported to native in tandem.
+  The strategy bot showed jargon (out-of-sample, PF, max DD) and only a demo-only walkthrough. A computed panel now says, for example, that $10,000 became $16,257 (+62.57%) but buy-and-hold made +92.15%, that out-of-sample profit is the real test, and what to do next, with a one-line gloss on every term plus an Ask Ava to go deeper button using [host] AI; the whole-watchlist opportunity scan and the explainer were ported to native in tandem.
   <br>*Why:* A beginner needs to know what a result means and what is only luck (22 variants tried, small sample) without leaving the screen.
   <br>*How:* Generate the explanation from the metrics with templates and real-world analogies (no model call needed), keep an LLM deep-dive optional, and test both web and native from the same wording table.
 - **One goal system, three plain-English homes: daily goal leads Home, monthly goal on Money, challenge copy in words** _(Evertrue)_
@@ -342,7 +342,7 @@
 - **Voice-fill forms with a rule-based parser and a visible 'heard' line** _(Aprizely)_
   A mic on the payment and cost forms parses spoken amounts (digits and number words), relative dates, project and note into the fields without AI.
   <br>*Why:* Voice that only dumps text into a box feels broken; filling fields is what the owner asked for.
-  <br>*How:* Strip number words from the note, show what was heard, and test the parser with fixtures like 'twenty five dollars for Cloudflare hosting today'.
+  <br>*How:* Strip number words from the note, show what was heard, and test the parser with fixtures like 'twenty five dollars for [host] hosting today'.
 - **Timestamp every shipped item and add a deterministic Fathom-style day summary** _(Aprizely)_
   Each feature, fix and session row shows its clock time, and the day report opens with a plain-English TL;DR (counts per project, focused time, first and last activity) built without AI.
   <br>*Why:* The logs.at timestamp already existed but was not shown; a short summary answers 'what did I ship today' at a glance.
@@ -408,7 +408,7 @@
   <br>*Why:* A control needed before spending money must not be below the fold or in a side panel.
   <br>*How:* Show the chosen voice beside the script on the stage with a Hear button and a Change-voice grid; place the choice next to the thing it changes.
 - **AI output needs an instruction channel, not just the source text** _(Hallalu CRM)_
-  Ava broke a voice note into notes but the owner could not tell her to leave something out (e.g. remove ChatGPT references); she only repeated what she heard.
+  Ava broke a voice note into notes but the owner could not tell her to leave something out (e.g. remove [language model] references); she only repeated what she heard.
   <br>*Why:* If the only input to an AI transform is the source text, the user can't steer the result (omit, reword, reshape).
   <br>*How:* Carry owner instructions into the prompt as a numbered block that overrides wording, plus a 'revise' step that resends the current JSON with the accumulated instructions; leave the result untouched if the model is unavailable.
 - **Trash with a reason turns deletes into quality data** _(Pixelbake)_
@@ -439,11 +439,11 @@
   <br>*Why:* Heavy synchronous render/parse work on interaction makes the UI feel janky and now directly hurts search ranking.
   <br>*How:* Chunk long JS with await/yield (scheduler.yield or setTimeout), debounce/throttle scroll+resize, use passive listeners, move heavy compute to a Web Worker, avoid forced synchronous layout.
 - **Budget edge-storage access: batch and chunk, never N+1 in a loop** _(cross-cutting)_
-  Treat every D1/KV/R2/fetch call as a metered subrequest with hard caps (100 bound params per D1 statement, per-invocation subrequest limit). Design writes and reads to stay well under them.
+  Treat every [database]/KV/R2/fetch call as a metered subrequest with hard caps (100 bound params per [database] statement, per-invocation subrequest limit). Design writes and reads to stay well under them.
   <br>*Why:* AI codegen writes per-row queries and giant multi-row inserts that pass on demo data and then hit 'too many SQL variables' or 'too many subrequests' under real volume — a silent scaling cliff.
   <br>*How:* Use db.batch([...]) in one transaction; keep (rows x cols) under 100 placeholders per statement and chunk beyond that; replace N+1 loops with a single JOIN or bulk read; cache repeated fetches; push large fan-out to Queues/Workflows.
-- **A/B one motif on klein-9b vs FLUX.2 dev before baking a large abstract set: klein-9b matched the look at ~1.7s and 16 credits** _(Pixelbake)_
-  For 34 dark, textless glass-sculpture hero images, klein-9b matched FLUX.2 dev's premium look at 1.7s and 16 credits each versus ~4 minutes and timeout risk for dev; the whole set cost about 544 credits and was fault-checked at full size.
+- **A/B one motif on klein-9b vs [image model] before baking a large abstract set: klein-9b matched the look at ~1.7s and 16 credits** _(Pixelbake)_
+  For 34 dark, textless glass-sculpture hero images, klein-9b matched [image model]'s premium look at 1.7s and 16 credits each versus ~4 minutes and timeout risk for dev; the whole set cost about 544 credits and was fault-checked at full size.
   <br>*Why:* Dev is needed for photoreal people but not for abstract renders; picking the model per image class saves minutes per image and avoids 3046 timeouts.
   <br>*How:* Bake the same motif on both models, read both at full size, choose the cheaper that matches the house look, then run pxb with a shared STYLE suffix and a per-topic accent tint, followed by a full-size fault check of every PNG.
 - **Compress hero video with macOS avconvert and hard-mute it by dropping the audio track** _(cross-cutting)_
@@ -467,7 +467,7 @@
   <br>*Why:* Cut tokens and latency and removed the row-by-row mislabelling; with the example-row fix it took a scanned form to 45 of 45 in about 10 s for two pages.
   <br>*How:* Group detected boxes into columns (3 or more aligned cells), send the header-adjacent cell only, then fan the label out as 'Header (row N)'.
 - **Re-encode raw AI bakes before emailing: ~1200px JPEG q72** _(Sellpost)_
-  FLUX raws are 1–3 MB PNGs — too heavy for an email that must stay under Gmail's clipping limit.
+  [image model] raws are 1–3 MB PNGs — too heavy for an email that must stay under Gmail's clipping limit.
   <br>*Why:* Heavy inline images push an email past Gmail's ~102 KB clip and slow loads on mobile.
   <br>*How:* newsletter.mjs auto-optimises with sips to ~1200px JPEG q72 (2 photos ≈ 170 KB total); QA caps any single image at 800 KB.
 
@@ -533,7 +533,7 @@
   'Link multiple clients to the same company' was built as multiple contacts and a main number inside one record, an audit then reported 'every request is implemented', and only a closer read exposed that grouping separate lead records under one company (companies.js) was missing. The same session wrote 'board finished' next to an open question.
   <br>*Why:* An ambiguous clause interpreted narrowly produces a finished-looking board with a real gap, and the user loses trust in the word done.
   <br>*How:* Restate each ambiguous clause with the chosen interpretation (or build the broader reading), keep a clause table with file:line and an Open column, and lead the final message with an explicit Done versus Still-open split.
-- **Catalog drifts from the skills it lists: edits need a manual node scan.mjs and wrangler deploy** _(SkillSea)_
+- **Catalog drifts from the skills it lists: edits need a manual node scan.mjs and [deploy tool] deploy** _(SkillSea)_
   Changing the /finish skill description only reached skillsea.coconvo.workers.dev after running the additive scan (which also picked up a new patentscan skill) and a deploy; the repo has no git remote, so the commit could not be pushed.
   <br>*Why:* A catalog that lags the skills undermines it as the single place to see what exists.
   <br>*How:* Run the scan from a post-edit hook or a scheduled task, deploy only when the diff is non-empty, and give the repo a private remote.
@@ -541,16 +541,16 @@
   Eight parallel fix agents (several delegating to sub-agents that never notify) were killed by the session limit; result files and the scratchpad were lost, yet ~30 repos held real edits. Recovery: git diff --shortstat per repo, node --check every edited JS file, grep the added lines for anything that is not aria/for/alt/og/meta/focus, review each flagged diff by hand, and rebuild the report from git.
   <br>*Why:* Killed agents can leave half-written files and lost bookkeeping; trusting 'it probably finished' ships broken code. A census against the expected app list also caught an app (PlannerStudio) that no agent had been assigned.
   <br>*How:* Keep parallel agents at four or fewer, forbid sub-delegation in the prompt, write each result to a file as it finishes, and after any interruption run the diff-stat plus syntax plus added-line-whitelist audit before committing or deploying.
-- **Preview a creative set on the 3-credit FLUX.2 klein-4b model and re-bake only approved frames on the 63-credit dev model** _(Pixelbake)_
+- **Preview a creative set on the 3-credit [image model]-4b model and re-bake only approved frames on the 63-credit dev model** _(Pixelbake)_
   With the accounts at 36 and 21 credits, a full dev re-bake of seven photos (~441 credits) was unaffordable and one dev square needed 42 credits. A full set 2 was composed and QA'd on klein-4b previews at 3 credits each, with the dev re-bake stated as one re-runnable command.
   <br>*Why:* Layout, copy and safe-zone defects are found at composition time and do not depend on the model; spending dev credits before QA wastes them, and a mid-batch 402 leaves a set half-baked.
-  <br>*How:* Check pxb whoami balance against the batch total first, bake previews on klein-4b with --ref for character consistency, run the composer QA passes, then re-bake only the approved frames on flux-2-dev, budgeting one extra bake per set for 3046 timeouts.
+  <br>*How:* Check pxb whoami balance against the batch total first, bake previews on klein-4b with --ref for character consistency, run the composer QA passes, then re-bake only the approved frames on [model id], budgeting one extra bake per set for 3046 timeouts.
 - **Strip commit attribution trailers across repos safely on macOS: portable awk --msg-filter, self-test, verify on the branch, drop refs/original, force-push** _(cross-cutting)_
   Write the filter as a script (grep -v the trailer, then awk to trim trailing blank lines; BSD sed multi-line forms fail with 'unexpected EOF (pending }'s)), pipe a sample message through it first, run filter-branch from each repo's top level, check `git log main --grep` rather than --all, delete refs/original, reflog expire plus gc, then push --force and confirm origin/main trailer count and commit counts.
   <br>*Why:* Four traps (BSD sed, wrong working directory with swallowed stderr, backup refs inflating counts, force-with-lease 'stale info') each looked like success or a random failure.
   <br>*How:* Use `FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --msg-filter 'bash filter.sh' -- --all` from `git rev-parse --show-toplevel`, then `git for-each-ref refs/original | update-ref -d`, `git reflog expire --expire=now --all && git gc --prune=now`, `git push --force origin main`, and verify with git rev-list --count origin/main.
-- **Portfolio deploy-sweep recipe: inventory dirs x git x workers_list, secret-guarded commit, npx --yes wrangler deploy, status check where 401 means auth gate** _(cross-cutting)_
-  List every dir with .git or a wrangler config with dirty count, branch, remote and ahead count, cross-reference the live Workers list to find orphans, commit with a secret-file guard and git reset of board-state files (.aprizely.worklog.json, .wrangler), push, deploy each app with npx --yes wrangler deploy capturing URL and Version ID, then curl every worker root (200 expected, 401 for PIN-gated apps).
+- **Portfolio deploy-sweep recipe: inventory dirs x git x workers_list, secret-guarded commit, npx --yes [deploy tool] deploy, status check where 401 means auth gate** _(cross-cutting)_
+  List every dir with .git or a [deploy tool] config with dirty count, branch, remote and ahead count, cross-reference the live Workers list to find orphans, commit with a secret-file guard and git reset of board-state files (.aprizely.worklog.json, .[deploy tool]), push, deploy each app with npx --yes [deploy tool] deploy capturing URL and Version ID, then curl every worker root (200 expected, 401 for PIN-gated apps).
   <br>*Why:* 'Make every app latest' otherwise silently skips apps with no remote or no source and sweeps board-state noise and secrets into commits.
   <br>*How:* Run the inventory in zsh with arrays (apps=(a b c), not a space-separated string), use absolute $HOME paths, capture the first 'Current Version ID' per app, and report the orphan list (no git, no remote, no local source) separately.
 - **Use CDP headless Chrome for reliable before/after screenshots instead of the flaky pane** _(cross-cutting)_
@@ -626,7 +626,7 @@
   <br>*Why:* A rate-limit cut otherwise erases all in-flight work, and re-running burns the same quota again.
   <br>*How:* Run at most 3-4 agents per batch. Have each agent create its output file first, append per question, and cache source pages to disk (curl + text extraction) so a resumed run reuses them. Have the main session read the lane files rather than the agents' final messages.
 - **Bot-walled primary sources: curl with a browser UA into a page cache, and say 'could not verify' otherwise** _(cross-cutting)_
-  Ofcom (Cloudflare 'Just a moment...'), EUR-Lex, Etsy and the UK IPO returned 403s or captcha walls to WebFetch and the browser pane, and WebFetch's safety layer failed on whole batches. About 250 primary pages were fetched with curl and a browser UA into the scratchpad and run through a text extractor, then grepped for verbatim clauses.
+  Ofcom ([host] 'Just a moment...'), EUR-Lex, Etsy and the UK IPO returned 403s or captcha walls to WebFetch and the browser pane, and WebFetch's safety layer failed on whole batches. About 250 primary pages were fetched with curl and a browser UA into the scratchpad and run through a text extractor, then grepped for verbatim clauses.
   <br>*Why:* A failed fetch is not a finding. Treating it as one invents restrictions or drops evidence, and a page cache survives agent deaths.
   <br>*How:* curl -sL with a browser UA into scratchpad/<lane>/, extract text with a small script, quote clauses by grep. Take fees and statutes from an alternate primary (EUR-Lex annex, legislation.gov.uk). Record walled pages under 'could not verify' and never bypass captchas.
 - **Clear a product name on the registers before building the brand (costs and sources included)** _(cross-cutting)_
@@ -649,8 +649,8 @@
   The PatentCake triggers reject UPDATE and DELETE, so the first filing locked in a truncated slug permanently; the same irreversibility applies to Bug Ledger entries and to Aprizely reports and shots.
   <br>*Why:* With no undo, the only safe place to catch a bad slug, title or severity is before the write.
   <br>*How:* Add --dry-run to pc.mjs, worklog.mjs and apz.mjs that prints the exact payload and derived identifiers and exits without posting, and have agents run it first whenever a field is auto-derived.
-- **Mint agent keys through the app's device-connect flow, not a direct production D1 insert plus temp files** _(Breadcrumb)_
-  To make the live board work without approval, a Breadcrumb ingest key was generated in a shell, its hash inserted into the production ingest_keys table with wrangler d1 execute --remote, and the plaintext written to /tmp/bc-key.txt before being copied to the local key file.
+- **Mint agent keys through the app's device-connect flow, not a direct production [database] insert plus temp files** _(Breadcrumb)_
+  To make the live board work without approval, a Breadcrumb ingest key was generated in a shell, its hash inserted into the production ingest_keys table with [deploy tool] d1 execute --remote, and the plaintext written to /tmp/bc-key.txt before being copied to the local key file.
   <br>*Why:* Direct production writes bypass the app's own audit and revoke paths, and a plaintext key left in /tmp is readable by other local users until it is deleted.
   <br>*How:* Use the existing device-connect approval (one click) or an authenticated mint endpoint that returns the key once, write it straight to a mode-600 file, delete any temp copy, and record the key label so it can be revoked from the app.
 - **When reddit.com refuses, use the PullPush and Arctic Shift archive APIs for voice-of-customer research** _(Joy)_
@@ -667,7 +667,7 @@
   <br>*How:* Standard form: sudo CMD 2>&1 | head -N > /tmp/NAME.txt; echo 'written, say done'; then Read /tmp/NAME.txt; keep the first command small and the file path stable
 - **Give every Worker a never-cached /api/_v route, version static asset paths by content hash, and verify deploys against both** _(cross-cutting)_
   A probe route that returns a build marker proves worker code is live; rewriting asset URLs to /_v/<hash>/file gives every release a new cache key; compare the served file's sha with the local sha.
-  <br>*Why:* wrangler's Success output and the deployments list said nothing about stale static files, and a hand-bumped ASSET_VER is easy to forget.
+  <br>*Why:* [deploy tool]'s Success output and the deployments list said nothing about stale static files, and a hand-bumped ASSET_VER is easy to forget.
   <br>*How:* Derive the version from a hash of public/ at build time, keep the shell HTML no-cache, serve /_v/* as immutable, and add the probe check to the deploy script.
 - **Research lanes that spawn their own sub-lanes return 'Holding' as their result** _(cross-cutting)_
   A premium-design lane completed seven times with results like 'Lanes are still actively researching. Holding.' (about 144k tokens, 22 minutes); its real output came from a different lane. A task-notification fires each time an agent stops with no live children, and TaskStop on a completed task errors. Two other lanes failed mid-flight with 'your computer went to sleep' and two hit a session limit; the assistant correctly reported these as gaps rather than filling them with guesses.
@@ -690,13 +690,13 @@
   <br>*Why:* 171 of 199 passed first time and 28–30 needed a re-bake for defects only visible when image and prompt are side by side: misspelled baked-in text, merged objects, extra hands, wrong composition.
   <br>*How:* Stable id per prompt, resumable baker that skips files already on disk and runs 3 at a time, qa.mjs to build sheets via headless Chrome, redo.txt of 'index|new prompt', repeat until a sheet passes; add negative prompts for text and logos.
 - **Before deploying the single-file reports Worker, fetch and confirm the live deployment is your own last one** _(Analysis)_
-  Several sessions append reports to one worker.js and each deploys the whole file. Before inserting, the session ran git fetch, compared HEAD with origin/main, and read wrangler deployments list (it prints oldest first, so read the tail) to confirm the live version was its own earlier deploy.
+  Several sessions append reports to one worker.js and each deploys the whole file. Before inserting, the session ran git fetch, compared HEAD with origin/main, and read [deploy tool] deployments list (it prints oldest first, so read the tail) to confirm the live version was its own earlier deploy.
   <br>*Why:* Deploying from a copy that lacks another session's report removes that report from the live site with no error.
-  <br>*How:* git fetch and pull first; if origin has commits you lack, merge before inserting; check the newest wrangler deployment id against your last deploy; confirm the diff is insertions only before wrangler deploy.
+  <br>*How:* git fetch and pull first; if origin has commits you lack, merge before inserting; check the newest [deploy tool] deployment id against your last deploy; confirm the diff is insertions only before [deploy tool] deploy.
 - **Before building on a file a co-editing session hands over, diff it against the deployed Worker code** _(cross-cutting)_
   When another session passed over worker.js, the deployed script was fetched and compared with the edit base to confirm the on-disk file was 'their deployed version plus my additions'. Later a version-id mismatch between sessions was resolved by listing deployments and re-checking the live code still contained the new function.
   <br>*Why:* With two sessions deploying the same Worker, a stale base silently reverts the other session's work on the next deploy.
-  <br>*How:* Fetch the live script (Cloudflare workers_get_worker_code or wrangler versions view), compare against your base, and after any peer deploy re-run wrangler deployments list and grep the live code for your change.
+  <br>*How:* Fetch the live script ([host] workers_get_worker_code or [deploy tool] versions view), compare against your base, and after any peer deploy re-run [deploy tool] deployments list and grep the live code for your change.
 - **Keep expression and angle close to the anchor, and never feed a sub-locked bake back in as a reference** _(Pixelbake)_
   Against one anchor photo, calm front-on edits scored 80-96%, a big open smile 31%, a frustrated pose in a new scene 31-46%. Adding the best drifted result as a third reference held the score at about 62%; chaining small edits from it reached only 55-59%.
   <br>*Why:* Expression and pose move a face-embedding score as much as a real identity change, and a drifted reference teaches the model the drift.
@@ -704,17 +704,17 @@
 - **Read TikTok's public page JSON for free timestamped captions and full stats before paying for ASR** _(Postfactory)_
   Logged-out, a TikTok video page's embedded JSON exposes subtitleInfos (a VTT URL with ASR captions) plus plays, likes, comments, shares and saves (collectCount). Music-only clips have no caption track. Instagram returns nothing without a login, so it is handled from a saved file.
   <br>*Why:* Native captions made the transcript step free (45 timed words on the test clip) and saves are not available from most tools.
-  <br>*How:* curl the video URL with a desktop user agent, parse subtitleInfos and the stats block, fall back to Whisper on 16 kHz mono audio when there is no caption track; keep downloads in the local CLI, never logged in.
+  <br>*How:* curl the video URL with a desktop user agent, parse subtitleInfos and the stats block, fall back to [speech model] on 16 kHz mono audio when there is no caption track; keep downloads in the local CLI, never logged in.
 - **Test long-audio transcription with a synthetic recording of numbered items, then count them** _(Hallalu CRM)_
   A 58-minute spoken test file containing 420 numbered items was generated with the macOS say command and converted to M4A, WebM, MP3, Ogg and WAV. Pass means all 420 come back, none missing and none out of order. The same file, cut to 23:12, reproduced the owner's exact failing case.
   <br>*Why:* Reading a long transcript by eye cannot show a dropped or reordered chunk; a countable sequence does, and it exposed both the empty-M4A-piece bug and the silent 503 loss.
   <br>*How:* say -o long.aiff with a numbered word list, ffmpeg to each container, run the real pipeline, regex the numbers out of the result and compare with the expected sequence.
 - **Prove a passcode-gated live app end to end with a one-time ticket and a uniquely tokened file, then leave no trace** _(Joy)_
-  Joy Cloud's signed-in loop had only been proven locally. The session inserted a one-time, 10-minute ticket row into the app's own ticket table through wrangler D1, opened /sso?t=<ticket> to get a real session without typing the passcode, uploaded a 112-byte file containing a random token, shared it, downloaded it from the public share origin and compared bytes, read the owner's activity, revoked the link (download then 404, friendly page), and purged the file so the drive was exactly as found.
+  Joy Cloud's signed-in loop had only been proven locally. The session inserted a one-time, 10-minute ticket row into the app's own ticket table through [deploy tool] [database], opened /sso?t=<ticket> to get a real session without typing the passcode, uploaded a 112-byte file containing a random token, shared it, downloaded it from the public share origin and compared bytes, read the owner's activity, revoked the link (download then 404, friendly page), and purged the file so the drive was exactly as found.
   <br>*Why:* It exercises the real production endpoints across both Workers without the agent handling the owner's passcode, and the unique token makes 'the bytes match' a fact.
   <br>*How:* Reuse the app's existing ticket mechanism; random hex ticket with a short expiry; unique token in the test payload; screenshot each step; revoke, trash and purge at the end and confirm zero test files remain.
 - **Import walled videos via a downloader site's direct link — never sign in to fetch media** _(Pixelbake)_
-  Instagram refused a reel to a server, to the Browser pane (login/age wall), to yt-dlp and to Higgsfield; a downloader site (sssinstagram.com) resolved it to a direct fbcdn MP4 that curl fetched with an Instagram referer.
+  Instagram refused a reel to a server, to the Browser pane (login/age wall), to yt-dlp and to [model provider]; a downloader site (sssinstagram.com) resolved it to a direct fbcdn MP4 that curl fetched with an Instagram referer.
   <br>*Why:* Login walls block automated fetches, and signing into someone's account to grab media is not acceptable.
   <br>*How:* Paste-a-link import accepts the direct address a downloader site hands back; the walled-site message now says exactly that; never sign in to anyone's account to fetch media.
 
@@ -741,7 +741,7 @@
   <br>*Why:* Canva/Docs-style multi-user editing without forcing accounts, with authorization enforced on the server not the client
   <br>*How:* Mint role-scoped tokens in a Worker/KV; check role server-side on every mutating endpoint; keep recovery key only with owner
 - **Security headers belong in _headers, not the Worker, for static assets** _(cross-cutting)_
-  On Cloudflare, static assets are served directly at the edge and bypass the Worker's fallback handler, so header injection written in the Worker never runs on asset responses.
+  On [host], static assets are served directly at the edge and bypass the Worker's fallback handler, so header injection written in the Worker never runs on asset responses.
   <br>*Why:* Teams add CSP/security headers in the Worker, verify one JSON route, and ship — while every actual HTML/asset response still goes out bare.
   <br>*How:* Put security headers in a public/_headers file (or the assets config); verify with a GET on a real asset URL, not a HEAD on the API.
 - **Split static-asset routing from the SPA fallback (and auto-recover)** _(cross-cutting)_
@@ -761,7 +761,7 @@
   <br>*Why:* Copy-in-whole modules cannot import an app's UI kit, but forcing native prompt() into premium apps would violate the no-native-dialogs house rule.
   <br>*How:* Accept an optional async hook per interaction (prompt, confirm, toast), default to the browser primitive, document it in the module README and header, and test both paths (hook fired and Renamed-1 persisted).
 - **Probe third-party data sources from Worker egress with an authed, allowlisted debug fetch route** _(Abba)_
-  Feeds that work from a laptop (Google, GDELT) were blocked from Cloudflare egress, so local curl tests proved nothing.
+  Feeds that work from a laptop (Google, GDELT) were blocked from [host] egress, so local curl tests proved nothing.
   <br>*Why:* Source viability must be tested from the network that will actually call it.
   <br>*How:* Add /api/debug/fetch behind auth with a host allowlist and size/time caps, and use it to test each candidate feed before building on it.
 - **Push-only service worker plus payload-less VAPID push for notifications** _(Abba)_
@@ -775,7 +775,7 @@
 - **Record 'committed and deployed' per session inside the existing report JSON blob, with an honest tri-state banner** _(Aprizely)_
   Reports gained a banner showing whether the session's work was committed and deployed. The Worker accepts a sanitised ship object {committed, sha, message, branch, deployed, url, version, at} stored inside the existing reports.data JSON; apz.mjs gatherShip() auto-detects git HEAD (clean tree means committed) and takes --deployed <url>. States: green committed+deployed, green committed plus amber 'Not deployed yet', and no banner for legacy reports.
   <br>*Why:* Written is not deployed is not working; a visible per-session proof stops 'done' being claimed early, and storing it in the existing blob meant no schema migration and full backward compatibility.
-  <br>*How:* Add an optional sanitised sub-object to the JSON you already store, render it only when present, derive it from git on the client, and let a flag supply the deploy URL; verify all three states plus the legacy no-ship report on wrangler dev before shipping.
+  <br>*How:* Add an optional sanitised sub-object to the JSON you already store, render it only when present, derive it from git on the client, and let a flag supply the deploy URL; verify all three states plus the legacy no-ship report on [deploy tool] dev before shipping.
 - **Render pickers opened from inside a form as their own stacked overlay, not through the single-overlay openModal** _(Hallalu CRM)_
   openModal() calls closeOverlays() first, so a currency picker launched from the new-lead/settings/invoice modal destroyed the parent form and everything typed. The fix renders the picker as a separate scrim+panel appended to body (higher z-index, its own close handler) that closes only itself and writes the choice back to the still-mounted button and hidden input.
   <br>*Why:* Nested choosers are everywhere (dates, currencies, contacts); one overlay model that wipes siblings silently loses user input.
@@ -785,7 +785,7 @@
   <br>*Why:* Pretending the server executes the agent produces silent stalls.
   <br>*How:* Store a queued state with a claim endpoint and show who claimed it and when.
 - **Private pages on Workers assets: remove the payload from the public bundle instead of gating the route** _(cross-cutting)_
-  Cloudflare serves static assets before the Worker; run_worker_first matches the raw path but the asset server normalises // and %5F, and a gated HTML page still leaks its JS file
+  [host] serves static assets before the Worker; run_worker_first matches the raw path but the asset server normalises // and %5F, and a gated HTML page still leaks its JS file
   <br>*Why:* No amount of route gating beats an asset that exists in the bundle
   <br>*How:* move private html/js to src/private/*.txt, import as Text modules (rules: type Text, globs **/*.txt), serve from the Worker after normalising the path and checking a key; test //x, /%5Fx, /X, /./x, /dir/../x and the JS payload URL from outside
 - **One field schema must drive both the card display and the add/edit form** _(Hallalu CRM)_
@@ -806,24 +806,24 @@
   <br>*How:* Wrap every boot-blocking fetch in an AbortController timeout. Validate the payload before touching nested fields. Add a global watchdog that offers Reload and a Reset that clears only the token. Test by monkey-patching fetch in the live page.
 - **First-party AI upscale: Images binding fit scale-up with a sharpen/contrast/saturation finishing pass** _(Pixelbake)_
   The existing env.IMAGES binding can AI-upscale 2x/4x and takes sharpen (0-10), contrast and saturation in the same transform. It runs as one billed transformation and needs no third-party billing.
-  <br>*Why:* It works today without AI Gateway credits and gives a visibly crisper result on low-res sources. Measured: the sharpen pass, not chaining, was the lever.
+  <br>*Why:* It works today without [billing gateway] credits and gives a visibly crisper result on low-res sources. Measured: the sharpen pass, not chaining, was the lever.
   <br>*How:* env.IMAGES.input(stream).transform({width,height,fit:'scale-up'}).transform({sharpen:4,contrast:1.06,saturation:1.08}).output({format}); cap the long edge at 8192px; store as a versioned child image.
 - **Spend a model's small reference-image budget on the face: Images gravity:face crop at about 500px** _(Pixelbake)_
-  FLUX.2 klein accepts up to 4 references, each under 512px. A full portrait wastes those pixels on background, so references are face-cropped before they are sent.
+  [image model] accepts up to 4 references, each under 512px. A full portrait wastes those pixels on background, so references are face-cropped before they are sent.
   <br>*Why:* Reference resolution is the identity-fidelity ceiling on first-party klein.
   <br>*How:* env.IMAGES.input(src).transform({width:500,height:500,fit:'cover',gravity:'face'}) before building input_image_0..3.
 - **Give copied-whole modules a version stamp and a drift check** _(Coco Modules)_
   The activity-timeline module now exists as three copies (modules registry, Aprizely public/, Breadcrumb public/) because the registry philosophy is to copy modules whole, and the apz.mjs CLI is likewise kept in three places that are synced by hand and compared with md5.
   <br>*Why:* Copies silently diverge: a fix to one copy never reaches the others, and nobody notices until a view behaves differently across apps.
   <br>*How:* Add a version and checksum header to every module, publish checksums in modules.json, and ship a small modules-check command that compares each app's local copy with the registry, prints which are behind, and runs from the deploy script.
-- **Do media decoding in the browser and keep Workers AI for model calls: audio chunks + one frame per second, then Whisper and Llama vision** _(Hallalu CRM)_
-  The video-study engine decodes audio and grabs a frame per second in the browser, detects cuts for the shot map, sends chunked audio to Whisper (offset-stitched) and each frame to Llama 3.2 vision on the AI binding, then makes one synthesis call and falls back to a no-AI structural teardown when the AI is off.
+- **Do media decoding in the browser and keep [AI platform] for model calls: audio chunks + one frame per second, then [speech model] and [language model] vision** _(Hallalu CRM)_
+  The video-study engine decodes audio and grabs a frame per second in the browser, detects cuts for the shot map, sends chunked audio to [speech model] (offset-stitched) and each frame to [language model] 3.2 vision on the AI binding, then makes one synthesis call and falls back to a no-AI structural teardown when the AI is off.
   <br>*Why:* Workers cannot run ffmpeg-style extraction; moving decode client-side keeps the Worker within CPU limits and makes the heavy model work free-ish, high-volume and keyless.
-  <br>*How:* Extract audio/frames with Web Audio and canvas, normalise nested Whisper segments[].words[] on the server, degrade per frame when vision errors (8007/3030) and keep the transcript-only shot.
-- **Cloudflare free-tier 100K requests/day is ACCOUNT-wide, shared across ALL Workers** _(cross-cutting)_
-  The 100K req/day free limit is per-account, not per-Worker. A portfolio of 30+ Workers on one account shares a single 100K bucket; KV reads/writes and Cache API ops also count as requests.
+  <br>*How:* Extract audio/frames with Web Audio and canvas, normalise nested [speech model] segments[].words[] on the server, degrade per frame when vision errors (8007/3030) and keep the transcript-only shot.
+- **[host] free-tier 100K requests/day is ACCOUNT-wide, shared across ALL Workers** _(cross-cutting)_
+  The 100K req/day free limit is per-account, not per-Worker. A portfolio of 30+ Workers on one account shares a single 100K bucket; [key-value store] reads/writes and Cache API ops also count as requests.
   <br>*Why:* Directly relevant: this account runs ~34 Workers. One chatty Worker (polling, hourly crons, live boards) can starve the rest and cause account-wide 1015/quota errors.
-  <br>*How:* Budget requests across the portfolio; cache aggressively; avoid per-second polling and chatty KV; move hot paths to paid or to static assets; watch the account request graph.
+  <br>*How:* Budget requests across the portfolio; cache aggressively; avoid per-second polling and chatty [key-value store]; move hot paths to paid or to static assets; watch the account request graph.
 - **Make a monthly grant idempotent by putting the period in the ledger reason and indexing it** _(Finished.)_
   Use reason 'monthly-free:2026-08' with a partial unique index on (user_id, reason) where reason like 'monthly-free:%', insert ... on conflict do nothing, and bump the balance only if a row was actually inserted (GET DIAGNOSTICS row_count).
   <br>*Why:* date_trunc is not immutable so it cannot sit in an index expression; the reason string carries the period and makes concurrent or repeated calls safe and auditable.
@@ -869,7 +869,7 @@
   <br>*Why:* Limits invented by the builder remove capability, and untrusted generated HTML needs a sandbox.
   <br>*How:* Allow free-form kinds, strip scripts server and client side, sandbox without allow-scripts, and preview with a doctype.
 - **Serve client-uploaded files sandboxed and accept them only through a signed, per-run upload ticket** _(Hopefil World)_
-  The public Start page lets anyone attach logos, PDFs, video or audio to a run. Uploads go to R2 under the run's prefix via a short-lived HMAC ticket issued when the run is created, and every uploaded object is served with sandboxing headers so it can never execute script on the site's origin.
+  The public Start page lets anyone attach logos, PDFs, video or audio to a run. Uploads go to [file storage] under the run's prefix via a short-lived HMAC ticket issued when the run is created, and every uploaded object is served with sandboxing headers so it can never execute script on the site's origin.
   <br>*Why:* An open upload form on the same origin as a key-gated admin area is a stored-XSS and abuse vector: an uploaded HTML or SVG file would otherwise run with the site's cookies and keys.
   <br>*How:* Issue an HMAC ticket bound to the run id at creation; require it on POST /upload; store under uploads/<run>/; on GET set a sandbox Content-Security-Policy and nosniff, and never serve uploads from a path that shares scope with authenticated pages.
 - **Probe a site with both a plain and a browser user-agent so a bot wall is not reported as a dead site** _(Hopefil World)_
@@ -880,8 +880,8 @@
   Undo/redo in the Layers editor restores whole-stack snapshots (each layer cloned, including its erased-pixel canvas). Before adding it, three places that used a captured `backdrop` variable were changed to read St.layers[0], and cached filter results are invalidated at every point the source pixels change.
   <br>*Why:* After a restore the stack holds new objects; any closure still holding the old backdrop or a cached filtered bitmap would draw stale state, giving an undo that appears to work for some properties and not others.
   <br>*How:* Grep for direct references to layer objects captured at init; replace with a lookup at use time; clone pixel canvases in snapshots; record history at action boundaries (pointer up, debounced slider end), and verify undo on the hardest case (an erase) as well as an add.
-- **Use a server-side Whisper pass on the saved recording as the second transcriber, never a second live recogniser** _(cross-cutting)_
-  Keep exactly one live SpeechRecognition for the on-screen feed and run Workers AI whisper-large-v3-turbo on the recording already saved to IndexedDB for an accurate second pass; the same endpoint also serves uploaded recordings.
+- **Use a server-side [speech model] pass on the saved recording as the second transcriber, never a second live recogniser** _(cross-cutting)_
+  Keep exactly one live SpeechRecognition for the on-screen feed and run [AI platform] [model id] on the recording already saved to IndexedDB for an accurate second pass; the same endpoint also serves uploaded recordings.
   <br>*Why:* Two live recognisers compete for one microphone in Chrome and silenced the visible transcript; a post-hoc pass adds redundancy without touching the mic.
   <br>*How:* Record with MediaRecorder, store the blob, POST base64 audio to a /api/transcribe Worker route, then feed the text into the same recap pipeline.
 - **Anchor signed records to Bitcoin with OpenTimestamps on a cron instead of asking users to trust the server's signature** _(HallaluSocial)_
@@ -901,18 +901,18 @@
   <br>*Why:* The engine previously checked sign-in only, so failures either cost the user or the owner. Reserve-first closes the race where parallel requests overspend, and refund-on-failure keeps 'failed generations are free' true.
   <br>*How:* Add usage + plan tables, wrap each paid route in reserve -> run -> refund(failed count), keep limits in env vars, and test with a stubbed AI binding that fails 0/some/all items plus one cheap real run locally with tiny limits.
 - **Split one big JSON-mode analysis into two focused calls (hooks, then blueprint)** _(Postfactory)_
-  A single Llama 3.3 JSON-mode call returning hooks, beats, CTAs, lifecycle and a blueprint kept returning a short shot list and script even after stricter prompt minimums. Splitting into hooks -> blueprint gave complete output.
+  A single [language model] 3.3 JSON-mode call returning hooks, beats, CTAs, lifecycle and a blueprint kept returning a short shot list and script even after stricter prompt minimums. Splitting into hooks -> blueprint gave complete output.
   <br>*Why:* Small models under JSON mode truncate the last, largest field; tightening the prompt did not fix it.
   <br>*How:* Run the extraction pass first, then pass its result into a second call that only writes the blueprint; log each model call's cost separately.
-- **Background removal on Cloudflare: use the Images binding segment:'foreground' (BiRefNet), because Workers AI has no segmentation model** _(Pixelbake)_
-  Workers AI lists no matting or segmentation model. The Images binding transform({ segment: 'foreground' }) runs BiRefNet first-party, returned a true-alpha PNG in about 1.5 s on four real photos (two portraits, a fluffy dog, a glass bottle), and needs no AI Gateway billing.
-  <br>*Why:* It avoids a third-party remover and keeps hair strands; the first reflex (look for a Workers AI model) finds nothing and wastes time.
+- **Background removal on [host]: use the Images binding segment:'foreground' ([cut-out model]), because [AI platform] has no segmentation model** _(Pixelbake)_
+  [AI platform] lists no matting or segmentation model. The Images binding transform({ segment: 'foreground' }) runs [cut-out model] first-party, returned a true-alpha PNG in about 1.5 s on four real photos (two portraits, a fluffy dog, a glass bottle), and needs no [billing gateway] billing.
+  <br>*Why:* It avoids a third-party remover and keeps hair strands; the first reflex (look for a [AI platform] model) finds nothing and wastes time.
   <br>*How:* env.IMAGES.input(bytes).transform({ segment: 'foreground' }) to PNG; file the result as a versioned edit tagged cutout; charge only on success; composite blur, colour or library-image backgrounds from the same matte.
 - **Session history reachable from a shared public board must be an owner-only endpoint, not part of the public board payload** _(Aprizely)_
   Every live board gained a Past sessions drawer listing all boards for the project or for every project (280 sessions across 52 projects). The list comes from a separate endpoint that requires the owner's signed-in cookie: an anonymous request gets 401 and the drawer shows a sign-in prompt with a same-origin return path to the board.
   <br>*Why:* Board links are shared with clients. Adding history to the public board response would expose every other project name and session title to anyone holding one link.
   <br>*How:* Keep the public /live/<id> payload to that single board; serve history from a cookie-checked route; accept only same-origin paths in the post-sign-in redirect; test the anonymous 401 explicitly.
-- **Signed, expiring media links so an external engine can fetch private R2 files** _(Pixelbake)_
+- **Signed, expiring media links so an external engine can fetch private [file storage] files** _(Pixelbake)_
   Video engines need a URL for the source clip, but a data URI of a 10 MB clip bloats the request and the private /v/<id> route needs a cookie.
   <br>*Why:* External model endpoints can't send your auth cookie and shouldn't get a permanent public link to private media.
   <br>*How:* Mint HMAC(PIXELBAKE_PEPPER, media.<id>.<exp>) → ?t=<exp>.<mac>, accepted by /i and /v for 2h with a constant-time compare; the Worker mints it per request; fall back to a data URI only when the origin is localhost.
@@ -1045,10 +1045,10 @@
   Show the seller what they actually keep: subtract Etsy's stacked fees (listing fee, transaction % on item + shipping + gift wrap, payment processing, and the Offsite Ads fee where it applies) from the sale price, per listing.
   <br>*Why:* Fee rage is a top Etsy complaint because the fees compound invisibly; sellers routinely misjudge margins. A clear net-take number is decision-grade information.
   <br>*How:* Add a fee-aware profit field to each listing/price suggestion using current rates, flag when a price barely clears fees, note that the Offsite Ads fee only hits attributed sales, and keep rates in one config so they stay current.
-- **Give free-tier users a real AI recap and Ava through Workers AI instead of a hard paywall** _(Hallalu CRM)_
-  Ava's askAI() returned {error:'plan'} when needAI failed, and recaps fell to a verbatim on-device summary. A cheap flag now routes free users to @cf/meta/llama-3.3-70b-instruct-fp8-fast while Claude Haiku stays the premium voice, and Workers AI is the universal backup if the paid provider fails.
-  <br>*Why:* The recap is the product's best moment; showing a raw transcript there is the worst first impression, and Workers AI costs only Neurons.
-  <br>*How:* aiText({cheap:true}) tries Workers AI first; the client always sends provider and cheap; the UI upsells 'sharper writing with Claude' rather than blocking the feature.
+- **Give free-tier users a real AI recap and Ava through [AI platform] instead of a hard paywall** _(Hallalu CRM)_
+  Ava's askAI() returned {error:'plan'} when needAI failed, and recaps fell to a verbatim on-device summary. A cheap flag now routes free users to [model id] while [language model] stays the premium voice, and [AI platform] is the universal backup if the paid provider fails.
+  <br>*Why:* The recap is the product's best moment; showing a raw transcript there is the worst first impression, and [AI platform] costs only [compute units].
+  <br>*How:* aiText({cheap:true}) tries [AI platform] first; the client always sends provider and cheap; the UI upsells 'sharper writing with [language model]' rather than blocking the feature.
 - **For developer-tool marketing weight sets toward real product screens and disclose AI photos** _(cross-cutting)_
   Evidence gathered for the Aprizely creative run said builders trust real product screens more than AI-generated faces, so the 14-piece set was weighted toward real screens, composed with a real-product-screen layout, and AI photos carry an on-image disclosure line ('AI-generated photo - real product').
   <br>*Why:* Trust in AI-generated imagery is mixed and an undisclosed AI face risks the credibility the product is selling.
@@ -1119,10 +1119,10 @@
 - **Verify AI-suggested dependencies before trusting them** _(cross-cutting)_
   Treat every package name and API the model emits as unverified until checked against the real registry/docs; pin exact versions and commit a lockfile.
   <br>*Why:* LLMs hallucinate package names (slopsquatting supply-chain risk) and deprecated/imaginary APIs. Auto-installing or calling them causes build breaks or runs an attacker's squatted package.
-  <br>*How:* Before adding a dep: confirm the genuine repo, publisher, and download history; pin x.y.z not ^; keep a lockfile; prefer platform-native bindings (D1/KV/Workers AI). Cross-check unfamiliar SDK calls against current official docs, not the model's memory.
+  <br>*How:* Before adding a dep: confirm the genuine repo, publisher, and download history; pin x.y.z not ^; keep a lockfile; prefer platform-native bindings ([database]/KV/[AI platform]). Cross-check unfamiliar SDK calls against current official docs, not the model's memory.
 - **Track deployed serverless/edge functions in the repo** _(cross-cutting)_
-  Serverless functions (Supabase edge functions, Cloudflare Workers/Pages Functions) that are deployed but not committed to the repo become invisible — an agent or teammate reads the repo, concludes the function is missing, and builds a redundant, contract-mismatched replacement.
-  <br>*Why:* A whole live payment/auth backend can be absent from source control; the next person duplicates it or routes around it, adding risk and drift. It cost a real detour on Finished. (a needless Cloudflare create-checkout in front of the working, deployed Supabase one).
+  Serverless functions (Supabase edge functions, [host] Workers/Pages Functions) that are deployed but not committed to the repo become invisible — an agent or teammate reads the repo, concludes the function is missing, and builds a redundant, contract-mismatched replacement.
+  <br>*Why:* A whole live payment/auth backend can be absent from source control; the next person duplicates it or routes around it, adding risk and drift. It cost a real detour on Finished. (a needless [host] create-checkout in front of the working, deployed Supabase one).
   <br>*How:* Keep a tracked copy of every deployed function under supabase/functions/ or functions/, secrets read from a vault (never in the file), with a header noting it mirrors the live version. Diff repo-vs-deployed as part of review.
 - **Prove client logic of a login-gated app with a Node harness of faithful copies run on real public data** _(cross-cutting)_
   When the authed modal cannot be driven (no credentials, candles endpoint returns 401), copy the pure functions (backtester, Monte-Carlo, scan) into a .mjs harness, feed them real public market data with permissive CORS, then confirm on the live deploy that window.Views.x is a function (the IIFE ran), the console is clean and the new strings exist in the served bundle.
@@ -1146,10 +1146,10 @@
   <br>*How:* Parse the script order from index.html, collect definitions per file with a regex, flag name collisions and orphan hooks; run it in scan.mjs --catalog and in the /finish checklist before any new window.* function is added.
 - **House shell helper for macOS: perl-alarm timeout plus a fresh Chrome profile per headless run** _(cross-cutting)_
   macOS has no timeout command; three sessions hit it (Evertrue remote probe, Finished contact sheet, PostPlan slide export). The working helper is t(){ perl -e 'alarm shift; exec @ARGV' "$@"; } combined with a mktemp --user-data-dir for every headless Chrome call.
-  <br>*Why:* Without a hard limit a wedged render or a hung wrangler dev --remote probe consumes the 120s to 600s tool budget and gets moved to the background silently.
+  <br>*Why:* Without a hard limit a wedged render or a hung [deploy tool] dev --remote probe consumes the 120s to 600s tool budget and gets moved to the background silently.
   <br>*How:* Put the helper and the per-run profile pattern in the sell and kindly skill snippets and in compose.mjs and shoot.mjs; always wrap network probes and Chrome launches.
-- **pxb gen: retry transient flux-2-dev 502s and report per-job status in parallel runs** _(Pixelbake)_
-  Two of five parallel flux-2-dev bakes returned 502 'FLUX.2 dev could not bake that'. A shell pool using & printed 'done' while two files were missing, and manual retries ran past 300 seconds and were pushed to the background.
+- **pxb gen: retry transient [model id] 502s and report per-job status in parallel runs** _(Pixelbake)_
+  Two of five parallel [model id] bakes returned 502 '[image model] could not bake that'. A shell pool using & printed 'done' while two files were missing, and manual retries ran past 300 seconds and were pushed to the background.
   <br>*Why:* Silent partial batches cost credits and let a missing portrait ship unnoticed.
   <br>*How:* Add --retry N with backoff, a non-zero exit code on failure, and a pxb batch file.json --parallel 2 mode that prints id, status and cost per item; the CLI should also verify the output file exists and is not blank.
 - **Write the board state file outside the repo: .aprizely.worklog.json keeps getting committed and pushed** _(Aprizely)_
@@ -1163,10 +1163,10 @@
 - **Syntax-gate every deploy: node --check all edited JS, and again after any killed or partial agent run** _(cross-cutting)_
   A dashboard edit left a duplicated half-open if(photo){ block in wed.js, producing 'Unexpected end of input' at line 367 that would have blanked the whole wedding app; node --check found it before deploy. In a later session node --check over ~30 files edited by agents killed mid-run proved no partial edit shipped.
   <br>*Why:* A single unbalanced brace in a no-build vanilla-JS app takes down every view, and agents killed by a rate limit can stop mid-file. Naive brace counters give false positives; the parser does not.
-  <br>*How:* Before wrangler deploy run `node --check` on each changed .js/.mjs file (git diff --name-only | grep '\.m\?js$'), fail the deploy on any error, and re-run it after any interrupted multi-file edit.
-- **Verify a native app against a local wrangler dev API with DEBUG-only env overrides instead of touching production** _(Abba)_
-  API.swift reads ABBA_BASE and ABBA_TOKEN under #if DEBUG; wrangler dev --local on :8787 with all migrations applied via d1 execute --local and a throwaway account registered by curl; the simulator is launched with SIMCTL_CHILD_ABBA_BASE/ABBA_TOKEN; the Mac app must be exec'd as build/Debug/Abba.app/Contents/MacOS/Abba because `open` drops environment variables.
-  <br>*Why:* Proves write paths (timer, edit, upload) on iPhone and Mac without polluting the live D1, and mediaURL and other builders must follow the same base or screenshots break.
+  <br>*How:* Before [deploy tool] deploy run `node --check` on each changed .js/.mjs file (git diff --name-only | grep '\.m\?js$'), fail the deploy on any error, and re-run it after any interrupted multi-file edit.
+- **Verify a native app against a local [deploy tool] dev API with DEBUG-only env overrides instead of touching production** _(Abba)_
+  API.swift reads ABBA_BASE and ABBA_TOKEN under #if DEBUG; [deploy tool] dev --local on :8787 with all migrations applied via d1 execute --local and a throwaway account registered by curl; the simulator is launched with SIMCTL_CHILD_ABBA_BASE/ABBA_TOKEN; the Mac app must be exec'd as build/Debug/Abba.app/Contents/MacOS/Abba because `open` drops environment variables.
+  <br>*Why:* Proves write paths (timer, edit, upload) on iPhone and Mac without polluting the live [database], and mediaURL and other builders must follow the same base or screenshots break.
   <br>*How:* Add the #if DEBUG override, route every URL builder through base, start the local worker, seed an account, launch with the SIMCTL_CHILD_ prefix, rebuild each target after the patch (a stale Mac binary ignored the override), and screenshot each screen.
 - **Count-asserting patch helper for scripted multi-file edits: every find string must occur exactly the expected number of times** _(cross-cutting)_
   A tiny patch.mjs (find/repl/count per file, exits non-zero on 0 or more than expected matches, prints a tick per file) was used for all JS and Swift edits in a 23-file wave, and a syntax check followed each batch.
@@ -1176,7 +1176,7 @@
   With the pane hidden, computer scroll timed out after 30s and a promise-based javascript_tool check hung for 45s; a synchronous check (cards with thumbnail, broken = complete && naturalWidth===0, total) returned 35/35 and 0 broken, and the detail page was proven by reading figure.hero img and figcaption.
   <br>*Why:* Pane-compositing quirks make visual checks flaky, while DOM counts are exact and cheap, and they expose a partial batch edit that a grep count hid.
   <br>*How:* Prefer synchronous javascript_tool expressions that return counts and broken-image lists, scroll with window.scrollTo via script, avoid awaiting image onload promises, and take one screenshot only after fronting the tab.
-- **Front the tab and use project-local launch.json when testing in the Claude browser pane** _(cross-cutting)_
+- **Front the tab and use project-local launch.json when testing in the [language model] browser pane** _(cross-cutting)_
   Hidden panes throttle timers and rAF, and preview_start only sees a launch.json inside the project directory.
   <br>*Why:* Avoids chasing phantom freezes and 'server not found' errors.
   <br>*How:* tabs_select the tab before timing-sensitive tests; keep .claude/launch.json in the project root.
@@ -1232,10 +1232,10 @@
   The pane screenshot threw UnknownVizError on tall or resized viewports and served cached shells and sample data. Headless Chrome with --virtual-time-budget produced reliable full-page PNGs.
   <br>*Why:* Proof screenshots are a required deliverable, and a flaky capture tool should not block them.
   <br>*How:* Run Google Chrome with --headless=new --disable-gpu --hide-scrollbars --window-size=W,H --virtual-time-budget=7000 --screenshot=out.png and a random cache-busting query on the URL. Read the PNG at full size to QA it.
-- **Wrap wrangler deploy in a backgrounded retry-with-backoff and gate on wrangler whoami first** _(cross-cutting)_
-  Deploys failed repeatedly with 'malformed response from the API' and 'upstream connect error' during a Cloudflare API blip, and later with an expired OAuth token. Blocking the session on them wasted turns.
+- **Wrap [deploy tool] deploy in a backgrounded retry-with-backoff and gate on [deploy tool] whoami first** _(cross-cutting)_
+  Deploys failed repeatedly with 'malformed response from the API' and 'upstream connect error' during a [host] API blip, and later with an expired OAuth token. Blocking the session on them wasted turns.
   <br>*Why:* Transient API errors and expired logins need different handling, and retries should not stall the work.
-  <br>*How:* Run npx wrangler whoami to refresh or detect expiry. Then run a deploy loop of 6-10 attempts with 30-40s sleeps in the background, and confirm the served asset ?v= with curl before verifying.
+  <br>*How:* Run npx [deploy tool] whoami to refresh or detect expiry. Then run a deploy loop of 6-10 attempts with 30-40s sleeps in the background, and confirm the served asset ?v= with curl before verifying.
 - **Agent API silently drops unknown task fields; return an ignored-fields warning or carry data in existing strings** _(Aprizely)_
   /api/agent/worklog whitelists task fields to text/status/note/wave. A dedicated eta field would have vanished with no error, so ETAs had to ride inside the wave and task strings as (~NNm) tokens parsed client-side.
   <br>*Why:* Silent field stripping makes agents believe data was saved.
@@ -1265,7 +1265,7 @@
   <br>*Why:* Manual stamps are forgotten or reused, and the symptom looks like a logic bug, so people debug the wrong thing.
   <br>*How:* Add a predeploy script that appends the first 8 hex characters of each asset's SHA-256 to its script and link tags in app.html, and serve the HTML itself with no-cache through _headers.
 - **Add a free-disk preflight and alert before long agent runs** _(cross-cutting)_
-  Recurring disk-full events on the Mac (Cursor state.vscdb around 13 GB, the Claude VM bundle, a phantom Adobe registry, TCC-hidden Photos libraries) end in ENOSPC, where Bash and file-write tools cannot even create their own output files, so an agent cannot save results or clean up; a curation run was stuck unable to write its JSON.
+  Recurring disk-full events on the Mac (Cursor state.vscdb around 13 GB, the [language model] VM bundle, a phantom Adobe registry, TCC-hidden Photos libraries) end in ENOSPC, where Bash and file-write tools cannot even create their own output files, so an agent cannot save results or clean up; a curation run was stuck unable to write its JSON.
   <br>*Why:* The failure appears at the end of long runs, after the expensive work, and the tools give no warning beforehand.
   <br>*How:* Start /showwork, /deepscan and the curation scripts with df -h and stop with a clear message below roughly 5 GB free; write results incrementally to a small file early; keep a monthly reclaim checklist (sudo du for hidden folders) in the ledger DX notes.
 - **Prune and consolidate the 3,412-rule settings.local.json permission allowlist** _(cross-cutting)_
@@ -1284,10 +1284,10 @@
   A hand-rolled Chrome DevTools screenshot script attached to targets[0] of /json and hung with an empty shots folder; selecting the target with type 'page' that is not the Omnibox popup fixed it, after a stuck background task had to be stopped and the debug-port Chrome killed.
   <br>*Why:* Headless/remote-debugging Chrome lists several targets (omnibox, extensions, service workers); capturing the first one produces silent empty output that reads as a slow render.
   <br>*How:* Filter targets by type==='page' and exclude title /Omnibox/, log the chosen target's title and url, poll for the PNG instead of waiting on process exit, and kill the profile's Chrome before re-running.
-- **Prove Workers AI model shapes with a wrangler dev --remote harness before shipping, not from the docs** _(Hallalu CRM)_
-  With no admin session available, a throwaway remote-dev harness exercised the real Whisper and Llama 3.2 vision bindings and found two schema bugs the docs and tutorial had misled (word timestamps nested in segments[].words[]; image requests need prompt, not messages) plus a false-positive 8007 NSFW rejection on a plain red square.
+- **Prove [AI platform] model shapes with a [deploy tool] dev --remote harness before shipping, not from the docs** _(Hallalu CRM)_
+  With no admin session available, a throwaway remote-dev harness exercised the real [speech model] and [language model] 3.2 vision bindings and found two schema bugs the docs and tutorial had misled (word timestamps nested in segments[].words[]; image requests need prompt, not messages) plus a false-positive 8007 NSFW rejection on a plain red square.
   <br>*Why:* Unit checks and rendered UI had all passed; only the real binding exposed the shape mismatches that would have blanked every shot's spoken line and failed every frame.
-  <br>*How:* Start wrangler dev --remote on a spare port with a tiny /t/* route per model, send a spoken sentence and a benign generated image, assert the response keys, then delete the harness and record the proven shapes.
+  <br>*How:* Start [deploy tool] dev --remote on a spare port with a tiny /t/* route per model, send a spoken sentence and a benign generated image, assert the response keys, then delete the harness and record the proven shapes.
 - **Verify a fixed overlay with an elementFromPoint overlap sweep across pages and viewports** _(Abba)_
   For the heart-never-covers-info request, an overlap sweep on the dashboard and badges pages found zero page elements under the heart at desktop and mobile sizes after the title rows reserved a gutter for it.
   <br>*Why:* Eyeballing a screenshot misses content hidden under a fixed button at one width; the sweep makes 'never covers info' a measurable check.
@@ -1300,8 +1300,8 @@
   On 6 Sep Joy Day used the full sign-up/sign-in card as a one-person PIN pad by hiding the segmented tabs with CSS, hiding the identifier field and prefilling it because sign-in refuses an empty identifier, and making the fixed overlay backdrop transparent, across three patches. On 1 Oct auth-gate v1.1 gained mode passcode (v1.2 adds remember-me and forgot), which Joy mail uses
   <br>*Why:* A hidden-but-required field and CSS overrides break on the next module update, and Joy Day does not get remember-me or the shared lockout behaviour
   <br>*How:* Replace the three patches with FinishedAuth.mount(..., {mode:"passcode", pinLength:6, onPasscode}), keep the HMAC session, and add the per-IP failure counter the Joy mail worker uses
-- **Receive-path smoke test for Email Routing: SMTP to route1.mx.cloudflare.net over IPv4 from a sender domain with no SPF** _(cross-cutting)_
-  A hand-rolled node:net SMTP session was rejected with 550 'Sender IP reverse lookup rejected' because the connection left over IPv6 without reverse DNS; forcing family:4 delivered, and a sender domain with no SPF record (result none) was accepted. Cloudflare's inbound MX rejects an IPv6 sender with no rDNS and hard-fails only on failing SPF or DKIM, which makes a 40-line script a repeatable end-to-end test of catch-all, Worker, R2 and D1
+- **Receive-path smoke test for Email Routing: SMTP to route1.mx.[host].net over IPv4 from a sender domain with no SPF** _(cross-cutting)_
+  A hand-rolled node:net SMTP session was rejected with 550 'Sender IP reverse lookup rejected' because the connection left over IPv6 without reverse DNS; forcing family:4 delivered, and a sender domain with no SPF record (result none) was accepted. [host]'s inbound MX rejects an IPv6 sender with no rDNS and hard-fails only on failing SPF or DKIM, which makes a 40-line script a repeatable end-to-end test of catch-all, Worker, [file storage] and [database]
   <br>*Why:* Proves the whole receive pipeline without needing a second mail service
   <br>*How:* Open the socket with family 4, use a MAIL FROM on a subdomain with no SPF record, poll the authenticated messages API for the marker, then delete the test row
 - **Send X-Robots-Tag noindex on public share-by-link doc Workers so a hand-out link is not crawled** _(Joy Docs)_
@@ -1333,7 +1333,7 @@
   <br>*Why:* Six spoken-day fixtures (run-on, no-time list, ranges, bare times, food safelist, '3 apples') found four splitter bugs in minutes without a test framework.
   <br>*How:* Keep the fixture table in the repo and rerun it after every parser edit.
 - **After a deploy, prove the browser loaded the new build before testing it (and curl with a unique query first)** _(cross-cutting)_
-  In one session the Browser pane served the previous index.html after a successful wrangler deploy on more than ten occasions (v97 vs v98, v119 vs v120, v147 vs v148, v151 vs v152, v168 vs v169, v169 vs v170). ?cb= and location.replace(?x=Date.now()) often still loaded the old document; only a brand-new unique URL worked. About ten turns were once spent suspecting wrangler, the wrong directory and a service worker. navigate returns before the old document has finished running.
+  In one session the Browser pane served the previous index.html after a successful [deploy tool] deploy on more than ten occasions (v97 vs v98, v119 vs v120, v147 vs v148, v151 vs v152, v168 vs v169, v169 vs v170). ?cb= and location.replace(?x=Date.now()) often still loaded the old document; only a brand-new unique URL worked. About ten turns were once spent suspecting [deploy tool], the wrong directory and a service worker. navigate returns before the old document has finished running.
   <br>*Why:* Verifying against a stale build produces false failures (feature 'missing', 'S is not defined') and false passes, and burns turns.
   <br>*How:* 1) curl the page with a unique query and grep the build stamp (?v=NNN). 2) In the page, assert the loaded script's ?v= equals the expected before running any check, and if it does not, navigate to a never-used URL. 3) When a chart or element looks wrong, measure getBoundingClientRect and the computed style before telling the user to hard-refresh; the 16px chart bug was blamed on cache first.
 - **Lint generated CSS custom-property values: AI-written hex tokens were corrupted three times** _(cross-cutting)_
@@ -1372,8 +1372,8 @@
   Before adding emoji-picker and goal-celebrate from the modules registry, Broadcast's _headers CSP was read: it only allows its own scripts, so the two modules were copied into the shared maker's vendor folder, and their z-index was checked against the designer's overlay.
   <br>*Why:* A cross-origin script tag would have worked in dev assumptions and been blocked silently in production.
   <br>*How:* Read _headers or the Worker's CSP first; if script-src is 'self', vendor the file through the build copy list and note the source version.
-- **Moving a domain's mail onto Cloudflare: enable sending first, expect routing to be blocked by the old MX, and know wrangler's login cannot edit DNS** _(cross-cutting)_
-  For hallalu.com: `wrangler email sending enable` worked immediately and added DKIM, SPF and DMARC p=reject; `wrangler email routing enable` refused while the Google MX existed; the wrangler OAuth login has no DNS scope (`wrangler login --scopes-list` shows none), so the MX could not be read or deleted from the CLI and the owner had to delete it in the dashboard. A background watcher polled the authoritative nameserver and enabled routing when the MX disappeared. Two wrangler config files existed and the one under ~/Library/Preferences held a stale token.
+- **Moving a domain's mail onto [host]: enable sending first, expect routing to be blocked by the old MX, and know [deploy tool]'s login cannot edit DNS** _(cross-cutting)_
+  For hallalu.com: `[deploy tool] email sending enable` worked immediately and added DKIM, SPF and DMARC p=reject; `[deploy tool] email routing enable` refused while the Google MX existed; the [deploy tool] OAuth login has no DNS scope (`[deploy tool] login --scopes-list` shows none), so the MX could not be read or deleted from the CLI and the owner had to delete it in the dashboard. A background watcher polled the authoritative nameserver and enabled routing when the MX disappeared. Two [deploy tool] config files existed and the one under ~/Library/Preferences held a stale token.
   <br>*Why:* The switch has an unavoidable manual step and a side effect: once p=reject is published, mail still sent as the domain from the old provider (which had no DKIM for it) is rejected, and inbound keeps going to the old provider until the MX changes.
   <br>*How:* Back up public DNS with dig first; pre-stage the catch-all rule; enable sending and prove DKIM/DMARC pass with a test; tell the owner exactly which MX to delete and what stops working; poll the authoritative NS, then enable routing and prove receive with a real message.
 - **Full-disk triage: read df first, skip du on a thrashing disk, and check simulator devices** _(cross-cutting)_
@@ -1381,7 +1381,7 @@
   <br>*Why:* Three sessions lost minutes to measurement commands that could not finish, and the largest safe reclaim after caches was not in any cache directory.
   <br>*How:* df for the number; delete known regenerable caches by path without sizing them first; size CoreSimulator/Devices; hand the owner `xcrun simctl erase <udid>` since erasing is theirs to approve; never treat ~/Pictures' reported size as real.
 - **Return 400 for a missing required query parameter instead of an empty 200 list** _(Joy)_
-  During live verification of Joy Cloud, the share-activity endpoint was called with ?id= when it reads ?token=. It answered 200 with events: [] while the link's counters showed 1 view and 1 download, which looked like a tracking bug. A D1 check then showed zero event rows only because purging the test file had already cascaded its link events away. It took a source read and a fresh throwaway share to prove tracking worked.
+  During live verification of Joy Cloud, the share-activity endpoint was called with ?id= when it reads ?token=. It answered 200 with events: [] while the link's counters showed 1 view and 1 download, which looked like a tracking bug. A [database] check then showed zero event rows only because purging the test file had already cascaded its link events away. It took a source read and a fresh throwaway share to prove tracking worked.
   <br>*Why:* An empty success for a malformed request reads as 'no data' and sends the investigator after a bug that does not exist.
   <br>*How:* Validate the required parameter first and reply 400 naming it; when checking counters against event rows, read the events before deleting the file that owns them.
 
@@ -1420,11 +1420,11 @@
   <br>*Why:* Explorable demos routinely bleed into new accounts; a fingerprint-based auto-heal fixes already-polluted accounts without manual cleanup
   <br>*How:* On cloudPull, if state matches the demo fingerprint, reset to a fresh blank state; also reset on signup before adopting the account
 - **Honest usage analytics — predict from user snapshots, never scrape or invent** _(Breadcrumb)_
-  A usage/credits view with burn-rate and upgrade-runway predictions grounded only in user-logged (or agent-posted) snapshots plus the tier multiplier the plan panel already shows
+  A usage/credits view with burn-rate and upgrade-[video model] predictions grounded only in user-logged (or agent-posted) snapshots plus the tier multiplier the plan panel already shows
   <br>*Why:* No API exposes subscription usage, so scraping/guessing would fabricate numbers; logging snapshots keeps analytics truthful
   <br>*How:* Ingest usage snapshots via a keyed endpoint or manual entry; compute burn-rate/projection from history and base upgrade math only on the known tier multiplier
 - **Per-plan AI usage quotas to protect margin** _(Hallalu CRM)_
-  Monthly AI call quotas metered in D1 per plan (vision counts triple; anonymous capped by IP)
+  Monthly AI call quotas metered in [database] per plan (vision counts triple; anonymous capped by IP)
   <br>*Why:* Uncapped AI features can be abused and erode margin; per-plan caps keep high gross margin while staying generous
   <br>*How:* Mirror the existing TTS quota pattern in the worker; on cap-hit fall back to an on-device result plus a gentle upgrade nudge
 - **Append-only field-change version history (old-new diffs)** _(Aprizely)_
@@ -1438,7 +1438,7 @@
 - **Idempotency keys on every mutating / retryable endpoint** _(cross-cutting)_
   Any POST that creates or charges (payments, inserts, sends) must accept a client-supplied idempotency key and no-op on replay, returning the original result.
   <br>*Why:* AI codegen omits idempotency, so a retry, double-tap, or network re-send creates duplicate rows/charges/emails. Edge runtimes and clients retry more than devs expect.
-  <br>*How:* Client generates a UUID per logical action; server stores it (D1 unique index or KV) with the response and returns the stored result on repeat. Combine with a unique DB constraint so even a race can't double-insert.
+  <br>*How:* Client generates a UUID per logical action; server stores it ([database] unique index or [key-value store]) with the response and returns the stored result on repeat. Combine with a unique DB constraint so even a race can't double-insert.
 - **Store timestamps as UTC epoch, format only on display** _(cross-cutting)_
   Persist instants as UTC (epoch ms or ISO-with-Z); convert to local wall-clock strictly at render time. Never parse bare 'YYYY-MM-DD' or call toISOString() on a locally-constructed Date to store it.
   <br>*Why:* new Date('2026-08-16') parses as UTC midnight, and toISOString() on a local Date subtracts the offset — both shift the calendar day by one for anyone west of UTC, and DST transitions move stored times by an hour. A top recurring AI-codegen date bug.
@@ -1480,7 +1480,7 @@
   <br>*Why:* A partial swap leaves the catalogue in one currency and thresholds or defaults in another.
   <br>*How:* Script the conversion over every price-bearing column, grep for the old symbol/code, then verify with a server-side re-priced checkout in the new currency.
 - **paint-a-fix should show a before/after diff and warn when the masked region barely changed** _(Pixelbake)_
-  An sd15-inpaint fix on a third hand returned a success line and cost one credit, but the extra hand was still there; a flux-2-dev re-bake fixed the pose.
+  An [model id] fix on a third hand returned a success line and cost one credit, but the extra hand was still there; a [model id] re-bake fixed the pose.
   <br>*Why:* A fix that silently does nothing wastes credits and leaves a visible AI artefact in a shipped creative.
   <br>*How:* Compare pixels inside the rectangle before and after, warn below a change threshold, and offer a remove-object mode using a klein edit with the original as reference.
 - **Reports are append-only, so republishing creates a new id and the already-shared link keeps saying 'Not shipped yet'** _(Aprizely)_
@@ -1492,7 +1492,7 @@
   <br>*Why:* A zero is a claim (it is free); an unknown is not. Margins and free-tier logic built on 0 are wrong in the user's favour and invisible.
   <br>*How:* Represent unknown as null/NA, make cost consumers throw or label 'unpriced', exclude NA models from free-pool logic, and only quote numbers copied from the published rate card (worker.js:73-91, 841).
 - **Enforce append-only at the database with triggers, not by convention** _(PatentCake)_
-  D1 triggers RAISE on UPDATE and DELETE of the registry tables, so a bug or a rogue caller cannot edit or remove a disclosure.
+  [database] triggers RAISE on UPDATE and DELETE of the registry tables, so a bug or a rogue caller cannot edit or remove a disclosure.
   <br>*Why:* An evidence registry is only worth anything if history cannot be rewritten; code review alone does not guarantee it.
   <br>*How:* CREATE TRIGGER ... BEFORE UPDATE/DELETE ... SELECT RAISE(ABORT,'append-only'); add a test that attempts both and expects failure; corrections are new rows that reference the old id.
 - **Optimistic lock (rev) on envelope save to stop two tabs overwriting each other** _(Fullfill)_
@@ -1576,15 +1576,15 @@
   <br>*Why:* It stopped a costlier, slower pipeline from shipping on a false win, and it was reverted openly.
   <br>*How:* Change one variable at a time on the same low-res source and compare matched crops at equal display size. Keep a result only if it survives the controlled re-run, and revert and say so if it does not.
 - **Price labels must come from the same function that bills (live /api/estimate), never hardcoded** _(Pixelbake)_
-  The 'Bake the fix - 2 credits' button hardcoded a price while creditsFor() scaled by model and size (42 for FLUX.2 dev, 8 for klein-4b at 2048 square). The same static-label pattern was reported on the re-engineer compare and carousel fix buttons but not verified.
+  The 'Bake the fix - 2 credits' button hardcoded a price while creditsFor() scaled by model and size (42 for [image model], 8 for klein-4b at 2048 square). The same static-label pattern was reported on the re-engineer compare and carousel fix buttons but not verified.
   <br>*Why:* A wrong price label on a credit product is a trust and refund problem.
   <br>*How:* Render the button without a number, call the estimate endpoint on open and on every model or size change, and write credits_needed into the label; grep every button that triggers a billable bake.
 - **Show a VLM identity-match score, label it an estimate, and require a likeness-consent acknowledgement** _(Pixelbake)_
-  Each character bake runs a vision check and shows 'identity match N/10 - off: nose, eyebrows, lips'. Workers AI has no face-embedding model, so the UI says this is an AI estimate, not biometric. Saving a person requires a consent tick (NO FAKES / GDPR / EU AI Act).
+  Each character bake runs a vision check and shows 'identity match N/10 - off: nose, eyebrows, lips'. [AI platform] has no face-embedding model, so the UI says this is an AI estimate, not biometric. Saving a person requires a consent tick (NO FAKES / GDPR / EU AI Act).
   <br>*Why:* It surfaces the signal competitors hide, avoids overclaiming accuracy, and covers likeness-rights exposure. Observed scores: 9/10, 8/10 and 6/10.
   <br>*How:* Two-step vision check returning {score, same, off[]}, with the score shown as a lightbox chip, an honest-limits note (profiles, expressions, aging) and a mandatory consent checkbox on save.
 - **Charge for a paid AI call only after provider success, and say 'Nothing was charged' on failure** _(cross-cutting)_
-  The Pruna 'Insufficient AI Gateway credits' failure returned a 502 with 'Nothing was charged.', and credits were debited only after the output was stored.
+  The [model provider] 'Insufficient [billing gateway] credits' failure returned a 502 with 'Nothing was charged.', and credits were debited only after the output was stored.
   <br>*Why:* Provider billing and quota errors are common and must never cost the user credits.
   <br>*How:* Run the call, validate and store the output, then debit with the image id as the reference. Map provider error codes to plain-English messages and log an 'issue' event.
 - **Derive the registry's count from the array length at deploy, and keep a single served modules.json** _(Coco Modules)_
@@ -1620,7 +1620,7 @@
   <br>*Why:* Three published artifacts disagreed with the study folder until the user was told; the verdict held but the ranking they showed did not.
   <br>*How:* Gate publishing on all lanes returning, or label outputs 'preliminary - lane N pending' and re-publish the dashboard URL and recap in place when the last lane folds in.
 - **State what a plan multiplier applies to: Max 5x/20x is per 5-hour session, not total weekly capacity** _(cross-cutting)_
-  Counter-evidence kept in the report: the 5x/20x multipliers apply to the 5-hour session cap, so the effective weekly boost is about 3.5x (Max 5x) and 6-8x (Max 20x); Anthropic published weekly hour ranges in July 2025 then removed them; a June 2026 class action alleges deceptive marketing over exactly this.
+  Counter-evidence kept in the report: the 5x/20x multipliers apply to the 5-hour session cap, so the effective weekly boost is about 3.5x (Max 5x) and 6-8x (Max 20x); [model provider] published weekly hour ranges in July 2025 then removed them; a June 2026 class action alleges deceptive marketing over exactly this.
   <br>*Why:* A flat-vs-metered comparison that treats the headline multiplier as total capacity overstates the subscription's value and reads as a marketing claim.
   <br>*How:* In any subscription-vs-API calculator or report show the per-session and per-week limits separately, tag the weekly numbers SIGNAL unless the vendor publishes them, and lead with the monthly-recurring versus one-time-top-up difference.
 - **State plainly which platforms a link-fetch cannot read instead of faking a bypass** _(Hallalu CRM)_
@@ -1632,7 +1632,7 @@
   <br>*Why:* The top unmet need was a link that confirms it landed; it can be delivered without collecting personal data, which keeps the privacy positioning honest.
   <br>*How:* Log events with token, kind, file id and timestamp only, derive counts from the event table, and exclude owner previews with an explicit preview flag.
 - **Assert that a gauge's drawn fraction equals the number printed inside it, since 59 green tests still shipped a ring that contradicted its label** _(cross-cutting)_
-  The ring filled as Neurons were spent while the centre number counted down what was left; only looking at the page found it, after which a test reading the stroke-dasharray from the HTML was added
+  The ring filled as [compute units] were spent while the centre number counted down what was left; only looking at the page found it, after which a test reading the stroke-dasharray from the HTML was added
   <br>*Why:* Unit assertions on numbers cannot see a visual encoding that disagrees with its label
   <br>*How:* For every gauge, bar or ring: render, read the drawn length, and assert it equals the printed value over the maximum, in the empty, full and over-limit cases
 - **Cluster near-duplicate catalogue items into canonical classes with per-app instances so coverage is not padded** _(Bug Ledger)_
@@ -1647,10 +1647,10 @@
   Coverage matches normalised title strings, so credit required reverse-engineering the exact catalogue wording; a submitted fix with file:line is taken on trust and nothing watches whether it stays fixed
   <br>*Why:* Title matching rewards string gaming, and found-once is not the same as stays-fixed
   <br>*How:* Give every item an id used for matching, attach a detector signature, re-run it when a fix is submitted to confirm the pattern is gone, and flag a regression on any later scan where it returns
-- **Copy the vendor's published unit (Neurons) and derive money from it, never re-derive the unit from rounded dollar figures** _(Joy Day)_
-  Cloudflare lists both a dollar rate and a Neurons rate; flux-2-dev's rounded $0.00041 implies 37.27 N while the published column says 37.50, and input tiles were priced separately from output tiles
+- **Copy the vendor's published unit ([compute units]) and derive money from it, never re-derive the unit from rounded dollar figures** _(Joy Day)_
+  [host] lists both a dollar rate and a [compute units] rate; [model id]'s rounded $0.00041 implies 37.27 N while the published column says 37.50, and input tiles were priced separately from output tiles
   <br>*Why:* A rate card that disagrees with the vendor's own unit in the third significant figure makes every derived scenario, projection and budget slightly wrong, and the error compounds with volume
-  <br>*How:* Store the published Neurons column verbatim with a read date and source URL, compute dollars at request time from one overage constant, and add a test that recomputes each model's cost by hand arithmetic
+  <br>*How:* Store the published [compute units] column verbatim with a read date and source URL, compute dollars at request time from one overage constant, and add a test that recomputes each model's cost by hand arithmetic
 - **When asked for '1,000+ per section', publish the honest count against the real full-suite size and let the owner choose** _(Finished.)_
   A per-section audit table (for example GRE 3,500 canonical, GMAT 750 to 1,000, Latin phrases 300 to 500 authentic, literary terms 300 to 500 real) replaced padding; the owner then chose which gaps to fund.
   <br>*Why:* Padding with shared banks produced 'dead' in SAT and 'able, about, above' in Travel, which users noticed immediately.
@@ -1779,7 +1779,7 @@
   After publishing, the report was checked against REPORT.md and found to omit segments, ranked requests, switching reasons, the full competitor list and search signals. Because the archive is append-only, a 'Full Record' companion report was added and the first left untouched.
   <br>*Why:* 'Nothing dropped' was claimed before it was checked; the short report alone would have lost most of the evidence.
   <br>*How:* List the research file's headings, tick each against the report blocks before calling it done, and ship gaps as a linked companion slug.
-- **Single-pass BiRefNet drops low-contrast parts (paws under grass); fuse three passes and guide the edge with the photo** _(Pixelbake)_
+- **Single-pass [cut-out model] drops low-contrast parts (paws under grass); fuse three passes and guide the edge with the photo** _(Pixelbake)_
   One pass removed the bottoms of a dog's paws wherever grass blades crossed them and kept the grass. The new default runs the frame, its mirror and a 2x crop of the subject box, keeps any pixel a pass found, then applies a guided filter so the uncertain band snaps to real fur edges. On the same photo 1,312 pixels were recovered exactly at the paws, while the glass bottle and portrait masks barely changed.
   <br>*Why:* The owner compared it with Canva; the accuracy gain had to come from driving the available model harder, at the same 1 credit.
   <br>*How:* Decode the PNG mattes inside the Worker (src/matte.js), union the three alphas, guided-filter against the source luminance; expect about 5.7 s on a 1024 square instead of 1.5 s, so keep a --fast single-pass option and return recovered-pixel stats so the gain is measurable.
@@ -1790,23 +1790,23 @@
 - **Forgot-passcode by emailed code: the limits and side effects that made it safe on a shared passcode** _(Joy)_
   One shared passcode guards Joy Mail, Cloud and Broadcast. Recovery emails a 6-digit code that works once, lasts 15 minutes, allows 5 tries and at most 3 sends per 15 minutes; a new send retires the previous code. A reset signs every device out of all three apps and emails a 'passcode changed' notice. Saving a recovery address sends a test email first and tells the old address about the change. The recovery inbox must be outside the system being recovered. After the first reset the new passcode lives as a salted hash in the database and the original Worker secret no longer applies.
   <br>*Why:* A short numeric passcode plus an emailed code is only as strong as its throttles, and a recovery address inside the locked mailbox is unreadable exactly when it is needed.
-  <br>*How:* One recovery module on the auth owner (Mail) with the other apps forwarding to it; refuse with a clear message when no recovery address is saved; prove wrong code, retired code, reused ticket, old passcode, old session and a fourth send are all refused. In wrangler dev the code can be read from the simulated .eml under .wrangler/tmp/email.
+  <br>*How:* One recovery module on the auth owner (Mail) with the other apps forwarding to it; refuse with a clear message when no recovery address is saved; prove wrong code, retired code, reused ticket, old passcode, old session and a fourth send are all refused. In [deploy tool] dev the code can be read from the simulated .eml under .[deploy tool]/tmp/email.
 - **Let a logged time entry be corrected after saving, but keep the original figure and mark the row 'adjusted'** _(Hallalu CRM)_
   A work-log timer left running overstated a session. Each logged row now has a Time button: type the hours and minutes actually worked, or set the real end time and subtract breaks, with a preview of exactly what the row will read. The original timed figure stays on the entry, the row shows an 'adjusted' tag, the change is written to the activity feed, and day, week and analysis totals recompute. Because the recorded pause pattern can no longer be true, the strip collapses to one work stretch plus one break block rather than a stretched copy.
   <br>*Why:* A log that cannot be corrected is wrong for ever, and one that is silently rewritten cannot be trusted for billing.
   <br>*How:* Store originalMs alongside the edited value, flag the entry, derive all totals from the edited value, and never scale old interval data to fit a new duration.
 - **Judge a character swap on screens, mirrors and reflections too — not just the main subject** _(Pixelbake)_
-  Test swap 1 (P-Video-Replace) replaced the person perfectly, but the camera LCD in the shot still showed the original woman.
+  Test swap 1 ([video model]-Replace) replaced the person perfectly, but the camera LCD in the shot still showed the original woman.
   <br>*Why:* A swap can be perfect on the body yet leave the old identity visible in any reflective surface in frame.
   <br>*How:* Add to the judging rules: check any screen, mirror or reflection in the frame; crop the shot or note it before delivery.
 - **Animate-mode swaps transfer the face but can miss an arm gesture — check gestures, not just the face** _(Pixelbake)_
-  Test swap 2 (P-Video-Animate, 3s): identity and talking face held in all 4 sampled frames, but a hand wave at 1s did not carry over — hands stayed clasped.
+  Test swap 2 ([video model]-Animate, 3s): identity and talking face held in all 4 sampled frames, but a hand wave at 1s did not carry over — hands stayed clasped.
   <br>*Why:* Face-driven swap models can hold identity while dropping body/gesture motion, so a face-only check passes a broken clip.
   <br>*How:* Compare the original and the swap at the second of each gesture; for gesture-heavy clips prefer replace mode (which carried the raised hand in test 1), or run again.
 - **Cinematic realism needs a scene engine, not a lip-sync head model** _(Pixelbake)_
-  Pruna P-Video-Avatar renders a clean, CGI-leaning talking head; the owner compared it with Kling and Higgsfield whose top tiers generate the whole scene with native speech.
+  [model provider] [video model]-Avatar renders a clean, CGI-leaning talking head; the owner compared it with [video model] and [model provider] whose top tiers generate the whole scene with native speech.
   <br>*Why:* Avatar/lip-sync models animate a head, so they can't match a scene-level generator's realism for cinematic shots.
-  <br>*How:* Offer a Cinema engine (e.g. ByteDance Seedance 2.0 on Cloudflare) that renders the scene and the dialogue together from the picture; keep the cheap avatar engine for exact script reads.
+  <br>*How:* Offer a Cinema engine (e.g. [model provider] [video model] 2.0 on [host]) that renders the scene and the dialogue together from the picture; keep the cheap avatar engine for exact script reads.
 - **Estimate speech length by the voice, not by the letters** _(Pixelbake)_
   Three talking scenes: 71 letters → 7.0s, 55 → 8.0s, 41 → 8.0s; a 14-letters-per-second estimate undercharged the preview and overshot a 5s target.
   <br>*Why:* Speech duration tracks pacing/voice, not character count, so a letters-per-second estimate mis-prices and mis-times.
