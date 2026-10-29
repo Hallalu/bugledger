@@ -817,7 +817,7 @@
   <br>*Why:* Copies silently diverge: a fix to one copy never reaches the others, and nobody notices until a view behaves differently across apps.
   <br>*How:* Add a version and checksum header to every module, publish checksums in modules.json, and ship a small modules-check command that compares each app's local copy with the registry, prints which are behind, and runs from the deploy script.
 - **Do media decoding in the browser and keep [AI platform] for model calls: audio chunks + one frame per second, then [speech model] and [language model] vision** _(Hallalu CRM)_
-  The video-study engine decodes audio and grabs a frame per second in the browser, detects cuts for the shot map, sends chunked audio to [speech model] (offset-stitched) and each frame to [language model] 3.2 vision on the AI binding, then makes one synthesis call and falls back to a no-AI structural teardown when the AI is off.
+  The video-study engine decodes audio and grabs a frame per second in the browser, detects cuts for the shot map, sends chunked audio to [speech model] (offset-stitched) and each frame to [language model] vision on the AI binding, then makes one synthesis call and falls back to a no-AI structural teardown when the AI is off.
   <br>*Why:* Workers cannot run ffmpeg-style extraction; moving decode client-side keeps the Worker within CPU limits and makes the heavy model work free-ish, high-volume and keyless.
   <br>*How:* Extract audio/frames with Web Audio and canvas, normalise nested [speech model] segments[].words[] on the server, degrade per frame when vision errors (8007/3030) and keep the transcript-only shot.
 - **[host] free-tier 100K requests/day is ACCOUNT-wide, shared across ALL Workers** _(cross-cutting)_
@@ -901,7 +901,7 @@
   <br>*Why:* The engine previously checked sign-in only, so failures either cost the user or the owner. Reserve-first closes the race where parallel requests overspend, and refund-on-failure keeps 'failed generations are free' true.
   <br>*How:* Add usage + plan tables, wrap each paid route in reserve -> run -> refund(failed count), keep limits in env vars, and test with a stubbed AI binding that fails 0/some/all items plus one cheap real run locally with tiny limits.
 - **Split one big JSON-mode analysis into two focused calls (hooks, then blueprint)** _(Postfactory)_
-  A single [language model] 3.3 JSON-mode call returning hooks, beats, CTAs, lifecycle and a blueprint kept returning a short shot list and script even after stricter prompt minimums. Splitting into hooks -> blueprint gave complete output.
+  A single [language model] JSON-mode call returning hooks, beats, CTAs, lifecycle and a blueprint kept returning a short shot list and script even after stricter prompt minimums. Splitting into hooks -> blueprint gave complete output.
   <br>*Why:* Small models under JSON mode truncate the last, largest field; tightening the prompt did not fix it.
   <br>*How:* Run the extraction pass first, then pass its result into a second call that only writes the blueprint; log each model call's cost separately.
 - **Background removal on [host]: use the Images binding segment:'foreground' ([cut-out model]), because [AI platform] has no segmentation model** _(Pixelbake)_
@@ -1285,7 +1285,7 @@
   <br>*Why:* Headless/remote-debugging Chrome lists several targets (omnibox, extensions, service workers); capturing the first one produces silent empty output that reads as a slow render.
   <br>*How:* Filter targets by type==='page' and exclude title /Omnibox/, log the chosen target's title and url, poll for the PNG instead of waiting on process exit, and kill the profile's Chrome before re-running.
 - **Prove [AI platform] model shapes with a [deploy tool] dev --remote harness before shipping, not from the docs** _(Hallalu CRM)_
-  With no admin session available, a throwaway remote-dev harness exercised the real [speech model] and [language model] 3.2 vision bindings and found two schema bugs the docs and tutorial had misled (word timestamps nested in segments[].words[]; image requests need prompt, not messages) plus a false-positive 8007 NSFW rejection on a plain red square.
+  With no admin session available, a throwaway remote-dev harness exercised the real [speech model] and [language model] vision bindings and found two schema bugs the docs and tutorial had misled (word timestamps nested in segments[].words[]; image requests need prompt, not messages) plus a false-positive 8007 NSFW rejection on a plain red square.
   <br>*Why:* Unit checks and rendered UI had all passed; only the real binding exposed the shape mismatches that would have blanked every shot's spoken line and failed every frame.
   <br>*How:* Start [deploy tool] dev --remote on a spare port with a tiny /t/* route per model, send a spoken sentence and a benign generated image, assert the response keys, then delete the harness and record the proven shapes.
 - **Verify a fixed overlay with an elementFromPoint overlap sweep across pages and viewports** _(Abba)_
@@ -1806,7 +1806,7 @@
 - **Cinematic realism needs a scene engine, not a lip-sync head model** _(Pixelbake)_
   [model provider] [video model]-Avatar renders a clean, CGI-leaning talking head; the owner compared it with [video model] and [model provider] whose top tiers generate the whole scene with native speech.
   <br>*Why:* Avatar/lip-sync models animate a head, so they can't match a scene-level generator's realism for cinematic shots.
-  <br>*How:* Offer a Cinema engine (e.g. [model provider] [video model] 2.0 on [host]) that renders the scene and the dialogue together from the picture; keep the cheap avatar engine for exact script reads.
+  <br>*How:* Offer a Cinema engine (e.g. [model provider] [video model] on [host]) that renders the scene and the dialogue together from the picture; keep the cheap avatar engine for exact script reads.
 - **Estimate speech length by the voice, not by the letters** _(Pixelbake)_
   Three talking scenes: 71 letters → 7.0s, 55 → 8.0s, 41 → 8.0s; a 14-letters-per-second estimate undercharged the preview and overshot a 5s target.
   <br>*Why:* Speech duration tracks pacing/voice, not character count, so a letters-per-second estimate mis-prices and mis-times.

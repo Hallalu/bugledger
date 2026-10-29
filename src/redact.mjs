@@ -17,7 +17,8 @@ const CATEGORIES = [
   ['[runtime]', ['workerd']],
   ['[compute units]', ['Neurons', 'neurons', 'Neuron', 'neuron']],
   ['[image model]', ['Black Forest Labs FLUX', 'FLUX.2 klein', 'FLUX.2 dev', 'FLUX.2', 'FLUX.1', 'FLUX', 'Stable Diffusion', 'SDXL',
-    'Lucid Origin', 'Seedream', 'Imagen', 'DALL-E', 'DALL·E', 'Nano Banana', 'klein 9B', 'klein 4B', 'klein-9b', 'klein-4b', 'klein', 'schnell']],
+    'Lucid Origin', 'Seedream', 'Imagen', 'DALL-E', 'DALL·E', 'Nano Banana', 'klein 9B', 'klein 4B', 'klein-9b', 'klein-4b', 'klein', 'schnell', 'Flash Image']],
+  ['[provider watermark]', ['SynthID']],
   ['[video model]', ['Seedance', 'Kling', 'Hailuo', 'MiniMax', 'P-Video', 'Runway', 'Veo', 'Sora', 'Wan2', 'Hunyuan']],
   ['[speech model]', ['Grok STT', 'Whisper', 'Deepgram', 'Nova-3', 'Aura-2', 'Inworld', 'TTS-2', 'ElevenLabs']],
   ['[language model]', ['Claude Opus', 'Claude Sonnet', 'Claude Haiku', 'Opus 5.5', 'Sonnet 5.5', 'Haiku 5.5', 'GPT-5', 'GPT-4o', 'GPT-4',
@@ -61,6 +62,8 @@ export function makeRedactor(extra = []) {
     s = s.replace(IDENT, '[code name]');
     s = s.replace(words, (m) => label.get(m.toLowerCase()) || '[AI model or provider]');
     s = s.replace(exact, (m) => exactLabel.get(m) || m);
+    /* a version number left right after a placeholder still identifies the model ("[language model] 3.1") */
+    s = s.replace(/(\[(?:image|video|speech|language) model\]) v?\d+(?:\.\d+)+\b/g, '$1');
     return s.replace(/\u0000(\d+)\u0000/g, (_, i) => kept[+i]);
   };
 }

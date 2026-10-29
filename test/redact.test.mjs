@@ -56,3 +56,7 @@ test('camelCase code names and short model names are caught', () => {
     'Cause: [code name](env) and [code name]; [image model] worked; a [image model] generation; [image model] drafts');
   assert.equal(r('Claude Code wrote claudeCode notes'), 'Claude Code wrote [code name] notes');
 });
+
+test('model versions and provider watermarks do not give the model away', () => {
+  assert.equal(r('first shipped on Gemini 3.1 Flash Image, which carries SynthID'), 'first shipped on [language model] [image model], which carries [provider watermark]');
+});
