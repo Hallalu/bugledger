@@ -8962,5 +8962,41 @@
     "status": "unverified",
     "session": "67a5388a",
     "found": "2026-10-29"
+  },
+  {
+    "key": "1484393e:deletingitreclaims33gbandisreversiblecolimastartreprovisions",
+    "app": "Hallalu CRM",
+    "title": "Deleting it reclaims 3.3 GB and is reversible (colima start re-provisions), but it…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Deleting it reclaims 3.3 GB and is reversible (`colima start` re-provisions), but it re-downloads images next deploy — that's why I didn't touch it without your say-so.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "1484393e",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "67a5388a:whyeditingongitbagelaloneisntenoughicouldeditcodetherebutico",
+    "app": "Hallalu CRM",
+    "title": "Why editing on GitBagel alone isn't enough: I could edit code there, but I couldn't run…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Why editing on GitBagel alone isn't enough:** I could edit code there, but I couldn't run the app, deploy, run tests, preview in the browser or use image tools.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "67a5388a",
+    "found": "2026-10-29"
+  },
+  {
+    "key": "c8c7222e:correctionthefixisntonabranchyet",
+    "app": "Hallalu CRM",
+    "title": "Correction: the fix isn't on a branch yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Correction: the fix isn't on a branch yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "c8c7222e",
+    "found": "2026-10-29"
   }
 ]

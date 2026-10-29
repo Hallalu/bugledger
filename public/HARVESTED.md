@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-747 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+750 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (495)
+## Hallalu CRM (498)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -499,6 +499,9 @@
 - [ ] `low` `other` (2026-10-29, #1dc68bbe) — That part didn't happen on screen.
 - [ ] `low` `other` (2026-10-29, #16d4b621) — That kind of window wasn't allowed in the browser pane, so I haven't seen it yet.
 - [ ] `low` `other` (2026-10-29, #67a5388a) — $5 is the fixed monthly [host] plan.
+- [ ] `low` `other` (2026-10-29, #1484393e) — Deleting it reclaims 3.3 GB and is reversible (colima start re-provisions), but it…
+- [ ] `low` `other` (2026-10-29, #67a5388a) — Why editing on GitBagel alone isn't enough: I could edit code there, but I couldn't run…
+- [ ] `low` `other` (2026-10-29, #c8c7222e) — Correction: the fix isn't on a branch yet.
 
 ## Finished. (98)
 
