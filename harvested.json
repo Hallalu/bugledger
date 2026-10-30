@@ -9130,5 +9130,89 @@
     "status": "unverified",
     "session": "1484393e",
     "found": "2026-10-29"
+  },
+  {
+    "key": "5124e931:theothersessionsuncommittededitsincoconvoarestilluncommitted",
+    "app": "Hallalu CRM",
+    "title": "Other session's uncommitted edits in /coconvo are still uncommitted and didn't go live.",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The other session's uncommitted edits in `~/coconvo` are still uncommitted and didn't go live.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5124e931",
+    "found": "2026-10-30"
+  },
+  {
+    "key": "5124e931:stillopenfrombeforethegitbagelmirrortherepoisprivatetheshare",
+    "app": "Hallalu CRM",
+    "title": "Still open from before: the GitBagel mirror (the repo is private), the shared modules…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Still open from before: the GitBagel mirror (the repo is private), the shared modules registry entry for the new notifications module, and the small game-ending error at `public/companion/games.js:22…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5124e931",
+    "found": "2026-10-30"
+  },
+  {
+    "key": "5124e931:thestringlightscrashagain",
+    "app": "Hallalu CRM",
+    "title": "String-lights crash again.",
+    "category": "crash",
+    "severity": "high",
+    "symptom": "The string-lights crash again.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5124e931",
+    "found": "2026-10-30"
+  },
+  {
+    "key": "97ec418b:riskybiggerthanasurgicalfixanythingthatisntaconfidentonespot",
+    "app": "Hallalu CRM",
+    "title": "- Risky / bigger than a surgical fix — anything that isn't a confident one-spot change…",
+    "category": "race",
+    "severity": "medium",
+    "symptom": "- **Risky / bigger than a surgical fix** — anything that isn't a confident one-spot change (a concurrent-checkout race, Stripe/legal items).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-30"
+  },
+  {
+    "key": "97ec418b:sincethehighlightersoutputgoesintotextcontentescapingwasntne",
+    "app": "Hallalu CRM",
+    "title": "Since the highlighter's output goes into text content, escaping \" wasn't needed and it…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Since the highlighter's output goes into text content, escaping `\"` wasn't needed and it breaks the CSS/JSON string tokenizers.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-30"
+  },
+  {
+    "key": "97ec418b:ineedtoseewpurltofixitattherootwhichalsofixesthelatentwallpa",
+    "app": "Hallalu CRM",
+    "title": "Need to see wpUrl to fix it at the root (which also fixes the latent wallpaper bug).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I need to see `wpUrl` to fix it at the root (which also fixes the latent wallpaper bug).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-30"
+  },
+  {
+    "key": "b2726693:flagsforstaleorghostjobspartlybuilt3",
+    "app": "Hallalu CRM",
+    "title": "Flags for stale or ghost jobs (partly built) 3.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Flags for stale or ghost jobs (partly built) 3.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b2726693",
+    "found": "2026-10-30"
   }
 ]
