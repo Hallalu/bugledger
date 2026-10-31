@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-787 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+796 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (532)
+## Hallalu CRM (539)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -71,6 +71,8 @@
 - [ ] `high` `security` (2026-10-31, #7dda19ea) — If .verify/tok was a real sign-in token, you can cancel it by resetting your Kindly…
 - [ ] `high` `auth` (2026-10-31, #67a5388a) — Old test sign-in file that went missing was removed by that session, so nothing is broken.
 - [ ] `high` `auth` (2026-10-31, #7dda19ea) — One update from the Chrome extension session: it was the one that removed the old test…
+- [ ] `high` `auth` (2026-10-31, #67a5388a) — Session didn't mention this.
+- [ ] `high` `auth` (2026-10-31, #7b5f0e23) — Wave 6 needs no work from me: the redesign session has fixed the stale icon issue.
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -536,6 +538,11 @@
 - [ ] `low` `other` (2026-10-31, #7dda19ea) — Feature list didn't show in the upload output I read, so I'll check it's in that folder.
 - [ ] `low` `other` (2026-10-31, #5907dd6e) — Working tree here isn't just my checkmark.
 - [ ] `low` `other` (2026-10-31, #5907dd6e) — This puts the security fix + everything else live too.
+- [ ] `low` `other` (2026-10-31, #01053afd) — Quality check's calls work, and the only difference was a separate system field in the…
+- [ ] `low` `other` (2026-10-31, #6754dce7) — It's committed as 1e8bfd8 and pushed to GitHub and GitBagel, but it isn't live yet.
+- [ ] `low` `other` (2026-10-31, #7b5f0e23) — They need a signed-in account and I didn't create one on the live site; they were fully…
+- [ ] `low` `other` (2026-10-31, #97ec418b) — PlannerStudio and gitbagel include my two regression repairs.
+- [ ] `low` `ui` (2026-10-31, #cfa2ffb8) — Five checker rules were wrong about the new layout and were fixed with known-fault…
 
 ## Finished. (99)
 
@@ -639,7 +646,7 @@
 - [ ] `low` `other` (2026-10-12, #16382522) — Demo photos fixed. Let me log the before/after to Aprizely and record the bug, then…
 - [ ] `low` `ui` (2026-10-31, #3dc4ad5a) — One test failed and the help cut off its last line.
 
-## Listing Lab Pro (44)
+## Listing Lab Pro (46)
 
 - [ ] `critical` `data-loss` (2026-10-29, #3d18c147) — A first render of the hero and iPad photos lost their layout; I fixed it and confirmed…
 - [ ] `high` `auth` (2026-08-26, #61999ed8) — Two prominent stats in my deck are wrong, and two agents failed on a session limit (now…
@@ -685,6 +692,8 @@
 - [ ] `low` `other` (2026-10-29, #3d18c147) — First attempt had run away because of a scripting bug that made frames four times too…
 - [ ] `low` `other` (2026-10-31, #97ec418b) — Real bug is isolated to cssHl (line 100): its value capture [^;}]+ stops at the ;…
 - [ ] `low` `other` (2026-10-31, #97ec418b) — Fixing wpUrl repairs trip photos and the latent wallpaper bug.
+- [ ] `low` `other` (2026-10-31, #34a8eccc) — - No customer count. The public copy doesn't mention how many paying customers you have.
+- [ ] `low` `other` (2026-10-31, #34a8eccc) — That page doesn't mention the 500-subscriber tier, so I left it out of the public copy.
 
 ## Stitchhooky (38)
 

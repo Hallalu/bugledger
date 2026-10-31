@@ -9442,5 +9442,113 @@
     "status": "unverified",
     "session": "5907dd6e",
     "found": "2026-10-31"
+  },
+  {
+    "key": "01053afd:thequalitycheckscallsworkandtheonlydifferencewasaseparatesys",
+    "app": "Hallalu CRM",
+    "title": "Quality check's calls work, and the only difference was a separate system field in the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The quality check's calls work, and the only difference was a separate system field in the request, so the reading now travels in the user message with a server log line if it ever fails again.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "01053afd",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "34a8eccc:nocustomercountthepubliccopydoesntmentionhowmanypayingcustom",
+    "app": "Listing Lab Pro",
+    "title": "- No customer count. The public copy doesn't mention how many paying customers you have.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **No customer count.** The public copy doesn't mention how many paying customers you have.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "34a8eccc",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "34a8eccc:thatpagedoesntmentionthe500subscribertiersoileftitoutofthepu",
+    "app": "Listing Lab Pro",
+    "title": "That page doesn't mention the 500-subscriber tier, so I left it out of the public copy.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That page doesn't mention the 500-subscriber tier, so I left it out of the public copy.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "34a8eccc",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "6754dce7:itscommittedas1e8bfd8andpushedtogithubandgitbagelbutitisntli",
+    "app": "Hallalu CRM",
+    "title": "It's committed as 1e8bfd8 and pushed to GitHub and GitBagel, but it isn't live yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It's committed as `1e8bfd8` and pushed to GitHub and GitBagel, but it isn't live yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6754dce7",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "67a5388a:thesessiondidntmentionthis",
+    "app": "Hallalu CRM",
+    "title": "Session didn't mention this.",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The session didn't mention this.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "67a5388a",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7b5f0e23:theyneedasignedinaccountandididntcreateoneonthelivesitetheyw",
+    "app": "Hallalu CRM",
+    "title": "They need a signed-in account and I didn't create one on the live site; they were fully…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "They need a signed-in account and I didn't create one on the live site; they were fully tested on the local copy earlier.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7b5f0e23",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7b5f0e23:wave6needsnoworkfrommetheredesignsessionhasfixedthestaleicon",
+    "app": "Hallalu CRM",
+    "title": "Wave 6 needs no work from me: the redesign session has fixed the stale icon issue.",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "Wave 6 needs no work from me: the redesign session has fixed the stale icon issue.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7b5f0e23",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "97ec418b:plannerstudioandgitbagelincludemytworegressionrepairs",
+    "app": "Hallalu CRM",
+    "title": "PlannerStudio and gitbagel include my two regression repairs.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "PlannerStudio and gitbagel include my two regression repairs.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "cfa2ffb8:fivecheckerruleswerewrongaboutthenewlayoutandwerefixedwithkn",
+    "app": "Hallalu CRM",
+    "title": "Five checker rules were wrong about the new layout and were fixed with known-fault…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Five checker rules were wrong about the new layout and were fixed with known-fault tests, then saved back into the skill.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "cfa2ffb8",
+    "found": "2026-10-31"
   }
 ]
