@@ -352,7 +352,7 @@
   function stateBadge(s){
     if (s.state === 'done') return '<span class="state done"><span class="pip"></span>Finished</span>';
     if (s.state === 'ended') return '<span class="state ended"><span class="pip"></span>Closed</span>';
-    if (s.state === 'needs') return '<span class="state needs"><span class="pip live"></span>Needs your OK</span>';
+    if (s.state === 'needs') return '<span class="state needs"><span class="pip live"></span>' + (s.chat && /question/i.test(s.chat.need || '') ? 'Asked you a question' : 'Needs your OK') + '</span>';
     if (s.state === 'waiting') return '<span class="state waiting"><span class="pip"></span>Your turn' + (s.chat && s.chat.endAt ? '<span class="bt"> · <span data-ago="' + s.chat.endAt + '">' + B.ago(s.chat.endAt - skew) + '</span></span>' : '') + '</span>';
     if (s.state === 'quiet') return '<span class="state quiet"><span class="pip"></span>Quiet ' + esc(short(now() - s.updated)) + '</span>';
     return '<span class="state working"><span class="pip live"></span>Working now</span>';
@@ -532,14 +532,15 @@
     open.forEach(function(s){ (s.tasks || []).forEach(function(t){ steps++; if (t.status === 'done') stepsDone++; }); acts += s.actCount || 0; if (s.kind === 'chat') chats++; });
     var working = live.filter(function(s){ return s.state === 'working'; }).length, quiet = live.filter(function(s){ return s.state === 'quiet'; }).length, needs = live.filter(function(s){ return s.state === 'needs'; }).length;
     document.getElementById('stats').innerHTML = [
-      ['Working now', working + (quiet ? '<small>+' + quiet + ' quiet</small>' : ''), 'chats and boards'],
-      ['Waiting for you', (wait.length + needs) + (needs ? '<small>' + needs + ' need your OK</small>' : ''), 'their turn is done'],
-      ['Chats open', data.owner ? chats : '–', data.owner ? 'on this Mac' : 'sign in to see them'],
+      // without the key only public boards are counted, so a 0 there would hide chats that are working: show – instead
+      ['Working now', !data.owner && !working ? '–' : working + (quiet ? '<small>+' + quiet + ' quiet</small>' : ''), data.owner ? 'chats and boards' : 'enter your key to count your chats'],
+      ['Waiting for you', !data.owner && !(wait.length + needs) ? '–' : (wait.length + needs) + (needs ? '<small>' + needs + ' need you</small>' : ''), data.owner ? 'their turn is done' : 'enter your key to count your chats'],
+      ['Chats in use', data.owner ? chats : '–', data.owner ? 'used in the last 12 hours' : 'enter your key to see them'],
       ['Steps done', stepsDone + '<small>/ ' + steps + '</small>', 'across every plan'],
       ['Overall', (steps ? Math.round(stepsDone / steps * 100) : 0) + '<small>%</small>', 'of every step'],
       ['Actions', B.fmtN(acts), 'tool calls so far']
     ].map(function(x){ return '<div class="stat plain"><span class="l">' + x[0] + '</span><span class="n">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
-    document.getElementById('liveMeta').textContent = [working ? working + ' working' : '', quiet ? quiet + ' quiet' : '', needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' your OK' : ''].filter(Boolean).join(' · ');
+    document.getElementById('liveMeta').textContent = [working ? working + ' working' : '', quiet ? quiet + ' quiet' : '', needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' you' : ''].filter(Boolean).join(' · ');
     var keep = {};
     placeCards(live, document.getElementById('sessions'), keep);
     placeCards(wait, document.getElementById('waiting'), keep);
@@ -576,7 +577,7 @@
   function renderLanes(live){
     var wrap = document.getElementById('lanesWrap'); wrap.hidden = live.length < 1;
     var cnt = function(st){ return live.filter(function(s){ return s.state === st; }).length; }, parts = [];
-    if (cnt('needs')) parts.push(cnt('needs') + ' need your OK'); if (cnt('working')) parts.push(cnt('working') + ' working'); if (cnt('quiet')) parts.push(cnt('quiet') + ' quiet'); if (cnt('waiting')) parts.push(cnt('waiting') + ' your turn');
+    if (cnt('needs')) parts.push(cnt('needs') + ' need you'); if (cnt('working')) parts.push(cnt('working') + ' working'); if (cnt('quiet')) parts.push(cnt('quiet') + ' quiet'); if (cnt('waiting')) parts.push(cnt('waiting') + ' your turn');
     document.getElementById('lanesMeta').textContent = (live.length === 1 ? 'one thing open' : live.length + ' things open at once') + (parts.length ? ' · ' + parts.join(' · ') : '');
     document.getElementById('lanes').innerHTML = live.map(function(s){
       var total = (s.tasks || []).length, done = (s.tasks || []).filter(function(t){ return t.status === 'done'; }).length;
@@ -596,7 +597,7 @@
     var items = [
       ['chat', 'Every chat', 'Each Claude chat you have open gets its own card on its own: what you asked, what it is doing this second, its steps and how far through it is. Only you see them, with your key.'],
       ['grid', 'At a glance', 'One line per chat or board — its step, its last move and its %. Tap a line to jump to its card.'],
-      ['user', 'Your turn', 'A chat that finished its reply moves to “Waiting for you”, with its last reply and any question it asked you. “Needs your OK” means it is paused on a permission.'],
+      ['user', 'Your turn', 'A chat that finished its reply moves to “Waiting for you”, with its last reply and any question it asked you. “Needs your OK” means it is paused on a permission; “Asked you a question” means it is waiting for your answer in the chat.'],
       ['eye', 'Follow along', 'Inside each card, every action the agent takes appears the second it happens: reading a file, editing, running the tests, checking a page.'],
       ['check', 'Steps', 'Numbered in order. A filled tick is done, the ringed dot is the step underway, an empty ring is still to come. Tap a step to read what it does and see its actions.'],
       ['zap', 'Waves', 'Steps are grouped into waves (study, build, prove it). The bars show how far through each wave the work is.'],

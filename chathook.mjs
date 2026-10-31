@@ -366,7 +366,7 @@ async function sync(file, sid, ev = {}) {
     }
     // what the hook itself knows that the transcript does not: a permission prompt, the turn's end, the chat closing
     const now = Date.now();
-    if (ev.hook_event_name === "Notification" && /permission|approv|allow/i.test(String(ev.message || "") + " " + String(ev.notification_type || ""))) st.need = { ts: now, msg: clip(ev.message || "Needs your OK to go on", 160) };
+    if (ev.hook_event_name === "Notification" && /permission|approv|allow/i.test(String(ev.message || "") + " " + String(ev.notification_type || ""))) st.need = { ts: now, msg: /AskUserQuestion/.test(String(ev.message || "")) ? "Asked you a question — answer it in the chat" : clip(ev.message || "Needs your OK to go on", 160) };
     // a permission prompt holds until the chat writes anything new (you answered) or its turn ends
     if (st.need && moved && ev.hook_event_name !== "Notification") st.need = null;
     if (ev.hook_event_name === "Stop") { st.need = null; st.turnOpen = false; st.endAt = st.endAt && st.endAt > now - 120000 ? st.endAt : now; }
