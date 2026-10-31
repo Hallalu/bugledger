@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Breadledger · Live board">
 <meta property="og:description" content="Watch an agent scan a project against the whole ledger in real time — tasks ticking off, the story so far, findings as they are raised.">
-<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta property="og:image" content="https://breadledger.coconvo.workers.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/bread.css">
@@ -219,7 +219,7 @@ node ~/BugLedger/worklog.mjs finish</code></pre>
     var empty=document.getElementById('emptyState');
     if(!sessions.length){
       Object.keys(cards).forEach(function(id){ if(cards[id].zone==='board'){ cards[id].el.remove(); delete cards[id]; } });
-      if(!empty){ board.innerHTML='<div id="emptyState">'+Bread.empty('No live work right now', 'When an agent runs <code>worklog.mjs</code> (or <code>/showwork</code>) you will watch its tasks tick off here in real time.', 'live')+'</div>'; }
+      if(!empty){ board.innerHTML='<div id="emptyState">'+Bread.empty('No live work right now', 'When an agent runs <code>worklog.mjs</code> (or <code>/showwork</code>) you will watch its tasks tick off here in real time.', 'live', '/art/empty-desk.png')+'</div>'; }
       howto.hidden=false;
       setPoll('watching');
     } else {

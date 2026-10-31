@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Prompts · Breadledger</title>
+<meta name="description" content="Prompt Journal — every prompt sent to a coding agent, word for word, time-stamped, filed by project, with the photos that go with it. Private to the ledger owner.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
+<style>
+  /* page-only styles, tokens only — candidates for bread.css: .gate, .hue (stable per-project colour), .badge.proj,
+     .chip .dot, .q (verbatim prompt text with clamp + fade), .pc-top/.pc-foot, .lnk, .thumbs/.thumb, .ba.pasted/.ba.shot, .xbtn */
+  .gate{max-width:440px;margin:6vh auto 0}
+  .gate .card-b{display:grid;gap:14px}
+  .gate p{color:var(--ink-2);font-size:14.5px;line-height:1.55}
+  .gate .row{justify-content:flex-end}
+  .foot{margin-top:28px;text-align:center}
+  .page-h .lead{max-width:78ch}
+  @media (min-width:901px){.stats{grid-template-columns:repeat(5,minmax(0,1fr))}}
+  .stat .d{margin-top:2px}
+
+  /* stable colour per project: --h is set inline, the dot/border shade follows the theme */
+  .hue{--pd:hsl(var(--h) 60% 44%)}
+  :root[data-theme="dark"] .hue{--pd:hsl(var(--h) 70% 64%)}
+  .badge.proj{cursor:pointer;font-family:inherit;padding:0 9px 0 7px;transition:background var(--t-fast),color var(--t-fast)}
+  .badge.proj:hover{background:var(--line);color:var(--ink)}
+  .badge.proj .dot{background:var(--pd)}
+  .badge svg{width:13px;height:13px}
+  .mono{font-family:var(--mono)}
+
+  /* filter bar additions */
+  .filters .seg-slot{display:none}
+  .filters .seg svg{width:15px;height:15px}
+  .filters .dates{display:none;align-items:center;gap:6px}
+  .filters .dates.show{display:inline-flex}
+  .filters .dates .input{width:150px}
+  .filters .dates .to{font-size:13.5px;color:var(--ink-3)}
+  .filters .check{white-space:nowrap}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--pd);flex:0 0 auto}
+  .chip .n{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .chip.on .n{color:inherit}
+  .sess-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+  .day-h .n{text-transform:none;letter-spacing:0;font-weight:500}
+  #list>.day-h:first-child{margin-top:0}
+
+  /* prompt cards */
+  .pc{padding:14px 16px 12px;margin:0 0 10px;position:relative}
+  .pc.rise{animation:pc-in var(--t) var(--ease) both}
+  @keyframes pc-in{from{opacity:0}to{opacity:1}}
+  .pc.hit{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .pc-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .when{font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .when .d{color:var(--ink-3);margin-left:5px}
+  .seq{font-size:13px;color:var(--ink-3);white-space:nowrap}
+  .q{font:15px/1.6 var(--font);color:var(--ink);background:none;border:0;border-left:3px solid color-mix(in srgb,var(--pd,var(--accent)) 60%,transparent);border-radius:0;padding:0 0 0 14px;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;overflow:hidden;position:relative}
+  .q.clamped:not(.open){max-height:14.4em}
+  .q.clamped:not(.open)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3.2em;background:linear-gradient(transparent,var(--panel));pointer-events:none}
+  .more-row{margin:6px 0 0 17px}
+  .pc .shots{margin:12px 0 0 17px;grid-template-columns:repeat(auto-fill,150px)}
+  .shot .pic{display:flex;align-items:center;justify-content:center;height:110px;background:var(--bg-2);overflow:hidden}
+  .ba.pasted{background:var(--info-soft);color:var(--info-ink)} .ba.shot{background:var(--accent-soft);color:var(--accent-soft-ink)}
+  .pc-foot{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0 0 17px;font-size:13px;color:var(--ink-3)}
+  .lnk{font:inherit;font-size:13px;color:var(--ink-3);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+  .lnk:hover{color:var(--ink)}
+
+  /* spreadsheet view */
+  .table{min-width:900px}
+  .table th.sortable{cursor:pointer;user-select:none}
+  .table th.sortable:hover{color:var(--ink)}
+  .table th svg{width:13px;height:13px;vertical-align:-2px;margin-left:3px}
+  .table .c-n{color:var(--ink-3);font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums;width:48px}
+  .table .c-date{white-space:nowrap;font-variant-numeric:tabular-nums;width:110px;color:var(--ink-2)}
+  .table .c-time{white-space:nowrap;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;width:92px}
+  .table .c-proj,.table .c-arr,.table .c-sess{white-space:nowrap}
+  .table .c-p{min-width:360px}
+  .table .c-p .q{font-size:14.5px;line-height:1.5;border:0;padding:0;cursor:pointer}
+  .table .c-p .q.clamped:not(.open){max-height:6em}
+  .table .c-p .q.clamped:not(.open)::after{height:2.4em}
+  .table tr:hover .c-p .q.clamped:not(.open)::after{background:linear-gradient(transparent,var(--panel-2))}
+  .table .c-num{text-align:right;font-variant-numeric:tabular-nums;width:72px}
+  .table tr.hit td{background:var(--accent-soft)}
+  .table th[data-hide],.table td[data-hide]{display:none}
+  .thumbs{display:flex;gap:4px;flex-wrap:wrap}
+  .thumb{width:44px;height:44px;padding:0;border:1px solid var(--line-2);border-radius:6px;overflow:hidden;background:var(--bg-2);cursor:zoom-in;display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+
+  .empty pre{text-align:left;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+  .empty .chips{justify-content:center;margin:0}
+  .loadmore{display:flex;justify-content:center;margin:18px 0 0}
+  .xbtn{width:100%;justify-content:flex-start}
+
+  @media (max-width:900px){
+    .filters .seg-slot{display:contents}
+    .filters .seg{grid-column:1/-1;display:flex}
+    .filters .seg button{flex:1;justify-content:center}
+    .filters .dates.show{grid-column:1/-1;display:flex}
+    .filters .dates .input{flex:1;width:auto;min-width:0}
+    .filters .btn{width:100%}
+    .filters .count{white-space:normal}
+    .stats .stat:last-child:nth-child(odd){grid-column:1/-1}
+    .pc{padding:12px 12px 10px}
+    .more-row,.pc .shots,.pc-foot{margin-left:0}
+    .q{padding-left:12px}
+    .pc .shots{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+</style>
+</head>
+<body>
+<div class="bl-app" id="app">
+  <aside class="bl-side" id="side" aria-label="Sidebar"></aside>
+  <div class="bl-main">
+    <header class="bl-top" id="top"></header>
+    <main class="bl-content wide" id="page">
+      <div id="view"></div>
+      <p class="meta foot">Private, append-only record of every prompt · <a href="/AGENT.md#prompt-journal">how agents add to it</a> · <a href="/">back to the ledger</a></p>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  'use strict';
+  var $=Bread.$, $$=Bread.$$, esc=Bread.esc, icon=Bread.icon;
+  var view=$('#view'), KEY=null; try{KEY=localStorage.getItem('bl_admin_key')}catch(e){}
+  var DATA={prompts:[],projects:[],summary:null,total:0,more:false,nextBefore:null};
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var F=readHash();   // filters live in the URL hash so a view can be reopened or shared with yourself
+  function readHash(){var h={},raw=location.hash.slice(1);if(/^p-jr/.test(raw))raw='id='+raw.slice(2);var p=new URLSearchParams(raw);p.forEach(function(v,k){h[k]=v});return {q:h.q||'',project:h.project||'',range:h.range||'all',from:h.from||'',to:h.to||'',photos:h.photos==='1',arrival:h.arrival||'',view:h.view||(function(){try{return localStorage.getItem('bl_journal_view')||'cards'}catch(e){return 'cards'}})(),sort:h.sort||'new',session:h.session||'',id:h.id||'',cols:h.cols||''}}
+  function writeHash(){var p=new URLSearchParams();if(F.q)p.set('q',F.q);if(F.project)p.set('project',F.project);if(F.range!=='all')p.set('range',F.range);if(F.from)p.set('from',F.from);if(F.to)p.set('to',F.to);if(F.photos)p.set('photos','1');if(F.arrival)p.set('arrival',F.arrival);if(F.view!=='cards')p.set('view',F.view);if(F.sort!=='new')p.set('sort',F.sort);if(F.session)p.set('session',F.session);if(F.id)p.set('id',F.id);if(F.cols)p.set('cols',F.cols);var s=p.toString();try{history.replaceState(null,'',s?'#'+s:location.pathname)}catch(e){}}
+
+  /* ---- top bar: view segment, Export, Sign out ---- */
+  var ACTIONS='<div class="seg" role="group" aria-label="View" id="viewSeg"><button type="button" data-v="cards" aria-pressed="true" class="on">'+icon('grid')+'Cards</button><button type="button" data-v="sheet" aria-pressed="false">'+icon('table')+'Spreadsheet</button></div>'+
+    '<button class="btn" type="button" id="exportBtn" aria-label="Export" title="Export the prompts currently shown" hidden>'+icon('download')+'<span class="lbl">Export</span></button>'+
+    '<button class="btn ghost" type="button" id="signout" aria-label="Sign out" title="Forget the ledger key on this device" hidden>'+icon('logout')+'<span class="lbl">Sign out</span></button>';
+  var SEG=null, MQ=window.matchMedia('(max-width:900px)');
+  function placeSeg(){if(!SEG)return;var slot=MQ.matches?$('#segSlot'):$('#top .actions');if(!slot)return;if(SEG.parentNode!==slot){if(MQ.matches)slot.appendChild(SEG);else slot.insertBefore(SEG,$('#exportBtn')||null)}}
+  function paintSeg(){if(!SEG)return;$$('button',SEG).forEach(function(b){var on=b.dataset.v===F.view;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')})}
+  function saveView(){try{localStorage.setItem('bl_journal_view',F.view)}catch(e){}}
+  function setView(v){F.view=v;saveView();render(false)}
+  function unlocked(on){var s=$('#signout'),x=$('#exportBtn');if(s)s.hidden=!on;if(x)x.hidden=!on;if(SEG)SEG.hidden=!on}
+
+  /* ---- sign-in gate (same key as /admin) ---- */
+  function gate(msg){
+    unlocked(false);
+    view.innerHTML='<div class="gate"><form class="card" id="gatef" novalidate><div class="card-h">'+icon('lock')+'<h1>Prompt Journal</h1></div><div class="card-b">'+
+      '<p>Every prompt you send to a coding agent, word for word, time-stamped and filed by project. It is private — unlock it with your ledger key.</p>'+
+      '<div class="note danger" id="gerr" role="alert"'+(msg?'':' hidden')+'>'+icon('alert')+'<span>'+esc(msg||'')+'</span></div>'+
+      '<div class="field"><label for="key">Ledger key</label><input class="input" type="password" id="key" autocomplete="off" placeholder="x-ledger-key"></div>'+
+      '<div class="row"><a class="btn" href="/">'+icon('left')+'Back</a><button class="btn primary" type="submit">'+icon('lock')+'Open the journal</button></div></div></form></div>';
+    $('#gatef').onsubmit=function(e){e.preventDefault();KEY=$('#key').value.trim();if(!KEY)return;try{localStorage.setItem('bl_admin_key',KEY)}catch(x){}load(true)};
+    setTimeout(function(){var k=$('#key');if(k)k.focus()},30);
+  }
+
+  /* ---- data ---- */
+  function fetchPage(before){
+    var p=new URLSearchParams({limit:'400'}); if(before)p.set('before',String(before));
+    var d=new Date(); d.setHours(0,0,0,0); p.set('dayStart',String(d.getTime()));
+    return fetch('/api/journal?'+p,{headers:{'x-ledger-key':KEY},cache:'no-store'}).then(function(r){if(r.status===401){gate('That key was not accepted.');throw 0;}return r.json()});
+  }
+  function fail(msg){view.innerHTML='<div class="note danger" role="alert">'+icon('alert')+'<span class="grow"><b>Could not reach the ledger</b>'+(msg?' · '+esc(msg):'')+'</span><button class="btn" type="button" id="retry">'+icon('reset')+'Retry</button></div>';$('#retry').onclick=function(){load(true)}}
+  function load(first){
+    if(!KEY){gate();return}
+    view.innerHTML=Bread.empty('Opening the journal…','','prompts');
+    fetchPage().then(function(d){if(!d||!d.ok){gate(d&&d.error||'Could not load');return}DATA=d;unlocked(true);render(true);if(F.id)setTimeout(jumpTo,300)}).catch(function(e){if(e!==0)fail(e&&e.message||String(e))});
+  }
+  function loadMore(btn){
+    btn.disabled=true;btn.innerHTML=icon('down')+'Loading…';
+    fetchPage(DATA.nextBefore).then(function(d){if(!d||!d.ok)return;var seen={};DATA.prompts.forEach(function(p){seen[p.id]=1});d.prompts.forEach(function(p){if(!seen[p.id])DATA.prompts.push(p)});DATA.more=d.more;DATA.nextBefore=d.nextBefore;render(false)}).catch(function(){btn.disabled=false;btn.innerHTML=icon('down')+'Load older prompts'});
+  }
+
+  /* ---- colour per project: a stable hue from the name; the shade is picked per theme in CSS (.hue) ---- */
+  function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h%360}
+  function hstyle(name){return 'style="--h:'+hue(name||'')+'"'}
+
+  /* ---- filtering ---- */
+  function keyOf(p){return p.app||p.project||'unfiled'}
+  function rangeBounds(){
+    var now=new Date(), s=new Date(now); s.setHours(0,0,0,0);
+    if(F.range==='today')return [s.getTime(),Infinity];
+    if(F.range==='7d')return [s.getTime()-6*864e5,Infinity];
+    if(F.range==='30d')return [s.getTime()-29*864e5,Infinity];
+    if(F.range==='custom'){var a=F.from?new Date(F.from+'T00:00:00').getTime():-Infinity,b=F.to?new Date(F.to+'T23:59:59.999').getTime():Infinity;return [a,b]}
+    return [-Infinity,Infinity];
+  }
+  function filtered(){
+    var q=F.q.trim().toLowerCase(), rb=rangeBounds();
+    var out=DATA.prompts.filter(function(p){
+      if(F.project&&keyOf(p)!==F.project)return false;
+      if(F.session&&p.sessionId!==F.session)return false;
+      if(p.ts<rb[0]||p.ts>rb[1])return false;
+      if(F.photos&&!(p.photos&&p.photos.length))return false;
+      if(F.arrival&&p.arrival!==F.arrival)return false;
+      if(q&&p.text.toLowerCase().indexOf(q)<0&&keyOf(p).toLowerCase().indexOf(q)<0)return false;
+      return true;
+    });
+    var k=F.sort;
+    out.sort(function(a,b){
+      if(k==='old')return a.ts-b.ts; if(k==='long')return (b.chars||0)-(a.chars||0); if(k==='short')return (a.chars||0)-(b.chars||0);
+      if(k==='proj')return keyOf(a).localeCompare(keyOf(b))||b.ts-a.ts; return b.ts-a.ts;
+    });
+    return out;
+  }
+  function rangeLabel(){return F.range==='today'?'today':F.range==='7d'?'last 7 days':F.range==='30d'?'last 30 days':F.range==='custom'?(F.from||'…')+' → '+(F.to||'…'):''}
+  function arrivalLabel(a){return a==='mid-turn'?'mid-turn':a==='command'?'slash command':a==='api'?'added by agent':'typed'}
+
+  /* ---- formatting ---- */
+  function pad(n){return (n<10?'0':'')+n}
+  function dayKey(ts){return Bread.dayKey(ts)}
+  function hms(ts){var d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())}
+  function dmy(ts){var d=new Date(ts);return pad(d.getDate())+' '+MON[d.getMonth()]+' '+d.getFullYear()}
+  function nf(n){return (n||0).toLocaleString('en-GB')}
+  function hl(text,q){var e=esc(text);if(!q)return e;var i=0,ql=q.toLowerCase(),low=text.toLowerCase(),out='',j;while((j=low.indexOf(ql,i))>=0){out+=esc(text.slice(i,j))+'<mark>'+esc(text.slice(j,j+q.length))+'</mark>';i=j+q.length}return out+esc(text.slice(i))}
+  // the HTML parser drops one newline right after <pre>; a prompt that starts with a newline gets it back so nothing is lost on screen
+  function preText(text,q){return (/^[\r\n]/.test(text)?'\n':'')+hl(text,q)}
+  function arrivalTag(p){var t=p.arrival==='mid-turn'?['mid-turn','Typed while the agent was still working']:p.arrival==='command'?['slash command','A slash command']:p.arrival==='api'?['added by agent','Added by an agent through the API']:['typed','Typed as a new turn'];return '<span class="badge outline" title="'+t[1]+'">'+t[0]+'</span>'}
+  function provenance(p){return p.source==='hook'?'saved as it was sent':p.source==='transcript'?'from the transcript':p.source==='cli'?'added by '+(p.agent||'an agent'):'via API'}
+  var ALLPH=[];
+  function photoFig(ph,idx){var k=ph.kind||'shot';return '<figure class="shot" tabindex="0" role="button" data-lb="'+idx+'" aria-label="View photo" title="'+esc(k+(ph.caption?' · '+ph.caption:''))+'"><span class="pic"><img src="'+esc(ph.url)+'" alt="'+esc(ph.caption||k)+'" loading="lazy" decoding="async" data-framed></span><figcaption><span class="ba '+esc(k)+'">'+esc(k)+'</span><span class="truncate">'+esc(ph.caption||'')+'</span></figcaption></figure>'}
+  // a pasted picture smaller than its thumbnail is never stretched: it is shown at half its pixel size (crisp on a 2× screen), centred
+  function fitImg(img){var box=img.parentNode,bw=box.clientWidth,bh=box.clientHeight,w=img.naturalWidth/2,h=img.naturalHeight/2;if(!w||!bw||w>=bw-1)return;var s=Math.min(1,bh/h);img.style.width=Math.round(w*s)+'px';img.style.height=Math.round(h*s)+'px';img.style.objectFit='contain'}
+  function fitImgs(root){$$('.pic img,.thumb img',root).forEach(function(i){if(i.complete&&i.naturalWidth)fitImg(i);else i.addEventListener('load',function(){fitImg(i)})})}
+  function openLb(i){var urls=ALLPH.map(function(x){return x.ph.url}),caps=ALLPH.map(function(x){return (x.ph.kind||'shot')+(x.ph.caption?' · '+x.ph.caption:'')+' · '+keyOf(x.p)+' · '+dmy(x.p.ts)+' '+hms(x.p.ts)});Bread.lightbox.open(urls,caps,i)}
+
+  /* ---- render: page head, totals, filter bar, chips, then the list ---- */
+  function render(resetAnim){
+    if(!DATA.summary){view.innerHTML=emptyInstall();return}
+    var s=DATA.summary, projects=(DATA.projects||[]).slice().sort(function(a,b){return (b.count||0)-(a.count||0)||String(a.key).localeCompare(String(b.key))});
+    var html='<div class="page-h"><div><h1>Prompt Journal</h1><p class="lead">Every prompt, word for word. Each prompt you send to a coding agent, saved the moment you send it — never a paraphrase, never the agent\'s notes — time-stamped, filed by project, with the screenshots that go with it.</p></div></div>';
+    html+='<div class="stats" role="group" aria-label="Totals">'+kpi('prompts',s.prompts,'Prompts','all time','Show every prompt (clears the filters)')+kpi('projects',projects.length,'Projects','sort by project','Sort the cards by project')+kpi('today',s.today,'Today','since midnight','Only today\'s prompts')+kpi('photos',s.photos,'Photos','with pictures','Only prompts with photos')+kpi('words',s.words,'Words','all time','Show every prompt (clears the filters)')+'</div>';
+    html+='<div class="filters" id="filters">'+
+      '<div class="search-wrap">'+icon('search')+'<input class="input" id="q" type="search" data-search placeholder="Search every word of every prompt…" aria-label="Search prompts" value="'+esc(F.q)+'" autocomplete="off" spellcheck="false"></div>'+
+      '<span class="seg-slot" id="segSlot"></span>'+
+      '<select class="select" id="range" aria-label="Date range"><option value="all">All time</option><option value="today">Today</option><option value="7d">Last 7 days</option><option value="30d">Last 30 days</option><option value="custom">Custom dates…</option></select>'+
+      '<span class="dates'+(F.range==='custom'?' show':'')+'" id="dates"><input class="input" type="date" id="from" aria-label="From" value="'+esc(F.from)+'"><span class="to">to</span><input class="input" type="date" id="to" aria-label="To" value="'+esc(F.to)+'"></span>'+
+      '<select class="select" id="arrival" aria-label="How the prompt arrived"><option value="">Any arrival</option><option value="typed">Typed</option><option value="mid-turn">Mid-turn</option><option value="command">Slash command</option><option value="api">Added by agent</option></select>'+
+      '<label class="check"><input class="cbx" type="checkbox" id="photos"'+(F.photos?' checked':'')+'> With photos</label>'+
+      '<select class="select" id="sort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="long">Longest first</option><option value="short">Shortest first</option><option value="proj">By project</option></select>'+
+      (F.view==='sheet'?'<button class="btn" type="button" id="colsBtn" title="Choose the columns to show">'+icon('table')+'Columns</button>':'')+
+      '<span class="count" id="count" aria-live="polite"></span></div>';
+    html+='<div class="chips" id="chips" role="group" aria-label="Filter by project"><button class="chip'+(!F.project?' on':'')+'" type="button" data-p="" aria-pressed="'+(!F.project)+'">All <span class="n">'+nf(s.prompts)+'</span></button>'+
+      projects.map(function(p){return '<button class="chip hue'+(F.project===p.key?' on':'')+'" type="button" data-p="'+esc(p.key)+'" aria-pressed="'+(F.project===p.key)+'" '+hstyle(p.key)+' title="'+esc(p.project&&p.project!==p.key?p.project+' · ':'')+'last '+esc(Bread.fmtDate(p.last))+'"><span class="dot"></span>'+esc(p.key)+' <span class="n">'+nf(p.count)+'</span></button>'}).join('')+'</div>';
+    if(F.session)html+='<div class="sess-row"><span class="badge accent">'+icon('live')+'Session <span class="mono">'+esc(F.session.slice(0,8))+'</span></span><button class="btn sm ghost" type="button" id="clearsess">'+icon('x')+'show all sessions</button></div>';
+    html+='<div id="list"></div>'+(DATA.more?'<div class="loadmore"><button class="btn" type="button" id="more">'+icon('down')+'Load older prompts ('+nf(DATA.total-DATA.prompts.length)+' more on the server)</button></div>':'');
+    view.innerHTML=html; placeSeg(); paintSeg(); wire(); renderList(resetAnim);
+    if(resetAnim&&Bread.countUp)$$('.stat .n').forEach(function(n){Bread.countUp(n,+n.getAttribute('data-to')||0)});
+  }
+  function renderList(anim){
+    var list=filtered(); ALLPH=[]; var el=$('#list'); if(!el)return;
+    el.innerHTML=!list.length?(DATA.prompts.length?emptyFiltered():emptyInstall()):F.view==='sheet'?sheetHTML(list):cardsHTML(list,anim);
+    var c=$('#count'); if(c)c.textContent=countLine(list);
+    wireList(); writeHash();
+  }
+  function kpi(k,n,l,d,title){var toggle=k==='photos'||k==='today'||k==='projects',on=k==='photos'&&F.photos||k==='today'&&F.range==='today'||k==='projects'&&F.sort==='proj';return '<button class="stat'+(on?' on':'')+'" type="button" data-k="'+k+'" title="'+esc(title)+'"'+(toggle?' aria-pressed="'+(on?'true':'false')+'"':'')+'><span class="n" data-to="'+(+n||0)+'">'+nf(n)+'</span><span class="l">'+l+'</span><span class="d">'+d+'</span></button>'}
+  function countLine(list){var ph=list.reduce(function(n,p){return n+(p.photos?p.photos.length:0)},0),w=list.reduce(function(n,p){return n+(p.words||0)},0);return 'Showing '+nf(list.length)+' of '+nf(DATA.total)+' prompts · '+nf(w)+' words · '+nf(ph)+' photos'+(DATA.prompts.length<DATA.total?' · '+nf(DATA.prompts.length)+' loaded':'')}
+  function emptyFiltered(){
+    var named=[]; if(F.q.trim())named.push('“'+F.q.trim()+'”'); if(F.project)named.push(F.project); if(F.range!=='all')named.push(rangeLabel()); if(F.arrival)named.push(arrivalLabel(F.arrival)); if(F.photos)named.push('with photos'); if(F.session)named.push('session '+F.session.slice(0,8));
+    return '<div class="empty">'+icon('filter')+'<b>No prompts match</b><p>Try another word, project or date range.</p>'+(named.length?'<div class="chips">'+named.map(function(n){return '<span class="chip on">'+esc(n)+'</span>'}).join('')+'</div>':'')+'<button class="btn" type="button" id="clearF">'+icon('x')+'Clear filters</button></div>';
+  }
+  function emptyInstall(){return '<div class="empty">'+icon('prompts')+'<b>Nothing journaled yet</b><p>Install the hook once and every prompt you send from then on is saved here, word for word.</p><pre>curl -fsSL '+esc(location.origin)+'/journal.mjs -o ~/journal.mjs &amp;&amp; node ~/journal.mjs install</pre></div>'}
+
+  function cardsHTML(list,anim){
+    var out='',group=null,q=F.q.trim(),idx=0,mode=F.sort==='proj'?'proj':(F.sort==='long'||F.sort==='short')?'':'day',counts={};
+    if(mode)list.forEach(function(p){var g=mode==='day'?dayKey(p.ts):keyOf(p);counts[g]=(counts[g]||0)+1});
+    list.forEach(function(p){
+      if(mode){var g=mode==='day'?dayKey(p.ts):keyOf(p);if(g!==group){group=g;var n=counts[g];out+='<div class="day-h"><span>'+esc(mode==='day'?Bread.dayLabel(g):g)+'</span><span class="n">· '+n+' prompt'+(n>1?'s':'')+'</span></div>'}}
+      var k=keyOf(p),lines=p.text.split('\n').length,long=lines>9||p.text.length>900;
+      out+='<article class="card pc hue'+(anim&&idx<12?' rise':'')+(F.id===p.id?' hit':'')+'" id="p-'+esc(p.id)+'" '+hstyle(k)+'>'+
+        '<div class="pc-top"><button class="badge proj" type="button" data-p="'+esc(k)+'" title="Filter to this project"><span class="dot"></span>'+esc(k)+'</button>'+arrivalTag(p)+
+        (p.photos&&p.photos.length?'<span class="badge outline" title="Photos with this prompt">'+icon('image')+p.photos.length+'</span>':'')+
+        (p.redactions?'<span class="badge warn" title="A secret was removed before storage; everything else is exact">'+icon('alert')+p.redactions+' secret'+(p.redactions>1?'s':'')+' removed</span>':'')+
+        '<span class="when" title="'+esc(new Date(p.ts).toISOString())+'">'+hms(p.ts)+'<span class="d">'+esc(dmy(p.ts))+'</span></span>'+(p.seq?'<span class="seq">#'+p.seq+' in session</span>':'')+
+        '<span class="grow"></span><button class="btn sm ghost" type="button" data-copy="'+esc(p.id)+'" title="Copy the exact text">'+icon('copy')+'Copy</button></div>'+
+        '<pre class="q'+(long?' clamped':'')+'" id="q-'+esc(p.id)+'">'+preText(p.text,q)+'</pre>'+
+        (long?'<div class="more-row"><button class="btn sm ghost" type="button" data-more="'+esc(p.id)+'" aria-expanded="false">'+icon('down')+'Show the whole prompt ('+nf(p.words)+' words)</button></div>':'')+
+        (p.photos&&p.photos.length?'<div class="shots">'+p.photos.map(function(ph){ALLPH.push({ph:ph,p:p});return photoFig(ph,ALLPH.length-1)}).join('')+'</div>':'')+
+        '<div class="pc-foot"><span>'+nf(p.chars)+' chars · '+nf(p.words)+' words</span>'+
+        (p.sessionId?'<button class="lnk" type="button" data-sess="'+esc(p.sessionId)+'" title="Only this session">session '+esc(p.sessionId.slice(0,8))+'</button>':'')+
+        (p.project&&p.app&&p.project!==p.app?'<span>'+esc(p.project)+'</span>':'')+
+        '<span title="SHA-256 of the stored text">sha <code>'+esc((p.sha||'').slice(0,12))+'</code></span><span>'+esc(provenance(p))+'</span>'+
+        '<a href="#p-'+esc(p.id)+'" data-link="'+esc(p.id)+'" title="Link to this prompt">#'+esc(p.id.slice(2,8))+'</a></div></article>'; idx++;
+    });
+    return out;
+  }
+
+  var COLS=[{k:'n',t:'#'},{k:'date',t:'Date'},{k:'time',t:'Time'},{k:'proj',t:'Project'},{k:'p',t:'Prompt'},{k:'ph',t:'Photos',opt:true},{k:'arr',t:'Arrival',opt:true},{k:'sess',t:'Session',opt:true},{k:'chars',t:'Chars',opt:true},{k:'words',t:'Words',opt:true},{k:'id',t:'Id',opt:true}];
+  function colOn(k){var off=(F.cols||'').split(',');return off.indexOf(k)<0}
+  var SORTK=null,SORTD=1;
+  function sheetHTML(list){
+    var rows=list.slice(); if(SORTK){rows.sort(function(a,b){var x=cellv(a,SORTK),y=cellv(b,SORTK);return (x>y?1:x<y?-1:0)*SORTD})}
+    var h='<div class="table-wrap"><table class="table"><thead><tr>'+COLS.map(function(c){var on=SORTK===c.k;return '<th class="sortable c-'+c.k+'" data-k="'+c.k+'"'+(colOn(c.k)?'':' data-hide')+' role="button" tabindex="0" aria-sort="'+(on?(SORTD>0?'ascending':'descending'):'none')+'" title="Sort by '+esc(c.t)+'">'+esc(c.t)+(on?icon(SORTD>0?'up':'down'):'')+'</th>'}).join('')+'</tr></thead><tbody>';
+    rows.forEach(function(p,i){var k=keyOf(p);
+      h+='<tr id="r-'+esc(p.id)+'" class="hue'+(F.id===p.id?' hit':'')+'" '+hstyle(k)+'>'+
+        td('n',(i+1))+td('date',esc(dmy(p.ts)))+td('time',hms(p.ts))+td('proj','<button class="badge proj" type="button" data-p="'+esc(k)+'" title="Filter to this project"><span class="dot"></span>'+esc(k)+'</button>')+
+        td('p','<pre class="q clamped" data-row="'+esc(p.id)+'" role="button" tabindex="0" aria-expanded="false" title="Click to expand">'+preText(p.text,F.q.trim())+'</pre>')+
+        td('ph',p.photos&&p.photos.length?'<div class="thumbs">'+p.photos.map(function(ph){ALLPH.push({ph:ph,p:p});return '<button class="thumb" type="button" data-lb="'+(ALLPH.length-1)+'" aria-label="View photo" title="'+esc((ph.kind||'')+(ph.caption?' · '+ph.caption:''))+'"><img src="'+esc(ph.url)+'" alt="'+esc(ph.caption||ph.kind||'photo')+'" loading="lazy" decoding="async" data-framed></button>'}).join('')+'</div>':'<span class="muted">—</span>')+
+        td('arr',arrivalTag(p))+td('sess',p.sessionId?'<button class="lnk mono" type="button" data-sess="'+esc(p.sessionId)+'" title="Only this session">'+esc(p.sessionId.slice(0,8))+'</button>':'<span class="muted">—</span>')+
+        td('chars',nf(p.chars),'c-num')+td('words',nf(p.words),'c-num')+td('id','<span class="id">'+esc(p.id)+'</span>')+'</tr>'});
+    return h+'</tbody></table></div>';
+  }
+  function td(k,v,cls){return '<td class="c-'+k+(cls?' '+cls:'')+'"'+(colOn(k)?'':' data-hide')+'>'+v+'</td>'}
+  function cellv(p,k){if(k==='date'||k==='time'||k==='n')return p.ts;if(k==='proj')return keyOf(p).toLowerCase();if(k==='p')return p.text.toLowerCase();if(k==='ph')return (p.photos||[]).length;if(k==='arr')return p.arrival||'';if(k==='sess')return p.sessionId||'';if(k==='chars')return p.chars||0;if(k==='words')return p.words||0;return p.id}
+
+  /* ---- wiring: the filter bar (once per render) ---- */
+  function clearAll(){F.q='';F.project='';F.range='all';F.from='';F.to='';F.photos=false;F.arrival='';F.session='';F.id='';render(false)}
+  function wire(){
+    var q=$('#q'); if(q)q.oninput=Bread.debounce(function(){F.q=q.value;renderList(false)},160);   // the input itself is never re-rendered, so the caret stays put
+    var r=$('#range'); r.value=F.range; r.onchange=function(){F.range=r.value;if(F.range!=='custom'){F.from='';F.to=''}render(false)};
+    $$('#from,#to').forEach(function(i){i.onchange=function(){F[i.id]=i.value;F.range='custom';render(false)}});
+    var a=$('#arrival'); a.value=F.arrival; a.onchange=function(){F.arrival=a.value;render(false)};
+    var ph=$('#photos'); ph.onchange=function(){F.photos=ph.checked;render(false)};
+    var so=$('#sort'); so.value=F.sort; so.onchange=function(){F.sort=so.value;render(false)};
+    $$('#chips .chip').forEach(function(b){b.onclick=function(){F.project=(b.dataset.p===F.project)?'':b.dataset.p;F.id='';render(false);window.scrollTo({top:0,behavior:'smooth'})}});
+    $$('.stat').forEach(function(b){b.onclick=function(){var k=b.dataset.k;if(k==='photos')F.photos=!F.photos;else if(k==='today')F.range=F.range==='today'?'all':'today';else if(k==='projects'){F.view='cards';saveView();F.sort=F.sort==='proj'?'new':'proj'}else{F.q='';F.project='';F.range='all';F.from='';F.to='';F.photos=false;F.arrival='';F.session='';F.id=''}render(false)}});
+    var cs=$('#clearsess'); if(cs)cs.onclick=function(){F.session='';render(false)};
+    var cb=$('#colsBtn'); if(cb)cb.onclick=openCols;
+    var more=$('#more'); if(more)more.onclick=function(){loadMore(more)};
+  }
+  /* ---- wiring: the list (every time it is drawn) ---- */
+  function wireList(){
+    var el=$('#list');
+    $$('[data-p]',el).forEach(function(b){b.onclick=function(){F.project=b.dataset.p;F.id='';render(false);window.scrollTo({top:0,behavior:'smooth'})}});
+    $$('[data-copy]',el).forEach(function(b){b.onclick=function(){var p=byId(b.dataset.copy);if(!p)return;copyText(p.text).then(function(){b.innerHTML=icon('check')+'Copied';Bread.toast('Exact text copied','ok');setTimeout(function(){b.innerHTML=icon('copy')+'Copy'},1400)})}});
+    $$('[data-more]',el).forEach(function(b){b.onclick=function(){var pre=$('#q-'+CSS.escape(b.dataset.more)),p=byId(b.dataset.more);var open=pre.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');b.innerHTML=icon(open?'up':'down')+(open?'Show less':'Show the whole prompt ('+nf(p?p.words:0)+' words)')}});
+    $$('[data-sess]',el).forEach(function(b){b.onclick=function(e){e.preventDefault();F.session=F.session===b.dataset.sess?'':b.dataset.sess;F.id='';render(false)}});
+    $$('[data-link]',el).forEach(function(l){l.onclick=function(e){e.preventDefault();F.id=l.dataset.link;writeHash();copyText(location.href).then(function(){Bread.toast('Link to this prompt copied','ok')});renderList(false)}});
+    $$('[data-lb]',el).forEach(function(x){x.onclick=function(){openLb(+x.dataset.lb)}});
+    $$('[data-row]',el).forEach(function(pre){var t=function(){var o=pre.classList.toggle('open');pre.setAttribute('aria-expanded',o?'true':'false')};pre.onclick=t;pre.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}}});
+    $$('th.sortable',el).forEach(function(th){var s=function(){var k=th.dataset.k;if(SORTK===k)SORTD=-SORTD;else{SORTK=k;SORTD=1}renderList(false)};th.onclick=s;th.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();s()}}});
+    var cf=$('#clearF'); if(cf)cf.onclick=clearAll;
+    fitImgs(el);
+  }
+  function openCols(){
+    Bread.modal.open({title:'Columns',body:'<p class="small muted">The first five columns — #, Date, Time, Project and Prompt — are always shown.</p><div class="stack" style="gap:2px">'+COLS.filter(function(c){return c.opt}).map(function(c){return '<label class="check"><input class="cbx" type="checkbox" data-col="'+c.k+'"'+(colOn(c.k)?' checked':'')+'> '+esc(c.t)+'</label>'}).join('')+'</div>'});
+    $$('.modal [data-col]').forEach(function(c){c.onchange=function(){var off=(F.cols||'').split(',').filter(Boolean);var i=off.indexOf(c.dataset.col);if(c.checked&&i>=0)off.splice(i,1);if(!c.checked&&i<0)off.push(c.dataset.col);F.cols=off.join(',');renderList(false)}});
+  }
+  function openExport(){
+    var n=filtered().length;
+    Bread.modal.open({title:'Export',body:'<div class="stack">'+
+      '<button class="btn xbtn" type="button" data-x="csv">'+icon('download')+'Download CSV ('+nf(n)+' rows)</button>'+
+      '<button class="btn xbtn" type="button" data-x="tsv">'+icon('copy')+'Copy as TSV for Sheets / Numbers</button>'+
+      '<button class="btn xbtn" type="button" data-x="md">'+icon('copy')+'Copy as Markdown</button>'+
+      '<button class="btn xbtn" type="button" data-x="json">'+icon('download')+'Download JSON</button></div>'+
+      '<p class="small muted">The '+nf(n)+' prompts currently shown, every field, the text untouched.</p>'});
+    $$('.modal [data-x]').forEach(function(b){b.onclick=function(){Bread.modal.close();exportAs(b.dataset.x)}});
+  }
+  document.addEventListener('keydown',function(e){   // Esc in the search box clears it (the shell closes dialogs, the lightbox and the palette first)
+    if(e.key==='Escape'&&document.activeElement&&document.activeElement.id==='q'&&F.q){F.q='';document.activeElement.value='';renderList(false)}
+  });
+  window.addEventListener('hashchange',function(){var v=F.view;F=readHash();F.view=v;if(DATA.summary){render(false);if(F.id)setTimeout(jumpTo,100)}});
+  function byId(id){for(var i=0;i<DATA.prompts.length;i++)if(DATA.prompts[i].id===id)return DATA.prompts[i];return null}
+  function jumpTo(){var el=document.getElementById((F.view==='sheet'?'r-':'p-')+F.id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})}
+  function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();return Promise.resolve()}
+
+  /* ---- export: the rows currently shown, every field, the text untouched ---- */
+  function rowsFor(list){return list.map(function(p,i){return {n:i+1,date:dayKey(p.ts),time:hms(p.ts),iso:new Date(p.ts).toISOString(),project:keyOf(p),folder:p.project||'',app:p.app||'',prompt:p.text,chars:p.chars,words:p.words,arrival:p.arrival||'',source:p.source||'',agent:p.agent||'',session:p.sessionId||'',seq:p.seq||'',photos:(p.photos||[]).length,photo_links:(p.photos||[]).map(function(x){return x.url}).join(' '),secrets_removed:p.redactions||0,sha256:p.sha,id:p.id}})}
+  function csvCell(v){var s=String(v==null?'':v);return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+  function download(name,text,type){var b=new Blob([text],{type:type});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+  function exportAs(kind){
+    var rows=rowsFor(filtered()),keys=rows.length?Object.keys(rows[0]):[],stamp=dayKey(Date.now());
+    if(kind==='csv'){download('prompt-journal-'+stamp+'.csv','﻿'+[keys.join(',')].concat(rows.map(function(r){return keys.map(function(k){return csvCell(r[k])}).join(',')})).join('\r\n'),'text/csv;charset=utf-8');Bread.toast(nf(rows.length)+' rows downloaded','ok')}
+    else if(kind==='tsv'){copyText([keys.join('\t')].concat(rows.map(function(r){return keys.map(function(k){return String(r[k]==null?'':r[k]).replace(/\t/g,'    ').replace(/\r?\n/g,' ⏎ ')}).join('\t')})).join('\n')).then(function(){Bread.toast('Copied '+nf(rows.length)+' rows — paste into a sheet','ok')})}
+    else if(kind==='md'){copyText(rows.map(function(r){return '### '+r.date+' '+r.time+' · '+r.project+(r.photos?' · '+r.photos+' photo(s)':'')+'\n\n'+r.prompt.split('\n').map(function(l){return '> '+l}).join('\n')+'\n'}).join('\n')).then(function(){Bread.toast('Copied as Markdown','ok')})}
+    else if(kind==='json'){download('prompt-journal-'+stamp+'.json',JSON.stringify(filtered(),null,1),'application/json');Bread.toast('JSON downloaded','ok')}
+  }
+
+  /* ---- ⌘K: jump to a prompt, switch view, export ---- */
+  window.BREAD_SEARCH=function(q){q=q.toLowerCase();return DATA.prompts.filter(function(p){return (p.text+' '+keyOf(p)).toLowerCase().indexOf(q)>=0}).slice(0,12).map(function(p){return {group:'Prompts',label:p.text.replace(/\s+/g,' ').trim().slice(0,70),icon:'prompts',sub:keyOf(p)+' · '+Bread.ago(p.ts),run:function(){F.id=p.id;F.q='';F.project='';F.session='';F.range='all';F.from='';F.to='';F.photos=false;F.arrival='';render(false);setTimeout(jumpTo,100)}}})};
+  Bread.cmdk.register([{group:'Prompts',label:'Cards view',icon:'grid',run:function(){setView('cards')}},{group:'Prompts',label:'Spreadsheet view',icon:'table',run:function(){setView('sheet')}},{group:'Prompts',label:'Export the prompts shown…',icon:'download',run:function(){if(DATA.summary)openExport()}}]);
+
+  /* ---- mount the shell, then open ---- */
+  Bread.mount({active:'prompts',title:'Prompts',crumbs:['Prompts'],actions:ACTIONS});
+  SEG=$('#viewSeg'); $$('button',SEG).forEach(function(b){b.onclick=function(){setView(b.dataset.v)}});
+  $('#exportBtn').onclick=openExport;
+  $('#signout').onclick=function(){try{localStorage.removeItem('bl_admin_key')}catch(e){}KEY=null;gate()};
+  try{MQ.addEventListener('change',placeSeg)}catch(e){MQ.addListener(placeSeg)}
+  window.addEventListener('bread:key',function(){try{KEY=localStorage.getItem('bl_admin_key')}catch(e){}load(true)});
+  load(true);
+})();
+</script>
+</body>
+</html>

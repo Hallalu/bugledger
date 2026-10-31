@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Breadledger · Activity">
 <meta property="og:description" content="A permanent, append-only timeline of every scan, story and ledger addition across the portfolio.">
-<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta property="og:image" content="https://breadledger.coconvo.workers.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/bread.css">
@@ -166,7 +166,7 @@
     var count=document.getElementById('count');
     count.textContent = EVS.length ? (evs.length===EVS.length ? EVS.length+' events' : evs.length+' of '+EVS.length+' events') : '';
     if(!EVS.length){
-      feed.innerHTML=Bread.empty('No activity yet', 'Run <code>/showwork</code> or <code>/bugcheck</code> in a project and it appears here — saved forever.', 'activity');
+      feed.innerHTML=Bread.empty('No activity yet', 'Run <code>/showwork</code> or <code>/bugcheck</code> in a project and it appears here — saved forever.', 'activity', '/art/empty-desk.png');
       return;
     }
     if(!evs.length){
