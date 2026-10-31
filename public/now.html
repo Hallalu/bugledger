@@ -539,7 +539,7 @@
       ['Overall', (steps ? Math.round(stepsDone / steps * 100) : 0) + '<small>%</small>', 'of every step'],
       ['Actions', B.fmtN(acts), 'tool calls so far']
     ].map(function(x){ return '<div class="stat plain"><span class="l">' + x[0] + '</span><span class="n">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
-    document.getElementById('liveMeta').textContent = live.length ? live.length + ' at work' : '';
+    document.getElementById('liveMeta').textContent = [working ? working + ' working' : '', quiet ? quiet + ' quiet' : '', needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' your OK' : ''].filter(Boolean).join(' · ');
     var keep = {};
     placeCards(live, document.getElementById('sessions'), keep);
     placeCards(wait, document.getElementById('waiting'), keep);
