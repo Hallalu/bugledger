@@ -8,6 +8,7 @@
 // keeps emoji and multilingual text intact.
 import Sanitize from "../public/sanitize.js";
 import { redactPublic } from "./redact.mjs";
+import { handleJournal } from "./journal.mjs";
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -131,6 +132,10 @@ async function handle(request, env) {
 
     if (request.method === "OPTIONS")
       return new Response(null, { status: 204, headers: JSON_HEADERS });
+
+    // ---- Prompt Journal (owner-only; src/journal.mjs): /journal, /api/journal, /api/journal/photo, /api/journal/refile, /api/journal/img/* ----
+    const journalRes = await handleJournal(request, env, url);
+    if (journalRes) return journalRes;
 
     // ---- GET/HEAD /api/shot/:key : serve a stored screenshot from R2 (public read) ----
     if (pathname.startsWith("/api/shot/") && (request.method === "GET" || request.method === "HEAD")) {
