@@ -5,6 +5,9 @@
  working, waiting for your reply, needs your OK, or closed. No prompt to remember: the chat's own transcript is the
  source, so a chat shows up the moment it does anything.
 
+ Install once (you run it; it backs up ~/.claude/settings.json first):  node ~/BugLedger/chathook.mjs install
+ Remove again:                                                          node ~/BugLedger/chathook.mjs uninstall
+
  Runs three ways (one code path):
    hook   Claude Code hooks call it on UserPromptSubmit, PostToolUse (*), Stop, Notification and SessionEnd.
           Install once in ~/.claude/settings.json (async, never slows a chat):
@@ -416,6 +419,30 @@ function recentTranscripts(mins) {
 }
 
 const mode = argv[0];
+if (mode === "install" || mode === "uninstall") {
+  // the owner runs this once: every Claude chat then reports itself (async, never slows a chat)
+  const SETTINGS = path.join(HOME, ".claude", "settings.json"), CMD = "node ~/BugLedger/chathook.mjs";
+  const raw = fs.existsSync(SETTINGS) ? fs.readFileSync(SETTINGS, "utf8") : "{}";
+  let s; try { s = JSON.parse(raw); } catch { console.error("~/.claude/settings.json is not valid JSON — nothing changed."); process.exit(1); }
+  const backup = SETTINGS + ".bak-chathook-" + new Date().toISOString().replace(/[:.]/g, "-");
+  fs.writeFileSync(backup, raw);
+  const hooks = s.hooks = s.hooks || {}, changed = [];
+  const EVENTS = [["UserPromptSubmit"], ["PostToolUse", "*"], ["Stop"], ["Notification"], ["SessionEnd"]];
+  for (const [ev, matcher] of EVENTS) {
+    const groups = hooks[ev] = hooks[ev] || [];
+    const has = groups.some((g) => (g.hooks || []).some((x) => x.command === CMD));
+    if (mode === "install" && !has) { groups.push({ ...(matcher ? { matcher } : {}), hooks: [{ type: "command", command: CMD, async: true, timeout: 15 }] }); changed.push(ev); }
+    if (mode === "uninstall" && has) {
+      hooks[ev] = groups.map((g) => ({ ...g, hooks: (g.hooks || []).filter((x) => x.command !== CMD) })).filter((g) => g.hooks.length);
+      if (!hooks[ev].length) delete hooks[ev]; changed.push(ev);
+    }
+  }
+  fs.writeFileSync(SETTINGS, JSON.stringify(s, null, 2) + "\n");
+  console.log(changed.length ? `${mode === "install" ? "Added the chat reporter to" : "Removed the chat reporter from"}: ${changed.join(", ")}` : `Nothing to change (${mode === "install" ? "already installed" : "not installed"}).`);
+  console.log("Backup of your settings: " + backup);
+  if (mode === "install") console.log("New chats report themselves from now on. Run 'node ~/BugLedger/chathook.mjs scan' to put the chats already open on the board.");
+  process.exit(0);
+}
 if (mode === "scan" || mode === "watch") {
   const once = async (mins) => {
     const list = recentTranscripts(mins), done = [];
