@@ -48,7 +48,8 @@ const scrub = (t) => String(t || "")
   .replace(/\b[A-Fa-f0-9]{32,}\b/g, "[id]");
 // a human prompt, cleaned for a card: pasted blocks and reminders folded away
 const cleanPrompt = (t) => scrub(String(t || "")
-  .replace(/<pasted_content[^>]*>[\s\S]*?<\/pasted_content>/g, " [pasted text] ")
+  .replace(/<pasted_content[^>]*>[\s\S]*?<\/pasted_content[^>]*>/g, " [pasted text] ")   // the closing tag can carry the id too
+  .replace(/<pasted_content[^>]*>[\s\S]*$/, " [pasted text]")
   .replace(/<system-reminder>[\s\S]*?<\/system-reminder>/g, " ")
   .replace(/<[a-z-]+>[\s\S]*?<\/[a-z-]+>/g, " "))
   .replace(/\s+/g, " ").trim();
