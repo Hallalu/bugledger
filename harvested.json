@@ -9406,5 +9406,41 @@
     "status": "unverified",
     "session": "7dda19ea",
     "found": "2026-10-31"
+  },
+  {
+    "key": "3dc4ad5a:onetestfailedandthehelpcutoffitslastline",
+    "app": "Finished.",
+    "title": "One test failed and the help cut off its last line.",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "One test failed and the help cut off its last line.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3dc4ad5a",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "5907dd6e:theworkingtreehereisntjustmycheckmark",
+    "app": "Hallalu CRM",
+    "title": "Working tree here isn't just my checkmark.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The working tree here isn't just my checkmark.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5907dd6e",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "5907dd6e:thisputsthesecurityfixeverythingelselivetoo",
+    "app": "Hallalu CRM",
+    "title": "This puts the security fix + everything else live too.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "This puts the security fix + everything else live too.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5907dd6e",
+    "found": "2026-10-31"
   }
 ]

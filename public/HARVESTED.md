@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-784 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+787 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (530)
+## Hallalu CRM (532)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -534,8 +534,10 @@
 - [ ] `low` `other` (2026-10-31, #01053afd) — My first check also hid that failure behind a pipeline, so the retry surfaced…
 - [ ] `low` `other` (2026-10-31, #7dda19ea) — - I also fixed a mapping bug: when the video has black bars at the sides, drawings now…
 - [ ] `low` `other` (2026-10-31, #7dda19ea) — Feature list didn't show in the upload output I read, so I'll check it's in that folder.
+- [ ] `low` `other` (2026-10-31, #5907dd6e) — Working tree here isn't just my checkmark.
+- [ ] `low` `other` (2026-10-31, #5907dd6e) — This puts the security fix + everything else live too.
 
-## Finished. (98)
+## Finished. (99)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -635,6 +637,7 @@
 - [ ] `low` `other` (2026-10-12, #ce9bddab) — Still a faint line — scaling the overlay isn't a full fix.
 - [ ] `low` `other` (2026-10-12, #ce9bddab) — Supabase isn't authenticated here, and per the PLAN deploys are owner-run — so the…
 - [ ] `low` `other` (2026-10-12, #16382522) — Demo photos fixed. Let me log the before/after to Aprizely and record the bug, then…
+- [ ] `low` `ui` (2026-10-31, #3dc4ad5a) — One test failed and the help cut off its last line.
 
 ## Listing Lab Pro (44)
 
