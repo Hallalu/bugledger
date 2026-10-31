@@ -562,6 +562,23 @@ svg.ico{width:18px;height:18px;flex:0 0 auto;vertical-align:-4px}
 @media (max-width:900px){.voice-sheet{align-items:center}}
 @media (prefers-reduced-motion:reduce){.voice-card .ring::before,.voice-card .ring::after{animation:none}}
 
+/* ---------- narrow desktops (sidebar + a crowded top bar) ---------- */
+@media (min-width:901px) and (max-width:1180px){
+  .bl-top .search{min-width:0;width:36px;padding:0;justify-content:center}
+  .bl-top .search .lbl,.bl-top .search .k{display:none}
+  .bl-top .actions .btn:not(.primary) .lbl{display:none}
+  .bl-top .actions .btn:not(.primary):not(.icon){width:36px;padding:0}
+  .bl-top .actions .btn kbd{display:none}
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .hero .art{width:min(48%,180px)}
+}
+@media (min-width:600px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .apps-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .gallery{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 /* ---------- phones & tablets ---------- */
 @media (max-width:900px){
   .bl-app,.bl-app.rail{grid-template-columns:minmax(0,1fr)}
