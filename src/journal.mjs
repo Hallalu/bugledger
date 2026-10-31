@@ -111,12 +111,24 @@ async function insertPrompt(env, origin, body, by) {
   const ts = parseWhen(body.at ?? body.ts) || Date.now(), now = Date.now();
   const sessionId = str(body.sessionId || body.session, 80) || null;
   const uuid = str(body.uuid, 80) || null;
-  // idempotent: the same transcript message, or the same words in the same session within the pairing window
+  // idempotent — never lossy. A transcript row (it carries the message uuid) is a duplicate only of (1) the same uuid, (2) the row it was
+  // already paired with, or (3) a not-yet-paired live-hook row (no uuid) with the same words in the same session within the window; that
+  // pairing is written to journal_pairs, so a second identical prompt ("continue", "kindly pause") always gets its own row. A hook row
+  // never pairs — every fire of the hook is a real prompt. Other uuid-less posts (CLI/API) pair within the window, which absorbs a retry.
+  const dup = (d) => json({ ok: true, id: d.id, sha: d.sha, duplicate: true, project: d.project, app: d.app, url: origin + "/journal#id=" + d.id });
+  const source = SOURCES.has(body.source) ? body.source : "api";
   try {
-    if (uuid) { const d = await env.DB.prepare("SELECT id, sha, project, app FROM journal WHERE uuid = ?").bind(uuid).first(); if (d) return json({ ok: true, id: d.id, sha: d.sha, duplicate: true, project: d.project, app: d.app, url: origin + "/journal#id=" + d.id }); }
-    if (sessionId) {
-      const d = await env.DB.prepare("SELECT id, sha, project, app FROM journal WHERE session_id = ? AND key_sha = ? AND abs(ts - ?) < ? ORDER BY ts LIMIT 1").bind(sessionId, keySha, ts, PAIR_WINDOW_MS).first();
-      if (d) return json({ ok: true, id: d.id, sha: d.sha, duplicate: true, project: d.project, app: d.app, url: origin + "/journal#id=" + d.id });
+    if (uuid) {
+      let d = await env.DB.prepare("SELECT id, sha, project, app FROM journal WHERE uuid = ?").bind(uuid).first(); if (d) return dup(d);
+      d = await env.DB.prepare("SELECT j.id, j.sha, j.project, j.app FROM journal_pairs q JOIN journal j ON j.id = q.prompt_id WHERE q.uuid = ?").bind(uuid).first(); if (d) return dup(d);
+      if (sessionId) {
+        d = await env.DB.prepare(`SELECT j.id, j.sha, j.project, j.app FROM journal j WHERE j.session_id = ? AND j.key_sha = ? AND j.uuid IS NULL AND abs(j.ts - ?) < ?
+          AND NOT EXISTS (SELECT 1 FROM journal_pairs q WHERE q.prompt_id = j.id) ORDER BY abs(j.ts - ?) LIMIT 1`).bind(sessionId, keySha, ts, PAIR_WINDOW_MS, ts).first();
+        if (d) { await env.DB.prepare("INSERT INTO journal_pairs (uuid, prompt_id, ts) VALUES (?,?,?)").bind(uuid, d.id, now).run(); return dup(d); }
+      }
+    } else if (sessionId && source !== "hook") {
+      const d = await env.DB.prepare("SELECT id, sha, project, app FROM journal WHERE session_id = ? AND key_sha = ? AND abs(ts - ?) < ? ORDER BY abs(ts - ?) LIMIT 1").bind(sessionId, keySha, ts, PAIR_WINDOW_MS, ts).first();
+      if (d) return dup(d);
     }
   } catch (e) { return writeErr(e); }
   const id = newId("jr");
@@ -124,7 +136,7 @@ async function insertPrompt(env, origin, body, by) {
     id, ts, received: now,
     project: str(body.project, 120) || null, app: str(body.app, 120) || null, session_id: sessionId,
     seq: body.seq == null ? null : num(body.seq), agent: str(body.agent || "claude-code", 40),
-    source: SOURCES.has(body.source) ? body.source : "api", arrival: ARRIVALS.has(body.arrival) ? body.arrival : "api",
+    source, arrival: ARRIVALS.has(body.arrival) ? body.arrival : "api",
     text, sha, key_sha: keySha, chars: text.length, words: words(text), redactions, truncated, uuid,
     cwd: str(body.cwd, 300) || null, meta: body.meta && typeof body.meta === "object" ? JSON.stringify(body.meta).slice(0, 4000) : null,
   };
@@ -137,7 +149,7 @@ async function insertPrompt(env, origin, body, by) {
     return writeErr(e);
   }
   const photos = [];
-  for (const p of (Array.isArray(body.photos) ? body.photos.slice(0, 12) : [])) {
+  for (const p of (Array.isArray(body.photos) ? body.photos : [])) {   /* every pasted picture; each is capped at MAX_PHOTO_BYTES, the request by the platform */
     if (!p) continue;
     const put = await putPhoto(env, typeof p === "string" ? p : (p.dataUrl || p.data)).catch(() => null);
     if (!put) continue;

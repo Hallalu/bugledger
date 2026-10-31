@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { ROOT, read } from "./helpers.mjs";
-import { scrubSecrets, extractPrompts, userText, isRelayed, isBuiltin, resolveProject } from "../public/journal.mjs";
+import { scrubSecrets, extractPrompts, userText, isRelayed, isBuiltin, resolveProject, folderProject } from "../public/journal.mjs";
 import { scrubSecrets as serverScrub } from "../src/journal.mjs";
 
 const line = (o) => JSON.stringify(o) + "\n";
@@ -46,6 +46,8 @@ test("extractPrompts keeps every human prompt, in order, exactly as typed", asyn
   assert.equal(prompts[6].text, "fix it", "harness reminders are not the owner's words");
   assert.deepEqual(prompts.map((p) => p.n), [1, 2, 3, 4, 5, 6, 7, 8]);
   assert.equal(meta.cwd, "/Users/x/BugLedger"); assert.equal(meta.sessionId, "s1"); assert.equal(meta.branch, "main");
+  assert.equal(prompts[0].cwd, "/Users/x/BugLedger", "each prompt remembers the folder it was typed in"); assert.equal(prompts[1].cwd, null);
+  assert.equal(meta.dominantCwd, "/Users/x/BugLedger", "the folder the session mostly worked in");
 });
 test("relayed notices, app commands and compaction summaries are not prompts", () => {
   assert.ok(isRelayed("<agent-message>…")); assert.ok(isRelayed("[Request interrupted by user]")); assert.ok(!isRelayed("Kindly add <b>bold</b>"));
@@ -60,9 +62,18 @@ test("scrubSecrets removes only secret shapes, counts them, and leaves ordinary 
     assert.equal(s.n, 4, s.text); assert.ok(!/sk-ant|ghp_|Hunter2|blk_a/.test(s.text)); assert.match(s.text, /password: \[secret removed\]/);
   }
 });
-test("resolveProject prefers the session's Aprizely board, else the folder, never the bare home path", () => {
+test("folderProject: longest rule wins, dot-folders and home are nothing, an unknown folder keeps its name", () => {
+  const home = os.homedir(), map = { _about: "x", foo: { app: "Foo" }, "foo/bar": { app: "Bar", project: "foo-bar" } };
+  assert.deepEqual(folderProject(home + "/foo/x/y", map), { project: "foo", app: "Foo", via: "folder-map" });
+  assert.deepEqual(folderProject(home + "/foo/bar/baz", map), { project: "foo-bar", app: "Bar", via: "folder-map" });
+  assert.equal(folderProject(home, map), null); assert.equal(folderProject(home + "/.claude/projects/x", map), null); assert.equal(folderProject("/tmp/elsewhere", map), null);
+  assert.deepEqual(folderProject(home + "/zz-no-such-folder-9f3/deep", {}), { project: "zz-no-such-folder-9f3", app: null, via: "cwd" });
+});
+test("resolveProject prefers the session's Aprizely board, else the folder the prompt was typed in, else where the session mostly worked, never the bare home path", () => {
   const home = os.homedir();
   assert.deepEqual(resolveProject("no-such-session", home), { project: "home", app: null, via: "cwd" });
+  assert.equal(resolveProject("no-such-session", home, { lineCwd: home + "/zz-no-such-folder-9f3" }).project, "zz-no-such-folder-9f3", "the prompt's own folder");
+  assert.equal(resolveProject("no-such-session", home, { lineCwd: home, dominantCwd: home + "/zz-other-folder-9f3/sub" }).project, "zz-other-folder-9f3", "typed from ~, but the session worked in a project");
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bl-proj-")); fs.writeFileSync(path.join(dir, ".aprizely.worklog.json"), JSON.stringify({ id: "x", app: "Bug Ledger", project: "BugLedger" }));
   assert.deepEqual(resolveProject(null, dir), { project: "BugLedger", app: "Bug Ledger", via: "board" });
 });
@@ -81,5 +92,7 @@ test("worker: journal routes are wired, owner-gated, and the page is noindex", (
   assert.match(html, /<meta name="robots" content="noindex, nofollow">/);
   assert.ok(!/style-src[^;]*fonts\.googleapis/.test(read("public/_headers")) && !/fonts\.googleapis/.test(html), "the page must not load external fonts (CSP forbids them)");
   const sql = read("schema-journal.sql");
-  for (const t of ["journal_no_update", "journal_no_delete", "journal_photos_no_update", "journal_photos_no_delete", "journal_refile_no_update", "journal_refile_no_delete"]) assert.ok(sql.includes(t), t);
+  for (const t of ["journal_no_update", "journal_no_delete", "journal_photos_no_update", "journal_photos_no_delete", "journal_refile_no_update", "journal_refile_no_delete", "journal_pairs_no_update", "journal_pairs_no_delete"]) assert.ok(sql.includes(t), t);
+  assert.ok(!/photos\.slice\(0, ?\d+\)/.test(j) && !/images\.slice\(0, ?\d+\)/.test(read("public/journal.mjs")), "no invented cap on pasted pictures");
+  assert.match(j, /journal_pairs/, "a transcript message pairs with one hook row and the pairing is recorded");
 });

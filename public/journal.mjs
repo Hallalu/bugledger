@@ -9,7 +9,7 @@
  *                                                       UserPromptSubmit → posts the prompt the moment it is sent
  *                                                       Stop             → sweeps the transcript: mid-turn prompts, pasted images, anything missed
  *   node journal.mjs sweep <session.jsonl>            journal every prompt in one transcript (idempotent)
- *   node journal.mjs backfill [--since YYYY-MM-DD] [--no-images] [--dry]   every transcript on this Mac
+ *   node journal.mjs backfill [--since YYYY-MM-DD] [--no-images] [--dry] [--parallel 4]   every transcript on this Mac
  *   node journal.mjs add "the prompt" [--project P --app A --at ISO --session S --agent codex]   (or add --file f.txt | add -)
  *   node journal.mjs shot <image…> [--prompt <id> | --latest] [--caption "…"] [--kind before|after|shot]
  *   node journal.mjs refile <id> --project P [--app A]
@@ -83,11 +83,11 @@ export function userText(content) {
 }
 /* every prompt in a transcript, in order: top-level turns, mid-turn (queued) messages, pasted images folded in */
 export async function extractPrompts(file, { images = true } = {}) {
-  const out = []; let pending = [], meta = { cwd: null, sessionId: null, branch: null };
+  const out = []; let pending = [], meta = { cwd: null, sessionId: null, branch: null, dominantCwd: null }; const cwds = new Map();
   const rl = readline.createInterface({ input: fs.createReadStream(file, { encoding: 'utf8' }), crlfDelay: Infinity });
   for await (const line of rl) {
     if (!line) continue; let d; try { d = JSON.parse(line); } catch { continue; }
-    if (!meta.cwd && d.cwd) meta.cwd = d.cwd; if (!meta.sessionId && d.sessionId) meta.sessionId = d.sessionId; if (!meta.branch && d.gitBranch) meta.branch = d.gitBranch;
+    if (d.cwd) { if (!meta.cwd) meta.cwd = d.cwd; if (d.cwd !== HOME && !d.cwd.startsWith(HOME + '/.')) cwds.set(d.cwd, (cwds.get(d.cwd) || 0) + 1); } if (!meta.sessionId && d.sessionId) meta.sessionId = d.sessionId; if (!meta.branch && d.gitBranch) meta.branch = d.gitBranch;
     if (d.isSidechain) continue;
     if (d.type === 'user' && !d.isMeta) {
       const c = d.message && d.message.content;
@@ -95,7 +95,7 @@ export async function extractPrompts(file, { images = true } = {}) {
       const u = userText(c);
       if (!u.text.trim()) { if (u.images.length) pending.push(...u.images); continue; }
       if (isRelayed(u.text) || isBuiltin(u.text)) continue;
-      out.push({ uuid: d.uuid, time: d.timestamp, kind: u.kind, text: u.text, images: images ? pending.concat(u.images) : [], imageCount: pending.length + u.images.length }); pending = [];
+      out.push({ uuid: d.uuid, time: d.timestamp, kind: u.kind, text: u.text, cwd: d.cwd || null, images: images ? pending.concat(u.images) : [], imageCount: pending.length + u.images.length }); pending = [];
     } else if (d.type === 'attachment') {
       const a = d.attachment || {};
       if (a.type !== 'queued_command' || !a.prompt) continue;
@@ -103,25 +103,38 @@ export async function extractPrompts(file, { images = true } = {}) {
       const u = userText(a.prompt);
       if (!u.text.trim()) { if (u.images.length) pending.push(...u.images); continue; }
       if (isRelayed(u.text) || isBuiltin(u.text)) continue;
-      out.push({ uuid: d.uuid, time: a.timestamp || d.timestamp, kind: 'mid-turn', text: u.text, images: images ? pending.concat(u.images) : [], imageCount: pending.length + u.images.length }); pending = [];
+      out.push({ uuid: d.uuid, time: a.timestamp || d.timestamp, kind: 'mid-turn', text: u.text, cwd: d.cwd || null, images: images ? pending.concat(u.images) : [], imageCount: pending.length + u.images.length }); pending = [];
     }
   }
   out.sort((x, y) => String(x.time).localeCompare(String(y.time)));
   out.forEach((p, i) => { p.n = i + 1; });
+  meta.dominantCwd = [...cwds.entries()].sort((a, b) => b[1] - a[1]).map((e) => e[0])[0] || null;   /* where the session mostly worked */
   return { prompts: out, meta };
 }
 
-/* ---- which project is this? the session's Aprizely board knows best; else the folder ---- */
-export function resolveProject(sessionId, cwd) {
+/* ---- which project is this? the session's Aprizely board knows best; else the folder the prompt was typed in ---- */
+const PROJECTS = () => readJSON(path.join(STATE_DIR, 'projects.json'), {}) || {};
+/* a folder → its project: the longest matching rule in ~/.bugledger-journal/projects.json ({"pixelbake":{"app":"Pixelbake"},
+   "coconvo/public/companion":{"app":"Coconvo Companion"}}), else the top folder's own Aprizely board, else the top folder's name */
+export function folderProject(dir, map = PROJECTS()) {
+  if (!dir || dir === HOME || !dir.startsWith(HOME + '/') || dir.startsWith(HOME + '/.')) return null;
+  const rel = dir.slice(HOME.length + 1), root = rel.split('/')[0];
+  const rule = Object.keys(map).filter((k) => !k.startsWith('_') && (rel === k || rel.startsWith(k + '/'))).sort((a, b) => b.length - a.length)[0];
+  if (rule) return { project: map[rule].project || root, app: map[rule].app || null, via: 'folder-map' };
+  const w = readJSON(path.join(HOME, root, '.aprizely.worklog.json'));
+  if (w && (w.app || w.project)) return { project: w.project || root, app: w.app || null, via: 'folder-board' };
+  return { project: root, app: null, via: 'cwd' };
+}
+export function resolveProject(sessionId, cwd, { lineCwd = null, dominantCwd = null } = {}) {
   const reg = sessionId ? readJSON(path.join(HOME, '.aprizely', 'sessions', String(sessionId).replace(/[^\w-]/g, '') + '.json')) : null;
   /* a board file in the home folder belongs to some other run, not to every session started from ~ */
   for (const dir of [reg && reg.dir, cwd && cwd !== HOME ? cwd : null].filter(Boolean)) {
     const w = readJSON(path.join(dir, '.aprizely.worklog.json'));
     if (w && (w.app || w.project)) return { project: w.project || path.basename(dir), app: w.app || null, via: 'board' };
   }
-  const map = readJSON(path.join(STATE_DIR, 'projects.json'), {}) || {};
-  const base = cwd && cwd !== HOME ? path.basename(cwd) : 'home';
-  return { project: base, app: (map[base] && map[base].app) || null, via: 'cwd' };
+  /* no board of its own: the folder this prompt was typed in, else where the session mostly worked, else where it started */
+  for (const dir of [lineCwd, dominantCwd, cwd]) { const f = folderProject(dir); if (f) return f; }
+  return { project: 'home', app: null, via: 'cwd' };
 }
 
 /* ---- talking to the ledger ---- */
@@ -162,39 +175,45 @@ export async function sweep(file, { sessionId, cwd, images = true, dry = false, 
   if (!file || !fs.existsSync(file)) return { ok: false, error: 'no transcript at ' + file };
   const { prompts, meta } = await extractPrompts(file, { images });
   const sid = sessionId || meta.sessionId || path.basename(file, '.jsonl');
-  const { project, app, via } = resolveProject(sid, cwd || meta.cwd);
-  const st = loadState(sid); let added = 0, dup = 0, photos = 0, failed = 0;
+  const st = loadState(sid); let added = 0, dup = 0, photos = 0, failed = 0; const filed = new Map();
   for (const p of prompts) {
     if (st.posted[p.uuid]) continue;
+    /* each prompt is filed under the folder it was typed in (a session's own board outranks that) */
+    const { project, app, via } = resolveProject(sid, cwd || meta.cwd, { lineCwd: p.cwd, dominantCwd: meta.dominantCwd });
+    filed.set(app || project, (filed.get(app || project) || 0) + 1);
     const sc = scrubSecrets(p.text);
-    const body = { text: sc.text, redactions: sc.n, at: p.time, sessionId: sid, seq: p.n, uuid: p.uuid, project, app, source: 'transcript', arrival: p.kind, cwd: cwd || meta.cwd || null,
+    const body = { text: sc.text, redactions: sc.n, at: p.time, sessionId: sid, seq: p.n, uuid: p.uuid, project, app, source: 'transcript', arrival: p.kind, cwd: p.cwd || cwd || meta.cwd || null,
       agent: 'claude-code', by, meta: { via, branch: meta.branch || undefined, images: p.imageCount || undefined },
-      photos: p.images.slice(0, 12).map((im) => ({ dataUrl: toDataUrl(im), kind: 'pasted', caption: 'Pasted with the prompt' })) };
-    if (dry) { added++; if (!quiet) console.log(`  would add #${p.n} ${p.kind} ${p.time} ${p.imageCount ? p.imageCount + ' image(s) ' : ''}${JSON.stringify(p.text.slice(0, 70))}`); continue; }
+      photos: p.images.map((im) => ({ dataUrl: toDataUrl(im), kind: 'pasted', caption: 'Pasted with the prompt' })) };
+    if (dry) { added++; if (!quiet) console.log(`  would add #${p.n} ${p.kind} ${p.time} ${p.imageCount ? p.imageCount + ' image(s) ' : ''}${JSON.stringify(p.text.slice(0, 70))} → ${app || project}`); continue; }
     let res; try { res = await api('POST', '/api/journal', body, { timeout: 60000 }); } catch (e) { res = { ok: false, error: String(e) }; }
     if (!res || !res.ok) { failed++; log(`sweep: post failed for ${p.uuid}: ${res && res.error}`); continue; }
     st.posted[p.uuid] = res.id;
     if (res.duplicate) {
       dup++;
       /* the live hook got the words first — give its row the pictures, and its proper project if the hook only knew the folder */
-      for (const im of p.images.slice(0, 12)) { try { const r = await api('POST', '/api/journal/photo', { promptId: res.id, dataUrl: toDataUrl(im), kind: 'pasted', caption: 'Pasted with the prompt', by }); if (r && r.ok && !r.duplicate) photos++; } catch {} }
+      for (const im of p.images) { try { const r = await api('POST', '/api/journal/photo', { promptId: res.id, dataUrl: toDataUrl(im), kind: 'pasted', caption: 'Pasted with the prompt', by }); if (r && r.ok && !r.duplicate) photos++; } catch {} }
       if (via === 'board' && (res.project !== project || (app && res.app !== app))) { try { await api('POST', '/api/journal/refile', { promptId: res.id, project, app, by }); } catch {} }
     } else { added++; photos += (res.photos || []).length; }
     saveState(sid, st);
   }
-  st.project = project; st.app = app; st.sweptAt = Date.now(); saveState(sid, st);
-  const summary = { ok: true, file: path.basename(file), session: sid, project, app, prompts: prompts.length, added, duplicates: dup, photos, failed };
-  if (!quiet) console.log(`${dry ? '(dry) ' : ''}${path.basename(file)} → ${prompts.length} prompts · ${added} added · ${dup} already there · ${photos} photos · ${failed} failed · ${app || project}`);
+  const top = [...filed.entries()].sort((a, b) => b[1] - a[1]);
+  const where = top.length ? top[0][0] + (top.length > 1 ? ` (+${top.length - 1} more)` : '') : 'nothing new';
+  if (!dry) { st.filed = Object.fromEntries(top); st.sweptAt = Date.now(); saveState(sid, st); }   /* a dry run leaves no trace */
+  const summary = { ok: true, file: path.basename(file), session: sid, filed: Object.fromEntries(top), project: top[0] ? top[0][0] : null, prompts: prompts.length, added, duplicates: dup, photos, failed };
+  if (!quiet) console.log(`${dry ? '(dry) ' : ''}${path.basename(file)} → ${prompts.length} prompts · ${added} added · ${dup} already there · ${photos} photos · ${failed} failed · ${where}`);
   return summary;
 }
 async function backfill(args) {
-  const since = opt(args, 'since') ? Date.parse(opt(args, 'since')) : 0, images = !has(args, 'no-images'), dry = has(args, 'dry');
+  const since = opt(args, 'since') ? Date.parse(opt(args, 'since')) : 0, images = !has(args, 'no-images'), dry = has(args, 'dry'), par = Math.max(1, +(opt(args, 'parallel') || (dry ? 1 : 4)));
   const files = fs.readdirSync(path.join(HOME, '.claude', 'projects'), { withFileTypes: true }).filter((d) => d.isDirectory())
     .flatMap((d) => fs.readdirSync(path.join(HOME, '.claude', 'projects', d.name)).filter((f) => f.endsWith('.jsonl')).map((f) => path.join(HOME, '.claude', 'projects', d.name, f)))
     .map((f) => ({ f, m: fs.statSync(f).mtimeMs })).filter((x) => x.m >= since).sort((a, b) => a.m - b.m);
   console.log(`${files.length} transcripts${since ? ' since ' + opt(args, 'since') : ''}${dry ? ' (dry run)' : ''}`);
-  let tot = { prompts: 0, added: 0, duplicates: 0, photos: 0, failed: 0 };
-  for (const { f } of files) { const r = await sweep(f, { images, dry }); if (r.ok) for (const k of Object.keys(tot)) tot[k] += r[k] || 0; }
+  let tot = { prompts: 0, added: 0, duplicates: 0, photos: 0, failed: 0 }, i = 0;
+  /* a few transcripts at a time (each one in order, so a session's prompts arrive in sequence) */
+  const lane = async () => { while (i < files.length) { const { f } = files[i++]; const r = await sweep(f, { images, dry }); if (r.ok) for (const k of Object.keys(tot)) tot[k] += r[k] || 0; } };
+  await Promise.all(Array.from({ length: Math.min(par, files.length) }, lane));
   console.log(`total: ${tot.prompts} prompts · ${tot.added} added · ${tot.duplicates} already there · ${tot.photos} photos · ${tot.failed} failed`);
 }
 

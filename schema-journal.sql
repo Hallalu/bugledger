@@ -59,3 +59,13 @@ CREATE TABLE IF NOT EXISTS journal_refile (
 CREATE INDEX IF NOT EXISTS idx_journal_refile_prompt ON journal_refile(prompt_id, ts DESC);
 CREATE TRIGGER IF NOT EXISTS journal_refile_no_update BEFORE UPDATE ON journal_refile BEGIN SELECT RAISE(ABORT,'the prompt journal is append-only'); END;
 CREATE TRIGGER IF NOT EXISTS journal_refile_no_delete BEFORE DELETE ON journal_refile BEGIN SELECT RAISE(ABORT,'the prompt journal is append-only'); END;
+
+-- which live-hook row a transcript message was matched to — so a second identical prompt in the same minutes is never swallowed
+CREATE TABLE IF NOT EXISTS journal_pairs (
+  uuid      TEXT PRIMARY KEY,        -- the transcript message uuid
+  prompt_id TEXT NOT NULL,           -- the hook row it stands for
+  ts        INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_journal_pairs_prompt ON journal_pairs(prompt_id);
+CREATE TRIGGER IF NOT EXISTS journal_pairs_no_update BEFORE UPDATE ON journal_pairs BEGIN SELECT RAISE(ABORT,'the prompt journal is append-only'); END;
+CREATE TRIGGER IF NOT EXISTS journal_pairs_no_delete BEFORE DELETE ON journal_pairs BEGIN SELECT RAISE(ABORT,'the prompt journal is append-only'); END;
