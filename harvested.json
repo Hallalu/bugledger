@@ -9214,5 +9214,53 @@
     "status": "unverified",
     "session": "b2726693",
     "found": "2026-10-30"
+  },
+  {
+    "key": "7dda19ea:testedtherightemailsweresentandthewrongoneswerentalinkforgin",
+    "app": "Hallalu CRM",
+    "title": "- Tested: the right emails were sent and the wrong ones weren't; a link-forging attempt…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- Tested: the right emails were sent and the wrong ones weren't; a link-forging attempt failed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7dda19ea:whyimaskingbeforecommittinganothersessionleftsecurityandbugf",
+    "app": "Hallalu CRM",
+    "title": "Why I'm asking before committing: another session left security and bug fixes in…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "**Why I'm asking before committing:** another session left security and bug fixes in Kindly, uncommitted and undeployed, and I couldn't find which session it was.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "97ec418b:therealbugisisolatedtocsshlline100itsvaluecapturestopsatthei",
+    "app": "Listing Lab Pro",
+    "title": "Real bug is isolated to cssHl (line 100): its value capture [^;}]+ stops at the ;…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The real bug is isolated to **`cssHl`** (line 100): its value capture `[^;}]+` stops at the `;` inside `&quot;`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "97ec418b:fixingwpurlrepairstripphotosandthelatentwallpaperbug",
+    "app": "Listing Lab Pro",
+    "title": "Fixing wpUrl repairs trip photos and the latent wallpaper bug.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fixing `wpUrl` repairs trip photos *and* the latent wallpaper bug.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-31"
   }
 ]
