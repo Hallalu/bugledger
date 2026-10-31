@@ -41,7 +41,7 @@ const JOY_CLOUD = (process.env.JOY_CLOUD_BASE || 'https://joy-cloud.coconvo.work
 const readJSON = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return d; } };
 export function config() {
   const c = readJSON(path.join(HOME, '.bugledger.json'), {}) || {};
-  return { base: (process.env.BUGLEDGER_BASE || c.base || 'https://bugledger.coconvo.workers.dev').replace(/\/$/, ''), token: process.env.BUGLEDGER_KEY || c.token || '' };
+  return { base: (process.env.BUGLEDGER_BASE || c.base || 'https://breadledger.coconvo.workers.dev').replace(/\/$/, ''), token: process.env.BUGLEDGER_KEY || c.token || '' };
 }
 const log = (line) => { try { fs.mkdirSync(STATE_DIR, { recursive: true }); fs.appendFileSync(LOG, new Date().toISOString() + ' ' + line + '\n'); } catch {} };
 const sha256 = (s) => crypto.createHash('sha256').update(s, 'utf8').digest('hex');

@@ -129,6 +129,7 @@ export default {
 async function handle(request, env) {
     const url = new URL(request.url);
     const { pathname } = url;
+    const siteOrigin = url.origin; // links handed back follow the host that served the request, so one build serves both bugledger and breadledger
 
     if (request.method === "OPTIONS")
       return new Response(null, { status: 204, headers: JSON_HEADERS });
@@ -179,7 +180,7 @@ async function handle(request, env) {
           url = await saveShot(env, body && (body.dataUrl || body.url || body.data));
         }
         if (!url) return json({ ok: false, error: "no valid image (send an image/* body or JSON {dataUrl})" }, 400);
-        return json({ ok: true, url, view: "https://bugledger.coconvo.workers.dev" + url });
+        return json({ ok: true, url, view: siteOrigin + url });
       } catch (e) { return writeErr(e); }
     }
 
@@ -285,7 +286,7 @@ async function handle(request, env) {
         });
         if (!stmts.length) return json({ ok: false, error: "no events" }, 400);
         await env.DB.batch(stmts);
-        return json({ ok: true, ids, count: ids.length, story: "https://bugledger.coconvo.workers.dev/story/" + sessionId });
+        return json({ ok: true, ids, count: ids.length, story: siteOrigin + "/story/" + sessionId });
       } catch (e) { return writeErr(e); }
     }
 
@@ -469,9 +470,9 @@ async function handle(request, env) {
                covVerified, JSON.stringify(evidence), rec.session_id).run();
         const pct = covTotal ? Math.round((covMatched / covTotal) * 100) : 100;
         const verifiedPct = covTotal ? Math.round((covVerified / covTotal) * 100) : 0;
-        return json({ ok: true, id, ts, app: rec.app, view: "https://bugledger.coconvo.workers.dev/#checks",
-          report: "https://bugledger.coconvo.workers.dev/report?id=" + id,
-          story: rec.session_id ? "https://bugledger.coconvo.workers.dev/story/" + rec.session_id : null,
+        return json({ ok: true, id, ts, app: rec.app, view: siteOrigin + "/#checks",
+          report: siteOrigin + "/report?id=" + id,
+          story: rec.session_id ? siteOrigin + "/story/" + rec.session_id : null,
           coverage: { total: covTotal, matched: covMatched, pct, complete: missed.length === 0,
             verified: covVerified, verifiedPct, evidence, missed: missed.slice(0, 60) } });
       } catch (e) {
@@ -541,7 +542,7 @@ async function handle(request, env) {
           now, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, 500),
           prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null
         ).run();
-        return json({ ok: true, id, url: "https://bugledger.coconvo.workers.dev/live", done, total: tasks.length });
+        return json({ ok: true, id, url: siteOrigin + "/live", done, total: tasks.length });
       } catch (e) { return writeErr(e); }
     }
 

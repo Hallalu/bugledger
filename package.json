@@ -1,9 +1,10 @@
 {
-  "name": "bugledger",
+  "name": "breadledger",
   "private": true,
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "gen": "node gen.mjs",
-    "deploy": "npx wrangler@4.28.1 deploy"
+    "deploy": "npx wrangler@4.28.1 deploy",
+    "deploy:legacy": "npx wrangler@4.28.1 deploy --config wrangler.legacy.json"
   }
 }

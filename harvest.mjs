@@ -132,7 +132,7 @@ for (const f of files) {
     else if (Array.isArray(c)) for (const b of c) if (b?.type === "text") text += b.text + " ";
     if (!text || /organization has disabled/i.test(text)) continue;
     // skip meta-conversation ABOUT this tool (prevents the ledger-building sessions from self-harvesting)
-    if (/\b(bug ?ledger|bugledger|harvest\.mjs|scan\.mjs|gen\.mjs|bugs\.json|harvested\.json|scan-?findings|security sweep|the curated ledger|auto-?harvest|detector\b)/i.test(text)) continue;
+    if (/\b(bug ?ledger|bugledger|bread ?ledger|harvest\.mjs|scan\.mjs|gen\.mjs|bugs\.json|harvested\.json|scan-?findings|security sweep|the curated ledger|auto-?harvest|detector\b)/i.test(text)) continue;
     // message-level gate: the assistant both claims a fix AND names a defect somewhere in the message
     if (!STRONG.test(text) || !DEFECT.test(text)) continue;
     const ss = sents(text).filter(s => s.length >= 25 && s.length <= 260 && !NARRATION.test(stripMd(s)));

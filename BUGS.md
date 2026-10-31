@@ -1,6 +1,6 @@
 # 🐞 Bug Ledger — Master Checklist
 
-**1117 bugs fixed** across **61 apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**
+**1117 bugs fixed** across **61 apps**, mined from the full AI-assisted build history. Live: **https://breadledger.coconvo.workers.dev**
 
 | Metric | Count |
 |---|---|

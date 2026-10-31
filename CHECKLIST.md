@@ -1,6 +1,6 @@
 # BUG REGRESSION CHECKLIST — 1117 known bugs across 61 apps
 # Paste this into any build session and re-check each item (bugs recur).
-# Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
+# Live: https://breadledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger
 
 ## 🔒 Security Sweep (15)
 - [ ] [critical/fixed] C1 Cloud vault brute-forceable — ciphertext fetchable by public handle, protected only by a 6-digit PIN — vaultId = SHA-256("blu-vault:"+handle) is derived from the public handle, and /api/backup GET…

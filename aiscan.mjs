@@ -35,7 +35,7 @@ import { inspectBytes, stackTerms, textFindings, addTerms, MEDIA_EXT, WM_N } fro
 try { addTerms(JSON.parse(fs.readFileSync(path.join(os.homedir(), '.bugledger-stack.json'), 'utf8')).terms || []); } catch {}
 
 const LEDGER = path.dirname(fileURLToPath(import.meta.url));
-const UA = 'BugLedger-aiscan/1.0 (+https://bugledger.coconvo.workers.dev/aiscan)';
+const UA = 'BugLedger-aiscan/1.0 (+https://breadledger.coconvo.workers.dev/aiscan)';
 const SKIP_DIR = /(^|\/)(node_modules|\.git|\.wrangler|\.next|\.cache|\.venv|venv|__pycache__|\.bake|coverage)(\/|$)/;
 const SHIPPED_DIR = /(^|\/)(public|dist|build|static|www|site|out|assets|docs)(\/|$)/;
 const PUBLIC_TEXT = /\.(html?|md|txt|js|mjs|json|svg|xml|webmanifest)$/i;
@@ -194,7 +194,7 @@ export function asScanFindings(hits) {
 // ---------- ledger + story ----------
 function grouped(hits) { const g = {}; for (const h of hits) (g[h.id] = g[h.id] || []).push(h); return g; }
 export async function logToLedger(app, project, hits) {
-  let cfg; try { cfg = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.bugledger.json'), 'utf8')); } catch { cfg = { base: 'https://bugledger.coconvo.workers.dev', token: '' }; } /* no config: posts go unauthenticated and the ledger refuses them */
+  let cfg; try { cfg = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.bugledger.json'), 'utf8')); } catch { cfg = { base: 'https://breadledger.coconvo.workers.dev', token: '' }; } /* no config: posts go unauthenticated and the ledger refuses them */
   let existing = new Set();
   try { const c = await (await fetch(`${cfg.base}/checklist.json`)).json(); for (const k in c.apps || {}) for (const b of c.apps[k]) existing.add(`${k}|${b.title}`.toLowerCase()); } catch {}
   const posted = [];

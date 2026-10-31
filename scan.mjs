@@ -720,7 +720,7 @@ if (flags.has("--write")) {
 if (flags.has("--story")) {
   let ws = null; try { ws = JSON.parse(fs.readFileSync(path.join(TARGET, ".worklog.json"), "utf8")); } catch {}
   let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(path.join(process.env.HOME, ".bugledger.json"),"utf8")); } catch {}
-  const base = process.env.BUGLEDGER_BASE || cfg.base || "https://bugledger.coconvo.workers.dev";
+  const base = process.env.BUGLEDGER_BASE || cfg.base || "https://breadledger.coconvo.workers.dev";
   const token = process.env.BUGLEDGER_TOKEN || cfg.token || "";
   if (!ws || !ws.id) console.error("--story: no ./.worklog.json in the target — run worklog.mjs start first (skipped)");
   else {
@@ -752,7 +752,7 @@ if (flags.has("--story")) {
 // ---------- --log : POST this scan as a check-log to the ledger ----------
 if (flags.has("--log")) {
   let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(path.join(process.env.HOME, ".bugledger.json"),"utf8")); } catch {}
-  const base = process.env.BUGLEDGER_BASE || cfg.base || "https://bugledger.coconvo.workers.dev";
+  const base = process.env.BUGLEDGER_BASE || cfg.base || "https://breadledger.coconvo.workers.dev";
   const token = process.env.BUGLEDGER_TOKEN || cfg.token || "";
   const secDet = new Set(D.filter(d=>d.cat==="security").map(d=>d.id));
   const firedDet = new Set(findings.map(f=>f.detector));

@@ -4,7 +4,7 @@
  (tasks ticking off in real time) AND narrate the scan as a permanent, itemised story the user
  reads at /story/<session> — what was found, how bad, what was done, how the app is better now.
 
- Setup (once): ~/.bugledger.json = {"base":"https://bugledger.coconvo.workers.dev","token":"..."}
+ Setup (once): ~/.bugledger.json = {"base":"https://breadledger.coconvo.workers.dev","token":"..."}
 
  Board (tasks + bold "doing now" line):
    node ~/BugLedger/worklog.mjs start --app "Aprizely" --project aprizely \
@@ -62,7 +62,7 @@ const has = (name) => argv.includes("--" + name);
 
 const cfgPath = path.join(os.homedir(), ".bugledger.json");
 let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(cfgPath, "utf8")); } catch {}
-const BASE = process.env.BUGLEDGER_BASE || cfg.base || "https://bugledger.coconvo.workers.dev";
+const BASE = process.env.BUGLEDGER_BASE || cfg.base || "https://breadledger.coconvo.workers.dev";
 const TOKEN = process.env.BUGLEDGER_TOKEN || cfg.token || "";
 
 const STATE = path.join(process.cwd(), ".worklog.json");

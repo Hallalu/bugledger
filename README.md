@@ -11,7 +11,8 @@ sidebar with every page, a ⌘K palette, one list row and a side peek for detail
 Pages: `/` (Ledger: Bugs · Security audit · Optimisers · Scanner leads · Harvested · Agent checks · Submitted),
 `/live`, `/timeline`, `/story/<id>`, `/plans`, `/aiscan`, `/sanitize`, owner-only `/journal` and `/admin`.
 
-🔗 **Live:** https://bugledger.coconvo.workers.dev
+🔗 **Live:** https://breadledger.coconvo.workers.dev
+↪️ **Old address** `bugledger.coconvo.workers.dev` still works: page views redirect (301) and `/api/*` + machine files are proxied to the new host (`wrangler.legacy.json`, `src/legacy-redirect.js`). Move a Mac's own pointers with `node ~/BugLedger/switch-host.mjs`.
 📋 **Flat checklist:** [CHECKLIST.md](./CHECKLIST.md) · **Detailed:** [BUGS.md](./BUGS.md) · **Raw:** [bugs.json](./bugs.json)
 🔒 **Security sweep:** [SECURITY-AUDIT.md](./SECURITY-AUDIT.md) · [security.json](./security.json)
 🔎 **Scanner leads:** [SCAN-FINDINGS.md](./SCAN-FINDINGS.md) · [scan-findings.json](./scan-findings.json)
@@ -117,7 +118,7 @@ The write token + base URL live in `~/.bugledger.json` (machine-local); the work
 ## Show your work live — the `/live` board
 
 Any agent can stream what it's doing, in parallel with the work, to a beautiful live board the user
-watches at **[bugledger.coconvo.workers.dev/live](https://bugledger.coconvo.workers.dev/live)** — a bold
+watches at **[breadledger.coconvo.workers.dev/live](https://breadledger.coconvo.workers.dev/live)** — a bold
 "doing now" line and tasks ticking off in real time (aurora-glass, polls ~1.5s). A pulsing "● live"
 banner also appears on the main ledger while a session is active.
 
@@ -227,6 +228,6 @@ node gen.mjs
 ## Deploy
 
 ```bash
-npx wrangler deploy   # publish to Cloudflare Workers (bugledger.coconvo.workers.dev)
+npx wrangler deploy   # publish to Cloudflare Workers (breadledger.coconvo.workers.dev)
 ```
 Static assets live in `public/`; the worker is assets-only (no backend, no D1).

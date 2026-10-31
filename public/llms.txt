@@ -5,28 +5,28 @@
 Agent instructions: fetch /AGENT.md and follow the protocol. Report back with POST /api/checks.
 
 ## Data (JSON)
-- [All bugs](https://bugledger.coconvo.workers.dev/bugs.json): every known bug {app,title,category,severity,symptom,root_cause,fix}
-- [Per-app checklist](https://bugledger.coconvo.workers.dev/checklist.json): bugs grouped by app + recurring classes + scanner detectors + security findings
-- [Security audit](https://bugledger.coconvo.workers.dev/security.json): the full severity-ranked security sweep
+- [All bugs](https://breadledger.coconvo.workers.dev/bugs.json): every known bug {app,title,category,severity,symptom,root_cause,fix}
+- [Per-app checklist](https://breadledger.coconvo.workers.dev/checklist.json): bugs grouped by app + recurring classes + scanner detectors + security findings
+- [Security audit](https://breadledger.coconvo.workers.dev/security.json): the full severity-ranked security sweep
 
 ## Protocol
-- [AGENT.md](https://bugledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
-- POST https://bugledger.coconvo.workers.dev/api/checks : record a check — response includes server-verified `coverage` (matched/total/missed) vs the app catalog
-- GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
-- POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
-- Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
-- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session> (returns the session plus `history`: every earlier scan of the same app, each rolled up); human page https://bugledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan, with a Scan history tab spanning every earlier scan
+- [AGENT.md](https://breadledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
+- POST https://breadledger.coconvo.workers.dev/api/checks : record a check — response includes server-verified `coverage` (matched/total/missed) vs the app catalog
+- GET  https://breadledger.coconvo.workers.dev/api/checks : recent check-logs
+- POST https://breadledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
+- Live worklog: POST /api/session to stream what you're doing; watch at https://breadledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
+- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session> (returns the session plus `history`: every earlier scan of the same app, each rolled up); human page https://breadledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan, with a Scan history tab spanning every earlier scan
 
 ## Prompt Journal (owner-only)
 - Every prompt the owner sends to a coding agent, stored word-for-word (never a paraphrase), time-stamped, filed per project, with photos. Private: every read needs x-ledger-key; photos are served only through signed, expiring links.
 - POST /api/journal {text, at, project, app, sessionId, uuid, arrival, photos:[{dataUrl,caption,kind}]} — add a prompt exactly as it was sent (idempotent on uuid / same words in the same session within 3 min)
 - POST /api/journal/photo — attach a screenshot to a prompt (raw image body with ?prompt=<id>&caption=&kind=before|after|shot, or JSON {promptId,dataUrl})
-- GET  /api/journal?project=&session=&from=&to=&q=&photos=1&limit= — list with filters · page https://bugledger.coconvo.workers.dev/journal (cards + spreadsheet, filters, CSV)
-- Capture: curl -fsSL https://bugledger.coconvo.workers.dev/journal.mjs -o ~/journal.mjs && node ~/journal.mjs install (Claude Code hooks: live on every prompt + transcript sweep at each turn's end)
+- GET  /api/journal?project=&session=&from=&to=&q=&photos=1&limit= — list with filters · page https://breadledger.coconvo.workers.dev/journal (cards + spreadsheet, filters, CSV)
+- Capture: curl -fsSL https://breadledger.coconvo.workers.dev/journal.mjs -o ~/journal.mjs && node ~/journal.mjs install (Claude Code hooks: live on every prompt + transcript sweep at each turn's end)
 
 ## Live + history
-- Stream progress (watch): POST /api/session · board https://bugledger.coconvo.workers.dev/live · helper ~/BugLedger/worklog.mjs
-- Activity timeline (permanent record of every session + scan): https://bugledger.coconvo.workers.dev/timeline · GET /api/activity
+- Stream progress (watch): POST /api/session · board https://breadledger.coconvo.workers.dev/live · helper ~/BugLedger/worklog.mjs
+- Activity timeline (permanent record of every session + scan): https://breadledger.coconvo.workers.dev/timeline · GET /api/activity
 
 ## Human pages
-- [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, Agent-submitted, and Check-log panels
+- [Interactive ledger](https://breadledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, Agent-submitted, and Check-log panels

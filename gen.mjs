@@ -131,7 +131,7 @@ const sec = fs.existsSync(p("security.json")) ? JSON.parse(fs.readFileSync(p("se
 
 let L = [];
 L.push("# 🐞 Bug Ledger — Master Checklist\n");
-L.push(`**${bugs.length} bugs fixed** across **${realAppCount} apps**, mined from the full AI-assisted build history. Live: **https://bugledger.coconvo.workers.dev**\n`);
+L.push(`**${bugs.length} bugs fixed** across **${realAppCount} apps**, mined from the full AI-assisted build history. Live: **https://breadledger.coconvo.workers.dev**\n`);
 L.push("| Metric | Count |","|---|---|",
   `| Total bugs fixed | ${bugs.length} |`,
   `| Apps | ${realAppCount} |`,
@@ -175,7 +175,7 @@ const short = (s,n=95)=>{ s=(s||"").replace(/\s+/g," ").trim(); return s.length>
 let C = [];
 C.push(`# BUG REGRESSION CHECKLIST — ${bugs.length} known bugs across ${realAppCount} apps`);
 C.push(`# Paste this into any build session and re-check each item (bugs recur).`);
-C.push(`# Live: https://bugledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger`);
+C.push(`# Live: https://breadledger.coconvo.workers.dev  |  Repo: github.com/Hallalu/bugledger`);
 C.push("");
 if (sec) {
   C.push(`## 🔒 Security Sweep (${sec.findings.length})`);
@@ -283,7 +283,7 @@ fs.writeFileSync(p("public","bugs.json"), JSON.stringify(bugs));
 if (sec) fs.writeFileSync(p("public","security.json"), JSON.stringify(sec));
 
 // compact per-app checklist for agents
-const checklist = { generated: GEN, base: "https://bugledger.coconvo.workers.dev",
+const checklist = { generated: GEN, base: "https://breadledger.coconvo.workers.dev",
   totals: { bugs: bugs.length, apps: realAppCount, security: sec ? sec.findings.length : 0 },
   apps: {}, recurring: RECURRING, detectors: DETECTORS,
   security: sec ? sec.findings.map(f => ({ id: f.id, severity: f.severity, status: f.status, app: f.app, title: f.title })) : [],
@@ -305,24 +305,24 @@ const llms = `# Bug Ledger
 Agent instructions: fetch /AGENT.md and follow the protocol. Report back with POST /api/checks.
 
 ## Data (JSON)
-- [All bugs](https://bugledger.coconvo.workers.dev/bugs.json): every known bug {app,title,category,severity,symptom,root_cause,fix}
-- [Per-app checklist](https://bugledger.coconvo.workers.dev/checklist.json): bugs grouped by app + recurring classes + scanner detectors + security findings
-- [Security audit](https://bugledger.coconvo.workers.dev/security.json): the full severity-ranked security sweep
+- [All bugs](https://breadledger.coconvo.workers.dev/bugs.json): every known bug {app,title,category,severity,symptom,root_cause,fix}
+- [Per-app checklist](https://breadledger.coconvo.workers.dev/checklist.json): bugs grouped by app + recurring classes + scanner detectors + security findings
+- [Security audit](https://breadledger.coconvo.workers.dev/security.json): the full severity-ranked security sweep
 
 ## Protocol
-- [AGENT.md](https://bugledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
-- POST https://bugledger.coconvo.workers.dev/api/checks : record a check — response includes server-verified \`coverage\` (matched/total/missed) vs the app catalog
-- GET  https://bugledger.coconvo.workers.dev/api/checks : recent check-logs
-- POST https://bugledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
-- Live worklog: POST /api/session to stream what you're doing; watch at https://bugledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
-- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session> (returns the session plus \`history\`: every earlier scan of the same app, each rolled up); human page https://bugledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan, with a Scan history tab spanning every earlier scan
+- [AGENT.md](https://breadledger.coconvo.workers.dev/AGENT.md): step-by-step — how to debug a project against the ledger and log the result
+- POST https://breadledger.coconvo.workers.dev/api/checks : record a check — response includes server-verified \`coverage\` (matched/total/missed) vs the app catalog
+- GET  https://breadledger.coconvo.workers.dev/api/checks : recent check-logs
+- POST https://breadledger.coconvo.workers.dev/api/bugs : submit a NEW bug you discovered (append-only; needs x-ledger-key)
+- Live worklog: POST /api/session to stream what you're doing; watch at https://breadledger.coconvo.workers.dev/live (helper: ~/BugLedger/worklog.mjs)
+- Scan story: POST /api/session/event to narrate findings (severity, status, plain-English why/impact/fix, file, evidence, before→after metrics, verdict); read at GET /api/story?id=<session> (returns the session plus \`history\`: every earlier scan of the same app, each rolled up); human page https://breadledger.coconvo.workers.dev/story/<session> — itemised, severity-tagged, compared to the previous scan, with a Scan history tab spanning every earlier scan
 
 ## Live + history
-- Stream progress (watch): POST /api/session · board https://bugledger.coconvo.workers.dev/live · helper ~/BugLedger/worklog.mjs
-- Activity timeline (permanent record of every session + scan): https://bugledger.coconvo.workers.dev/timeline · GET /api/activity
+- Stream progress (watch): POST /api/session · board https://breadledger.coconvo.workers.dev/live · helper ~/BugLedger/worklog.mjs
+- Activity timeline (permanent record of every session + scan): https://breadledger.coconvo.workers.dev/timeline · GET /api/activity
 
 ## Human pages
-- [Interactive ledger](https://bugledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, Agent-submitted, and Check-log panels
+- [Interactive ledger](https://breadledger.coconvo.workers.dev/): filter by app/type/severity; Security Sweep, Scanner, Auto-harvested, Agent-submitted, and Check-log panels
 `;
 fs.writeFileSync(p("public","llms.txt"), llms);
 /* the security audit is hand-kept at the repo root; visitors get the redacted copy */
@@ -337,7 +337,7 @@ memory: **${bugs.length} bugs across ${realAppCount} apps**, a security audit ($
 and ${DETECTORS.length} static detectors. Use it to debug the current project against every bug we've
 hit before, then **log what you checked** so there's a record.
 
-Base URL: \`https://bugledger.coconvo.workers.dev\`
+Base URL: \`https://breadledger.coconvo.workers.dev\`
 
 ## Integrity — you can ADD, never delete or modify
 The ledger is append-only. You may append a check-log (\`POST /api/checks\`), stream live progress
@@ -360,8 +360,8 @@ Pick the app name (ask the user, or infer from the repo). Then either:
   https://github.com/Hallalu/bugledger first.
 - **Or fetch the data over HTTP:**
   \`\`\`bash
-  curl -s https://bugledger.coconvo.workers.dev/checklist.json     # per-app bugs + recurring + detectors + security
-  curl -s https://bugledger.coconvo.workers.dev/bugs.json          # every bug, full detail
+  curl -s https://breadledger.coconvo.workers.dev/checklist.json     # per-app bugs + recurring + detectors + security
+  curl -s https://breadledger.coconvo.workers.dev/bugs.json          # every bug, full detail
   \`\`\`
   Use \`.apps["APP NAME"]\` for that app's bugs; always also check \`.recurring\` and \`.detectors\`.
 
@@ -378,7 +378,7 @@ For security, run the detectors (the scanner does most automatically) and note \
 POST a summary so the ledger records this pass. Read the token from \`~/.bugledger.json\`:
 \`\`\`bash
 KEY=$(node -e "console.log(require(process.env.HOME+'/.bugledger.json').token)")
-curl -s -X POST https://bugledger.coconvo.workers.dev/api/checks \\
+curl -s -X POST https://breadledger.coconvo.workers.dev/api/checks \\
   -H "content-type: application/json" -H "x-ledger-key: $KEY" \\
   -d '{
     "app": "Hallalu CRM",
@@ -425,7 +425,7 @@ Attach coverage and additions to the story by sending \`"sessionId"\` on \`POST 
 
 ## Show your work live (optional but nice)
 While you do all of the above, you can stream progress to a live board the user watches at
-\`https://bugledger.coconvo.workers.dev/live\`:
+\`https://breadledger.coconvo.workers.dev/live\`:
 \`\`\`bash
 node ~/BugLedger/worklog.mjs start --app "APP" --project "$(basename "$PWD")" --title "Checking APP vs the ledger" --tasks "Pull checklist|Check each bug|Run detectors|Log the pass"
 node ~/BugLedger/worklog.mjs step 1 --current "checking the localStorage scoping"
