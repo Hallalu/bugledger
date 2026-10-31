@@ -84,6 +84,7 @@
   var NAV = [
     { h: 'Workspace' },
     { id: 'ledger', href: '/', label: 'Ledger', icon: 'ledger', views: VIEWS },
+    { id: 'now', href: '/now', label: 'Now', icon: 'zap' },
     { id: 'live', href: '/live', label: 'Live', icon: 'live' },
     { id: 'activity', href: '/timeline', label: 'Activity', icon: 'activity' },
     { h: 'Owner' },

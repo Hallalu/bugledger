@@ -6,9 +6,18 @@
 
  Setup (once): ~/.bugledger.json = {"base":"https://breadledger.coconvo.workers.dev","token":"..."}
 
- Board (tasks + bold "doing now" line):
+ Board (tasks + bold "doing now" line) — every session shows on the Now board at /now, and on its own at /now/<id>:
    node ~/BugLedger/worklog.mjs start --app "Aprizely" --project aprizely \
         --title "Fix the unlock keypad" --tasks "Center numbers|Tuck letters|Rename button|Verify"
+   # waves + plain-English step notes, the same grammar as Aprizely: "#Wave …" headers group the steps after them,
+   # and "Step::what it does, why, and its effect" gives each step the note the reader opens on the board
+   node ~/BugLedger/worklog.mjs start --app "Aprizely" --title "Fix the unlock keypad" \
+        --tasks "#Wave 1 — Build|Center numbers::Digits sit dead-centre in each key|#Wave 2 — Prove it|Verify::Open it and screenshot it"
+   node ~/BugLedger/worklog.mjs step 0 --desc "what this step does now"   # --desc on step/done rewrites the step's note
+   node ~/BugLedger/worklog.mjs add "Also fix hairline border::why it matters" --wave "Wave 1 — Build"
+   node ~/BugLedger/worklog.mjs feature "Keypad: digits centred, letters tucked under" --detail "every small detail"
+   node ~/BugLedger/worklog.mjs shot ./before.png --label "Keypad" --stage before   # with a session: also lands on the board
+   node ~/BugLedger/worklog.mjs shot ./after.png  --label "Keypad" --stage after    # same --label = a before/after slider
    node ~/BugLedger/worklog.mjs step 0                       # start task 0 (marks earlier ones done)
    node ~/BugLedger/worklog.mjs current "grepping .key css"  # update the bold 'doing now' line
    node ~/BugLedger/worklog.mjs done 0                       # mark task 0 done
@@ -53,7 +62,7 @@ const argv = process.argv.slice(2);
 const cmd = argv[0];
 const FLAGS_WITH_VALUE = new Set(["app","project","title","tasks","agent","current","note","label","caption","text",
   "sev","severity","cat","category","file","why","detail","impact","fix","status","verified","verifiedBy","confidence",
-  "phase","n","before","after","ref","tag","tags","better"]);
+  "phase","n","before","after","ref","tag","tags","better","desc","wave","stage"]);
 const positional = (() => { const out = []; for (let i = 1; i < argv.length; i++) { const a = argv[i];
   if (a.startsWith("--")) { if (FLAGS_WITH_VALUE.has(a.slice(2)) && argv[i+1] !== undefined && !argv[i+1].startsWith("--")) i++; continue; }
   out.push(a); } return out; })();
@@ -65,10 +74,23 @@ let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(cfgPath, "utf8")); } catch 
 const BASE = process.env.BUGLEDGER_BASE || cfg.base || "https://breadledger.coconvo.workers.dev";
 const TOKEN = process.env.BUGLEDGER_TOKEN || cfg.token || "";
 
-const STATE = path.join(process.cwd(), ".worklog.json");
+const STATE = process.env.WORKLOG_STATE || path.join(process.cwd(), ".worklog.json");   // WORKLOG_STATE lets two sessions share one folder
 const loadState = () => { try { return JSON.parse(fs.readFileSync(STATE, "utf8")); } catch { return null; } };
 const saveState = (s) => fs.writeFileSync(STATE, JSON.stringify(s, null, 2) + "\n");
 const storyUrl = (id) => `${BASE}/story/${id}`;
+const nowUrl = (id) => `${BASE}/now/${id}`;
+// "#Wave 1 — Build|Step::note|Step 2" → [{text, desc, wave, status}] — a "#…" item names the wave for the steps after it
+function parseTasks(spec) {
+  let wave; const out = [];
+  for (const raw of String(spec || "").split("|")) {
+    const item = raw.trim(); if (!item) continue;
+    if (item.startsWith("#")) { wave = item.replace(/^#+\s*/, "").trim() || undefined; continue; }
+    const k = item.indexOf("::");
+    const text = (k >= 0 ? item.slice(0, k) : item).trim(), desc = k >= 0 ? item.slice(k + 2).trim() : "";
+    if (text) out.push({ text, status: "pending", ...(desc ? { desc } : {}), ...(wave ? { wave } : {}) });
+  }
+  return out;
+}
 
 async function post(s) {
   const body = { id: s.id, app: s.app, project: s.project, title: s.title, agent: s.agent,
@@ -102,8 +124,7 @@ const SEV_ICON = { critical: "🟣", high: "🔴", medium: "🟠", low: "🟡", 
 
 if (cmd === "start") {
   const project = flag("project") || path.basename(process.cwd());
-  const tasks = (flag("tasks") || "").split("|").map((t) => t.trim()).filter(Boolean)
-    .map((text, i) => ({ text, status: i === 0 ? "active" : "pending" }));
+  const tasks = parseTasks(flag("tasks")).map((t, i) => ({ ...t, status: i === 0 ? "active" : "pending" }));
   const s = {
     id: (globalThis.crypto?.randomUUID?.() || (Date.now() + "-" + Math.round(Math.random() * 1e6))),
     app: flag("app") || project, project, title: flag("title") || "Working on " + project,
@@ -114,9 +135,11 @@ if (cmd === "start") {
   const out = await post(s);
   s.id = out.id; saveState(s);
   await emit(s, { kind: "note", title: "Session started", detail: s.title }, { quiet: true });
-  console.log(`▶ live: ${BASE}/live   (session ${s.id.slice(0, 8)}, ${tasks.length} tasks)`);
+  const waves = new Set(tasks.map((t) => t.wave).filter(Boolean)).size;
+  console.log(`▶ now: ${nowUrl(s.id)}   (session ${s.id.slice(0, 8)}, ${tasks.length} steps${waves ? " in " + waves + " waves" : ""})`);
+  console.log(`▦ everything in progress: ${BASE}/now`);
   console.log(`📖 story: ${storyUrl(s.id)}`);
-} else if (["step", "done", "current", "add", "note", "finish", "status", "progress"].includes(cmd)) {
+} else if (["step", "done", "current", "add", "note", "finish", "status", "progress", "feature"].includes(cmd)) {
   const s = loadState();
   if (!s) die("no ./.worklog.json — run `worklog.mjs start` first.");
   s.seq = s.seq || 0;
@@ -132,6 +155,7 @@ if (cmd === "start") {
     if (Number.isNaN(i) || !s.tasks[i]) die("step <index> out of range");
     s.tasks = s.tasks.map((t, j) => ({ ...t, status: j < i ? "done" : j === i ? "active" : t.status === "done" ? "done" : "pending" }));
     s.current = flag("current") || s.tasks[i].text;
+    if (flag("desc")) s.tasks[i].desc = flag("desc");
     s.phase = s.tasks[i].text;                        // a board task doubles as a story phase
     ev.push({ kind: "phase", title: s.tasks[i].text, phase: s.tasks[i].text });
     if (flag("current")) ev.push({ kind: "say", title: flag("current") });
@@ -139,7 +163,8 @@ if (cmd === "start") {
     const i = parseInt(positional[0], 10);
     if (Number.isNaN(i) || !s.tasks[i]) die("done <index> out of range");
     s.tasks[i].status = "done";
-    ev.push({ kind: "note", title: "✓ " + s.tasks[i].text, detail: flag("current") || "", meta: { task: i, done: true } });
+    if (flag("desc")) s.tasks[i].desc = flag("desc");
+    ev.push({ kind: "note", title: "✓ " + s.tasks[i].text, detail: flag("desc") || flag("current") || "", meta: { task: i, done: true } });
     if (flag("current")) s.current = flag("current");
     else { const nxt = s.tasks.find((t) => t.status !== "done"); if (nxt) { nxt.status = "active"; s.current = nxt.text; } }
   } else if (cmd === "current") {
@@ -147,13 +172,21 @@ if (cmd === "start") {
     if (txt !== s.current) ev.push({ kind: "say", title: txt });
     s.current = txt;
   } else if (cmd === "add") {
-    const text = positional.join(" "); if (text) { s.tasks.push({ text, status: "pending" }); ev.push({ kind: "note", title: "＋ " + text, meta: { added: true } }); }
+    const [t] = parseTasks(positional.join(" ").replace(/\|/g, "/"));
+    if (t) { const last = s.tasks[s.tasks.length - 1];
+      const wave = flag("wave") || (last && last.wave) || undefined;
+      s.tasks.push({ ...t, ...(wave ? { wave } : {}) }); ev.push({ kind: "note", title: "＋ " + t.text, detail: t.desc || "", meta: { added: true } }); }
   } else if (cmd === "note") {
     s.note = positional.join(" "); if (s.note) ev.push({ kind: "note", title: s.note });
   } else if (cmd === "finish") {
     s.tasks = s.tasks.map((t) => ({ ...t, status: "done" }));
     s.status = "done"; s.current = flag("current") || "Done ✓";
     ev.push({ kind: "note", title: "Session finished", detail: s.current, meta: { finished: true } });
+  } else if (cmd === "feature") {
+    // a capability added or upgraded in this session, named in full — it lands on the board under "Shipped"
+    const text = positional.join(" ");
+    if (!text) die('feature "Companion eats fruits: apple, pear, plum, fig" [--detail "…"] [--status new|upgraded]');
+    ev.push({ kind: "feature", ...longText(text), ...(flag("detail") ? { detail: flag("detail") } : {}), status: flag("status") === "upgraded" ? "applied" : "fixed" });
   } else if (cmd === "status") {
     console.log(JSON.stringify(s, null, 2)); process.exit(0);
   }
@@ -254,10 +287,18 @@ if (cmd === "start") {
   const out = await res.json().catch(() => ({}));
   if (!out.ok) die("upload failed — " + res.status + " " + (out.error || "") + (TOKEN ? "" : " (no token in ~/.bugledger.json)"));
   const caption = flag("caption") || "";
+  const s = has("no-board") ? null : loadState();
+  if (s && s.status !== "done") {                 // a running session gets the shot on its board too
+    s.seq = s.seq || 0;
+    const stage = ["before", "after"].includes(flag("stage")) ? flag("stage") : null;
+    const label = flag("label") || caption || path.basename(file).replace(/\.(before|after)?\.?[a-z0-9]+$/i, "");
+    await emit(s, { kind: "shot", title: label, detail: caption || undefined, meta: { url: out.url, stage } }, { quiet: true });
+    saveState(s);
+  }
   console.log(out.view || BASE + out.url);
   console.log('shots entry: {"url":"' + out.url + '"' + (caption ? ',"caption":"' + caption + '"' : "") + "}");
 } else {
-  console.log("usage: worklog.mjs start|step <i>|done <i>|current \"…\"|add \"…\"|note \"…\"|progress <n> <t>|finish|shot <img>\n" +
+  console.log("usage: worklog.mjs start|step <i>|done <i>|current \"…\"|add \"…\"|note \"…\"|progress <n> <t>|feature \"…\"|finish|shot <img> [--label --stage]\n" +
               "       story: phase \"…\"|say \"…\"|found \"…\" --sev --file --why --impact --fix --status|fixed \"…\"|clean \"…\"|metric \"…\" --before --after|caveat \"…\"|verdict \"…\"|story|id|events   (see file header)");
   process.exit(cmd ? 1 : 0);
 }

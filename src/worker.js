@@ -480,6 +480,51 @@ async function handle(request, env) {
       }
     }
 
+    // ---- /now and /now/:id : the "everything I'm doing" board (served by now.html, which reads the path) ----
+    if ((pathname === "/now" || pathname.startsWith("/now/")) && (request.method === "GET" || request.method === "HEAD")) {
+      const res = await env.ASSETS.fetch(new Request(new URL("/now", request.url), { method: "GET" }));
+      return new Response(request.method === "HEAD" ? null : res.body, { status: res.status, headers: res.headers });
+    }
+
+    // ---- GET /api/now[?id=] : every session in progress (+ finished in the last 24 h), each with its
+    // story tail, features and screenshots — one request feeds the whole Now board. ?id= narrows to one.
+    if (pathname === "/api/now" && request.method === "GET") {
+      const one = str(url.searchParams.get("id"), 60);
+      const now = Date.now();
+      try {
+        const { results } = one
+          ? await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(one).all()
+          : await env.DB.prepare("SELECT * FROM sessions WHERE (status = 'active' AND updated > ?) OR (status = 'done' AND updated > ?) ORDER BY updated DESC LIMIT 40")
+              .bind(now - 12 * 3600_000, now - 24 * 3600_000).all();
+        const sessions = (results || []).map(mapSession);
+        if (one && !sessions.length) return json({ ok: false, error: "not found" }, 404);
+        const ids = sessions.map((x) => x.id);
+        let evs = [];
+        if (ids.length) {
+          const q = await env.DB.prepare(`SELECT * FROM session_events WHERE session_id IN (${ids.map(() => "?").join(",")}) ORDER BY ts DESC LIMIT ?`)
+            .bind(...ids, one ? 600 : 1500).all();
+          evs = q.results || [];
+        }
+        const by = {};
+        for (const e of evs) (by[e.session_id] = by[e.session_id] || []).push(e);
+        const out = sessions.map((x) => {
+          const list = by[x.id] || [];
+          const meta = (e) => safeParse(e.meta, {}) || {};
+          const pick = (e) => ({ id: e.id, ts: e.ts, kind: e.kind, phase: e.phase, severity: e.severity, status: e.status,
+            category: e.category, title: e.title, detail: e.detail, impact: e.impact, fix: e.fix, file: e.file,
+            before: e.before_v, after: e.after_v, meta: meta(e) });
+          const story = list.filter((e) => e.kind !== "shot" && e.kind !== "feature").slice(0, one ? 400 : 14).map(pick);
+          const features = list.filter((e) => e.kind === "feature").reverse().map((e) => ({ ts: e.ts, title: e.title, detail: e.detail, status: e.status || null }));
+          const shots = list.filter((e) => e.kind === "shot").reverse().map((e) => { const m = meta(e);
+            return { ts: e.ts, url: m.url || "", label: e.title || m.label || "", stage: m.stage || null, caption: e.detail || "" }; }).filter((x) => x.url);
+          const findings = list.filter((e) => e.kind === "found").length;
+          const state = x.status === "done" ? "done" : now - x.updated < 5 * 60_000 ? "working" : "quiet";
+          return { ...x, state, story, features, shots, findings };
+        });
+        return json({ ok: true, now, count: out.length, sessions: out });
+      } catch (e) { return writeErr(e); }
+    }
+
     // ---- GET /api/sessions?active=&limit= : live worklog sessions ----
     if (pathname === "/api/sessions" && request.method === "GET") {
       const limit = Math.min(50, Math.max(1, num(url.searchParams.get("limit")) || 12));
@@ -512,9 +557,13 @@ async function handle(request, env) {
       try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
       const id = str(body.id, 60) || crypto.randomUUID();
       const now = Date.now();
-      const tasks = arr(body.tasks, 60, (t) => ({
+      // a step carries its plain-English note (desc) and the wave it belongs to; the server stamps when
+      // each step started and finished, so the board's timers come from the server, not the agent's clock
+      let tasks = arr(body.tasks, 80, (t) => ({
         text: str(t && t.text, 200),
         status: ["pending", "active", "done"].includes(t && t.status) ? t.status : "pending",
+        desc: cleanStr(t && t.desc, 600) || undefined,
+        wave: cleanStr(t && t.wave, 80) || undefined,
       }));
       const done = tasks.filter((t) => t.status === "done").length;
       const status = body.status === "done" ? "done" : "active";
@@ -522,11 +571,12 @@ async function handle(request, env) {
         ? { done: num(body.progress.done), total: num(body.progress.total), label: str(body.progress.label, 40) } : null;
       try {
         const existing = await env.DB.prepare(
-          "SELECT started,status,app,project,title,agent FROM sessions WHERE id = ?").bind(id).first();
+          "SELECT started,status,app,project,title,agent,tasks FROM sessions WHERE id = ?").bind(id).first();
         // a finished session is frozen — you can't rewrite history, only start a new one
         if (existing && existing.status === "done")
           return json({ ok: false, error: "session already finished — start a new one" }, 409);
         const started = existing ? existing.started : now;
+        tasks = stampTasks(existing ? safeParse(existing.tasks, []) : [], tasks, now);
         // identity is set once at creation and never overwritten on update (append-only integrity)
         const app = existing ? existing.app : cleanStr(body.app, 80);
         const project = existing ? existing.project : cleanStr(body.project, 200);
@@ -542,7 +592,7 @@ async function handle(request, env) {
           now, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, 500),
           prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null
         ).run();
-        return json({ ok: true, id, url: siteOrigin + "/live", done, total: tasks.length });
+        return json({ ok: true, id, url: siteOrigin + "/now/" + id, board: siteOrigin + "/now", done, total: tasks.length });
       } catch (e) { return writeErr(e); }
     }
 
@@ -634,7 +684,23 @@ async function handle(request, env) {
 function safeParse(s, dflt) { try { return JSON.parse(s); } catch { return dflt; } }
 
 // ---- scan story: event kinds, severities, statuses ----
-const EVENT_KINDS = new Set(["phase", "say", "found", "fixed", "clean", "metric", "verdict", "caveat", "note"]);
+const EVENT_KINDS = new Set(["phase", "say", "found", "fixed", "clean", "metric", "verdict", "caveat", "note", "feature", "shot"]);
+// carry each step's start/finish times across updates (matched by position, then by text), and stamp new ones.
+// A step that goes active gets startedAt; a step that goes done gets doneAt (and a startedAt if it skipped active).
+function stampTasks(prev, next, now) {
+  return next.map((t, i) => {
+    const p = (prev[i] && prev[i].text === t.text) ? prev[i] : prev.find((x) => x && x.text === t.text) || null;
+    const out = { ...t };
+    if (p && p.startedAt) out.startedAt = p.startedAt;
+    if (p && p.doneAt && t.status === "done") out.doneAt = p.doneAt;
+    if (!out.desc && p && p.desc) out.desc = p.desc;
+    if (!out.wave && p && p.wave) out.wave = p.wave;
+    if ((t.status === "active" || t.status === "done") && !out.startedAt) out.startedAt = now;
+    if (t.status === "done" && !out.doneAt) out.doneAt = now;
+    if (t.status === "pending") { delete out.startedAt; delete out.doneAt; }
+    return out;
+  });
+}
 const SEVS = new Set(["critical", "high", "medium", "low", "info"]);
 const STATUSES = new Set(["fixed", "open", "needs-call", "false-positive", "applied", "recommended", "wontfix", "clean"]);
 const normSev = (v) => { const s = String(v || "").toLowerCase().trim(); if (SEVS.has(s)) return s;

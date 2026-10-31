@@ -22,3 +22,14 @@ test("worklog.mjs documents every story command in its header", () => {
   const src = fs.readFileSync(path.join(ROOT, "worklog.mjs"), "utf8");
   for (const c of ["phase", "say", "found", "fixed", "clean", "metric", "caveat", "verdict", "story", "id", "events"]) assert.match(src, new RegExp("worklog\\.mjs " + c + "\\b"), c);
 });
+test("worklog.mjs documents the Now board: waves, step notes, features and board shots", () => {
+  const src = fs.readFileSync(path.join(ROOT, "worklog.mjs"), "utf8");
+  for (const c of ["#Wave", "::", "--desc", "worklog.mjs feature", "--stage before", "/now/"]) assert.ok(src.includes(c), c);
+  const r = run([], os.tmpdir());
+  assert.match(r.stdout, /feature "…"/);
+});
+test("feature refuses to run without a session", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bl-wl-"));
+  const r = run(["feature", "x"], dir);
+  assert.equal(r.status, 1); assert.match(r.stderr, /no \.\/\.worklog\.json/);
+});
