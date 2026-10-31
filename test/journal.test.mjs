@@ -31,6 +31,7 @@ const fixture = () => {
     line({ type: "user", uuid: "u14", timestamp: "2026-10-31T10:10:00.000Z", message: { role: "user", content: "<cross-session-message from=\"local_x\">hello from another session</cross-session-message>" } }) +
     line({ type: "user", uuid: "u15", timestamp: "2026-10-31T10:11:00.000Z", message: { role: "user", content: "Task (from the session that started this one):\nBackground (from the session that started this one): do X" } }) +
     line({ type: "user", uuid: "u16", timestamp: "2026-10-31T10:12:00.000Z", message: { role: "user", content: "<pasted_content id=\"1\">the owner pasted this</pasted_content> make it so" } }) +
+    line({ type: "user", uuid: "u17", timestamp: "2026-10-31T10:13:00.000Z", message: { role: "user", content: "Background (from the session that started this one):\nThe owner asked: do Y" } }) +
     "not json\n");
   return f;
 };
@@ -51,6 +52,8 @@ test("extractPrompts keeps every human prompt, in order, exactly as typed", asyn
 });
 test("relayed notices, app commands and compaction summaries are not prompts", () => {
   assert.ok(isRelayed("<agent-message>…")); assert.ok(isRelayed("[Request interrupted by user]")); assert.ok(!isRelayed("Kindly add <b>bold</b>"));
+  assert.ok(isRelayed("Background (from the session that started this one):\nx") && isRelayed("Task (from the session that started this one):\nx"), "another session's brief is not a prompt");
+  assert.ok(!isRelayed("kindly continue from the session that started this one"), "the owner mentioning it mid-sentence is still a prompt");
   assert.ok(isBuiltin("/clear")); assert.ok(isBuiltin(" /model ")); assert.ok(!isBuiltin("/perfectly the footer")); assert.ok(!isBuiltin("/deploy"));
   assert.deepEqual(userText("<command-name>/x</command-name><command-args>  a b  </command-args>"), { text: "/x a b", kind: "command", images: [] });
 });

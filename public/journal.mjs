@@ -63,7 +63,8 @@ const SKIP = ['This session is being continued from a previous conversation', 'Y
 /* notices the harness relays as if typed (<pasted_content> is NOT here: that is text the owner pasted themselves) */
 const SYSTEM = ['<agent-message', '<task-notification', '<side-sessions-event', '<ci-monitor-event', '<cross-session-message', '<system-reminder', '<command-message', '<artifact-view-context', '<local-command-stdout', '<local-command-caveat', '<local-command-stderr', '[SYSTEM NOTIFICATION'];
 const BUILTIN = new Set(['/model', '/clear', '/compact', '/config', '/cost', '/help', '/login', '/logout', '/status', '/permissions', '/hooks', '/memory', '/resume', '/fast', '/effort', '/mcp', '/doctor', '/exit', '/context', '/usage']);
-export const isRelayed = (t) => SYSTEM.some((p) => t.startsWith(p)) || SKIP.some((p) => t.startsWith(p));
+const BRIEF = /^[A-Za-z][\w ]{0,40}\(from the session that started this one\)/;   /* "Task (…)", "Background (…)": another agent session's brief, never the owner's words */
+export const isRelayed = (t) => SYSTEM.some((p) => t.startsWith(p)) || SKIP.some((p) => t.startsWith(p)) || BRIEF.test(t);
 export const isBuiltin = (t) => { const m = /^(\/[\w-]+)/.exec(t.trim()); return !!m && BUILTIN.has(m[1]) && t.trim() === m[1]; };
 const CMD = /<command-name>(\/?[\w-]+)<\/command-name>/, ARGS = /<command-args>([\s\S]*?)<\/command-args>/;
 /* a raw user turn → exactly what the user typed (slash commands are unwrapped; harness reminders are not the user's words) */
