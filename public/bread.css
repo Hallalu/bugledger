@@ -353,9 +353,9 @@ svg.ico{width:18px;height:18px;flex:0 0 auto;vertical-align:-4px}
 :root[data-theme="dark"] .toast.ok{background:#4ade80;color:#07240f} :root[data-theme="dark"] .toast.err{background:#fca5a5;color:#3b0808}
 @keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 /* a newer build is live — one-tap refresh (bread-shell.js checkBuild) */
-.update-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:121;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 32px);background:var(--ink);color:var(--bg);font-size:15px;font-weight:550;padding:8px 8px 8px 16px;border-radius:999px;box-shadow:var(--shadow-3);animation:toast-in var(--t) var(--ease)}
+.update-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:121;display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100vw - 32px);background:var(--ink);color:var(--bg);font-size:15px;font-weight:550;padding:8px 8px 8px 16px;border-radius:999px;box-shadow:var(--shadow-3);animation:toast-in var(--t) var(--ease)}
 .update-bar .ico{width:18px;height:18px;flex:none}
-.update-bar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.update-bar span{line-height:1.3}
 .update-bar .btn{border-radius:999px;flex:none}
 :root[data-theme="dark"] .update-bar{background:#f1efe9;color:#1c1b18}
 
