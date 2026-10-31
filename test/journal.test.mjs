@@ -3,9 +3,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
+import crypto from "node:crypto";
+import { spawnSync, execFileSync } from "node:child_process";
 import { ROOT, read } from "./helpers.mjs";
-import { scrubSecrets, extractPrompts, userText, isRelayed, isBuiltin, resolveProject, folderProject } from "../public/journal.mjs";
+import { scrubSecrets, extractPrompts, userText, isRelayed, isBuiltin, resolveProject, folderProject, archiveEntries, archiveLabel, sweepBundle } from "../public/journal.mjs";
 import { scrubSecrets as serverScrub } from "../src/journal.mjs";
 
 const line = (o) => JSON.stringify(o) + "\n";
@@ -80,9 +81,45 @@ test("resolveProject prefers the session's Aprizely board, else the folder the p
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bl-proj-")); fs.writeFileSync(path.join(dir, ".aprizely.worklog.json"), JSON.stringify({ id: "x", app: "Bug Ledger", project: "BugLedger" }));
   assert.deepEqual(resolveProject(null, dir), { project: "BugLedger", app: "Bug Ledger", via: "board" });
 });
+test("archiveEntries: only complete index rows (id, cloud copy, sha256), oldest first, --since by the conversation's start date", () => {
+  const ix = [
+    { id: "b", title: "B", start: "2026-10-05T10:00:00.000Z", cloudId: "c2", sha256: "x" },
+    { id: "a", title: "A", start: "2026-09-30T23:59:59.000Z", cloudId: "c1", sha256: "x" },
+    { id: "c", title: "C", start: "2026-10-01T00:00:00.000Z", cloudId: "c3", sha256: "x" },
+    { id: "d", title: "never uploaded", start: "2026-10-09T00:00:00.000Z" },
+    null,
+  ];
+  assert.deepEqual(archiveEntries(ix).map((e) => e.id), ["a", "c", "b"]);
+  assert.deepEqual(archiveEntries(ix, { since: Date.parse("2026-10-01") }).map((e) => e.id), ["c", "b"], "1 Oct 00:00 is in, 30 Sep 23:59 is out");
+  assert.deepEqual(archiveEntries({ not: "an array" }), []); assert.deepEqual(archiveEntries(null), []);
+  assert.equal(archiveLabel(ix[0]), "2026-10-05 — B (b)");
+  assert.equal(archiveLabel({ id: "0123456789abcdef", start: "2026-10-07T01:02:03.000Z" }), "2026-10-07 — 0123456789abcdef (01234567)", "no title → the id");
+});
+test("sweepBundle: journals only the top-level transcript (never the subagents folder), refuses a bundle whose sha256 differs, and leaves no temp copy behind", async () => {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), "bl-bundle-")), id = "11111111-2222-4333-8444-555555555555";
+  fs.writeFileSync(path.join(work, id + ".jsonl"),
+    line({ type: "user", uuid: "m1", timestamp: "2026-10-05T10:00:00.000Z", sessionId: id, cwd: "/Users/x/Foo", message: { role: "user", content: "the owner typed this" } }) +
+    line({ type: "user", uuid: "m2", timestamp: "2026-10-05T10:01:00.000Z", sessionId: id, cwd: "/Users/x/Foo", message: { role: "user", content: "and this" } }));
+  fs.mkdirSync(path.join(work, id, "subagents"), { recursive: true });
+  fs.writeFileSync(path.join(work, id, "subagents", "agent-1.jsonl"), line({ type: "user", uuid: "s1", timestamp: "2026-10-05T10:02:00.000Z", sessionId: id, message: { role: "user", content: "a brief written for a subagent — not the owner's words" } }));
+  const tgz = path.join(work, "bundle.tar.gz"); execFileSync("tar", ["-czf", tgz, "-C", work, id + ".jsonl", id]);   /* exactly how archive.mjs packs one */
+  const e = { id, title: "Fixture", start: "2026-10-05T10:00:00.000Z", cloudId: "none", sha256: crypto.createHash("sha256").update(fs.readFileSync(tgz)).digest("hex") };
+  const temps = () => fs.readdirSync(os.tmpdir()).filter((d) => d.startsWith("bl-journal-archive-")).sort();
+  const before = temps();
+  const r = await sweepBundle(e, { tgz, dry: true, quiet: true });
+  assert.equal(r.ok, true, r.error); assert.equal(r.label, "2026-10-05 — Fixture (11111111)"); assert.equal(r.session, id);
+  assert.equal(r.prompts, 2, "two owner prompts; the subagent's line is not one of them"); assert.equal(r.added, 2); assert.equal(r.verify, undefined, "a dry run talks to no ledger");
+  assert.deepEqual(temps(), before, "its temp folder is gone");
+  const bad = await sweepBundle({ ...e, sha256: "0".repeat(64) }, { tgz, dry: true, quiet: true });
+  assert.equal(bad.ok, false); assert.match(bad.error, /sha256 mismatch/); assert.deepEqual(temps(), before);
+  const missing = await sweepBundle({ ...e, id: "99999999-2222-4333-8444-555555555555", sha256: e.sha256 }, { tgz, dry: true, quiet: true });
+  assert.equal(missing.ok, false, "a bundle without that transcript is reported, not swept"); assert.deepEqual(temps(), before);
+  assert.ok(fs.existsSync(tgz), "the caller's own bundle file is left alone");
+});
 test("journal.mjs: help exits 0, unknown command exits 1, hook with junk stdin exits 0 and prints nothing", () => {
   const cli = path.join(ROOT, "public", "journal.mjs");
-  assert.equal(spawnSync("node", [cli, "help"], { encoding: "utf8" }).status, 0);
+  const help = spawnSync("node", [cli, "help"], { encoding: "utf8" }); assert.equal(help.status, 0);
+  assert.match(help.stdout, /backfill --from-joy-cloud \[--since YYYY-MM-DD\] \[--dry\] \[--parallel 2\]/); assert.match(help.stdout, /Token: ~\/.bugledger.json/, "the whole header is printed");
   assert.equal(spawnSync("node", [cli, "nope"], { encoding: "utf8" }).status, 1);
   const h = spawnSync("node", [cli, "hook"], { encoding: "utf8", input: "{not json" }); assert.equal(h.status, 0); assert.equal(h.stdout, "");
   const h2 = spawnSync("node", [cli, "hook"], { encoding: "utf8", input: JSON.stringify({ hook_event_name: "UserPromptSubmit", prompt: "<task-notification>x</task-notification>", session_id: "t" }) }); assert.equal(h2.status, 0); assert.equal(h2.stdout, "");

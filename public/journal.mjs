@@ -10,6 +10,9 @@
  *                                                       Stop             → sweeps the transcript: mid-turn prompts, pasted images, anything missed
  *   node journal.mjs sweep <session.jsonl>            journal every prompt in one transcript (idempotent)
  *   node journal.mjs backfill [--since YYYY-MM-DD] [--no-images] [--dry] [--parallel 4]   every transcript on this Mac
+ *   node journal.mjs backfill --from-joy-cloud [--since YYYY-MM-DD] [--dry] [--parallel 2] [--no-images]   every conversation that
+ *                                                     history-archive/archive.mjs moved to Joy Cloud (no longer on this Mac): each bundle is
+ *                                                     downloaded into its own empty temp folder, sha256-checked, its transcript swept + verified, then deleted
  *   node journal.mjs add "the prompt" [--project P --app A --at ISO --session S --agent codex]   (or add --file f.txt | add -)
  *   node journal.mjs shot <image…> [--prompt <id> | --latest] [--caption "…"] [--kind before|after|shot]
  *   node journal.mjs refile <id> --project P [--app A]
@@ -25,6 +28,7 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import readline from 'node:readline';
+import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
 const HOME = os.homedir();
@@ -32,6 +36,8 @@ const STATE_DIR = path.join(HOME, '.bugledger-journal');
 const LOG = path.join(STATE_DIR, 'journal.log');
 const HOOK_DST = path.join(HOME, '.claude', 'hooks', 'bugledger-journal.mjs');
 const SETTINGS = path.join(HOME, '.claude', 'settings.json');
+const ARCHIVE = path.join(HOME, '.claude', 'history-archive');   /* archive.mjs: conversations moved off this Mac to Joy Cloud, one .tar.gz each, listed in index.json */
+const JOY_CLOUD = (process.env.JOY_CLOUD_BASE || 'https://joy-cloud.coconvo.workers.dev').replace(/\/$/, '');
 const readJSON = (f, d = null) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return d; } };
 export function config() {
   const c = readJSON(path.join(HOME, '.bugledger.json'), {}) || {};
@@ -172,7 +178,7 @@ async function onPrompt(ev) {
 }
 
 /* Stop / sweep / backfill: everything in the transcript, idempotent; pasted images ride along as photos */
-export async function sweep(file, { sessionId, cwd, images = true, dry = false, quiet = false, by = 'sweep' } = {}) {
+export async function sweep(file, { sessionId, cwd, images = true, dry = false, quiet = false, by = 'sweep', label = null } = {}) {
   if (!file || !fs.existsSync(file)) return { ok: false, error: 'no transcript at ' + file };
   const { prompts, meta } = await extractPrompts(file, { images });
   const sid = sessionId || meta.sessionId || path.basename(file, '.jsonl');
@@ -202,10 +208,11 @@ export async function sweep(file, { sessionId, cwd, images = true, dry = false, 
   const where = top.length ? top[0][0] + (top.length > 1 ? ` (+${top.length - 1} more)` : '') : 'nothing new';
   if (!dry) { st.filed = Object.fromEntries(top); st.sweptAt = Date.now(); saveState(sid, st); }   /* a dry run leaves no trace */
   const summary = { ok: true, file: path.basename(file), session: sid, filed: Object.fromEntries(top), project: top[0] ? top[0][0] : null, prompts: prompts.length, added, duplicates: dup, photos, failed };
-  if (!quiet) console.log(`${dry ? '(dry) ' : ''}${path.basename(file)} → ${prompts.length} prompts · ${added} added · ${dup} already there · ${photos} photos · ${failed} failed · ${where}`);
+  if (!quiet) console.log(`${dry ? '(dry) ' : ''}${label || path.basename(file)} → ${prompts.length} prompts · ${added} added · ${dup} already there · ${photos} photos · ${failed} failed · ${where}`);
   return summary;
 }
 async function backfill(args) {
+  if (has(args, 'from-joy-cloud')) return backfillArchive(args);
   const since = opt(args, 'since') ? Date.parse(opt(args, 'since')) : 0, images = !has(args, 'no-images'), dry = has(args, 'dry'), par = Math.max(1, +(opt(args, 'parallel') || (dry ? 1 : 4)));
   const files = fs.readdirSync(path.join(HOME, '.claude', 'projects'), { withFileTypes: true }).filter((d) => d.isDirectory())
     .flatMap((d) => fs.readdirSync(path.join(HOME, '.claude', 'projects', d.name)).filter((f) => f.endsWith('.jsonl')).map((f) => path.join(HOME, '.claude', 'projects', d.name, f)))
@@ -216,6 +223,70 @@ async function backfill(args) {
   const lane = async () => { while (i < files.length) { const { f } = files[i++]; const r = await sweep(f, { images, dry }); if (r.ok) for (const k of Object.keys(tot)) tot[k] += r[k] || 0; } };
   await Promise.all(Array.from({ length: Math.min(par, files.length) }, lane));
   console.log(`total: ${tot.prompts} prompts · ${tot.added} added · ${tot.duplicates} already there · ${tot.photos} photos · ${tot.failed} failed`);
+}
+
+/* ---- conversations that left this Mac: ~/.claude/history-archive/archive.mjs moved each one to Joy Cloud as a .tar.gz (the transcript plus its
+   subagents folder) and listed it in index.json with the bundle's sha256. backfill --from-joy-cloud brings each one back just long enough to journal it. ---- */
+export function archiveEntries(index, { since = 0 } = {}) {   /* complete rows only (id, cloud copy, sha256), oldest first; --since goes by the conversation's start */
+  return (Array.isArray(index) ? index : []).filter((e) => e && e.id && e.cloudId && e.sha256 && (!since || Date.parse(e.start || 0) >= since))
+    .sort((a, b) => String(a.start).localeCompare(String(b.start)));
+}
+export const archiveLabel = (e) => `${String(e.start || '').slice(0, 10)} — ${e.title || e.id} (${String(e.id).slice(0, 8)})`;
+/* Joy Cloud → a file, streamed, and refused unless its sha256 is the one archive.mjs recorded when it uploaded the bundle;
+   a dropped connection (or a cut-short download, which shows as a wrong sha256) is retried a few times before it counts as a failure */
+async function fetchBundle(e, dest, tries = 3) {
+  const cookie = fs.readFileSync(path.join(ARCHIVE, '.cookie'), 'utf8').trim();
+  for (let n = 1; ; n++) {
+    try {
+      const r = await fetch(JOY_CLOUD + '/f/' + encodeURIComponent(e.cloudId), { headers: { cookie } });
+      if (!r.ok || !r.body) throw new Error('Joy Cloud HTTP ' + r.status);
+      const h = crypto.createHash('sha256'), fd = fs.openSync(dest, 'w');
+      try { for await (const chunk of r.body) { h.update(chunk); fs.writeSync(fd, chunk); } } finally { fs.closeSync(fd); }
+      const got = h.digest('hex'); if (got !== e.sha256) throw new Error(`sha256 mismatch (downloaded ${got.slice(0, 12)}…, the index says ${e.sha256.slice(0, 12)}…)`);
+      return;
+    } catch (err) { if (n >= tries || /HTTP 4\d\d/.test(err.message)) throw err; await new Promise((ok) => setTimeout(ok, 3000 * n)); }   /* a 4xx is final; anything else gets another go */
+  }
+}
+/* one archived conversation: its own empty temp folder → the bundle → only the top-level transcript is extracted (the subagents folder holds the
+   agents' words, never the owner's) → sweep → verify (byte-identical, and every message uuid stored) → the folder is deleted, whatever happened */
+export async function sweepBundle(e, { tgz = null, dry = false, images = true, quiet = false, verify = !dry, by = 'archive-sweep' } = {}) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-journal-archive-')), label = archiveLabel(e);
+  try {
+    const bundle = tgz || path.join(dir, 'bundle.tar.gz');
+    if (tgz) { const got = crypto.createHash('sha256').update(fs.readFileSync(tgz)).digest('hex'); if (e.sha256 && got !== e.sha256) throw new Error(`sha256 mismatch (file ${got.slice(0, 12)}…, the index says ${e.sha256.slice(0, 12)}…)`); }
+    else await fetchBundle(e, bundle);
+    execFileSync('tar', ['-xzf', bundle, '-C', dir, e.id + '.jsonl'], { stdio: 'pipe' });
+    if (!tgz) fs.rmSync(bundle, { force: true });   /* the copy is only needed until the transcript is out */
+    const file = path.join(dir, e.id + '.jsonl'); if (!fs.existsSync(file)) throw new Error('no ' + e.id + '.jsonl in the bundle');
+    const s = await sweep(file, { images, dry, quiet, by, label }); if (!s.ok) throw new Error(s.error);
+    if (verify) {
+      const v = await verifyFile(file, { print: quiet ? () => {} : console.log }); s.verify = v;
+      if (!quiet) console.log(v.error ? `   verify FAILED: ${v.error}` : `   verify: ${v.exact}/${v.prompts} byte-identical · ${v.byUuid}/${v.prompts} stored by message uuid${v.ws ? ` · ${v.ws} whitespace-only` : ''}${v.bad ? ` · ${v.bad} MISMATCHED` : ''}${v.missing ? ` · ${v.missing} MISSING` : ''}`);
+    }
+    return { ...s, label };
+  } catch (err) { return { ok: false, error: (err && err.message) || String(err), label }; }
+  finally { fs.rmSync(dir, { recursive: true, force: true }); }
+}
+async function backfillArchive(args) {
+  const since = opt(args, 'since') ? Date.parse(opt(args, 'since')) : 0, images = !has(args, 'no-images'), dry = has(args, 'dry'), par = Math.max(1, +(opt(args, 'parallel') || 2));
+  const indexFile = path.join(ARCHIVE, 'index.json'), index = readJSON(indexFile); if (!index) die('backfill --from-joy-cloud: no archive index at ' + indexFile);
+  if (!fs.existsSync(path.join(ARCHIVE, '.cookie'))) die('backfill --from-joy-cloud: not signed in to Joy Cloud (node ' + path.join(ARCHIVE, 'archive.mjs') + ' login <ticket>)');
+  const list = archiveEntries(index, { since }), mb = list.reduce((s, e) => s + (e.bytes || 0), 0) / 1048576;
+  console.log(`${list.length} archived conversations on Joy Cloud${since ? ' since ' + opt(args, 'since') : ''} · ${mb.toFixed(0)} MB to download, ${par} at a time${dry ? ' (dry run: nothing is journaled, every copy is deleted)' : ''}`);
+  const tot = { prompts: 0, added: 0, duplicates: 0, photos: 0, failed: 0 }, filed = new Map(), broken = [], unverified = []; let done = 0, verified = 0, i = 0;
+  /* a few conversations at a time (each one in order, so a session's prompts arrive in sequence) */
+  const lane = async () => { while (i < list.length) {
+    const e = list[i++], r = await sweepBundle(e, { dry, images });
+    if (!r.ok) { broken.push(`${r.label}: ${r.error}`); console.log(`FAILED ${r.label} — ${r.error}`); continue; }
+    done++; for (const k of Object.keys(tot)) tot[k] += r[k] || 0; for (const [k, n] of Object.entries(r.filed || {})) filed.set(k, (filed.get(k) || 0) + n);
+    if (r.verify) { if (r.verify.ok && r.verify.byUuid === r.verify.prompts) verified++; else unverified.push(r.label); }
+  } };
+  await Promise.all(Array.from({ length: Math.min(par, list.length) }, lane));
+  console.log(`total: ${done}/${list.length} conversations · ${tot.prompts} prompts · ${tot.added} added · ${tot.duplicates} already there · ${tot.photos} photos · ${tot.failed} failed${dry ? '' : ` · ${verified}/${done} verified (byte-identical, every message uuid stored)`}`);
+  for (const [k, n] of [...filed.entries()].sort((a, b) => b[1] - a[1])) console.log(`  ${String(n).padStart(5)}  ${k}`);
+  if (broken.length) console.log('could not journal:\n  ' + broken.join('\n  '));
+  if (unverified.length) console.log('verify did not pass:\n  ' + unverified.join('\n  '));
+  if (broken.length || unverified.length || tot.failed) process.exitCode = 1;
 }
 
 /* ---- hand-added prompts, photos, refiles, listing ---- */
@@ -256,24 +327,36 @@ async function list(args) {
   console.log(`${r.total} prompts · ${r.projects.length} projects · showing ${r.count}`);
   for (const p of r.prompts) console.log(`${new Date(p.ts).toISOString().replace('T', ' ').slice(0, 19)}  ${(p.app || p.project || '').padEnd(18)} ${p.id}  ${p.photos.length ? '📷' + p.photos.length + ' ' : ''}${JSON.stringify(p.text.length > 90 ? p.text.slice(0, 90) + '…' : p.text)}`);
 }
-/* the verbatim checker: every transcript prompt vs the stored row — byte-identical or it fails */
-async function verify(args) {
-  const file = args.find((a) => !a.startsWith('--')); if (!file) die('verify <session.jsonl> [--tamper]');
+/* every stored row of a session, paged (a long session can pass the API's 1000-row page) */
+async function sessionRows(sid) {
+  const rows = []; let before = null;
+  for (;;) {
+    const r = await api('GET', '/api/journal?session=' + encodeURIComponent(sid) + '&limit=1000' + (before ? '&before=' + before : '')); if (!r || !r.ok) return { error: (r && r.error) || 'no response' };
+    rows.push(...r.prompts); if (!r.more || !r.nextBefore) return { rows }; before = r.nextBefore;
+  }
+}
+/* the verbatim checker: every transcript prompt vs the stored row — byte-identical or it fails; a row found by its message uuid is counted as such */
+export async function verifyFile(file, { lenient = false, tamper = false, print = console.log } = {}) {
   const { prompts, meta } = await extractPrompts(file, { images: false }); const sid = meta.sessionId || path.basename(file, '.jsonl');
-  const r = await api('GET', '/api/journal?session=' + encodeURIComponent(sid) + '&limit=1000&order=asc'); if (!r.ok) die('verify: ' + r.error);
-  const byUuid = new Map(r.prompts.filter((p) => p.uuid).map((p) => [p.uuid, p])), byKey = new Map(r.prompts.map((p) => [sha256(p.text.trim()), p]));
-  let exact = 0, ws = 0, bad = 0, missing = 0, secrets = 0;
+  const got = await sessionRows(sid); if (got.error) return { ok: false, error: got.error, session: sid, prompts: prompts.length };
+  const byUuid = new Map(got.rows.filter((p) => p.uuid).map((p) => [p.uuid, p])), byKey = new Map(got.rows.map((p) => [sha256(p.text.trim()), p]));
+  let exact = 0, ws = 0, bad = 0, missing = 0, secrets = 0, byId = 0;
   for (const p of prompts) {
-    let local = scrubSecrets(p.text).text; if (has(args, 'tamper')) local = local.replace(/\s+$/, '') + ' '; /* a known fault: one trailing space */
-    const row = byUuid.get(p.uuid) || byKey.get(sha256(local.trim()));
-    if (!row) { missing++; console.log(`  MISSING  #${p.n} ${p.time} ${JSON.stringify(p.text.slice(0, 60))}`); continue; }
+    let local = scrubSecrets(p.text).text; if (tamper) local = local.replace(/\s+$/, '') + ' '; /* a known fault: one trailing space */
+    const row = byUuid.get(p.uuid) || byKey.get(sha256(local.trim())); if (byUuid.has(p.uuid)) byId++;
+    if (!row) { missing++; print(`  MISSING  #${p.n} ${p.time} ${JSON.stringify(p.text.slice(0, 60))}`); continue; }
     if (row.redactions) secrets++;
     if (sha256(local) === row.sha) { exact++; continue; }
-    if (local.trim() === row.text.trim()) { ws++; console.log(`  ${has(args, 'lenient') ? 'whitespace-only difference' : 'WHITESPACE DIFFERS'} #${p.n} ${row.id} (leading/trailing whitespace; the words are the same)`); continue; }
-    bad++; const i = [...local].findIndex((ch, k) => ch !== row.text[k]); console.log(`  MISMATCH #${p.n} ${row.id} at char ${i}: transcript ${JSON.stringify(local.slice(Math.max(0, i - 20), i + 20))} vs stored ${JSON.stringify(row.text.slice(Math.max(0, i - 20), i + 20))}`);
+    if (local.trim() === row.text.trim()) { ws++; print(`  ${lenient ? 'whitespace-only difference' : 'WHITESPACE DIFFERS'} #${p.n} ${row.id} (leading/trailing whitespace; the words are the same)`); continue; }
+    bad++; const i = [...local].findIndex((ch, k) => ch !== row.text[k]); print(`  MISMATCH #${p.n} ${row.id} at char ${i}: transcript ${JSON.stringify(local.slice(Math.max(0, i - 20), i + 20))} vs stored ${JSON.stringify(row.text.slice(Math.max(0, i - 20), i + 20))}`);
   }
-  console.log(`${prompts.length} prompts in the transcript · ${exact} byte-identical · ${ws} whitespace-only · ${bad} mismatched · ${missing} missing · ${secrets} with secrets removed`);
-  process.exit(bad || missing || (ws && !has(args, 'lenient')) ? 1 : 0);   /* strict by default: "exact" means every byte */
+  return { ok: !(bad || missing || (ws && !lenient)), session: sid, prompts: prompts.length, exact, ws, bad, missing, secrets, byUuid: byId };   /* strict by default: "exact" means every byte */
+}
+async function verify(args) {
+  const file = args.find((a) => !a.startsWith('--')); if (!file) die('verify <session.jsonl> [--tamper]');
+  const v = await verifyFile(file, { lenient: has(args, 'lenient'), tamper: has(args, 'tamper') }); if (v.error) die('verify: ' + v.error);
+  console.log(`${v.prompts} prompts in the transcript · ${v.exact} byte-identical · ${v.ws} whitespace-only · ${v.bad} mismatched · ${v.missing} missing · ${v.secrets} with secrets removed · ${v.byUuid} found by message uuid`);
+  process.exit(v.ok ? 0 : 1);
 }
 
 /* ---- install: this file → ~/.claude/hooks, two hook entries in settings.json (idempotent, with a backup) ---- */
@@ -299,7 +382,7 @@ const opt = (args, k) => { const i = args.indexOf('--' + k); return i >= 0 && ar
 const die = (m) => { console.error(m); process.exit(1); };
 export async function main(argv = process.argv.slice(2)) {
   const [cmd, ...args] = argv;
-  if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h') { console.log(fs.readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 20).join('\n').replace(/^ \*\s?/gm, '')); return; }
+  if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h') { const src = fs.readFileSync(new URL(import.meta.url), 'utf8').split('\n'); console.log(src.slice(1, src.indexOf(' */')).join('\n').replace(/^ \*\s?/gm, '')); return; }
   if (cmd === 'hook') {
     try {
       let input = ''; try { input = fs.readFileSync(0, 'utf8'); } catch {}
