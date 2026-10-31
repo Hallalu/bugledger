@@ -9262,5 +9262,65 @@
     "status": "unverified",
     "session": "97ec418b",
     "found": "2026-10-31"
+  },
+  {
+    "key": "5124e931:thefixyouaskedforisbuiltandlivebutthecompanioncodeisntongitb",
+    "app": "Hallalu CRM",
+    "title": "Fix you asked for is built and live, but the Companion code isn't on GitBagel yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The fix you asked for is built and live, but the Companion code isn't on GitBagel yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5124e931",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "5124e931:coconvomeetisntthereyet",
+    "app": "Hallalu CRM",
+    "title": "Coconvo-meet isn't there yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "`coconvo-meet` isn't there yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "5124e931",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7dda19ea:theothersessionsfixessigninattemptscantberacedpastthelimitan",
+    "app": "Hallalu CRM",
+    "title": "- The other session's fixes: sign-in attempts can't be raced past the limit, and a…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "- **The other session's fixes:** sign-in attempts can't be raced past the limit, and a passcode reset logs out every old session.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7dda19ea:adoubleclickcantstarttworecordingsandadiscardedtakecantleaki",
+    "app": "Hallalu CRM",
+    "title": "A double click can't start two recordings, and a discarded take can't leak into the…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "A double click can't start two recordings, and a discarded take can't leak into the next one.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7dda19ea:ifverifytokwasarealsignintokenyoucancancelitbyresettingyourk",
+    "app": "Hallalu CRM",
+    "title": "If .verify/tok was a real sign-in token, you can cancel it by resetting your Kindly…",
+    "category": "security",
+    "severity": "high",
+    "symptom": "If `.verify/tok` was a real sign-in token, you can cancel it by resetting your Kindly passcode, since a reset now logs out every old session.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
   }
 ]

@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-772 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+777 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (518)
+## Hallalu CRM (523)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -66,6 +66,9 @@
 - [ ] `high` `auth` (2026-10-30, #5124e931) — Other session's uncommitted edits in /coconvo are still uncommitted and didn't go live.
 - [ ] `high` `crash` (2026-10-30, #5124e931) — String-lights crash again.
 - [ ] `high` `auth` (2026-10-31, #7dda19ea) — Why I'm asking before committing: another session left security and bug fixes in…
+- [ ] `high` `auth` (2026-10-31, #7dda19ea) — - The other session's fixes: sign-in attempts can't be raced past the limit, and a…
+- [ ] `high` `security` (2026-10-31, #7dda19ea) — A double click can't start two recordings, and a discarded take can't leak into the…
+- [ ] `high` `security` (2026-10-31, #7dda19ea) — If .verify/tok was a real sign-in token, you can cancel it by resetting your Kindly…
 - [ ] `medium` `logic` (2026-08-10, #55c985af) — One bug to fix before testing — the binary-file guard checks for the wrong character.
 - [ ] `medium` `logic` (2026-08-11, #215ee275) — - milestones datetime already compensates for the timezone offset (ts - d0(ts)) not a…
 - [ ] `medium` `race` (2026-08-11, #55c985af) — Metrics confirm everything renders (hero, 6 tiles, 7 findings with fixed, 3 severity…
@@ -522,6 +525,8 @@
 - [ ] `low` `ui` (2026-10-30, #97ec418b) — Since the highlighter's output goes into text content, escaping " wasn't needed and it…
 - [ ] `low` `other` (2026-10-30, #97ec418b) — Need to see wpUrl to fix it at the root (which also fixes the latent wallpaper bug).
 - [ ] `low` `other` (2026-10-30, #b2726693) — Flags for stale or ghost jobs (partly built) 3.
+- [ ] `low` `other` (2026-10-31, #5124e931) — Fix you asked for is built and live, but the Companion code isn't on GitBagel yet.
+- [ ] `low` `other` (2026-10-31, #5124e931) — Coconvo-meet isn't there yet.
 
 ## Finished. (98)
 
