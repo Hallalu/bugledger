@@ -20,7 +20,8 @@
   .bl-top .crumbs .sep{color:var(--ink-3)}               /* shell crumb separator measures 1.82:1 with --line-2; candidate for bread.css */
   .card-h h2{font-size:15px;font-weight:600;min-width:0}
   .badge .ico{width:13px;height:13px;flex:0 0 auto}      /* icon inside a badge; candidate for bread.css */
-  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch}
+  .plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:stretch}
+  @media (max-width:1100px){ .plans{grid-template-columns:repeat(2,minmax(0,1fr))} }
   .plan{display:flex;flex-direction:column;gap:10px;padding:18px;transition:border-color var(--t-fast),box-shadow var(--t-fast)}
   .plan.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
   .plan .pn{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:650;font-size:17px;letter-spacing:-.01em}
@@ -45,6 +46,28 @@
   .fine.after{margin-top:12px}
   @media (max-width:760px){ .plans{grid-template-columns:1fr} }
   @media (pointer:coarse){ .input,.select{font-size:16px} }   /* iOS: no focus zoom */
+
+  /* Wave 9: promo hero (NordVPN-style), 67% drawn in CSS so it is exact and crisp */
+  .promo{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);align-items:center;gap:20px;min-height:460px;margin:0 0 28px;padding:40px 44px;border-radius:var(--r-3);background:radial-gradient(70% 90% at 80% 50%,#13203f 0%,#0a0d16 55%,#07080c 100%);color:#fff;border:1px solid #1b1f2c;isolation:isolate}
+  .promo::before{content:"";position:absolute;inset:-30%;background:radial-gradient(35% 35% at 72% 45%,rgba(72,122,255,.42),transparent 70%),radial-gradient(25% 30% at 60% 80%,rgba(120,80,255,.25),transparent 70%);z-index:-1;pointer-events:none;animation:promo-glow 9s ease-in-out infinite}
+  @keyframes promo-glow{0%,100%{transform:translate(0,0)}50%{transform:translate(2%,-3%)}}
+  .promo-h{font-size:42px;line-height:1.08;letter-spacing:-.03em;font-weight:700;color:#fff;margin:0;text-wrap:balance}
+  .promo-sub{margin:16px 0 0;font-size:18px;color:#d5d9e6;max-width:40ch;line-height:1.45}
+  .promo-sub .hi{color:#a9b4ff}
+  .promo-offer{display:flex;align-items:center;gap:12px;margin:22px 0 0;font-size:17px;color:#fff}
+  .promo-offer b{color:#fff}
+  .promo-badge{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2a3cff,#8a7bff);display:flex;align-items:center;justify-content:center;color:#fff;flex:0 0 auto;box-shadow:0 8px 24px -8px rgba(90,110,255,.8)}
+  .promo-badge svg{width:22px;height:22px}
+  .promo-cta{margin-top:22px;background:#e2341d;border-color:#e2341d;color:#fff;box-shadow:0 10px 28px -10px rgba(226,52,29,.8)}
+  .promo-cta:hover{background:#c92a16;border-color:#c92a16;color:#fff}
+  .promo-fine{display:flex;align-items:center;gap:8px;margin:14px 0 0;font-size:13.5px;color:#aab2c5}
+  .promo-fine svg{width:16px;height:16px}
+  .promo-art{position:relative;height:420px;min-width:0}
+  .promo-art .num{position:absolute;right:-5%;top:46%;transform:translateY(-50%);width:76%;height:auto;filter:brightness(1.12) saturate(1.08) drop-shadow(0 24px 44px rgba(40,80,255,.45));pointer-events:none}
+  .promo-art .era{position:absolute;left:-12%;bottom:-6px;height:86%;width:auto;max-width:none;object-fit:contain;filter:drop-shadow(0 30px 40px rgba(0,0,0,.6));z-index:1}
+  @media (max-width:1100px){.promo-h{font-size:34px}}
+  @media (max-width:900px){.promo{grid-template-columns:1fr;padding:26px 20px;min-height:0} .promo-art{height:300px;margin-top:8px} .promo-art .num{right:-6%;width:92%;top:34%} .promo-art .era{height:84%;left:-14%} .promo-h{font-size:30px} .promo-sub{font-size:16px}}
+  @media (prefers-reduced-motion:reduce){.promo::before{animation:none}}
 </style>
 </head>
 <body>
@@ -53,6 +76,20 @@
   <div class="bl-main">
     <header class="bl-top" id="top"></header>
     <main class="bl-content narrow pg" id="page">
+      <section class="promo" aria-label="Early access offer">
+        <div class="promo-copy">
+          <h1 class="promo-h">The best bug ledger<br>just got better</h1>
+          <p class="promo-sub">Now with a built-in <span class="hi">Overview, scan stories and an agent protocol.</span></p>
+          <div class="promo-offer"><span class="promo-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span><span>Early access: Get <b>67% off</b> Pro, Max and Ultra</span></div>
+          <a class="btn primary lg promo-cta" href="#signup">Get Breadledger</a>
+          <p class="promo-fine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>No charge until your workspace opens</p>
+        </div>
+        <div class="promo-art" aria-hidden="true">
+          <img class="num" src="/art/glass-67pct.png" alt="" width="1344" height="768">
+          <img class="era" src="/art/era-cutout.png" alt="" width="896" height="1120">
+        </div>
+      </section>
+
       <section id="pricing" aria-labelledby="pricing-h" class="pg">
         <div class="page-h">
           <div class="grow">
@@ -64,7 +101,14 @@
         <div class="bigwords" aria-label="What Breadledger does">
           <article class="bigword"><div class="word">Check</div><p class="why">Any project, against every bug, security hole and optimiser ever hit across the portfolio: 47 detectors and the whole catalogue.</p><div class="pic"><img src="/art/card-check.png" alt="" width="1344" height="768" loading="lazy" data-framed></div></article>
           <article class="bigword"><div class="word">Prove</div><p class="why">Coverage is verified server-side and every finding says how it was proven: a detector, a code read or a test, never just a claim.</p><div class="pic"><img src="/art/card-prove.png" alt="" width="1344" height="768" loading="lazy" data-framed></div></article>
-          <article class="bigword"><div class="word">Remember</div><p class="why">Everything is appended, nothing deleted, so each scan makes the next project stricter and the story is there to read back.</p><div class="pic"><img src="/art/card-remember.png" alt="" width="1344" height="768" loading="lazy" data-framed></div></article>
+          <article class="bigword"><div class="word">Remember</div><p class="why">Everything is appended, nothing deleted, so each scan makes the next project stricter and the story is there to read back.</p><div class="pic brain"><img src="/art/card-brain.png" alt="A happy brain with glowing memory points" width="1344" height="768" loading="lazy" data-framed>
+            <button class="pt" type="button" style="--x:35%;--y:28%" aria-label="1,117 bugs remembered"><span>1,117 bugs</span></button>
+            <button class="pt" type="button" style="--x:58%;--y:25%" aria-label="15 audit findings"><span>15 audit findings</span></button>
+            <button class="pt" type="button" style="--x:69%;--y:38%" aria-label="458 optimisers"><span>458 optimisers</span></button>
+            <button class="pt" type="button" style="--x:32%;--y:44%" aria-label="Every scan story"><span>every scan story</span></button>
+            <button class="pt" type="button" style="--x:62%;--y:60%" aria-label="Every prompt, verbatim"><span>every prompt</span></button>
+            <button class="pt" type="button" style="--x:30%;--y:57%" aria-label="61 apps"><span>61 apps</span></button>
+          </div></article>
         </div>
 
         <div class="plans">
@@ -79,29 +123,41 @@
             </ul>
             <button class="btn" type="button" data-choose="free">Create a free account</button>
           </div>
-          <div class="card plan" data-plan="team">
-            <div class="pn">Team <span class="badge accent">Early access</span></div>
-            <div class="price">$12 <small>per developer a month</small></div>
+          <div class="card plan" data-plan="pro">
+            <div class="pn">Pro <span class="badge accent">Early access</span></div>
+            <div class="price">$18 <small>per developer a month</small></div>
             <ul>
               <li>Everything in Free</li>
-              <li>A private workspace for your team's findings</li>
+              <li>A private workspace for your own findings</li>
               <li>Your own live boards and scan stories</li>
               <li>Check-log history for every project</li>
             </ul>
             <p class="fine">No charge until your workspace opens.</p>
-            <button class="btn primary" type="button" data-choose="team">Join Team early access</button>
+            <button class="btn primary" type="button" data-choose="pro">Join Pro early access</button>
           </div>
-          <div class="card plan" data-plan="business">
-            <div class="pn">Business <span class="badge accent">Early access</span></div>
-            <div class="price">$29 <small>per developer a month</small></div>
+          <div class="card plan" data-plan="max">
+            <div class="pn">Max <span class="badge accent">Early access</span></div>
+            <div class="price">$100 <small>per developer a month</small></div>
             <ul>
-              <li>Everything in Team</li>
+              <li>Everything in Pro</li>
               <li>Recurrence view across all your projects</li>
               <li>Security sweep reports you can share</li>
               <li>Priority email support and invoice billing</li>
             </ul>
             <p class="fine">No charge until your workspace opens.</p>
-            <button class="btn primary" type="button" data-choose="business">Join Business early access</button>
+            <button class="btn primary" type="button" data-choose="max">Join Max early access</button>
+          </div>
+          <div class="card plan" data-plan="ultra">
+            <div class="pn">Ultra <span class="badge accent">Early access</span></div>
+            <div class="price">$200 <small>per developer a month</small></div>
+            <ul>
+              <li>Everything in Max</li>
+              <li>Unlimited private workspaces and projects</li>
+              <li>A named contact who knows your projects</li>
+              <li>Custom reports and exports on request</li>
+            </ul>
+            <p class="fine">No charge until your workspace opens.</p>
+            <button class="btn primary" type="button" data-choose="ultra">Join Ultra early access</button>
           </div>
         </div>
         <p class="compare">For comparison, automated code review tools typically charge $24 to $72 per developer a month.</p>
@@ -113,7 +169,7 @@
             <form id="signupForm" novalidate>
               <div class="field"><label for="su-name">Your name or team</label><input class="input" id="su-name" name="name" required maxlength="80" autocomplete="organization" placeholder="Acme engineering"></div>
               <div class="field"><label for="su-email">Work email</label><input class="input" id="su-email" name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@company.com"></div>
-              <div class="field"><label for="su-plan">Plan</label><select class="select" id="su-plan" name="plan"><option value="free">Free</option><option value="team">Team, early access</option><option value="business">Business, early access</option></select></div>
+              <div class="field"><label for="su-plan">Plan</label><select class="select" id="su-plan" name="plan"><option value="free">Free</option><option value="pro">Pro, early access</option><option value="max">Max, early access</option><option value="ultra">Ultra, early access</option></select></div>
               <button class="btn primary" type="submit">Create account</button>
             </form>
             <p class="msg" id="signupMsg" role="status" aria-live="polite"></p>

@@ -67,6 +67,8 @@
     calendar: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
     trash: '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>',
     link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+    micoff: '<line x1="2" x2="22" y1="2" y2="22"/><path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/><path d="M5 10v2a7 7 0 0 0 12 5"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><line x1="12" x2="12" y1="19" y2="22"/>',
     repeat: '<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>'
   };
   function icon(name, cls) { return '<svg class="ico' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[name] || P.info) + '</svg>'; }
@@ -128,12 +130,15 @@
       top.innerHTML = '<button class="btn ghost icon menu" type="button" data-act="side" aria-label="Open menu">' + icon('menu') + '</button>' +
         '<div class="crumbs">' + crumbs + '</div><div class="actions">' +
         '<button class="search" type="button" data-act="cmdk" aria-label="Search and commands"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P.search + '</svg><span class="lbl">' + esc(o.searchLabel || 'Search or jump to…') + '</span><span class="k"><kbd>⌘</kbd><kbd>K</kbd></span></button>' +
+        '<button class="btn icon mic" type="button" data-voice="command" aria-label="Voice command" title="Voice command: say a view, a page, an action or words to search">' + icon('mic') + '</button>' +
+        (o.media !== false ? '<button class="btn icon plus" type="button" data-media aria-label="Add a finding with media" title="Add a finding: screenshots, before and after">' + icon('plus') + '</button>' : '') +
         (o.actions || '') + '</div>';
     }
     d.body.addEventListener('click', function (e) {
-      var b = e.target.closest && e.target.closest('[data-act]'); if (!b) return;
-      var a = b.getAttribute('data-act');
+      var b = e.target.closest && e.target.closest('[data-act],[data-media]'); if (!b) return;
+      var a = b.hasAttribute('data-media') ? 'media' : b.getAttribute('data-act');
       if (a === 'theme') toggleTheme(); else if (a === 'rail') toggleRail(); else if (a === 'side') openSide();
+      else if (a === 'media') { var nf = $('[data-newfinding]'); if (nf) nf.click(); else location.href = '/#new=1'; }
       else if (a === 'cmdk') cmdk.open(); else if (a === 'keys') showKeys();
     });
     d.title = (o.title ? o.title + ' · ' : '') + 'Breadledger';
@@ -248,7 +253,7 @@
     paint: function () { $$('.cmdk-it', cmdk.el).forEach(function (el, n) { el.classList.toggle('sel', n === cmdk.sel); if (n === cmdk.sel) el.scrollIntoView({ block: 'nearest' }); }); } };
 
   /* ---- keyboard shortcuts ---- */
-  var KEYS = [['⌘ K', 'Search, jump to any view or page'], ['/', 'Focus the search box'], ['J / K', 'Next / previous row'], ['↵', 'Open the selected row'], ['X', 'Tick the selected row'], ['N', 'New finding'], ['Esc', 'Close panel, dialog or palette'], ['T', 'Switch light / dark'], ['[', 'Collapse the sidebar'], ['?', 'This list']];
+  var KEYS = [['⌘ K', 'Search, jump to any view or page'], ['/', 'Focus the search box'], ['J / K', 'Next / previous row'], ['↵', 'Open the selected row'], ['X', 'Tick the selected row'], ['N', 'New finding'], ['Esc', 'Close panel, dialog or palette'], ['T', 'Switch light / dark'], ['V', 'Voice command (microphone)'], ['[', 'Collapse the sidebar'], ['?', 'This list']];
   function showKeys() { modal.open({ title: 'Keyboard shortcuts', body: '<div class="kv">' + KEYS.map(function (k) { return '<dt><kbd>' + esc(k[0]) + '</kbd></dt><dd>' + esc(k[1]) + '</dd>'; }).join('') + '</div>' }); }
   function typing(e) { var t = e.target; return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable); }
   d.addEventListener('keydown', function (e) {
@@ -257,8 +262,44 @@
     if (e.key === '/') { var s = $('[data-search]'); if (s) { e.preventDefault(); s.focus(); s.select && s.select(); } }
     else if (e.key === '?') { e.preventDefault(); showKeys(); }
     else if (e.key === 't' || e.key === 'T') { toggleTheme(); }
+    else if (e.key === 'v' || e.key === 'V') { voice.listen({ onResult: function (t, fin) { if (fin) voice.command(t); } }); }
     else if (e.key === '[') { toggleRail(); }
   });
+
+  /* ---- voice: browser speech recognition (free, on-device in Safari, Google's in Chrome), no server ---- */
+  var SR = w.SpeechRecognition || w.webkitSpeechRecognition || null;
+  var voice = { el: null, rec: null, supported: !!SR,
+    /* listen once; onResult(text, isFinal). Shows a listening sheet with the live transcript. */
+    listen: function (o) { o = o || {}; if (!SR) { toast('Voice needs Chrome, Edge or Safari', 'err'); return; } voice.stop();
+      var r = new SR(); r.lang = o.lang || (navigator.language || 'en-GB'); r.interimResults = true; r.continuous = false; r.maxAlternatives = 1; voice.rec = r;
+      var sheet = d.createElement('div'); sheet.className = 'voice-sheet'; sheet.innerHTML = '<div class="voice-card" role="dialog" aria-label="Listening"><div class="ring">' + icon('mic') + '</div><div class="vt"><b>' + esc(o.title || 'Listening…') + '</b><div class="tx" aria-live="polite">' + esc(o.hint || 'Say a view, a page or an action. For example “open security”, “new finding”, “dark mode”, or words to search.') + '</div></div><button class="btn ghost icon" type="button" data-vstop aria-label="Stop listening">' + icon('x') + '</button></div>';
+      sheet.addEventListener('click', function (e) { if (e.target === sheet || e.target.closest('[data-vstop]')) voice.stop(); }); d.body.appendChild(sheet); voice.el = sheet; pushLayer(voice.stop);
+      var tx = $('.tx', sheet), heard = '';
+      r.onresult = function (ev) { var t = '', fin = false; for (var i = ev.resultIndex; i < ev.results.length; i++) { t += ev.results[i][0].transcript; if (ev.results[i].isFinal) fin = true; } heard = t.trim(); tx.textContent = heard || '…'; if (o.onResult) o.onResult(heard, fin); if (fin) { setTimeout(voice.stop, 250); } };
+      r.onerror = function (ev) { tx.textContent = ev.error === 'not-allowed' ? 'Microphone access was refused. Allow it in the browser and try again.' : ev.error === 'no-speech' ? 'Nothing heard. Try again.' : 'Could not listen (' + ev.error + ').'; sheet.classList.add('err'); setTimeout(voice.stop, 1800); };
+      r.onend = function () { if (voice.rec === r && !heard) setTimeout(voice.stop, 1200); };
+      try { r.start(); } catch (e) { toast('Could not start the microphone', 'err'); voice.stop(); } },
+    stop: function () { if (voice.rec) { try { voice.rec.onend = null; voice.rec.stop(); } catch (e) {} voice.rec = null; } if (voice.el) { popLayer(voice.stop); voice.el.remove(); voice.el = null; } },
+    /* a spoken command for the shell: views, pages, actions, otherwise a search */
+    command: function (text) { var t = (text || '').toLowerCase().trim(); if (!t) return false;
+      var go = function (href) { if (href.indexOf('/#') === 0 && location.pathname === '/') { location.hash = href.slice(2); } else location.href = href; toast('Opening ' + href.replace('/#view=', '').replace('/', '') || 'home'); return true; };
+      var views = { overview: 'overview', home: 'overview', bugs: 'bugs', bug: 'bugs', security: 'security', audit: 'security', optimisers: 'optimisers', optimizers: 'optimisers', scanner: 'scanner', leads: 'scanner', harvested: 'harvest', harvest: 'harvest', checks: 'checks', submitted: 'submitted' };
+      var pages = { live: '/live', activity: '/timeline', timeline: '/timeline', prompts: '/journal', journal: '/journal', admin: '/admin', 'ai footprint': '/aiscan', footprint: '/aiscan', sanitizer: '/sanitize', sanitiser: '/sanitize', plans: '/plans', pricing: '/plans' };
+      if (/^(new|add) (finding|bug)/.test(t)) { var b = $('[data-newfinding]'); if (b) { b.click(); toast('New finding'); return true; } }
+      if (/dark mode|light mode|switch theme|toggle theme/.test(t)) { toggleTheme(); return true; }
+      if (/collapse|expand sidebar|hide sidebar|show sidebar/.test(t)) { toggleRail(); return true; }
+      if (/shortcuts|help/.test(t)) { showKeys(); return true; }
+      var m = t.match(/^(?:open|go to|show|show me)\s+(?:the\s+)?(.+)$/); var key = m ? m[1] : t;
+      for (var p in pages) if (key === p || key.indexOf(p) === 0) return go(pages[p]);
+      for (var v in views) if (key === v || key.indexOf(v) === 0) return go('/#view=' + views[v]);
+      var sm = t.match(/^(?:search|find|look for)\s+(.+)$/); var q = sm ? sm[1] : null;
+      if (q || !m) { var s = $('[data-search]'); if (s) { s.value = q || t; s.dispatchEvent(new Event('input', { bubbles: true })); s.focus(); toast('Searching “' + (q || t) + '”'); return true; } cmdk.open(); var inp = $('.cmdk input'); if (inp) { inp.value = q || t; inp.dispatchEvent(new Event('input')); } return true; }
+      toast('Did not catch a command in “' + t + '”', 'err'); return false; },
+    /* dictate into a field: appends the final transcript */
+    dictate: function (field) { if (!field) return; voice.listen({ title: 'Dictating…', hint: 'Speak; the words land in the field when you pause.', onResult: function (t, fin) { if (fin && t) { var v = field.value, sep = v && !/\s$/.test(v) ? ' ' : ''; field.value = v + sep + t; field.dispatchEvent(new Event('input', { bubbles: true })); field.focus(); } } }); } };
+  d.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-voice]'); if (!b) return; var what = b.getAttribute('data-voice');
+    if (what === 'command') voice.listen({ onResult: function (t, fin) { if (fin) voice.command(t); } });
+    else { var f = what ? d.getElementById(what) : null; if (!f && b.parentNode) f = b.parentNode.querySelector('input,textarea'); voice.dictate(f); } });
 
   /* ---- small helpers ---- */
   function copy(text, label) { (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { toast((label || 'Copied') + ' to clipboard', 'ok'); }, function () { toast('Could not copy — select the text instead', 'err'); }); }
@@ -287,6 +328,6 @@
   function empty(title, text, icoName, img) { return '<div class="empty' + (img ? ' art' : '') + '">' + (img ? '<img src="' + esc(img) + '" alt="" width="420" height="240" loading="lazy" data-framed>' : icon(icoName || 'inbox')) + '<b>' + esc(title) + '</b>' + (text ? '<p>' + text + '</p>' : '') + '</div>'; }
 
   w.Bread = { mount: mount, icon: icon, mark: MARK, esc: esc, $: $, $$: $$, setCount: setCount, setView: setView, toggleTheme: toggleTheme, openSide: openSide, closeSide: closeSide,
-    ago: ago, fmtDate: fmtDate, dayKey: dayKey, dayLabel: dayLabel, toast: toast, modal: modal, peek: peek, lightbox: lb, shotStrip: shotStrip, cmdk: cmdk, copy: copy, fmtN: fmtN, countUp: countUp, hue: hue, avatar: avatar, areaChart: areaChart, compare: compare, reduceMotion: reduce, debounce: debounce, empty: empty, showKeys: showKeys, VIEWS: VIEWS, NAV: NAV };
+    ago: ago, fmtDate: fmtDate, dayKey: dayKey, dayLabel: dayLabel, toast: toast, modal: modal, peek: peek, lightbox: lb, shotStrip: shotStrip, cmdk: cmdk, copy: copy, fmtN: fmtN, countUp: countUp, voice: voice, hue: hue, avatar: avatar, areaChart: areaChart, compare: compare, reduceMotion: reduce, debounce: debounce, empty: empty, showKeys: showKeys, VIEWS: VIEWS, NAV: NAV };
   w.BL_shotStrip = shotStrip; w.BL_openShot = lb.open; w.BL_closeShot = lb.close;
 })();

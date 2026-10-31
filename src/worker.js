@@ -108,7 +108,7 @@ async function catalog(env, request) {
 // agents read, so a workspace key unlocks nothing until private workspaces exist. Sign-ups are
 // capped per hour so the form can't be used to flood the accounts table.
 const KEY_RE = /^blk_[a-f0-9]{40}$/;
-const PLANS = ["free", "team", "business"];
+const PLANS = ["free", "pro", "max", "ultra", "team", "business"]; /* pro/max/ultra since 31 Oct 2026; team/business kept for existing sign-ups */
 const SIGNUPS_PER_HOUR = 60;
 async function sha256hex(s) {
   const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
