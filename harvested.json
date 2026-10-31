@@ -9550,5 +9550,53 @@
     "status": "unverified",
     "session": "cfa2ffb8",
     "found": "2026-10-31"
+  },
+  {
+    "key": "6d67ef7e:theboardstepsitickedamomentagosilentlyfailedzshdoesntsplitai",
+    "app": "Hallalu CRM",
+    "title": "Board steps I ticked a moment ago silently failed (zsh doesn't split $A into a command).",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The board steps I ticked a moment ago silently failed (zsh doesn't split `$A` into a command).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6d67ef7e",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "97ec418b:arrowsfixedpagerenderscorrectlylivecountersshowonlybecauseap",
+    "app": "Hallalu CRM",
+    "title": "Arrows fixed, page renders correctly (live counters show \"—\" only because /api isn't on…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Arrows fixed, page renders correctly (live counters show \"—\" only because `/api` isn't on this static server — they'll populate on the Worker).",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "97ec418b:verifiedrenderscorrectlyifixedanarrowescapebugiintroducednoo",
+    "app": "Hallalu CRM",
+    "title": "- Verified: renders correctly (I fixed an arrow-escape bug I introduced), no overflow,…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "- Verified: renders correctly (I fixed an arrow-escape bug I introduced), **no overflow, no console errors**, and `node --check src/index.js` passes.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "97ec418b:soadeployfromacleancheckoutofmycommitwouldfailstudyjsisnting",
+    "app": "Hallalu CRM",
+    "title": "So: - A deploy from a clean checkout of my commit would fail — study.js isn't in git,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "So: - A deploy from a **clean checkout of my commit would fail** — `study.js` isn't in git, so the Worker won't build.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "97ec418b",
+    "found": "2026-10-31"
   }
 ]
