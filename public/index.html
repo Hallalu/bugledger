@@ -3,1008 +3,599 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Debug any project against 428+ bugs, 67 security items and 117 optimisers from 24 apps. Agents scan, prove coverage, fix, and write an itemised scan story.">
+<title>Ledger · Breadledger</title>
+<meta name="description" content="Breadledger: every bug, security hole and optimiser ever fixed across the portfolio, in one append-only catalogue. Agents scan a project against all of it, prove coverage, fix what they can and write an itemised scan story.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Bug Ledger — every bug, security hole and optimiser we ever hit, in one append-only catalogue">
-<meta property="og:description" content="Debug any project against 428+ bugs, 67 security items and 117 optimisers from 24 apps. Agents scan, prove coverage, fix, and write an itemised scan story.">
+<meta property="og:title" content="Breadledger — every bug, security hole and optimiser we ever hit, in one append-only catalogue">
+<meta property="og:description" content="Agents scan any project against the whole catalogue, prove coverage, fix, and write an itemised scan story.">
 <meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<title>Bug Ledger — every bug fixed</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
 <style>
-  :root{
-    --bg:#f6f7fb; --panel:#ffffff; --ink:#141726; --muted:#5b6178; --line:#e7e9f2;
-    --accent:#6b5cff; --accent2:#00b4a6; --chip:#f0f1f8; --shadow:0 1px 2px rgba(20,23,38,.06),0 8px 24px rgba(20,23,38,.06);
-    --done:#12a150; --ok:#e8f7ee;
-    --c-crash:#e5484d; --c-data-loss:#d1620a; --c-logic:#6b5cff; --c-ui:#2f6feb; --c-security:#b4227a;
-    --c-performance:#0e8a6e; --c-race:#8a5cf6; --c-sync:#0a7ea4; --c-auth:#c0392b; --c-other:#6b7280;
-    --c-privacy:#a3391f; --c-claims:#9a6700; --c-accessibility:#1f7a8c; --c-observability:#4b5fc7; --c-testing:#5b7a1f; --c-seo:#7a4fbf;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0d0f18; --panel:#151826; --ink:#eef0fa; --muted:#9aa1bd; --line:#242940;
-      --chip:#1d2135; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35); --ok:#12291d;
-    }
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0}
-  body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:var(--accent)}
-  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
-
-  header.hero{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
-  .title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .title h1{font-size:30px;letter-spacing:-.02em;margin:0;font-weight:800}
-  .title .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
-  .sub{color:var(--muted);max-width:70ch}
-  .kpis{display:flex;gap:10px;flex-wrap:wrap}
-  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow);min-width:120px}
-  .kpi .n{font-size:24px;font-weight:800;letter-spacing:-.02em}
-  .kpi .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
-
-  .progress{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);margin:6px 0 20px}
-  .progress .row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
-  .bar{height:12px;border-radius:99px;background:var(--chip);overflow:hidden}
-  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .35s ease}
-  .progress small{color:var(--muted)}
-
-  .controls{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);padding:12px 0;margin-bottom:14px;border-bottom:1px solid var(--line)}
-  .controls .line{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  input[type=search],select{font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;outline:none}
-  input[type=search]{flex:1;min-width:180px}
-  input[type=search]:focus,select:focus{border-color:var(--accent)}
-  .btn{font:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:inherit;display:inline-flex;gap:7px;align-items:center}
-  .btn:hover{border-color:var(--accent)}
-  .btn.solid{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
-  .toggle{display:inline-flex;gap:7px;align-items:center;color:var(--muted);user-select:none;cursor:pointer;padding:9px 4px}
-
-  details.app{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 14px;overflow:hidden}
-  details.app > summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px;font-weight:700}
-  details.app > summary::-webkit-details-marker{display:none}
-  summary .chev{transition:transform .2s;color:var(--muted)}
-  details.app[open] summary .chev{transform:rotate(90deg)}
-  summary .appname{font-size:17px;letter-spacing:-.01em}
-  summary .count{margin-left:auto;color:var(--muted);font-weight:600;font-size:13px}
-  summary .mini{width:120px;height:8px;border-radius:99px;background:var(--chip);overflow:hidden;flex:0 0 auto}
-  summary .mini > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-
-  ul.bugs{list-style:none;margin:0;padding:4px 8px 12px}
-  li.bug{display:flex;gap:12px;padding:12px 10px;border-top:1px solid var(--line);align-items:flex-start}
-  li.bug:first-child{border-top:none}
-  li.bug.done .b-title{text-decoration:line-through;color:var(--muted)}
-  li.bug.done{opacity:.72}
-  .cbx{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:2px solid var(--line);border-radius:7px;flex:0 0 auto;cursor:pointer;position:relative;margin-top:1px;transition:.15s}
-  .cbx:hover{border-color:var(--accent)}
-  .cbx:checked{background:var(--done);border-color:var(--done)}
-  .cbx:checked::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
-  .b-main{flex:1;min-width:0}
-  .b-title{font-weight:650;letter-spacing:-.01em}
-  .b-meta{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
-  .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;color:#fff}
-  .tag{font-size:11px;color:var(--muted);background:var(--chip);border-radius:99px;padding:2px 8px}
-  .b-body{color:var(--muted);font-size:13.5px;display:grid;gap:3px;margin-top:2px}
-  .b-body b{color:var(--ink);font-weight:600}
-  .empty{color:var(--muted);text-align:center;padding:40px}
-  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:30px}
-  mark{background:color-mix(in srgb,var(--accent) 35%,transparent);color:inherit;border-radius:3px}
-  .topnav{margin-left:auto;display:flex;gap:8px}
-  .topnav a{text-decoration:none;font-size:13px;font-weight:650;color:var(--muted);border:1px solid var(--line);
-    border-radius:99px;padding:5px 12px;transition:.15s}
-  .topnav a:hover{color:var(--ink);border-color:var(--muted)}
-  .topnav a:last-child{color:#ff6a5a}
-  .hero .title{display:flex;align-items:center;gap:12px}
-
-  /* security sweep */
-  details.sweep{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 18px;overflow:hidden}
-  details.sweep > summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px;font-weight:700}
-  details.sweep > summary::-webkit-details-marker{display:none}
-  details.sweep[open] summary .chev{transform:rotate(90deg)}
-  .sweep .sec-head{padding:0 18px 14px;color:var(--muted);font-size:13.5px}
-  .sweep .tally{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 4px}
-  .sev{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:99px;color:#fff}
-  .sev.critical{background:#b4227a}.sev.high{background:#e5484d}.sev.medium{background:#d1620a}.sev.low{background:#6b7280}
-  .st{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--line)}
-  .st.fixed{color:#12a150;border-color:#12a150}.st.partial{color:#d1620a;border-color:#d1620a}
-  .st.open{color:#e5484d;border-color:#e5484d}.st.accepted{color:var(--muted)}
-  ul.finds{list-style:none;margin:0;padding:4px 8px 10px}
-  li.find{padding:12px 10px;border-top:1px solid var(--line)}
-  li.find:first-child{border-top:none}
-  .find .f-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:5px}
-  .find .fid{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
-  .find .f-title{font-weight:650}
-  .find .f-body{color:var(--muted);font-size:13.5px;display:grid;gap:3px}
-  .find .f-body b{color:var(--ink);font-weight:600}
-  .find code,.f-files{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted)}
-  .optchip{font-size:11px;font-weight:800;text-transform:capitalize;padding:2px 9px;border-radius:99px;
-    color:#7c5cff;background:color-mix(in srgb,#7c5cff 13%,transparent);white-space:nowrap}
-  .kpi{position:relative;cursor:pointer;transition:transform .12s}
-  .kpi:hover{transform:translateY(-2px)}
-  .kpi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .kpi-hint{position:absolute;top:9px;right:11px;width:17px;height:17px;border-radius:50%;border:1.5px solid var(--line);
-    color:var(--muted);font-size:10.5px;font-weight:800;display:grid;place-items:center;opacity:.45}
-  .kpi:hover .kpi-hint{opacity:1;border-color:var(--muted)}
-  #kpimodal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;
-    background:color-mix(in srgb,#0b0d15 52%,transparent);backdrop-filter:blur(4px)}
-  #kpimodal.show{display:flex;animation:kmfade .2s ease both}
-  @keyframes kmfade{from{opacity:0}to{opacity:1}}
-  #kpimodal .km-card{position:relative;max-width:440px;width:100%;background:var(--panel);border:1px solid var(--line);
-    border-radius:20px;box-shadow:0 30px 80px -20px rgba(20,15,40,.6);padding:24px;animation:kmrise .28s cubic-bezier(.2,.8,.2,1) both}
-  @keyframes kmrise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-  .km-x{position:absolute;top:10px;right:14px;border:none;background:none;font-size:26px;line-height:1;color:var(--muted);cursor:pointer}
-  .km-h{display:flex;gap:14px;align-items:center;margin-bottom:12px}
-  .km-ic{font-size:34px;line-height:1}
-  .km-n{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1}
-  .km-t{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
-  .km-what{font-size:16px;font-weight:650;margin:4px 0 8px}
-  .km-detail{color:var(--muted);font-size:14px;margin:0 0 16px}
-  .km-go{display:inline-block;text-decoration:none;font-weight:800;color:#fff;background:var(--accent);padding:9px 16px;border-radius:11px}
-  .clean{padding:8px 18px 16px;color:var(--muted);font-size:13px}
-  .clean b{color:var(--done, #12a150)}
-  ul.mini{list-style:none;margin:4px 0;padding:0;display:grid;gap:3px;font-size:13px}
-  ul.mini .f-files{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted)}
-  details.clean-more{margin-top:4px}
-  details.clean-more summary{cursor:pointer;color:var(--muted);font-size:12.5px}
-  .find .appname{font-weight:700}
-  /* ---- screenshots on a finding (before → after) ---- */
-  .shots{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}
-  .shot{margin:0;cursor:zoom-in;border:1px solid var(--line);border-radius:11px;overflow:hidden;
-    background:var(--chip);width:170px;box-shadow:var(--shadow);transition:transform .12s ease,border-color .12s ease}
-  .shot:hover{transform:translateY(-2px);border-color:var(--accent)}
-  .shot img{display:block;width:100%;height:112px;object-fit:cover;object-position:top center;background:var(--panel)}
-  .shot figcaption{font-size:11px;font-weight:700;color:var(--muted);padding:5px 9px;display:flex;align-items:center;gap:6px}
-  .shot figcaption .ba{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
-    padding:1px 6px;border-radius:99px;color:#fff}
-  .shot .ba.before{background:#e5735a}.shot .ba.after{background:var(--accent2)}
-  /* lightbox */
-  #shotlb{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:26px;
-    background:rgba(12,10,25,.82);backdrop-filter:blur(6px)}
-  #shotlb.show{display:flex}
-  #shotlb figure{margin:0;max-width:94vw;max-height:92vh;display:flex;flex-direction:column;gap:10px;align-items:center}
-  #shotlb img{max-width:94vw;max-height:82vh;object-fit:contain;border-radius:14px;box-shadow:0 24px 70px -20px rgba(0,0,0,.7)}
-  #shotlb figcaption{color:#fff;font-weight:700;font-size:14px}
-  #shotlb .lbx{position:fixed;top:18px;right:22px;font-size:34px;line-height:1;color:#fff;cursor:pointer;
-    background:none;border:none;opacity:.8}#shotlb .lbx:hover{opacity:1}
-  #shotlb .lbnav{position:fixed;top:50%;transform:translateY(-50%);font-size:44px;color:#fff;cursor:pointer;
-    background:none;border:none;opacity:.6;padding:0 14px;user-select:none}#shotlb .lbnav:hover{opacity:1}
-  #shotlb .lbprev{left:8px}#shotlb .lbnext{right:8px}
-  /* ---- add-a-finding panel ---- */
-  details.addfind{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 18px;overflow:hidden}
-  details.addfind > summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:10px;font-weight:750}
-  details.addfind > summary::-webkit-details-marker{display:none}
-  details.addfind > summary .chev{transition:transform .2s;color:var(--muted)}
-  details.addfind[open] > summary .chev{transform:rotate(90deg)}
-  details.addfind > summary .sub{font-weight:500;color:var(--muted);font-size:12.5px;margin-left:auto;max-width:none}
-  .addform{padding:4px 18px 20px;display:grid;gap:13px}
-  .addform .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
-  .addform label{display:grid;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-  .addform input,.addform select,.addform textarea{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);
-    border-radius:10px;padding:9px 11px;outline:none;font-weight:400;text-transform:none;letter-spacing:normal}
-  .addform input:focus,.addform select:focus,.addform textarea:focus{border-color:var(--accent)}
-  .addform textarea{resize:vertical;min-height:52px}
-  .ba-slots{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-  @media(max-width:560px){.ba-slots{grid-template-columns:1fr}}
-  .drop{position:relative;border:1.5px dashed var(--line);border-radius:12px;min-height:118px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:5px;text-align:center;padding:12px;cursor:pointer;color:var(--muted);
-    transition:.14s;background:var(--bg)}
-  .drop:hover,.drop.over{border-color:var(--accent);color:var(--ink);background:color-mix(in srgb,var(--accent) 7%,var(--bg))}
-  .drop.filled{border-style:solid;padding:0;overflow:hidden}
-  .drop .dz-ba{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;padding:2px 9px;border-radius:99px}
-  .drop .dz-ba.before{background:#e5735a}.drop .dz-ba.after{background:var(--accent2)}
-  .drop .dz-hint{font-size:12px;line-height:1.4}
-  .drop img{width:100%;height:100%;object-fit:cover;object-position:top center;max-height:220px}
-  .drop .dz-clear{position:absolute;top:7px;right:8px;z-index:2;background:rgba(0,0,0,.6);color:#fff;border:none;
-    border-radius:99px;width:24px;height:24px;font-size:16px;line-height:1;cursor:pointer}
-  .addrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .addmsg{font-size:13px;font-weight:600}.addmsg.ok{color:var(--accent2)}.addmsg.err{color:#e5484d}
-  .keywrap{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
-  .keywrap input{max-width:230px}
-  @media print{
-    .controls,.progress,.kpis,.btn{display:none!important}
-    details.app{break-inside:avoid;box-shadow:none;border-color:#ccc}
-    details.app[open] ul.bugs{display:block}
-    body{background:#fff}
-  }
-  /* ---- pricing + sign-up ---- */
-  #pricing{margin:4px 0 24px;scroll-margin-top:16px}
-  #pricing h2{font-size:21px;letter-spacing:-.015em;margin:0 0 4px}
-  #pricing .lead{color:var(--muted);margin:0 0 16px;max-width:70ch}
-  .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-  .plan{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:10px}
-  .plan.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
-  .plan .pn{font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px}
-  .plan .pill{font-size:12.5px;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:99px;padding:2px 9px}
-  .plan .price{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
-  .plan .price small{font-size:13.5px;font-weight:600;color:var(--muted);letter-spacing:0}
-  .plan ul{margin:0;padding:0 0 0 18px;display:grid;gap:5px;color:var(--ink);font-size:14.5px}
-  .plan .note{color:var(--muted);font-size:13.5px;margin:0}
-  .plan .btn{margin-top:auto;justify-content:center;font-weight:700}
-  .compare{color:var(--muted);font-size:13.5px;margin:12px 0 0}
-  .signup{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;margin-top:14px;scroll-margin-top:16px}
-  .signup h3{margin:0 0 4px;font-size:17px}
-  .signup form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px;align-items:end;margin-top:12px}
-  .signup label{display:grid;gap:5px;font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-  .signup input,.signup select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;text-transform:none;letter-spacing:normal;font-weight:400}
-  .signup input:focus,.signup select:focus{border-color:var(--accent)}
-  .signup .btn{justify-content:center;font-weight:700;padding:10px 14px}
-  .signup .fine{color:var(--muted);font-size:13.5px;margin:10px 0 0}
-  .signup .msg{font-size:14px;font-weight:600;margin:10px 0 0}.signup .msg.err{color:#e5484d}
-  .keybox{display:none;margin-top:14px;border:1px solid var(--accent2);border-radius:12px;padding:14px;background:color-mix(in srgb,var(--accent2) 8%,var(--panel))}
-  .keybox.show{display:block}
-  .keybox .kh{font-weight:800;margin:0 0 6px}
-  .keybox .krow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .keybox code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;word-break:break-all;flex:1;min-width:0}
-  .keybox p{margin:8px 0 0;color:var(--muted);font-size:14px}
-  @media print{#pricing{display:none}}
-  @media (pointer:coarse){input,select,textarea{font-size:16px}}   /* iOS: no focus zoom */
+  .cat.ux{--c:#0e7490}
+  .views{display:none;overflow:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -16px 12px;padding:0 16px}
+  .views::-webkit-scrollbar{display:none}
+  .views .seg{display:inline-flex;min-width:max-content}
+  @media (max-width:900px){.views{display:block}}
+  .view-head{display:grid;gap:10px;margin-bottom:12px}
+  .view-head .card-b{display:grid;gap:10px}
+  .tally{display:flex;gap:6px;flex-wrap:wrap}
+  .clean-list{display:grid;gap:6px;font-size:14.5px;color:var(--ink-2)}
+  .clean-list span{display:flex;gap:8px;align-items:flex-start}
+  .clean-list svg{width:16px;height:16px;color:var(--ok);flex:0 0 auto;margin-top:3px}
+  .prog-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .prog-row .progress{flex:1;min-width:160px}
+  .prog-row .num{font-size:13.5px;color:var(--ink-3);white-space:nowrap}
+  .bl-row .side .det{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+  .bl-row .side .file{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cov-ok{color:var(--ok-ink)} .cov-warn{color:var(--warn-ink)}
+  .peek .badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .peek .filebtn{font-family:var(--mono);font-size:12.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .peek ul.plain{margin:0;padding:0 0 0 18px;display:grid;gap:4px;font-size:14.5px;color:var(--ink-2)}
+  .peek ul.plain li::marker{color:var(--ink-3)}
+  .peek .linkrow{display:flex;gap:8px;flex-wrap:wrap}
+  .peek .excerpt{font-size:12.5px;white-space:pre-wrap;word-break:break-all}
+  .evi{display:flex;gap:6px;flex-wrap:wrap}
+  .nf-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .nf-grid .span2{grid-column:1/-1}
+  @media (max-width:560px){.nf-grid{grid-template-columns:1fr}}
+  .nf-slots{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:560px){.nf-slots{grid-template-columns:1fr}}
+  .nf-slot{display:grid;gap:6px}
+  .nf-slot .drop{min-height:136px}
+  .nf-slot .drop input[type=file]{display:none}
+  .nf-slot .cap{height:30px;font-size:13.5px}
+  .live-note{margin-bottom:14px}
+  .live-note .btn{margin-left:auto}
+  .foot-meta{margin-top:22px;font-size:13px;color:var(--ink-3);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .foot-meta a{color:var(--ink-2)}
+  .help-body p{font-size:14.5px;color:var(--ink-2);line-height:1.55}
+  .help-body .big{font-size:28px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  @media print{.stats,.views,.filters,.live-note,.page-h .actions{display:none!important} .group-h{position:static}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="hero">
-    <div class="title">
-      <span class="dot"></span>
-      <h1>Bug Ledger</h1>
-      <nav class="topnav"><a href="#pricing">Pricing</a><a href="/sanitize">🧹 Sanitizer</a><a href="/aiscan">🔎 AI footprint</a><a href="/timeline">🕘 Activity</a><a href="/journal">✍️ Prompts</a><a href="/live">● Live</a></nav>
-    </div>
-    <p class="sub">Every bug fixed across the portfolio — mined from the full conversation history and organized into one comprehensive checklist. Tick items as you re-verify them; progress is saved in your browser.</p>
-    <div class="kpis" id="kpis"></div>
-  </header>
-
-  <section id="pricing" aria-labelledby="pricing-h">
-    <h2 id="pricing-h">Plans</h2>
-    <p class="lead">Start free with the full public catalogue and tools. Team and Business add a private workspace for your own findings. You are never charged until your private workspace is switched on, and we email you before that happens.</p>
-    <div class="plans">
-      <div class="plan" data-plan="free">
-        <div class="pn">Free</div>
-        <div class="price">$0 <small>no card needed</small></div>
-        <ul>
-          <li>Search the full catalogue of bugs, security items and optimisers</li>
-          <li>Run the scanner on your own repository</li>
-          <li>Sanitizer and AI footprint check</li>
-          <li>Your own workspace key</li>
-        </ul>
-        <button class="btn" type="button" data-choose="free">Create a free account</button>
+<div class="bl-app" id="app">
+  <aside class="bl-side" id="side" aria-label="Sidebar"></aside>
+  <div class="bl-main">
+    <header class="bl-top" id="top"></header>
+    <main class="bl-content" id="page">
+      <div class="page-h">
+        <div class="grow">
+          <h1 id="h1">Ledger</h1>
+          <p class="lead" id="lead">Every bug, security hole and optimiser ever fixed across the portfolio, in one append-only catalogue. Tick items as you re-verify them; ticks are saved in this browser.</p>
+        </div>
       </div>
-      <div class="plan" data-plan="team">
-        <div class="pn">Team <span class="pill">Early access</span></div>
-        <div class="price">$12 <small>per developer a month</small></div>
-        <ul>
-          <li>Everything in Free</li>
-          <li>A private workspace for your team's findings</li>
-          <li>Your own live boards and scan stories</li>
-          <li>Check-log history for every project</li>
-        </ul>
-        <p class="note">No charge until your workspace opens.</p>
-        <button class="btn solid" type="button" data-choose="team">Join Team early access</button>
+      <div class="note info live-note" id="livenote" hidden></div>
+      <div class="stats" id="stats" aria-label="Catalogue totals"></div>
+      <div class="views" id="views"></div>
+      <div id="viewhead"></div>
+      <div class="filters" id="filters">
+        <div class="search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="input" id="q" type="search" data-search placeholder="Search the ledger" title="Words, &quot;phrases&quot;, -not, and app: cat: sev: is:open prefixes" autocomplete="off" aria-label="Search the ledger"></div>
+        <select class="select" id="fApp" aria-label="Filter by app"><option value="">All apps</option></select>
+        <select class="select" id="fCat" aria-label="Filter by type"><option value="">All types</option></select>
+        <select class="select" id="fSev" aria-label="Filter by severity" title="Severity is the item's own, or derived from its impact category"><option value="">All severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+        <label class="check" id="onlyOpenWrap"><input type="checkbox" class="cbx" id="onlyOpen"> Only unchecked</label>
+        <div class="btn-group"><button class="btn sm" type="button" id="expand">Expand all</button><button class="btn sm" type="button" id="collapse">Collapse all</button></div>
+        <span class="count" id="count"></span>
       </div>
-      <div class="plan" data-plan="business">
-        <div class="pn">Business <span class="pill">Early access</span></div>
-        <div class="price">$29 <small>per developer a month</small></div>
-        <ul>
-          <li>Everything in Team</li>
-          <li>Recurrence view across all your projects</li>
-          <li>Security sweep reports you can share</li>
-          <li>Priority email support and invoice billing</li>
-        </ul>
-        <p class="note">No charge until your workspace opens.</p>
-        <button class="btn" type="button" data-choose="business">Join Business early access</button>
-      </div>
-    </div>
-    <p class="compare">For comparison, automated code review tools typically charge $24 to $72 per developer a month.</p>
-
-    <div class="signup" id="signup">
-      <h3>Create your account</h3>
-      <p class="fine" style="margin:0">Takes ten seconds. No card needed.</p>
-      <form id="signupForm" novalidate>
-        <label>Your name or team<input name="name" required maxlength="80" autocomplete="organization" placeholder="Acme engineering"></label>
-        <label>Work email<input name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@company.com"></label>
-        <label>Plan<select name="plan"><option value="free">Free</option><option value="team">Team, early access</option><option value="business">Business, early access</option></select></label>
-        <button class="btn solid" type="submit">Create account</button>
-      </form>
-      <p class="msg" id="signupMsg" role="status" aria-live="polite"></p>
-      <div class="keybox" id="keybox">
-        <p class="kh">Your account is ready.</p>
-        <div class="krow"><code id="keyval"></code><button class="btn" type="button" id="keycopy">Copy key</button></div>
-        <p>This is your workspace key. Save it now, because we only show it once and cannot recover it. The free tools on this page work straight away. We will contact you at your email when your private workspace opens.</p>
-      </div>
-      <p class="fine">We use your email only to contact you about your account. We do not sell it or pass it to anyone else.</p>
-    </div>
-  </section>
-
-  <div class="progress">
-    <div class="row"><strong>Re-verification progress</strong><small id="pct">0%</small></div>
-    <div class="bar"><i id="barfill"></i></div>
-    <div class="row" style="margin:10px 0 0"><small id="progline">0 of 0 checked</small></div>
+      <div class="active-filters" id="activef" hidden></div>
+      <div class="list" id="list"></div>
+      <div class="foot-meta" id="foot"></div>
+    </main>
   </div>
-
-  <div class="controls">
-    <div class="line">
-      <input id="q" type="search" placeholder="Search bugs, symptoms, fixes…" autocomplete="off" aria-label="Search bugs, symptoms and fixes">
-      <select id="fApp" aria-label="Filter by app"><option value="">All apps</option></select>
-      <select id="fCat" aria-label="Filter by type"><option value="">All types</option></select>
-      <select id="fSev" title="Severity is derived from impact category">
-        <option value="">All severities</option>
-        <option value="critical">Critical</option>
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-      </select>
-      <label class="toggle"><input type="checkbox" id="onlyOpen"> Only unchecked</label>
-      <button class="btn" id="expand">Expand all</button>
-      <button class="btn" id="collapse">Collapse all</button>
-      <button class="btn" id="print">🖨 Print</button>
-      <button class="btn" id="reset">Reset ticks</button>
-    </div>
-  </div>
-
-  <section id="addpanel"></section>
-  <section id="checkpanel"></section>
-  <section id="submitpanel"></section>
-  <section id="secsweep"></section>
-  <section id="optpanel"></section>
-  <section id="scanpanel"></section>
-  <section id="harvestpanel"></section>
-  <main id="list"></main>
-  <footer id="foot"></footer>
 </div>
 
-<div id="kpimodal" onclick="if(event.target===this)this.classList.remove('show')"><div class="km-card"></div></div>
-<div id="shotlb" onclick="if(event.target===this)window.BL_closeShot&&window.BL_closeShot()"><button class="lbx" aria-label="Close">×</button><button class="lbnav lbprev" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lbnav lbnext" aria-label="Next">›</button></div>
-<script>
-(function(){
-  var form=document.getElementById('signupForm'); if(!form) return;
-  var msg=document.getElementById('signupMsg'), box=document.getElementById('keybox');
-  function pick(plan){
-    form.plan.value=plan;
-    document.querySelectorAll('.plan').forEach(function(c){c.classList.toggle('pick',c.dataset.plan===plan);});
-  }
-  document.querySelectorAll('[data-choose]').forEach(function(b){
-    b.addEventListener('click',function(){pick(b.dataset.choose);document.getElementById('signup').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){form.name.focus({preventScroll:true});},350);});
-  });
-  form.plan.addEventListener('change',function(){pick(form.plan.value);});
-  form.addEventListener('submit',function(e){
-    e.preventDefault(); msg.className='msg'; msg.textContent='';
-    var name=form.name.value.trim(), email=form.email.value.trim();
-    if(!name){msg.className='msg err';msg.textContent='Please enter your name or team.';form.name.focus();return;}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.className='msg err';msg.textContent='Please enter a valid email address.';form.email.focus();return;}
-    var btn=form.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Creating…';
-    fetch('/api/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name,email:email,plan:form.plan.value})})
-      .then(function(r){return r.json().catch(function(){return {ok:false,error:'Something went wrong. Please try again.'};});})
-      .then(function(d){
-        if(!d.ok){msg.className='msg err';msg.textContent=d.error||'Something went wrong. Please try again.';return;}
-        document.getElementById('keyval').textContent=d.key; box.classList.add('show'); form.reset(); pick(d.plan);
-        form.style.display='none';
-      })
-      .catch(function(){msg.className='msg err';msg.textContent='Could not reach the server. Please try again.';})
-      .finally(function(){btn.disabled=false;btn.textContent='Create account';});
-  });
-  document.getElementById('keycopy').addEventListener('click',function(){
-    var k=document.getElementById('keyval').textContent, b=this;
-    (navigator.clipboard?navigator.clipboard.writeText(k):Promise.reject()).then(function(){b.textContent='Copied';},function(){b.textContent='Select and copy';});
-  });
-})();
-</script>
-<script>document.addEventListener('keydown',function(e){if(e.key==='Escape'){var m=document.getElementById('kpimodal');if(m)m.classList.remove('show');}});</script>
 <script src="data-sec.js"></script>
 <script src="data-opt.js"></script>
 <script src="data-scan.js"></script>
 <script src="data-harvest.js"></script>
-<script src="data.js?v=2"></script>
+<script src="data.js?v=3"></script>
 <script>
-/* ---- shared screenshot helpers: thumbnails + before/after lightbox ---- */
-(function(){
-  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
-  // classify a caption as before/after for the little pill
-  function baClass(cap){ var c=(cap||'').toLowerCase();
-    if(/\bbefore\b|\bwas\b|current|old|problem|issue/.test(c)) return 'before';
-    if(/\bafter\b|\bnow\b|fixed|new|improved|elevated|proposed/.test(c)) return 'after'; return ''; }
-  // render a strip of thumbnails for a shots array [{url,caption}]
-  window.BL_shotStrip=function(shots){
-    if(!Array.isArray(shots)||!shots.length) return '';
-    var urls=shots.map(function(s){return s.url;});
-    var html=shots.map(function(s,i){
-      var ba=baClass(s.caption);
-      return '<figure class="shot" data-shot="'+esc(urls.join('|'))+'" data-i="'+i+'" tabindex="0" role="button" aria-label="View screenshot">'+
-        '<img loading="lazy" src="'+esc(s.url)+'" alt="'+esc(s.caption||'screenshot')+'">'+
-        (s.caption||ba?'<figcaption>'+(ba?'<span class="ba '+ba+'">'+ba+'</span>':'')+esc(s.caption||'')+'</figcaption>':'')+
-        '</figure>';
-    }).join('');
-    return '<div class="shots">'+html+'</div>';
-  };
-  var lb=document.getElementById('shotlb'), lbImg=lb.querySelector('img'), lbCap=lb.querySelector('figcaption');
-  var cur=[], curCaps=[], idx=0;
-  function show(){ lbImg.src=cur[idx]||''; lbCap.textContent=curCaps[idx]||''; lb.classList.add('show');
-    lb.querySelector('.lbprev').style.display=lb.querySelector('.lbnext').style.display=cur.length>1?'block':'none'; }
-  window.BL_openShot=function(urls,caps,i){ cur=urls||[]; curCaps=caps||[]; idx=i||0; show(); };
-  window.BL_closeShot=function(){ lb.classList.remove('show'); lbImg.src=''; };
-  lb.querySelector('.lbx').onclick=window.BL_closeShot;
-  lb.querySelector('.lbprev').onclick=function(e){ e.stopPropagation(); idx=(idx-1+cur.length)%cur.length; show(); };
-  lb.querySelector('.lbnext').onclick=function(e){ e.stopPropagation(); idx=(idx+1)%cur.length; show(); };
-  document.addEventListener('keydown',function(e){ if(!lb.classList.contains('show'))return;
-    if(e.key==='Escape')window.BL_closeShot(); else if(e.key==='ArrowLeft')lb.querySelector('.lbprev').click();
-    else if(e.key==='ArrowRight')lb.querySelector('.lbnext').click(); });
-  // one delegated click handler opens any thumbnail (thumbs are added dynamically)
-  document.addEventListener('click',function(e){ var f=e.target.closest&&e.target.closest('.shot[data-shot]'); if(!f)return;
-    var urls=f.getAttribute('data-shot').split('|');
-    var caps=Array.prototype.map.call(f.parentNode.querySelectorAll('.shot'),function(x){var c=x.querySelector('figcaption');return c?c.textContent:'';});
-    window.BL_openShot(urls,caps,+f.getAttribute('data-i')||0); });
-  document.addEventListener('keydown',function(e){ if((e.key==='Enter'||e.key===' ')&&document.activeElement&&document.activeElement.classList&&document.activeElement.classList.contains('shot')){ e.preventDefault(); document.activeElement.click(); } });
-})();
-</script>
-<script>
-(function(){
-  var BUGS = (window.BUGS||[]).map(function(b,i){ b._id = b.session+'-'+i; return b; });
+(function () {
+  'use strict';
+  var B = window.Bread, esc = B.esc, $ = B.$, $$ = B.$$, icon = B.icon;
+  var CATLABEL = { crash: 'crash', 'data-loss': 'data loss', logic: 'logic', ui: 'UI', security: 'security', performance: 'performance', race: 'race', sync: 'sync', auth: 'auth', privacy: 'privacy', claims: 'claims', accessibility: 'accessibility', observability: 'observability', testing: 'testing', seo: 'SEO', ux: 'UX', other: 'other' };
+  var CAT2SEV = { 'data-loss': 'critical', security: 'high', crash: 'high', auth: 'high', sync: 'high', privacy: 'high', race: 'medium', logic: 'medium', claims: 'medium', accessibility: 'medium', observability: 'medium', testing: 'low', seo: 'low', performance: 'low', ui: 'low', ux: 'low', other: 'low' };
+  var SEVORD = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
+  var sevOf = function (b) { return b.severity || CAT2SEV[b.category] || 'low'; };
+  var catLabel = function (c) { return CATLABEL[c] || c || 'other'; };
+  var filesOf = function (it) { var f = it.files; if (!f) return []; if (Array.isArray(f)) return f; return String(f).split(/\s*[,;]\s*|\s+/).filter(Boolean); };
+  var hash36 = function (s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+
+  /* ---------- data ---------- */
+  var BUGS = (window.BUGS || []).map(function (b, i) { b._old = b.session + '-' + i; b._id = 'b' + hash36(b.app + '|' + b.title); b._sev = sevOf(b); return b; });
   var GENERATED = window.GENERATED || '';
-  var CATLABEL = {crash:'crash','data-loss':'data loss',logic:'logic',ui:'ui',security:'security',performance:'perf',race:'race',sync:'sync',auth:'auth',
-    privacy:'privacy',claims:'claims',accessibility:'a11y',observability:'observability',testing:'testing',seo:'SEO',other:'other'};
-  // severity derived from impact category (critical/high/medium/low)
-  var CAT2SEV = {'data-loss':'critical',security:'high',crash:'high',auth:'high',sync:'high',privacy:'high',
-    race:'medium',logic:'medium',claims:'medium',accessibility:'medium',observability:'medium',
-    testing:'low',seo:'low',performance:'low',ui:'low',other:'low'};
-  var sevOf = function(b){ return b.severity || CAT2SEV[b.category] || 'low'; };
-  var KEY='bugledger.checked.v1';
-  var checked = {};
-  try{ checked = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+  var SEC = window.SECURITY || null, OPT = window.OPTIMISERS || null, SCAN = window.SCAN || null, HARV = window.HARVEST || null;
+  var CHECKS = null, SUBMITTED = null; /* fetched */
+  var NONAPP = { 'cross-cutting': 1, Unknown: 1 };
 
-  var $=function(s,r){return (r||document).querySelector(s)};
-  var list=$('#list');
+  /* ticks: stable id (hash of app + title); old session-index keys are migrated once (D6) */
+  var KEY = 'bugledger.checked.v1', checked = {};
+  try { checked = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var migrated = 0; BUGS.forEach(function (b) { if (checked[b._old] && !checked[b._id]) { checked[b._id] = true; migrated++; } });
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(checked)); } catch (e) {} }
+  if (migrated) save();
+  function isDone(b) { return !!checked[b._id]; }
 
-  // populate app + cat filters
-  var apps={}, cats={};
-  BUGS.forEach(function(b){ apps[b.app]=(apps[b.app]||0)+1; cats[b.category]=(cats[b.category]||0)+1; });
-  var appOrder=Object.keys(apps).sort(function(a,b){return apps[b]-apps[a]});
-  var NONAPP={'cross-cutting':1,'Unknown':1}; var realAppCount=appOrder.filter(function(a){return !NONAPP[a];}).length;
-  appOrder.forEach(function(a){ var o=document.createElement('option'); o.value=a; o.textContent=a+' ('+apps[a]+')'; $('#fApp').appendChild(o); });
-  Object.keys(cats).sort().forEach(function(c){ var o=document.createElement('option'); o.value=c; o.textContent=CATLABEL[c]+' ('+cats[c]+')'; $('#fCat').appendChild(o); });
-
-  // KPIs
-  var kpi=$('#kpis');
-  var KPI_INFO={
-    'bugs fixed':{icon:'🐛',title:'Bugs fixed',what:'Every distinct bug we’ve fixed across all apps, mined from the full build history.',detail:'Each entry has a symptom → root cause → fix and an app + severity. This is the master catalogue every scan checks a project against.',go:null},
-    'apps':{icon:'📦',title:'Apps',what:'How many distinct apps these bugs span.',detail:'Finished., Hallalu CRM, Stitchhooky, Aprizely, Breadcrumb and more — plus “cross-cutting” for issues that apply everywhere.',go:null},
-    'security':{icon:'🛡',title:'Security bugs',what:'Bugs in the security category — auth, XSS, SSRF, secrets, injection, isolation, rate-limiting.',detail:'A subset of “bugs fixed”. A /securitysweep checks a project against every one of these (plus the audit findings).',go:null},
-    'data / sync':{icon:'💾',title:'Data & sync bugs',what:'Bugs about losing or mis-syncing user data.',detail:'Data-loss (wiped/overwritten content) + sync issues (tombstones, deletions resurrecting, cross-device merges).',go:null},
-    'audit findings':{icon:'🔍',title:'Security audit findings',what:'Findings from the full AI security audit of Budget LevelUp / Listing Lab.',detail:'1 critical, 3 high, 4 medium, 7 low, plus verified-clean checks — shown in the 🔒 Security Sweep panel, each with fix + status.',go:'#secsweep'},
-    'optimisers':{icon:'✨',title:'Optimisers',what:'Reusable elevations — not bugs, things that made an app better.',detail:'Design polish, UX, performance and workflow patterns worth repeating (e.g. aurora-glass, one-shot animations, onboarding 1–2 fields/screen), grouped by category.',go:'#optpanel'},
-    'scanner leads':{icon:'🔦',title:'Scanner leads',what:'Static-analysis hits from scan.mjs across scanned apps.',detail:'Code-smell matches (42 detectors) to verify — leads, not confirmed bugs. Seen in the 🔎 Scanner findings panel.',go:'#scanpanel'},
-    'auto-harvested':{icon:'🌱',title:'Auto-harvested',what:'Unverified bugs auto-mined from your conversation transcripts by the hourly harvester.',detail:'A triage queue — promote the good ones into the curated ledger. Shown in the 🌱 Auto-harvested panel.',go:'#harvestpanel'},
-    'agent checks':{icon:'✅',title:'Agent checks',what:'Recorded /bugcheck, /deepscan or /securitysweep passes.',detail:'Each time an agent checks a project against the ledger it logs coverage (N/N) + findings here — open the 📊 full report on any of them.',go:'#checks'},
-    'agent-submitted':{icon:'🧫',title:'Agent-submitted',what:'New bugs / security issues / optimisers agents discovered and appended to the ledger.',detail:'Append-only proposals — permanent, so every future project is checked for them too. Shown in the 🧫 Agent-submitted panel.',go:'#submitpanel'},
+  /* ---------- views ---------- */
+  var VIEWS = {
+    overview: { label: 'Overview', icon: 'grid', items: function () { return []; }, custom: true },
+    bugs: { label: 'Bugs', icon: 'bug', items: function () { return BUGS; }, group: 'app', ticks: true, typeLabel: 'All types' },
+    security: { label: 'Security audit', icon: 'shieldcheck', items: function () { return SEC && SEC.findings ? SEC.findings.map(function (f) { f._id = 's' + f.id; f._sev = f.severity; return f; }) : []; }, group: 'app', typeLabel: 'All statuses', typeOf: function (f) { return f.status; } },
+    optimisers: { label: 'Optimisers', icon: 'sparkles', items: function () { return OPT && OPT.items ? OPT.items.map(function (o, i) { o._id = 'o' + hash36(o.app + '|' + o.title); o._sev = ''; return o; }) : []; }, group: 'category', typeLabel: 'All categories', typeOf: function (o) { return o.category; }, typeName: function (c) { return (OPT && OPT.labels && OPT.labels[c]) || c; }, noSev: true },
+    scanner: { label: 'Scanner leads', icon: 'scan', items: function () { return SCAN && SCAN.findings ? SCAN.findings.map(function (s) { s._id = 'c' + hash36(s.scanKey || (s.app + s.file + s.line)); s._sev = s.severity || 'low'; return s; }) : []; }, group: 'app', typeLabel: 'All detectors', typeOf: function (s) { return s.detector; } },
+    harvest: { label: 'Harvested', icon: 'seedling', items: function () { return HARV && HARV.findings ? HARV.findings.map(function (h) { h._id = 'h' + hash36(h.key || (h.app + h.title)); h._sev = h.severity || CAT2SEV[h.category] || 'low'; return h; }) : []; }, group: 'app', typeLabel: 'All types', typeOf: function (h) { return h.category; } },
+    checks: { label: 'Agent checks', icon: 'checkcircle', items: function () { return CHECKS || []; }, group: null, typeLabel: 'All scopes', typeOf: function (c) { return scopeKey(c.scope); }, typeName: scopeLabel, noSev: true, async: true },
+    submitted: { label: 'Submitted', icon: 'inbox', items: function () { return SUBMITTED || []; }, group: 'app', typeLabel: 'All kinds', typeOf: function (s) { return s.kind; }, async: true }
   };
-  function openKpi(l,n){
-    var i=KPI_INFO[l]; if(!i) return;
-    var m=document.getElementById('kpimodal');
-    m.querySelector('.km-card').innerHTML=
-      '<button class="km-x" aria-label="Close">×</button>'+
-      '<div class="km-h"><span class="km-ic">'+i.icon+'</span><div><div class="km-n">'+n+'</div><div class="km-t">'+esc(i.title)+'</div></div></div>'+
-      '<p class="km-what">'+esc(i.what)+'</p>'+
-      '<p class="km-detail">'+esc(i.detail)+'</p>'+
-      (i.go?'<a class="km-go" href="'+i.go+'">Show me →</a>':'');
-    m.classList.add('show');
-    m.querySelector('.km-x').onclick=function(){m.classList.remove('show');};
-    var go=m.querySelector('.km-go'); if(go) go.onclick=function(){m.classList.remove('show');};
+  var LEADS = { overview: 'The whole portfolio at a glance: what was fixed, where, how severe, what agents are doing right now, and the newest findings with their screenshots.',
+    bugs: 'Every bug, security hole and optimiser ever fixed across the portfolio, in one append-only catalogue. Tick items as you re-verify them; ticks are saved in this browser.',
+    security: 'Findings from the full security audit, each with its fix and status, plus the checks that were verified clean.',
+    optimisers: 'Reusable elevations mined from the build history: not bugs, the things that made an app better.',
+    scanner: 'Static-analysis leads from the scanner, grouped by app. Verify each one by reading the line it points at.',
+    harvest: 'Unverified bugs mined from conversation transcripts every hour. A triage queue, not the curated ledger.',
+    checks: 'Every time an agent checked a project against this ledger: what it covered, how it proved it, what it found.',
+    submitted: 'New bugs, security issues and optimisers agents raised while scanning, appended for every future project to be checked against.' };
+  var VIEW_ORDER = ['overview', 'bugs', 'security', 'optimisers', 'scanner', 'harvest', 'checks', 'submitted'];
+  function scopeKey(s) { s = s || 'app'; return /^category:/.test(s) ? 'category' : s; }
+  function scopeLabel(s) { s = s || 'app'; if (s === 'app') return 'this app'; if (s === 'all') return 'all bugs (16 categories)'; if (s === 'security') return 'security sweep'; if (s === 'optimisers') return 'optimisers'; if (s === 'full') return 'grand total (everything)'; if (/^category:/.test(s)) return s.slice(9) + ' bugs'; return s; }
+
+  /* ---------- state in the URL hash ---------- */
+  var LEGACY = { checks: 'checks', secsweep: 'security', optpanel: 'optimisers', scanpanel: 'scanner', harvestpanel: 'harvest', submitpanel: 'submitted' };
+  var st = { view: 'bugs', q: '', app: '', cat: '', sev: '', open: false, id: '' };
+  function readHash() {
+    var raw = location.hash.slice(1);
+    if (raw === 'pricing' || raw === 'signup') { location.replace('/plans#' + raw); return; }
+    if (LEGACY[raw]) raw = 'view=' + LEGACY[raw];
+    var p = new URLSearchParams(raw);
+    st.view = VIEWS[p.get('view')] ? p.get('view') : (p.get('id') ? 'bugs' : 'overview'); st.q = p.get('q') || ''; st.app = p.get('app') || ''; st.cat = p.get('cat') || ''; st.sev = p.get('sev') || ''; st.open = p.get('open') === '1'; st.id = p.get('id') || '';
   }
-  function kpiEl(n,l){ var d=document.createElement('div'); d.className='kpi'; d.tabIndex=0; d.setAttribute('role','button');
-    d.innerHTML='<div class="n">'+n+'</div><div class="l">'+l+'</div><div class="kpi-hint">?</div>';
-    d.addEventListener('click',function(){openKpi(l,n);});
-    d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openKpi(l,n);}});
-    return d; }
-  kpi.appendChild(kpiEl(BUGS.length,'bugs fixed'));
-  kpi.appendChild(kpiEl(realAppCount,'apps'));
-  var sec=BUGS.filter(function(b){return b.category==='security'}).length;
-  var dl=BUGS.filter(function(b){return b.category==='data-loss'||b.category==='sync'}).length;
-  kpi.appendChild(kpiEl(sec,'security'));
-  kpi.appendChild(kpiEl(dl,'data / sync'));
-
-  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
-  function hl(s,q){ s=esc(s); if(!q) return s; try{ return s.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>'); }catch(e){ return s; } }
-
-  function save(){ localStorage.setItem(KEY, JSON.stringify(checked)); }
-  function isDone(b){ return !!checked[b._id]; }
-
-  function render(){
-    var q=$('#q').value.trim().toLowerCase();
-    var fa=$('#fApp').value, fc=$('#fCat').value, fsv=$('#fSev').value, only=$('#onlyOpen').checked;
-    list.innerHTML='';
-    var shown=0, totalDone=0;
-    BUGS.forEach(function(b){ if(isDone(b)) totalDone++; });
-
-    appOrder.forEach(function(app){
-      if(fa && app!==fa) return;
-      var items=BUGS.filter(function(b){
-        if(b.app!==app) return false;
-        if(fc && b.category!==fc) return false;
-        if(fsv && sevOf(b)!==fsv) return false;
-        if(only && isDone(b)) return false;
-        if(q){
-          var hay=(b.title+' '+b.symptom+' '+b.root_cause+' '+b.fix+' '+b.category).toLowerCase();
-          if(hay.indexOf(q)<0) return false;
-        }
-        return true;
-      });
-      if(!items.length) return;
-      var done=BUGS.filter(function(b){return b.app===app && isDone(b)}).length;
-      var tot=apps[app];
-      var d=document.createElement('details'); d.className='app'; d.open = !!(q||fc||fa||fsv||only) || openState[app]!==false;
-      d.addEventListener('toggle',function(){ openState[app]=d.open; });
-      var pctApp=Math.round(done/tot*100);
-      var s=document.createElement('summary');
-      s.innerHTML='<span class="chev">▶</span><span class="appname">'+esc(app)+'</span>'+
-        '<span class="mini"><i style="width:'+pctApp+'%"></i></span>'+
-        '<span class="count">'+done+'/'+tot+'</span>';
-      d.appendChild(s);
-      var ul=document.createElement('ul'); ul.className='bugs';
-      items.forEach(function(b){
-        shown++;
-        var li=document.createElement('li'); li.className='bug'+(isDone(b)?' done':'');
-        var col='var(--c-'+b.category+')';
-        var body='';
-        if(b.symptom) body+='<div><b>Symptom:</b> '+hl(b.symptom,q)+'</div>';
-        if(b.root_cause) body+='<div><b>Cause:</b> '+hl(b.root_cause,q)+'</div>';
-        if(b.fix) body+='<div><b>Fix:</b> '+hl(b.fix,q)+'</div>';
-        li.innerHTML='<input class="cbx" type="checkbox" aria-label="Mark checked: '+esc(b.title)+'" '+(isDone(b)?'checked':'')+'>'+
-          '<div class="b-main"><div class="b-title">'+hl(b.title,q)+'</div>'+
-          '<div class="b-meta"><span class="sev '+sevOf(b)+'">'+sevOf(b)+'</span>'+
-          '<span class="badge" style="background:'+col+'">'+CATLABEL[b.category]+'</span>'+
-          '<span class="tag">#'+esc(b.session)+'</span></div>'+
-          '<div class="b-body">'+body+'</div></div>';
-        var cb=li.querySelector('.cbx');
-        cb.addEventListener('change',function(){
-          checked[b._id]=cb.checked; if(!cb.checked) delete checked[b._id];
-          save(); li.classList.toggle('done',cb.checked); updateProgress();
-          // update the app mini bar + count without full re-render
-          var nd=BUGS.filter(function(x){return x.app===app && isDone(x)}).length;
-          s.querySelector('.count').textContent=nd+'/'+tot;
-          s.querySelector('.mini > i').style.width=Math.round(nd/tot*100)+'%';
-        });
-        ul.appendChild(li);
-      });
-      d.appendChild(ul);
-      list.appendChild(d);
-    });
-
-    if(!shown){ list.innerHTML='<div class="empty">No bugs match your filters.</div>'; }
-    updateProgress();
+  function writeHash() {
+    var p = new URLSearchParams(); if (st.view !== 'overview') p.set('view', st.view); if (st.q) p.set('q', st.q); if (st.app) p.set('app', st.app); if (st.cat) p.set('cat', st.cat); if (st.sev) p.set('sev', st.sev); if (st.open) p.set('open', '1'); if (st.id) p.set('id', st.id);
+    var h = p.toString().replace(/%3A/g, ':'); history.replaceState(null, '', h ? '#' + h : location.pathname);
   }
 
-  var openState={};
-  function updateProgress(){
-    var done=0; BUGS.forEach(function(b){ if(isDone(b)) done++; });
-    var pct=BUGS.length?Math.round(done/BUGS.length*100):0;
-    $('#barfill').style.width=pct+'%';
-    $('#pct').textContent=pct+'%';
-    $('#progline').textContent=done+' of '+BUGS.length+' checked';
+  /* ---------- search syntax: words, "phrases", -not, app: cat: sev: is:open|done ---------- */
+  function parseQuery(q) {
+    var out = { words: [], not: [], app: '', cat: '', sev: '', is: '' }, re = /(-?)(?:(app|cat|sev|is|type|status|detector|kind):)?("([^"]*)"|\S+)/g, m;
+    while ((m = re.exec(q))) { var neg = m[1] === '-', key = m[2], val = (m[4] != null ? m[4] : m[3]).toLowerCase(); if (!val) continue;
+      if (key === 'app') out.app = val; else if (key === 'cat' || key === 'type' || key === 'status' || key === 'detector' || key === 'kind') out.cat = val; else if (key === 'sev') out.sev = val; else if (key === 'is') out.is = val; else (neg ? out.not : out.words).push(val); }
+    return out;
+  }
+  function hay(v, it) {
+    if (v === 'bugs') return [it.title, it.symptom, it.root_cause, it.fix, it.category, it.app, it.file, it.source].join(' ');
+    if (v === 'security') return [it.id, it.title, it.detail, it.fix, it.app, it.status, filesOf(it).join(' ')].join(' ');
+    if (v === 'optimisers') return [it.title, it.detail, it.why, it.how, it.app, it.category].join(' ');
+    if (v === 'scanner') return [it.title, it.detector, it.file, it.excerpt, it.advice, it.app, it.category].join(' ');
+    if (v === 'harvest') return [it.title, it.symptom, it.app, it.category, it.session].join(' ');
+    if (v === 'checks') return [it.app, it.project, it.checkedBy, it.scope, it.notes, (it.found || []).map(function (f) { return f.title; }).join(' ')].join(' ');
+    if (v === 'submitted') return [it.title, it.symptom, it.fix, it.file, it.app, it.project, it.kind, it.category].join(' ');
+    return '';
   }
 
-  function applyPanelSev(){
-    var sv=$('#fSev').value;
-    document.querySelectorAll('#secsweep li.find, #scanpanel li.find, #harvestpanel li.find, #submitpanel li.find').forEach(function(li){
-      li.style.display = (!sv || li.getAttribute('data-sev')===sv) ? '' : 'none';
-    });
-    // hide a panel's app-subgroup / whole panel when it has no visible rows
-    document.querySelectorAll('#scanpanel .scan-appgroup, #harvestpanel .scan-appgroup, #submitpanel .scan-appgroup').forEach(function(g){
-      var any=[].some.call(g.querySelectorAll('li.find'),function(li){return li.style.display!=='none'});
-      g.style.display=any?'':'none';
-    });
-    ['#secsweep','#scanpanel','#harvestpanel','#submitpanel'].forEach(function(sel){
-      var d=document.querySelector(sel+' details'); if(!d) return;
-      var any=[].some.call(d.querySelectorAll('li.find'),function(li){return li.style.display!=='none'});
-      d.style.display=any?'':'none';
+  /* ---------- filters ---------- */
+  var openState = {}; try { openState = JSON.parse(localStorage.getItem('bl_groups') || '{}'); } catch (e) {}
+  function saveOpen() { try { localStorage.setItem('bl_groups', JSON.stringify(openState)); } catch (e) {} }
+  function current() { return VIEWS[st.view]; }
+  function appOf(it) { return it.app || ''; }
+  function filtered() {
+    var v = st.view, V = current(), items = V.items(), pq = parseQuery(st.q), app = (st.app || pq.app).toLowerCase(), cat = (st.cat || pq.cat).toLowerCase(), sev = (st.sev || pq.sev).toLowerCase();
+    return items.filter(function (it) {
+      if (app && appOf(it).toLowerCase() !== app && appOf(it).toLowerCase().indexOf(app) < 0) return false;
+      var t = (V.typeOf ? V.typeOf(it) : it.category) || ''; if (cat && String(t).toLowerCase() !== cat && String(t).toLowerCase().indexOf(cat) < 0) return false;
+      if (sev && !V.noSev && (it._sev || '') !== sev) return false;
+      if (v === 'bugs') { var done = isDone(it); if ((st.open || pq.is === 'open' || pq.is === 'unchecked') && done) return false; if ((pq.is === 'done' || pq.is === 'checked') && !done) return false; }
+      if (pq.words.length || pq.not.length) { var h = hay(v, it).toLowerCase(); for (var i = 0; i < pq.words.length; i++) if (h.indexOf(pq.words[i]) < 0) return false; for (var j = 0; j < pq.not.length; j++) if (h.indexOf(pq.not[j]) >= 0) return false; }
+      return true;
     });
   }
-  $('#q').addEventListener('input',render);
-  $('#fApp').addEventListener('change',render);
-  $('#fCat').addEventListener('change',render);
-  $('#fSev').addEventListener('change',function(){ render(); applyPanelSev(); });
-  $('#onlyOpen').addEventListener('change',render);
-  $('#expand').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=true; openState[d.querySelector('.appname').textContent]=true;}); });
-  $('#collapse').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=false; openState[d.querySelector('.appname').textContent]=false;}); });
-  $('#print').addEventListener('click',function(){ document.querySelectorAll('details.app').forEach(function(d){d.open=true;}); window.print(); });
-  $('#reset').addEventListener('click',function(){ if(confirm('Clear all ticks?')){ checked={}; save(); render(); } });
+  function hl(s, words) { s = esc(s); if (!words || !words.length) return s; try { return s.replace(new RegExp('(' + words.map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')', 'ig'), '<mark>$1</mark>'); } catch (e) { return s; } }
 
-  $('#foot').innerHTML='Bug Ledger · '+BUGS.length+' fixes across '+realAppCount+' apps'+(GENERATED?(' · generated '+esc(GENERATED)):'')+' · state saved locally in your browser';
-  render();
-
-  // ---- Security Sweep panel ----
-  var SEC = window.SECURITY;
-  if(SEC && SEC.findings && SEC.findings.length){
-    var t = SEC.tally||{};
-    var open = SEC.findings.filter(function(f){return f.status==='open'}).length;
-    kpi.appendChild(kpiEl(SEC.findings.length,'audit findings'));
-    var host=$('#secsweep');
-    var d=document.createElement('details'); d.className='sweep'; d.open=false;
-    var badges=['critical','high','medium','low'].filter(function(k){return t[k]}).map(function(k){return '<span class="sev '+k+'">'+t[k]+' '+k+'</span>'}).join('');
-    var order={critical:0,high:1,medium:2,low:3};
-    var finds=SEC.findings.slice().sort(function(a,b){return (order[a.severity]-order[b.severity])||a.id.localeCompare(b.id)});
-    var lis=finds.map(function(f){
-      var body='';
-      if(f.detail) body+='<div>'+esc(f.detail)+'</div>';
-      if(f.fix) body+='<div><b>Fix:</b> '+esc(f.fix)+'</div>';
-      if(f.files) body+='<div class="f-files">'+esc(f.files)+'</div>';
-      return '<li class="find" data-sev="'+esc(f.severity)+'"><div class="f-top"><span class="fid">'+esc(f.id)+'</span>'+
-        '<span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
-        '<span class="st '+esc(f.status)+'">'+esc(f.status)+'</span>'+
-        '<span class="tag">'+esc(f.app||'')+'</span></div>'+
-        '<div class="f-title">'+esc(f.title)+'</div>'+
-        '<div class="f-body">'+body+'</div></li>';
-    }).join('');
-    var clean=(SEC.verified_clean||[]).map(function(c){return '✓ '+esc(c)}).join('<br>');
-    d.innerHTML='<summary><span class="chev">▶</span><span class="appname">🔒 '+esc(SEC.title||'Security Sweep')+'</span>'+
-        '<span class="count">'+open+' open · '+SEC.findings.length+' total</span></summary>'+
-      '<div class="sec-head"><div class="tally">'+badges+'</div>'+esc(SEC.method||'')+
-        (SEC.date?' &middot; audited '+esc(SEC.date):'')+' &middot; <a href="SECURITY-AUDIT.md">full report</a></div>'+
-      '<ul class="finds">'+lis+'</ul>'+
-      (clean?'<div class="clean"><b>Verified clean:</b><br>'+clean+'</div>':'');
-    host.appendChild(d);
-  }
-
-  // ---- Optimisers panel (elevations worth reusing) ----
-  var OPT = window.OPTIMISERS;
-  if(OPT && OPT.items && OPT.items.length){
-    kpi.appendChild(kpiEl(OPT.items.length,'optimisers'));
-    var oLabels=OPT.labels||{};
-    var oHost=$('#optpanel');
-    var od=document.createElement('details'); od.className='sweep'; od.open=false;
-    var byCat={}; OPT.items.forEach(function(o){(byCat[o.category]=byCat[o.category]||[]).push(o)});
-    var cats=OPT.cats||Object.keys(byCat);
-    var groups=cats.filter(function(c){return byCat[c]}).map(function(c){
-      var items=byCat[c];
-      var lis=items.map(function(o){
-        return '<li class="find"><div class="f-top"><span class="optchip">'+esc(oLabels[c]||c)+'</span>'+
-          '<span class="f-title">'+esc(o.title)+'</span><span class="tag">'+esc(o.app||'')+'</span></div>'+
-          '<div class="f-body">'+(o.detail?'<div>'+esc(o.detail)+'</div>':'')+
-          (o.why?'<div><b>Why:</b> '+esc(o.why)+'</div>':'')+
-          (o.how?'<div><b>How:</b> '+esc(o.how)+'</div>':'')+'</div></li>';
-      }).join('');
-      return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px;text-transform:capitalize">'+esc(oLabels[c]||c)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
-    }).join('');
-    od.innerHTML='<summary><span class="chev">▶</span><span class="appname">✨ Optimisers</span>'+
-        '<span class="count">'+OPT.items.length+' · '+cats.length+' categories</span></summary>'+
-      '<div class="sec-head"><b>Elevations worth reusing</b> — design polish, UX, performance and workflow patterns mined from the build history (not bugs — things that made an app <i>better</i>). &middot; <a href="OPTIMISERS.md">full list</a></div>'+
-      groups;
-    oHost.appendChild(od);
-  }
-
-  // ---- Scanner Findings panel ----
-  var SCAN = window.SCAN;
-  if(SCAN && SCAN.findings && SCAN.findings.length){
-    kpi.appendChild(kpiEl(SCAN.findings.length,'scanner leads'));
-    var svo={critical:0,high:1,medium:2,low:3};
-    var host2=$('#scanpanel');
-    var d2=document.createElement('details'); d2.className='sweep'; d2.open=false;
-    var apps2=SCAN.apps||Object.keys(SCAN.findings.reduce(function(a,f){a[f.app]=1;return a},{}));
-    var groups=apps2.map(function(app){
-      var items=SCAN.findings.filter(function(f){return f.app===app}).sort(function(a,b){return (svo[a.severity]-svo[b.severity])||String(a.file).localeCompare(b.file)});
-      var lis=items.map(function(f){
-        return '<li class="find" data-sev="'+esc(f.severity)+'"><div class="f-top"><span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
-          '<span class="fid">'+esc(f.detector)+'</span><span class="f-title">'+esc(f.title)+'</span></div>'+
-          '<div class="f-body"><div class="f-files">'+esc(f.file)+':'+esc(String(f.line))+'</div>'+
-          '<div><code>'+esc((f.excerpt||'').slice(0,140))+'</code></div>'+
-          '<div><b>Fix:</b> '+esc(f.advice)+'</div></div></li>';
-      }).join('');
-      return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
-    }).join('');
-    d2.innerHTML='<summary><span class="chev">▶</span><span class="appname">🔎 Scanner findings</span>'+
-        '<span class="count">'+SCAN.findings.length+' leads · '+apps2.length+' app'+(apps2.length>1?'s':'')+'</span></summary>'+
-      '<div class="sec-head">Static-analysis leads from <code>scan.mjs</code> — code-smell matches to verify, not confirmed bugs. '+
-        'Run <code>node scan.mjs &lt;app&gt; --write</code> to refresh. &middot; <a href="SCAN-FINDINGS.md">full list</a></div>'+
-      groups;
-    host2.appendChild(d2);
-  }
-
-  // ---- Auto-harvested panel ----
-  var HARV = window.HARVEST;
-  if(HARV && HARV.findings && HARV.findings.length){
-    kpi.appendChild(kpiEl(HARV.findings.length,'auto-harvested'));
-    var hvo={critical:0,high:1,medium:2,low:3};
-    var host3=$('#harvestpanel');
-    var d3=document.createElement('details'); d3.className='sweep'; d3.open=false;
-    var happs=HARV.apps||Object.keys(HARV.findings.reduce(function(a,f){a[f.app]=1;return a},{}));
-    var hgroups=happs.map(function(app){
-      var items=HARV.findings.filter(function(f){return f.app===app}).sort(function(a,b){return (hvo[a.severity]-hvo[b.severity])});
-      var lis=items.map(function(f){
-        return '<li class="find" data-sev="'+esc(f.severity)+'"><div class="f-top"><span class="sev '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
-          '<span class="fid">'+esc(f.category)+'</span><span class="tag">'+esc(f.found||'')+' · #'+esc(f.session||'')+'</span></div>'+
-          '<div class="f-title" style="font-weight:550">'+esc(f.title)+'</div></li>';
-      }).join('');
-      return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
-    }).join('');
-    d3.innerHTML='<summary><span class="chev">▶</span><span class="appname">🌱 Auto-harvested</span>'+
-        '<span class="count">'+HARV.findings.length+' unverified · '+happs.length+' app'+(happs.length>1?'s':'')+'</span></summary>'+
-      '<div class="sec-head"><b>Unverified.</b> Auto-mined from conversation transcripts by <code>harvest.mjs</code> (runs hourly). '+
-        'Promote good ones into the curated ledger. &middot; <a href="HARVESTED.md">full list</a></div>'+
-      hgroups;
-    host3.appendChild(d3);
-  }
-
-  // ---- Agent Check-log panel (fetched live from /api/checks) ----
-  (function(){
-    var host=$('#checkpanel'); if(!host) return;
-    fetch('/api/checks?limit=100').then(function(r){return r.json()}).then(function(d){
-      if(!d || !d.ok || !d.checks || !d.checks.length) return;
-      var checks=d.checks;
-      kpi.appendChild(kpiEl(checks.length,'agent checks'));
-      var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var fmt=function(ts){ try{ var d=new Date(ts),p=function(n){return ('0'+n).slice(-2)};
-        return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }catch(e){ return ''; } };
-      var rows=checks.map(function(c){
-        var stCls = c.securityStatus==='clean'?'fixed':(c.securityStatus==='issues'?'open':'accepted');
-        var foundList=(c.found||[]).map(function(f){return '<li>⚠️ '+esc(f.title)+(f.file?' <span class="f-files">'+esc(f.file)+'</span>':'')+(f.note?' — '+esc(f.note):'')+'</li>'}).join('');
-        var secList=(c.securityFindings||[]).map(function(f){return '<li><span class="sev '+esc(f.severity||'low')+'">'+esc(f.severity||'')+'</span> '+esc(f.title)+(f.file?' <span class="f-files">'+esc(f.file)+'</span>':'')+'</li>'}).join('');
-        var cleanN=(c.notFound||[]).length;
-        var cleanList=(c.notFound||[]).slice(0,60).map(function(t){return '<li>✓ '+esc(t)+'</li>'}).join('');
-        var cov=c.coverage;
-        var isScan=(c.checkedBy||'').indexOf('scan')>=0;
-        var unit=c.scope==='security'?'security':(c.scope==='all'?'catalog':'bugs');
-        var covBadge = isScan ? '<span class="st accepted">🔍 detector scan</span>' :
-          (cov && cov.total) ? '<span class="st '+(cov.complete?'fixed':'partial')+'">'+
-          (c.scope==='security'?'🛡 ':c.scope==='all'?'📚 ':'')+(cov.complete?'✓ full coverage ':'⚠ ')+cov.matched+'/'+cov.total+' '+unit+'</span>' :
-          (cov?'<span class="st accepted">no catalog bugs</span>':'');
-        var missedBlock = (!isScan && cov && cov.missed && cov.missed.length) ?
-          '<details class="clean-more" open><summary style="color:#e5484d">⚠ '+cov.missed.length+' known bug'+(cov.missed.length>1?'s':'')+' NOT addressed</summary><ul class="mini">'+
-          cov.missed.map(function(t){return '<li>○ '+esc(t)+'</li>'}).join('')+'</ul></details>' : '';
-        // evidence-weighted coverage: of the ground reported "covered", how much was actually
-        // inspected (a detector ran, code was read, a test passed) vs merely reasoned/assumed?
-        var ev=(cov&&cov.evidence)||null, vPct=(cov&&cov.verifiedPct);
-        var evBadge = (cov && cov.total && cov.verified!=null && vPct!=null) ? (function(){
-          var cls = vPct>=67?'fixed':(vPct>=25?'partial':'open');
-          return '<span class="st '+cls+'" title="how the covered items were verified">🔬 '+cov.verified+'/'+cov.total+' inspected ('+vPct+'%)</span>';
-        })() : '';
-        var evRow = ev ? (function(){
-          var seg=[]; ['detector','code-read','test','reasoned','assumed'].forEach(function(k){ if(ev[k]) seg.push(ev[k]+' '+k); });
-          if(!seg.length) return '';
-          var verified=(ev.detector||0)+(ev['code-read']||0)+(ev.test||0), claimed=(ev.reasoned||0)+(ev.assumed||0);
-          return '<div style="color:var(--muted);font-size:12px">Evidence: '+seg.join(' · ')+
-            (claimed&&verified? ' <span style="color:#e5a23d">— '+claimed+' listed but not inspected</span>':'')+'</div>';
-        })() : '';
-        return '<li class="find"><div class="f-top">'+
-            '<span class="appname">'+esc(c.app)+'</span>'+covBadge+evBadge+
-            '<span class="st '+stCls+'">security: '+esc(c.securityStatus||'n/a')+'</span>'+
-            '<span class="tag">'+esc(fmt(c.ts))+' · '+esc(c.checkedBy||'')+(c.project?' · '+esc(c.project):'')+'</span></div>'+
-          '<div class="f-body">'+
-            '<div><b>'+ (c.checkedCount||0) +'</b> checked · <b>'+(c.foundCount||0)+'</b> found · <b>'+(c.scanned||0)+'</b> files scanned'+
-              (c.sessionId?' &middot; <a href="/story/'+esc(c.sessionId)+'" style="color:#ff6a5a;font-weight:700;text-decoration:none">📖 Story →</a>':'')+
-              (c.id?' &middot; <a href="/report?id='+esc(c.id)+(c.sessionId?'&legacy=1':'')+'" style="color:#ff6a5a;font-weight:700;text-decoration:none">📊 '+(c.sessionId?'Coverage':'Full report')+' →</a>':'')+'</div>'+
-            evRow+
-            missedBlock+
-            (foundList?'<div><b>Found:</b><ul class="mini">'+foundList+'</ul></div>':'<div style="color:var(--done,#12a150)">No known bugs found present.</div>')+
-            (secList?'<div><b>Security findings:</b><ul class="mini">'+secList+'</ul></div>':'')+
-            (c.notes?'<div style="color:var(--muted)">'+esc(c.notes)+'</div>':'')+
-            (cleanN?'<details class="clean-more"><summary>'+cleanN+' checked & clean</summary><ul class="mini">'+cleanList+'</ul></details>':'')+
-          '</div></li>';
-      }).join('');
-      var det=document.createElement('details'); det.className='sweep'; det.id='checks';
-      det.open = location.hash==='#checks';
-      det.innerHTML='<summary><span class="chev">▶</span><span class="appname">✅ Agent check-log</span>'+
-          '<span class="count">'+checks.length+' check'+(checks.length>1?'s':'')+'</span></summary>'+
-        '<div class="sec-head">Records posted by coding agents that checked a project against this ledger. '+
-          'Agents: fetch <code>/AGENT.md</code> and POST to <code>/api/checks</code>. &middot; <a href="AGENT.md">protocol</a></div>'+
-        '<ul class="finds">'+rows+'</ul>';
-      host.appendChild(det);
-      if(location.hash==='#checks') det.scrollIntoView();
-    }).catch(function(){});
-  })();
-
-  // ---- Agent-submitted new bugs (fetched live from /api/bugs) ----
-  (function(){
-    var host=$('#submitpanel'); if(!host) return;
-    fetch('/api/bugs?limit=200').then(function(r){return r.json()}).then(function(d){
-      if(!d || !d.ok || !d.submitted || !d.submitted.length) return;
-      var subs=d.submitted;
-      kpi.appendChild(kpiEl(subs.length,'agent-submitted'));
-      var svo={critical:0,high:1,medium:2,low:3};
-      var apps={}; subs.forEach(function(b){(apps[b.app]=apps[b.app]||[]).push(b)});
-      var groups=Object.keys(apps).sort(function(a,b){return apps[b].length-apps[a].length}).map(function(app){
-        var items=apps[app].sort(function(a,b){return (svo[a.severity]-svo[b.severity])});
-        var lis=items.map(function(b){
-          return '<li class="find" data-sev="'+esc(b.severity||'medium')+'"><div class="f-top">'+
-            '<span class="sev '+esc(b.severity||'medium')+'">'+esc(b.severity||'')+'</span>'+
-            '<span class="fid">'+esc(b.kind||'bug')+'/'+esc(b.category||'')+'</span>'+
-            '<span class="f-title">'+esc(b.title)+'</span></div>'+
-            '<div class="f-body">'+(b.symptom?'<div>'+esc(b.symptom)+'</div>':'')+
-            (b.file?'<div class="f-files">'+esc(b.file)+'</div>':'')+
-            (b.fix?'<div><b>Fix:</b> '+esc(b.fix)+'</div>':'')+
-            (b.project?'<div class="tag">'+esc(b.project)+'</div>':'')+
-            (window.BL_shotStrip?window.BL_shotStrip(b.shots):'')+'</div></li>';
-        }).join('');
-        return '<div class="scan-appgroup" style="padding:6px 8px 0"><div style="font-weight:700;padding:8px 10px 2px">'+esc(app)+' · '+items.length+'</div><ul class="finds">'+lis+'</ul></div>';
-      }).join('');
-      var det=document.createElement('details'); det.className='sweep';
-      det.innerHTML='<summary><span class="chev">▶</span><span class="appname">🧫 Agent-submitted</span>'+
-          '<span class="count">'+subs.length+' new · unverified</span></summary>'+
-        '<div class="sec-head"><b>New bugs agents found while scanning</b> — proposals to promote into the curated ledger (append-only, never auto-merged).</div>'+
-        groups;
-      host.appendChild(det);
-    }).catch(function(){});
-  })();
-})();
-</script>
-<style>
-  #livebanner{position:fixed;left:50%;transform:translateX(-50%) translateY(-140%);top:14px;z-index:60;
-    display:flex;align-items:center;gap:10px;max-width:min(92vw,640px);text-decoration:none;
-    background:color-mix(in srgb,var(--panel,#fff) 88%,transparent);backdrop-filter:blur(14px);
-    border:1px solid var(--line,#e5e7eb);border-radius:99px;box-shadow:0 14px 40px -16px rgba(30,25,60,.4);
-    padding:9px 16px 9px 13px;color:var(--ink,#111);font-size:13.5px;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-  #livebanner.show{transform:translateX(-50%) translateY(0)}
-  #livebanner .pip{width:9px;height:9px;border-radius:50%;background:#ff6a5a;flex:none;
-    box-shadow:0 0 0 0 rgba(255,106,90,.6);animation:lbeat 1.4s ease-out infinite}
-  @keyframes lbeat{0%{box-shadow:0 0 0 0 rgba(255,106,90,.55)}70%{box-shadow:0 0 0 9px rgba(255,106,90,0)}100%{box-shadow:0 0 0 0 rgba(255,106,90,0)}}
-  #livebanner b{font-weight:750}
-  #livebanner .cur{color:var(--muted,#666);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
-  #livebanner .go{margin-left:2px;font-weight:700;color:#ff6a5a;white-space:nowrap}
-</style>
-<a id="livebanner" href="/live"><span class="pip"></span><span class="txt"></span><span class="go">watch →</span></a>
-<script>
-  (function(){
-    var el=document.getElementById('livebanner');
-    function tick(){
-      fetch('/api/sessions?active=1&limit=5',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
-        var live=(d.sessions||[]).filter(function(s){return s.live;});
-        if(live.length){
-          var s=live[0];
-          el.querySelector('.txt').innerHTML='<b>'+(s.app||'live')+'</b> <span class="cur">'+
-            (s.current||'').replace(/[<>&]/g,'')+'</span>'+(live.length>1?' &nbsp;+'+(live.length-1)+' more':'');
-          el.classList.add('show');
-        } else el.classList.remove('show');
-      }).catch(function(){});
+  /* ---------- rendering: rows ---------- */
+  function sevDot(s) { return s ? '<span class="sev ' + esc(s) + '" title="' + esc(s) + '"><i></i></span>' : '<span class="sev"></span>'; }
+  function sevBadge(s) { return s ? '<span class="badge ' + esc(s) + '"><span class="dot"></span>' + esc(s) + '</span>' : ''; }
+  function catChip(c) { return c ? '<span class="cat ' + esc(c) + '">' + esc(catLabel(c)) + '</span>' : ''; }
+  function row(it, words) {
+    var v = st.view, id = it._id || it.id, sel = id === st.id ? ' sel' : '', s;
+    if (v === 'bugs') {
+      var done = isDone(it);
+      return '<div class="bl-row' + (done ? ' done' : '') + sel + '" data-id="' + esc(id) + '" tabindex="0" role="button" aria-label="' + esc(it.title) + '"><input type="checkbox" class="cbx ok" data-tick="' + esc(id) + '" aria-label="Mark checked: ' + esc(it.title) + '"' + (done ? ' checked' : '') + '>' + sevDot(it._sev) +
+        '<div class="grow"><div class="t">' + hl(it.title, words) + '</div>' + (it.symptom ? '<div class="sub">' + hl(it.symptom, words) + '</div>' : '') + '</div><div class="side">' + catChip(it.category) + '<span class="id">#' + esc(it.session || '') + '</span></div></div>';
     }
-    tick(); setInterval(tick, 3000);
-  })();
-</script>
-<script>
-/* ---- Add-a-finding panel: log a bug / security issue / optimiser WITH before→after screenshots ---- */
-(function(){
-  var host=document.getElementById('addpanel'); if(!host) return;
-  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
-  var KEYK='bugledger.key', LASTAPP='bugledger.lastapp';
-  var CATS={
-    bug:['crash','data-loss','logic','ui','security','performance','race','sync','auth','other'],
-    security:['auth','xss','ssrf','secrets','injection','isolation','rate-limit','csrf','other'],
-    optimiser:['design-elevation','ux','performance','workflow','architecture','accessibility','copy','conversion','dx','integrity']
+    if (v === 'security') {
+      var stc = { fixed: 'ok', partial: 'warn', open: 'danger', accepted: '' }[it.status] || '';
+      return '<div class="bl-row' + sel + '" data-id="' + esc(id) + '" tabindex="0" role="button"><span class="id">' + esc(it.id) + '</span>' + sevDot(it._sev) + '<div class="grow"><div class="t">' + hl(it.title, words) + '</div>' + (it.detail ? '<div class="sub">' + hl(it.detail, words) + '</div>' : '') + '</div><div class="side"><span class="badge ' + stc + '">' + esc(it.status) + '</span></div></div>';
+    }
+    if (v === 'optimisers') {
+      return '<div class="bl-row' + sel + '" data-id="' + esc(id) + '" tabindex="0" role="button"><span class="sev">' + icon('sparkles') + '</span><span class="sev"></span><div class="grow"><div class="t">' + hl(it.title, words) + '</div>' + (it.detail ? '<div class="sub">' + hl(it.detail, words) + '</div>' : '') + '</div><div class="side">' + B.avatar(it.app, 'xs') + '<span class="app">' + esc(it.app) + '</span></div></div>';
+    }
+    if (v === 'scanner') {
+      return '<div class="bl-row' + sel + '" data-id="' + esc(id) + '" tabindex="0" role="button"><span class="det">' + esc(it.detector) + '</span>' + sevDot(it._sev) + '<div class="grow"><div class="t">' + hl(it.title, words) + '</div><div class="sub">' + esc(it.file) + (it.line ? ':' + it.line : '') + '</div></div><div class="side">' + (it.status ? '<span class="badge outline">' + esc(it.status) + '</span>' : '') + '</div></div>';
+    }
+    if (v === 'harvest') {
+      return '<div class="bl-row' + sel + '" data-id="' + esc(id) + '" tabindex="0" role="button"><span class="sev">' + icon('seedling') + '</span>' + sevDot(it._sev) + '<div class="grow"><div class="t">' + hl(it.title, words) + '</div>' + (it.symptom && it.symptom !== it.title ? '<div class="sub">' + hl(it.symptom, words) + '</div>' : '') + '</div><div class="side">' + catChip(it.category) + '<span class="id">' + esc(it.found || '') + ' · #' + esc(it.session || '') + '</span></div></div>';
+    }
+    if (v === 'checks') {
+      var cov = it.coverage, isScan = (it.checkedBy || '').indexOf('scan') >= 0, covB;
+      if (isScan) covB = '<span class="badge info">' + icon('scan') + 'detector scan</span>';
+      else if (cov && cov.total) covB = '<span class="badge ' + (cov.complete ? 'ok' : 'warn') + '">' + (cov.complete ? icon('check') : icon('alert')) + cov.matched + '/' + cov.total + ' ' + (cov.scope === 'security' ? 'security' : cov.scope === 'all' ? 'catalogue' : 'bugs') + '</span>';
+      else if (cov) covB = '<span class="badge">no catalogue bugs</span>'; else covB = '';
+      var ev = cov && cov.verifiedPct != null && cov.total ? '<span class="badge ' + (cov.verifiedPct >= 67 ? 'ok' : cov.verifiedPct >= 25 ? 'warn' : 'danger') + '" title="How much of the covered ground was inspected (detector, code read or test)">' + icon('eye') + cov.verified + '/' + cov.total + ' inspected</span>' : '';
+      var sec = it.securityStatus ? '<span class="badge ' + (it.securityStatus === 'clean' ? 'ok' : it.securityStatus === 'issues' ? 'danger' : '') + '">security: ' + esc(it.securityStatus) + '</span>' : '';
+      return '<div class="bl-row' + sel + '" data-id="' + esc(id) + '" tabindex="0" role="button"><span class="sev">' + icon('checkcircle') + '</span>' + B.avatar(it.app, 'sm') + '<div class="grow"><div class="t">' + hl(it.app, words) + (it.project && it.project !== it.app ? ' <span class="muted">· ' + esc(it.project) + '</span>' : '') + '</div><div class="sub">' + esc(scopeLabel(it.scope)) + ' · ' + esc(it.checkedBy || 'agent') + ' · <b>' + (it.checkedCount || 0) + '</b> checked · <b>' + (it.foundCount || 0) + '</b> found' + (it.scanned ? ' · ' + it.scanned + ' files' : '') + '</div></div><div class="side">' + covB + ev + sec + '<span class="when" title="' + esc(B.fmtDate(it.ts, true)) + '">' + esc(B.ago(it.ts)) + '</span></div></div>';
+    }
+    if (v === 'submitted') {
+      var thumbs = (it.shots || []).length ? '<span class="thumbs">' + it.shots.slice(0, 3).map(function (s) { return '<img src="' + esc(s.url) + '" alt="">'; }).join('') + '</span>' : '';
+      return '<div class="bl-row' + sel + '" data-id="' + esc(id) + '" tabindex="0" role="button"><span class="badge outline">' + esc(it.kind) + '</span>' + sevDot(it._sev) + '<div class="grow"><div class="t">' + hl(it.title, words) + '</div>' + (it.symptom ? '<div class="sub">' + hl(it.symptom, words) + '</div>' : '') + '</div><div class="side">' + catChip(it.category) + thumbs + '<span class="when" title="' + esc(B.fmtDate(it.ts, true)) + '">' + esc(B.ago(it.ts)) + '</span></div></div>';
+    }
+    return '';
+  }
+
+  function groupHead(name, items, extra) {
+    var open = openState[name] !== false, key = esc(name);
+    return '<div class="group-h" role="button" tabindex="0" aria-expanded="' + open + '" data-group="' + key + '">' + icon('down', 'chev') + (current().group === 'app' ? B.avatar(name, 'sm') : '') + '<span class="truncate">' + esc(name) + '</span><span class="n">' + items.length + '</span>' + (extra || '') + '</div>';
+  }
+  var visible = [], lastKey = '', renderKey = '';
+  function pq_words_for_chips() { return parseQuery(st.q); }
+  function renderActiveFilters(pq) {
+    var box = $('#activef'), chips = [];
+    var chip = function (label, key) { return '<button class="chip on" type="button" data-unfilter="' + key + '">' + esc(label) + icon('x', 'x') + '</button>'; };
+    if (pq.words.length) chips.push(chip('“' + pq.words.join(' ') + '”', 'q'));
+    if (pq.not.length) chips.push(chip('not: ' + pq.not.join(' '), 'q'));
+    if (st.app || pq.app) chips.push(chip('app: ' + (st.app || pq.app), st.app ? 'app' : 'q'));
+    if (st.cat || pq.cat) chips.push(chip('type: ' + (st.cat || pq.cat), st.cat ? 'cat' : 'q'));
+    if (st.sev || pq.sev) chips.push(chip('severity: ' + (st.sev || pq.sev), st.sev ? 'sev' : 'q'));
+    if (st.open || pq.is) chips.push(chip(st.open ? 'only unchecked' : 'is: ' + pq.is, st.open ? 'open' : 'q'));
+    box.innerHTML = chips.length ? '<span class="small muted">Filtering by</span>' + chips.join('') + '<button class="btn sm ghost" type="button" data-clear>Clear all</button>' : '';
+    box.hidden = !chips.length;
+  }
+  function render() {
+    var V = current(), list = $('#list');
+    if (V.custom) { list.className = 'ov'; list.innerHTML = renderOverview(); fitGallery(); $('#count').textContent = ''; renderViewHead(); return; }
+    list.className = 'list';
+    var items = filtered(), words = parseQuery(st.q).words, html = '', anyFilter = !!(st.q || st.app || st.cat || st.sev || st.open);
+    renderKey = [st.view, st.q, st.app, st.cat, st.sev, st.open].join('|');
+    visible = items;
+    renderActiveFilters(pq_words_for_chips());
+    if (!items.length && V.async && V.loading !== false && !V.items().length) { list.innerHTML = '<div class="skeleton" aria-label="Loading">' + '<div class="sk"><i style="width:18px;height:18px;border-radius:50%"></i><i style="width:38%"></i><i style="width:14%;margin-left:auto"></i></div>'.repeat(7) + '</div>'; $('#count').textContent = 'Loading…'; renderViewHead(); return; }
+    if (!items.length) { list.innerHTML = B.empty(anyFilter ? 'Nothing matches those filters' : (V.async && !V.items().length && V.loading !== false ? 'Loading…' : 'Nothing here yet'), anyFilter ? 'Try fewer words, or <button class="btn sm" type="button" data-clear>Clear filters</button>' : (st.view === 'checks' ? 'Agents post here when they check a project against the ledger (see <a href="/AGENT.md">AGENT.md</a>).' : st.view === 'submitted' ? 'New findings agents add appear here, append-only.' : ''), V.icon); }
+    else if (V.group) {
+      var groups = {}, order = [];
+      items.forEach(function (it) { var g = V.group === 'app' ? (it.app || 'Unknown') : (V.typeName ? V.typeName(it[V.group]) : it[V.group]); if (!groups[g]) { groups[g] = []; order.push(g); } groups[g].push(it); });
+      if (V.group === 'app') order.sort(function (a, b) { return groups[b].length - groups[a].length || a.localeCompare(b); });
+      else if (OPT && OPT.cats && V === VIEWS.optimisers) order.sort(function (a, b) { var la = OPT.cats.map(function (c) { return V.typeName(c); }); return la.indexOf(a) - la.indexOf(b); });
+      order.forEach(function (g) {
+        var gi = groups[g], sorted = V.noSev ? gi : gi.slice().sort(function (a, b) { return (SEVORD[a._sev] == null ? 9 : SEVORD[a._sev]) - (SEVORD[b._sev] == null ? 9 : SEVORD[b._sev]); });
+        var extra = '';
+        if (st.view === 'bugs') { var all = BUGS.filter(function (b) { return b.app === g; }), d = all.filter(isDone).length, pct = all.length ? Math.round(d / all.length * 100) : 0; extra = '<span class="progress sm ok" title="' + d + ' of ' + all.length + ' re-verified"><i style="width:' + pct + '%"></i></span><span class="pct">' + d + '/' + all.length + '</span>'; }
+        html += groupHead(g, gi, extra);
+        var open = anyFilter || openState[g] !== false;
+        if (open) html += sorted.map(function (it) { return row(it, words); }).join('');
+      });
+      list.innerHTML = html;
+    } else {
+      list.innerHTML = items.slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).map(function (it) { return row(it, words); }).join('');
+    }
+    if (!B.reduceMotion && renderKey !== lastKey) { $$('#list .bl-row').slice(0, 36).forEach(function (r, i) { r.classList.add('rise'); r.style.setProperty('--i', i); }); }
+    lastKey = renderKey;
+    var total = V.items().length;
+    $('#count').textContent = (items.length === total ? B.fmtN(total) : B.fmtN(items.length) + ' of ' + B.fmtN(total)) + ' ' + (st.view === 'checks' ? 'checks' : 'items');
+    renderViewHead(); updateProgress();
+  }
+
+  /* ---------- view header (per-view context card) ---------- */
+  function renderViewHead() {
+    var v = st.view, h = '';
+    if (v === 'bugs') {
+      var done = BUGS.filter(isDone).length, pct = BUGS.length ? Math.round(done / BUGS.length * 100) : 0;
+      h = '<div class="card pad view-head" id="progcard"><div class="prog-row"><b>Re-verification progress</b><span class="progress ok" aria-label="' + pct + '% re-verified"><i id="barfill" style="width:' + pct + '%"></i></span><span class="num" id="progline">' + B.fmtN(done) + ' of ' + B.fmtN(BUGS.length) + ' checked · ' + pct + '%</span><button class="btn sm ghost" type="button" id="reset">' + icon('reset') + 'Reset ticks</button></div></div>';
+    } else if (v === 'security' && SEC) {
+      var t = SEC.tally || {}, open = (SEC.findings || []).filter(function (f) { return f.status === 'open'; }).length;
+      h = '<div class="card view-head"><div class="card-h">' + icon('shieldcheck') + '<span class="grow truncate">' + esc(SEC.title || 'Security audit') + '</span><span class="meta">' + open + ' open · ' + (SEC.findings || []).length + ' total</span></div><div class="card-b"><div class="tally">' + ['critical', 'high', 'medium', 'low'].map(function (s) { return t[s] ? '<span class="badge ' + s + '"><span class="dot"></span>' + t[s] + ' ' + s + '</span>' : ''; }).join('') + '</div><p class="small ink2">' + esc(SEC.method || '') + (SEC.date ? ' · audited ' + esc(SEC.date) : '') + ' · <a href="' + esc(SEC.source_doc || 'SECURITY-AUDIT.md') + '">full report</a></p>' +
+        ((SEC.verified_clean || []).length ? '<div><div class="label" style="margin-bottom:6px">Verified clean</div><div class="clean-list">' + SEC.verified_clean.map(function (c) { return '<span>' + icon('check') + '<span>' + esc(c) + '</span></span>'; }).join('') + '</div></div>' : '') + '</div></div>';
+    } else if (v === 'optimisers' && OPT) {
+      h = '<div class="note view-head">' + icon('sparkles') + '<div><b>Elevations worth reusing</b> — design polish, UX, performance and workflow patterns mined from the build history. Not bugs: things that made an app better. <a href="OPTIMISERS.md">Full list</a> · ' + B.fmtN(OPT.count || (OPT.items || []).length) + ' across ' + (OPT.cats || []).length + ' categories.</div></div>';
+    } else if (v === 'scanner' && SCAN) {
+      h = '<div class="note view-head">' + icon('scan') + '<div><b>Static-analysis leads</b> from <code>scan.mjs</code> — code-smell matches to verify, not confirmed bugs. Run <code>node scan.mjs &lt;app&gt; --write</code> to refresh. <a href="SCAN-FINDINGS.md">Full list</a> · ' + B.fmtN((SCAN.findings || []).length) + ' leads in ' + (SCAN.apps || []).length + ' app' + ((SCAN.apps || []).length === 1 ? '' : 's') + '.</div></div>';
+    } else if (v === 'harvest' && HARV) {
+      h = '<div class="note warn view-head">' + icon('seedling') + '<div><b>Unverified.</b> Auto-mined from conversation transcripts by <code>harvest.mjs</code> (runs hourly). Promote the good ones into the curated ledger. <a href="HARVESTED.md">Full list</a> · ' + B.fmtN((HARV.findings || []).length) + ' in ' + (HARV.apps || []).length + ' apps.</div></div>';
+    } else if (v === 'checks') {
+      h = '<div class="note view-head">' + icon('checkcircle') + '<div>Records posted by coding agents that checked a project against this ledger, newest first. Agents: fetch <a href="AGENT.md">AGENT.md</a> and POST to <code>/api/checks</code>.</div></div>';
+    } else if (v === 'submitted') {
+      h = '<div class="note view-head">' + icon('inbox') + '<div><b>New findings agents raised while scanning</b> — proposals to promote into the curated ledger. Append-only, never auto-merged.</div></div>';
+    }
+    $('#viewhead').innerHTML = h;
+    var r = $('#reset'); if (r) r.onclick = function () { if (!confirm('Clear all ticks? This cannot be undone.')) return; checked = {}; save(); render(); B.toast('All ticks cleared'); };
+  }
+  function updateProgress() { var done = BUGS.filter(isDone).length, pct = BUGS.length ? Math.round(done / BUGS.length * 100) : 0; var f = $('#barfill'), l = $('#progline'); if (f) f.style.width = pct + '%'; if (l) l.textContent = B.fmtN(done) + ' of ' + B.fmtN(BUGS.length) + ' checked · ' + pct + '%'; }
+
+  /* ---------- overview dashboard ---------- */
+  var ACTIVITY = null, LIVE = [];
+  var CATCOL = { crash: '#e5484d', 'data-loss': '#d1620a', logic: '#6b5cff', ui: '#2f6feb', security: '#b4227a', performance: '#0e8a6e', race: '#8a5cf6', sync: '#0a7ea4', auth: '#c0392b', other: '#6b7280', privacy: '#a3391f', claims: '#9a6700', accessibility: '#1f7a8c', observability: '#4b5fc7', testing: '#5b7a1f', seo: '#7a4fbf', ux: '#0e7490' };
+  function sevCounts(list) { var c = { critical: 0, high: 0, medium: 0, low: 0 }; list.forEach(function (b) { c[b._sev] = (c[b._sev] || 0) + 1; }); return c; }
+  function sevBar(list, cls) { var c = sevCounts(list), n = list.length || 1; return '<div class="sevbar' + (cls ? ' ' + cls : '') + '" aria-label="Severity split">' + ['critical', 'high', 'medium', 'low'].map(function (k) { return c[k] ? '<i class="' + k + '" style="width:' + (c[k] / n * 100).toFixed(1) + '%" title="' + c[k] + ' ' + k + '"></i>' : ''; }).join('') + '</div>'; }
+  /* gallery pictures smaller than twice their box are shown at half their pixels (crisp on retina) instead of stretched */
+  function fitGallery() { $$('.gcard .pic img').forEach(function (im) { var fit = function () { if (!im.naturalWidth) return; var box = im.parentNode.getBoundingClientRect(); if (im.naturalWidth < box.width * 2) { im.classList.add('small'); im.style.width = Math.floor(im.naturalWidth / 2) + 'px'; im.style.height = 'auto'; } }; if (im.complete) fit(); else im.addEventListener('load', fit, { once: true }); }); }
+  function renderOverview() {
+    var sc = sevCounts(BUGS), cats = {}; BUGS.forEach(function (b) { cats[b.category] = (cats[b.category] || 0) + 1; });
+    var topCats = Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; }).slice(0, 8), maxCat = cats[topCats[0]] || 1;
+    var apps = {}; BUGS.forEach(function (b) { if (!NONAPP[b.app]) (apps[b.app] = apps[b.app] || []).push(b); });
+    var appOrder = Object.keys(apps).sort(function (a, b) { return apps[b].length - apps[a].length || a.localeCompare(b); });
+    /* 30-day activity series */
+    var days = [], byDay = {}, now = Date.now(); for (var i = 29; i >= 0; i--) { var k = B.dayKey(now - i * 864e5); days.push(k); byDay[k] = 0; }
+    var nAdd = 0, nChk = 0, nSes = 0; (ACTIVITY || []).forEach(function (e) { var k = B.dayKey(e.ts); if (k in byDay) { byDay[k]++; if (e.kind === 'addition') nAdd++; else if (e.kind === 'check') nChk++; else nSes++; } });
+    var series = days.map(function (k) { var p = k.split('-'); return { label: +p[2] + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+p[1] - 1], value: byDay[k] }; });
+    var withShots = (SUBMITTED || []).filter(function (x) { return x.shots && x.shots.length; }).slice(0, 8);
+    var h = '<div class="ov-grid">' +
+      '<div class="card"><div class="card-h">' + icon('bug') + 'Portfolio health<span class="meta">' + B.fmtN(BUGS.length) + ' bugs · ' + appOrder.length + ' apps</span></div><div class="card-b stack">' +
+        '<div><div class="label" style="margin-bottom:8px">Severity across every fixed bug</div>' + sevBar(BUGS) + '<div class="legend" style="margin-top:8px">' + ['critical', 'high', 'medium', 'low'].map(function (k) { return '<span><i class="sevbar ' + k + '" style="background:var(--sev-' + k + ')"></i>' + B.fmtN(sc[k] || 0) + ' ' + k + '</span>'; }).join('') + '</div></div>' +
+        '<div><div class="label" style="margin-bottom:8px">Most common categories</div><div class="bars">' + topCats.map(function (c) { return '<button class="bar-row" type="button" data-ovcat="' + esc(c) + '" style="background:none;border:0;padding:0;font:inherit;cursor:pointer;color:inherit;text-align:left" title="Show ' + esc(catLabel(c)) + ' bugs"><span class="k"><span class="cat ' + esc(c) + '">' + esc(catLabel(c)) + '</span></span><span class="track"><i style="width:' + (cats[c] / maxCat * 100).toFixed(1) + '%;--c:' + (CATCOL[c] || 'var(--accent)') + '"></i></span><span class="v num">' + B.fmtN(cats[c]) + '</span></button>'; }).join('') + '</div></div>' +
+      '</div></div>' +
+      '<div class="card"><div class="card-h">' + icon('activity') + 'Last 30 days<span class="meta">' + (ACTIVITY ? B.fmtN(nAdd) + ' added · ' + B.fmtN(nChk) + ' checks · ' + B.fmtN(nSes) + ' sessions' : 'loading…') + '</span></div><div class="card-b stack">' +
+        (ACTIVITY ? B.areaChart(series, { label: 'Ledger activity per day, last 30 days', unit: 'events' }) : '<div class="skeleton"><div class="sk"><i style="width:60%"></i></div><div class="sk"><i style="width:80%"></i></div><div class="sk"><i style="width:50%"></i></div></div>') +
+        '<div class="row wrap">' + (LIVE.length ? '<span class="badge ok"><span class="pip live"></span>' + LIVE.length + ' agent' + (LIVE.length > 1 ? 's' : '') + ' working now</span><a class="btn sm" href="/live">' + icon('live') + 'Watch</a>' : '<span class="badge"><span class="pip off"></span>No agent working right now</span><a class="btn sm ghost" href="/live">' + icon('live') + 'Live board</a>') + '<a class="btn sm ghost" href="/timeline">' + icon('activity') + 'Activity</a></div>' +
+      '</div></div></div>';
+    h += '<div class="section-h"><h2>Apps</h2><span class="meta">' + appOrder.length + ' apps · click one to open its bugs</span></div><div class="apps-grid">' + appOrder.slice(0, 12).map(function (a) { var l = apps[a], d = l.filter(isDone).length, pct = Math.round(d / l.length * 100); return '<button class="app-card" type="button" data-ovapp="' + esc(a) + '"><div class="top">' + B.avatar(a, 'lg') + '<span class="name">' + esc(a) + '</span><span class="cnt num">' + l.length + '</span></div>' + sevBar(l) + '<div class="foot"><span class="progress sm ok"><i style="width:' + pct + '%"></i></span><span class="num">' + d + '/' + l.length + ' re-verified</span></div></button>'; }).join('') + '</div>' +
+      (appOrder.length > 12 ? '<div class="row" style="margin-top:10px"><button class="btn sm ghost" type="button" data-goview="bugs">' + icon('ledger') + 'All ' + appOrder.length + ' apps in the Bugs view</button></div>' : '');
+    if (withShots.length) h += '<div class="section-h"><h2>Newest findings with screenshots</h2><span class="meta">click to open, drag to compare before and after</span></div><div class="gallery">' + withShots.map(function (x) { return '<button class="gcard" type="button" data-ovopen="' + esc(x._id) + '"><div class="pic"><img src="' + esc(x.shots[0].url) + '" alt="" loading="lazy" data-framed>' + (x.shots.length > 1 ? '<span class="n">' + x.shots.length + ' photos</span>' : '') + '</div><div class="gb"><div class="gt">' + esc(x.title) + '</div><div class="gm">' + B.avatar(x.app, 'xs') + '<span class="small ink2">' + esc(x.app) + '</span>' + sevBadge(x._sev) + '<span class="badge outline">' + esc(x.kind) + '</span></div></div></button>'; }).join('') + '</div>';
+    var recent = (CHECKS || []).slice(0, 5), latest = (SUBMITTED || []).slice(0, 5);
+    h += '<div class="ov-grid" style="margin-top:22px"><div class="card"><div class="card-h">' + icon('checkcircle') + 'Recent agent checks<span class="meta"><button class="btn sm ghost" type="button" data-goview="checks">All checks</button></span></div>' + (recent.length ? recent.map(function (c) { var cov = c.coverage; return '<div class="bl-row" tabindex="0" role="button" data-ovopen="' + esc(c._id) + '">' + B.avatar(c.app, 'sm') + '<span class="sev"></span><div class="grow"><div class="t">' + esc(c.app) + '</div><div class="sub">' + esc(scopeLabel(c.scope)) + ' · ' + (c.checkedCount || 0) + ' checked · ' + (c.foundCount || 0) + ' found</div></div><div class="side">' + (cov && cov.total ? '<span class="badge ' + (cov.complete ? 'ok' : 'warn') + '">' + cov.matched + '/' + cov.total + '</span>' : '') + '<span class="when" title="' + esc(B.fmtDate(c.ts, true)) + '">' + esc(B.ago(c.ts)) + '</span></div></div>'; }).join('') : '<div class="skeleton"><div class="sk"><i style="width:60%"></i></div><div class="sk"><i style="width:70%"></i></div></div>') + '</div>' +
+      '<div class="card"><div class="card-h">' + icon('inbox') + 'Latest submitted<span class="meta"><button class="btn sm ghost" type="button" data-goview="submitted">All submitted</button></span></div>' + (latest.length ? latest.map(function (x) { return '<div class="bl-row" tabindex="0" role="button" data-ovopen="' + esc(x._id) + '">' + B.avatar(x.app, 'sm') + sevDot(x._sev) + '<div class="grow"><div class="t">' + esc(x.title) + '</div><div class="sub">' + esc(x.app) + ' · ' + esc(x.kind) + (x.category ? ' · ' + esc(catLabel(x.category)) : '') + '</div></div><div class="side"><span class="when" title="' + esc(B.fmtDate(x.ts, true)) + '">' + esc(B.ago(x.ts)) + '</span></div></div>'; }).join('') : '<div class="skeleton"><div class="sk"><i style="width:60%"></i></div><div class="sk"><i style="width:70%"></i></div></div>') + '</div></div>';
+    return h;
+  }
+
+  /* ---------- filters UI ---------- */
+  function fillFilters() {
+    var V = current(), items = V.items(), apps = {}, types = {};
+    items.forEach(function (it) { if (it.app) apps[it.app] = (apps[it.app] || 0) + 1; var t = V.typeOf ? V.typeOf(it) : it.category; if (t) types[t] = (types[t] || 0) + 1; });
+    var fa = $('#fApp'), fc = $('#fCat');
+    fa.innerHTML = '<option value="">All apps</option>' + Object.keys(apps).sort(function (a, b) { return apps[b] - apps[a] || a.localeCompare(b); }).map(function (a) { return '<option value="' + esc(a) + '">' + esc(a) + ' (' + apps[a] + ')</option>'; }).join('');
+    fc.innerHTML = '<option value="">' + esc(V.typeLabel || 'All types') + '</option>' + Object.keys(types).sort().map(function (t) { return '<option value="' + esc(t) + '">' + esc(V.typeName ? V.typeName(t) : (st.view === 'bugs' || st.view === 'harvest' ? catLabel(t) : t)) + ' (' + types[t] + ')</option>'; }).join('');
+    fa.value = st.app; fc.value = st.cat; $('#fSev').value = st.sev; $('#q').value = st.q; $('#onlyOpen').checked = st.open;
+    $('#fSev').hidden = !!V.noSev; $('#onlyOpenWrap').hidden = st.view !== 'bugs'; $('#expand').parentNode.hidden = !V.group;
+    fa.hidden = Object.keys(apps).length < 2;
+  }
+  function setView(v, keepFilters) {
+    if (!VIEWS[v]) v = 'bugs';
+    if (st.view !== v && !keepFilters) { st.app = ''; st.cat = ''; st.sev = ''; st.open = false; st.id = ''; }
+    st.view = v; B.setView(v); writeHash(); fillFilters(); renderViews(); render();
+    $('#h1').textContent = v === 'overview' ? 'Ledger' : VIEWS[v].label;
+    $('#filters').hidden = $('#activef').hidden = !!VIEWS[v].custom; if (VIEWS[v].custom) $('#activef').hidden = true;
+    $('#lead').textContent = LEADS[v] || LEADS.bugs;
+    document.title = (v === 'overview' ? 'Ledger' : VIEWS[v].label) + ' · Breadledger';
+    $$('#stats .stat').forEach(function (s) { s.classList.toggle('on', s.getAttribute('data-on') === v); });
+  }
+  function renderViews() { $('#views').innerHTML = '<div class="seg" role="tablist" aria-label="Views">' + VIEW_ORDER.map(function (v) { return '<button type="button" role="tab" aria-selected="' + (v === st.view) + '" class="' + (v === st.view ? 'on' : '') + '" data-goview="' + v + '">' + icon(VIEWS[v].icon) + esc(VIEWS[v].label) + '<span class="n muted small" data-count="' + v + '"></span></button>'; }).join('') + '</div>'; }
+
+  /* ---------- stats ---------- */
+  var HELP = {
+    bugs: { title: 'Bugs fixed', what: 'Every distinct bug we have fixed across all apps, mined from the full build history.', detail: 'Each entry has a symptom, root cause and fix, plus an app and severity. This is the master catalogue every scan checks a project against.' },
+    apps: { title: 'Apps', what: 'How many distinct apps these bugs span.', detail: 'Finished., Hallalu CRM, Stitchhooky, Aprizely, Breadcrumb and more, plus "cross-cutting" for issues that apply everywhere.' },
+    security: { title: 'Security bugs', what: 'Bugs in the security category: auth, XSS, SSRF, secrets, injection, isolation, rate-limiting.', detail: 'A subset of "bugs fixed". A /securitysweep checks a project against every one of these, plus the audit findings.' },
+    datasync: { title: 'Data and sync bugs', what: 'Bugs about losing or mis-syncing user data.', detail: 'Data-loss (wiped or overwritten content) and sync issues (tombstones, deletions resurrecting, cross-device merges).' },
+    audit: { title: 'Security audit findings', what: 'Findings from the full security audit of Budget LevelUp / Listing Lab.', detail: 'Each with a fix and a status, plus the checks verified clean. Shown in the Security audit view.' },
+    optimisers: { title: 'Optimisers', what: 'Reusable elevations: not bugs, things that made an app better.', detail: 'Design polish, UX, performance and workflow patterns worth repeating, grouped by category.' },
+    scanner: { title: 'Scanner leads', what: 'Static-analysis hits from scan.mjs across scanned apps.', detail: 'Code-smell matches to verify: leads, not confirmed bugs.' },
+    harvest: { title: 'Harvested', what: 'Unverified bugs auto-mined from conversation transcripts by the hourly harvester.', detail: 'A triage queue: promote the good ones into the curated ledger.' },
+    checks: { title: 'Agent checks', what: 'Recorded /bugcheck, /deepscan or /securitysweep passes.', detail: 'Each time an agent checks a project against the ledger it logs coverage and findings here; open the full report on any of them.' },
+    submitted: { title: 'Submitted', what: 'New bugs, security issues and optimisers agents discovered and appended to the ledger.', detail: 'Append-only proposals: permanent, so every future project is checked for them too.' }
   };
-  var KLABEL={bug:'🐛 Bug',security:'🛡 Security',optimiser:'✨ Optimiser'};
-  var appsSet={}; (window.BUGS||[]).forEach(function(b){ if(b.app) appsSet[b.app]=1; });
-  var appList=Object.keys(appsSet).sort();
-  var state={ before:null, after:null }; // each: {dataUrl}
-  var activeRole='before';
+  var STAT_VIEW = { bugs: 'bugs', audit: 'security', optimisers: 'optimisers', scanner: 'scanner', harvest: 'harvest', checks: 'checks', submitted: 'submitted' };
+  function stat(key, n, label, view, cat) { return '<button class="stat" type="button" data-view="' + view + '"' + (cat ? ' data-cat="' + esc(cat) + '"' : '') + (STAT_VIEW[key] ? ' data-on="' + STAT_VIEW[key] + '"' : '') + ' data-help="' + key + '" title="Show ' + esc(label.toLowerCase()) + '"><span class="n num" data-to="' + (+n || 0) + '">' + B.fmtN(n) + '</span><span class="l">' + esc(label) + '</span><span class="help" aria-hidden="true">?</span></button>'; }
+  function renderStats() {
+    var apps = {}; BUGS.forEach(function (b) { apps[b.app] = 1; }); var realApps = Object.keys(apps).filter(function (a) { return !NONAPP[a]; }).length;
+    var secN = BUGS.filter(function (b) { return b.category === 'security'; }).length, dsN = BUGS.filter(function (b) { return b.category === 'data-loss' || b.category === 'sync'; }).length;
+    var h = stat('bugs', BUGS.length, 'Bugs fixed', 'bugs') + stat('apps', realApps, 'Apps', 'bugs') + stat('security', secN, 'Security', 'bugs', 'security') + stat('datasync', dsN, 'Data & sync', 'bugs', 'data-loss');
+    if (SEC && SEC.findings && SEC.findings.length) h += stat('audit', SEC.findings.length, 'Audit findings', 'security');
+    if (OPT && OPT.items && OPT.items.length) h += stat('optimisers', OPT.items.length, 'Optimisers', 'optimisers');
+    if (SCAN && SCAN.findings && SCAN.findings.length) h += stat('scanner', SCAN.findings.length, 'Scanner leads', 'scanner');
+    if (HARV && HARV.findings && HARV.findings.length) h += stat('harvest', HARV.findings.length, 'Harvested', 'harvest');
+    if (CHECKS && CHECKS.length) h += stat('checks', CHECKS.length, 'Agent checks', 'checks');
+    if (SUBMITTED && SUBMITTED.length) h += stat('submitted', SUBMITTED.length, 'Submitted', 'submitted');
+    var prev = {}; $$('#stats .stat .n').forEach(function (e) { prev[e.parentNode.getAttribute('data-help')] = e.getAttribute('data-n') || 0; });
+    $('#stats').innerHTML = h;
+    $$('#stats .stat .n').forEach(function (e) { e.setAttribute('data-n', prev[e.parentNode.getAttribute('data-help')] || 0); B.countUp(e, +e.getAttribute('data-to')); });
+    B.setCount('bugs', BUGS.length); B.setCount('security', SEC && SEC.findings ? SEC.findings.length : 0); B.setCount('optimisers', OPT && OPT.items ? OPT.items.length : 0); B.setCount('scanner', SCAN && SCAN.findings ? SCAN.findings.length : 0); B.setCount('harvest', HARV && HARV.findings ? HARV.findings.length : 0); B.setCount('checks', CHECKS ? CHECKS.length : ''); B.setCount('submitted', SUBMITTED ? SUBMITTED.length : '');
+    $$('#stats .stat').forEach(function (s) { s.classList.toggle('on', s.getAttribute('data-on') === st.view); });
+    $('#foot').innerHTML = '<span>Breadledger · ' + B.fmtN(BUGS.length) + ' fixes across ' + realApps + ' apps' + (GENERATED ? ' · catalogue generated ' + esc(GENERATED) : '') + ' · ticks are saved in this browser</span><span>·</span><a href="/AGENT.md">Agent protocol</a><span>·</span><a href="/bugs.json">bugs.json</a><span>·</span><a href="/checklist.json">checklist.json</a>';
+  }
+  function openHelp(key, n) { var h = HELP[key]; if (!h) return; var view = { bugs: 'bugs', apps: 'bugs', security: 'bugs', datasync: 'bugs', audit: 'security', optimisers: 'optimisers', scanner: 'scanner', harvest: 'harvest', checks: 'checks', submitted: 'submitted' }[key];
+    B.modal.open({ title: h.title, body: '<div class="help-body stack"><div class="big num">' + B.fmtN(n) + '</div><p>' + esc(h.what) + '</p><p class="muted">' + esc(h.detail) + '</p></div>', footer: '<button class="btn" type="button" data-close>Close</button><button class="btn primary" type="button" id="helpgo">Show me</button>' });
+    $('#helpgo').onclick = function () { B.modal.close(); setView(view); if (key === 'security') { st.cat = 'security'; fillFilters(); render(); writeHash(); } if (key === 'datasync') { st.q = 'cat:data-loss'; fillFilters(); render(); writeHash(); } }; }
 
-  var det=document.createElement('details'); det.className='addfind'; det.id='addfind';
-  det.innerHTML=
-    '<summary><span class="chev">▶</span><span>➕ Add a finding</span>'+
-      '<span class="sub">bug · security · optimiser — with before → after screenshots</span></summary>'+
-    '<form class="addform" autocomplete="off">'+
-      '<div class="grid">'+
-        '<label>Type<select name="kind">'+Object.keys(KLABEL).map(function(k){return '<option value="'+k+'">'+KLABEL[k]+'</option>';}).join('')+'</select></label>'+
-        '<label>App<input name="app" list="addapps" placeholder="e.g. Finished." required></label>'+
-        '<label>Category<select name="category"></select></label>'+
-        '<label>Severity<select name="severity"><option value="critical">critical</option><option value="high">high</option><option value="medium" selected>medium</option><option value="low">low</option></select></label>'+
-      '</div>'+
-      '<datalist id="addapps">'+appList.map(function(a){return '<option value="'+esc(a)+'">';}).join('')+'</datalist>'+
-      '<label>Title<input name="title" placeholder="Short, specific — e.g. “Search control looks unstyled / low-standard”" required></label>'+
-      '<div class="grid">'+
-        '<label>Symptom / what’s wrong<textarea name="symptom" placeholder="What the user sees or why it matters"></textarea></label>'+
-        '<label>Fix / the elevation<textarea name="fix" placeholder="What fixes it, or the better pattern"></textarea></label>'+
-      '</div>'+
-      '<label>File · location <span style="font-weight:400;text-transform:none;color:var(--muted)">(optional)</span><input name="file" placeholder="path/to/file.js:120 — or the screen/route"></label>'+
-      '<div><label style="margin-bottom:6px">Screenshots — before → after</label>'+
-        '<div class="ba-slots">'+
-          '<div><div class="drop" data-role="before"><span class="dz-ba before">Before</span><span class="dz-hint">Click, drop, or paste the current state</span><input type="file" accept="image/*" hidden aria-label="Choose a screenshot"></div>'+
-            '<input class="cap" data-role="before" value="Before" aria-label="Caption for the before screenshot" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
-          '<div><div class="drop" data-role="after"><span class="dz-ba after">After</span><span class="dz-hint">Click, drop, or paste the improved state</span><input type="file" accept="image/*" hidden aria-label="Choose a screenshot"></div>'+
-            '<input class="cap" data-role="after" value="After" aria-label="Caption for the after screenshot" style="margin-top:7px;width:100%;font:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:inherit"></div>'+
-        '</div>'+
-        '<div style="font-size:11.5px;color:var(--muted);margin-top:6px">A single screenshot is fine too — fill just one. Tip: copy an image and paste (⌘V) into a slot. Max 5MB each; large images are auto-downscaled.</div>'+
-      '</div>'+
-      '<div class="addrow">'+
-        '<button type="submit" class="btn solid">Add to ledger →</button>'+
-        '<span class="addmsg"></span>'+
-        '<span class="keywrap" style="margin-left:auto">🔑 <input type="password" class="lkey" placeholder="ledger key (once)" title="Stored only in this browser. Needed only if the ledger requires a write key."></span>'+
-      '</div>'+
-      '<div class="addresult"></div>'+
-    '</form>';
-  host.appendChild(det);
+  /* ---------- peek (detail panel) ---------- */
+  function findItem(id) { for (var k in VIEWS) { var hit = VIEWS[k].items().filter(function (it) { return (it._id || it.id) === id; })[0]; if (hit) return { view: k, item: hit }; } return null; }
+  function baOf(c) { c = (c || '').toLowerCase(); if (/\bbefore\b|\bwas\b|current|old|problem|issue/.test(c)) return 'before'; if (/\bafter\b|\bnow\b|fixed|new|improved|elevated|proposed/.test(c)) return 'after'; return ''; }
+  function comparePair(shots) { if (!Array.isArray(shots) || shots.length < 2) return ''; var b = shots.filter(function (x) { return baOf(x.caption) === 'before'; })[0], a = shots.filter(function (x) { return baOf(x.caption) === 'after'; })[0]; if (!b || !a) { b = shots[0]; a = shots[1]; } return '<div class="fact"><div class="k">Before and after · drag to compare</div>' + B.compare(b.url, a.url, { before: b.caption, after: a.caption }) + '</div>'; }
+  function fact(k, v, cls) { return v ? '<div class="fact ' + (cls || '') + '"><div class="k">' + esc(k) + '</div><div class="v">' + esc(v) + '</div></div>' : ''; }
+  function fileBtn(f) { return f ? '<button class="btn sm ghost filebtn" type="button" data-copy="' + esc(f) + '" title="Copy path">' + icon('copy') + esc(f) + '</button>' : ''; }
+  function peekBody(v, it) {
+    var b = '';
+    if (v === 'bugs') {
+      b = '<h2>' + esc(it.title) + '</h2><div class="badges">' + sevBadge(it._sev) + catChip(it.category) + '<span class="badge outline">' + B.avatar(it.app, 'xs') + esc(it.app) + '</span><span class="id">#' + esc(it.session || '') + '</span>' + (it.source ? '<span class="badge outline" title="Where this entry came from">' + esc(it.source) + '</span>' : '') + '</div>' +
+        fact('Symptom', it.symptom, 'symptom') + fact('Cause', it.root_cause, 'cause') + fact('Fix', it.fix, 'fix') + (it.file ? '<div class="fact"><div class="k">Where</div><div class="v">' + fileBtn(it.file) + '</div></div>' : '');
+    } else if (v === 'security') {
+      b = '<h2>' + esc(it.id) + ' · ' + esc(it.title) + '</h2><div class="badges">' + sevBadge(it._sev) + '<span class="badge ' + ({ fixed: 'ok', partial: 'warn', open: 'danger' }[it.status] || '') + '">' + esc(it.status) + '</span><span class="badge outline">' + esc(it.app) + '</span></div>' + fact('Finding', it.detail, 'symptom') + fact('Fix', it.fix, 'fix') + (filesOf(it).length ? '<div class="fact"><div class="k">Files</div><div class="v linkrow">' + filesOf(it).map(fileBtn).join('') + '</div></div>' : '');
+    } else if (v === 'optimisers') {
+      b = '<h2>' + esc(it.title) + '</h2><div class="badges"><span class="badge accent">' + esc(VIEWS.optimisers.typeName(it.category)) + '</span><span class="badge outline">' + esc(it.app) + '</span>' + (it.session ? '<span class="id">#' + esc(it.session) + '</span>' : '') + '</div>' + fact('What it is', it.detail) + fact('Why', it.why, 'cause') + fact('How', it.how, 'fix');
+    } else if (v === 'scanner') {
+      b = '<h2>' + esc(it.title) + '</h2><div class="badges">' + sevBadge(it._sev) + '<span class="badge outline"><span class="det">' + esc(it.detector) + '</span></span>' + catChip(it.category) + '<span class="badge outline">' + esc(it.app) + '</span>' + (it.status ? '<span class="badge">' + esc(it.status) + '</span>' : '') + '</div><div class="fact"><div class="k">Where</div><div class="v">' + fileBtn(it.file + (it.line ? ':' + it.line : '')) + '</div></div>' + (it.excerpt ? '<div class="fact"><div class="k">Excerpt</div><pre class="excerpt">' + esc(it.excerpt) + '</pre></div>' : '') + fact('Fix', it.advice, 'fix');
+    } else if (v === 'harvest') {
+      b = '<h2>' + esc(it.title) + '</h2><div class="badges">' + sevBadge(it._sev) + catChip(it.category) + '<span class="badge outline">' + esc(it.app) + '</span><span class="badge warn">unverified</span>' + (it.session ? '<span class="id">#' + esc(it.session) + '</span>' : '') + '</div>' + fact('Symptom', it.symptom, 'symptom') + (it.found ? '<div class="fact"><div class="k">Found</div><div class="v">' + esc(it.found) + (it.source ? ' · ' + esc(it.source) : '') + '</div></div>' : '') + '<div class="note warn">' + icon('info') + '<div>Auto-mined by the harvester. Promote it into the curated ledger once a person has verified it.</div></div>';
+    } else if (v === 'checks') {
+      var cov = it.coverage, ev = cov && cov.evidence, verified = ev ? (ev.detector || 0) + (ev['code-read'] || 0) + (ev.test || 0) : 0, claimed = ev ? (ev.reasoned || 0) + (ev.assumed || 0) : 0, isScan = (it.checkedBy || '').indexOf('scan') >= 0;
+      b = '<h2>' + esc(it.app) + (it.project && it.project !== it.app ? ' <span class="muted">· ' + esc(it.project) + '</span>' : '') + '</h2><div class="badges"><span class="badge accent">' + esc(scopeLabel(it.scope)) + '</span><span class="badge outline">' + esc(it.checkedBy || 'agent') + '</span><span class="muted small">' + esc(B.fmtDate(it.ts, true)) + '</span></div>' +
+        '<div class="stats" style="margin:0"><div class="stat" tabindex="-1" style="cursor:default"><span class="n num">' + (it.checkedCount || 0) + '</span><span class="l">checked</span></div><div class="stat" style="cursor:default"><span class="n num">' + (it.foundCount || 0) + '</span><span class="l">found present</span></div>' + (it.scanned ? '<div class="stat" style="cursor:default"><span class="n num">' + it.scanned + '</span><span class="l">files scanned</span></div>' : '') + '</div>' +
+        '<div class="linkrow">' + (it.sessionId ? '<a class="btn sm" href="/story/' + esc(it.sessionId) + '">' + icon('prompts') + 'Story</a>' : '') + '<a class="btn sm" href="/report?id=' + esc(it.id) + (it.sessionId ? '&legacy=1' : '') + '">' + icon('activity') + (it.sessionId ? 'Coverage record' : 'Full report') + '</a></div>' +
+        (cov && cov.total ? '<div class="fact"><div class="k">Coverage</div><div class="v"><span class="' + (cov.complete ? 'cov-ok' : 'cov-warn') + '">' + cov.matched + ' of ' + cov.total + '</span> ' + esc(cov.scope === 'security' ? 'security items' : cov.scope === 'all' ? 'catalogue items' : 'bugs') + ' matched' + (cov.pct != null ? ' (' + cov.pct + '%)' : '') + '</div></div>' : '') +
+        (ev ? '<div class="fact"><div class="k">Evidence</div><div class="v evi"><span class="badge ok">' + (ev.detector || 0) + ' detector</span><span class="badge ok">' + (ev['code-read'] || 0) + ' code read</span><span class="badge ok">' + (ev.test || 0) + ' test</span><span class="badge">' + (ev.reasoned || 0) + ' reasoned</span><span class="badge">' + (ev.assumed || 0) + ' assumed</span></div>' + (verified && claimed ? '<div class="small muted" style="margin-top:6px">' + claimed + ' listed but not inspected: reasoned and assumed items are claims, not evidence.</div>' : '') + '</div>' : '') +
+        (!isScan && cov && cov.missed && cov.missed.length ? '<div class="note danger">' + icon('alert') + '<div><b>' + cov.missed.length + ' known bug' + (cov.missed.length > 1 ? 's' : '') + ' not addressed</b><ul class="plain">' + cov.missed.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div></div>' : '') +
+        '<div class="fact"><div class="k">Found</div><div class="v">' + ((it.found || []).length ? '<ul class="plain">' + it.found.map(function (f) { return '<li>' + esc(f.title) + (f.file ? ' <span class="id">' + esc(f.file) + '</span>' : '') + (f.note ? ' <span class="muted">— ' + esc(f.note) + '</span>' : '') + '</li>'; }).join('') + '</ul>' : '<span class="cov-ok">No known bugs found present.</span>') + '</div></div>' +
+        ((it.securityFindings || []).length ? '<div class="fact"><div class="k">Security findings</div><div class="v"><ul class="plain">' + it.securityFindings.map(function (f) { return '<li>' + sevBadge(f.severity || 'low') + ' ' + esc(f.title) + (f.file ? ' <span class="id">' + esc(f.file) + '</span>' : '') + '</li>'; }).join('') + '</ul></div></div>' : '') +
+        (it.securityStatus ? '<div class="fact"><div class="k">Security status</div><div class="v">' + esc(it.securityStatus) + '</div></div>' : '') + fact('Notes', it.notes) +
+        ((it.notFound || []).length ? '<details><summary class="small muted" style="cursor:pointer">' + it.notFound.length + ' checked and clean</summary><ul class="plain" style="margin-top:6px">' + it.notFound.slice(0, 60).map(function (t) { return '<li>' + esc(typeof t === 'string' ? t : t.title) + '</li>'; }).join('') + '</ul></details>' : '');
+    } else if (v === 'submitted') {
+      b = '<h2>' + esc(it.title) + '</h2><div class="badges"><span class="badge outline">' + esc(it.kind) + '</span>' + sevBadge(it._sev) + catChip(it.category) + '<span class="badge outline">' + esc(it.app) + '</span>' + (it.project ? '<span class="muted small">' + esc(it.project) + '</span>' : '') + '<span class="muted small">' + esc(B.fmtDate(it.ts, true)) + '</span></div>' + fact('Symptom', it.symptom, 'symptom') + fact('Fix', it.fix, 'fix') + (it.file ? '<div class="fact"><div class="k">Where</div><div class="v">' + fileBtn(it.file) + '</div></div>' : '') + comparePair(it.shots) + B.shotStrip(it.shots) + (it.sessionId ? '<div class="linkrow"><a class="btn sm" href="/story/' + esc(it.sessionId) + '">' + icon('prompts') + 'From this story</a></div>' : '') + (it.submittedBy ? '<div class="small muted">Submitted by ' + esc(it.submittedBy) + '</div>' : '');
+    }
+    return b;
+  }
+  function itemMd(v, it) {
+    if (v === 'bugs') return '**' + it.title + '** — ' + it._sev + ' · ' + catLabel(it.category) + ' · ' + it.app + (it.session ? ' · #' + it.session : '') + '\n' + (it.symptom ? '- Symptom: ' + it.symptom + '\n' : '') + (it.root_cause ? '- Cause: ' + it.root_cause + '\n' : '') + (it.fix ? '- Fix: ' + it.fix + '\n' : '') + (it.file ? '- Where: `' + it.file + '`\n' : '');
+    if (v === 'optimisers') return '**' + it.title + '** — ' + VIEWS.optimisers.typeName(it.category) + ' · ' + it.app + '\n' + (it.detail ? '- ' + it.detail + '\n' : '') + (it.why ? '- Why: ' + it.why + '\n' : '') + (it.how ? '- How: ' + it.how + '\n' : '');
+    if (v === 'scanner') return '**' + it.title + '** — ' + it.severity + ' · ' + it.detector + ' · ' + it.app + ' · `' + it.file + (it.line ? ':' + it.line : '') + '`\n' + (it.advice ? '- Fix: ' + it.advice + '\n' : '');
+    if (v === 'security') return '**' + it.id + ' ' + it.title + '** — ' + it.severity + ' · ' + it.status + ' · ' + it.app + '\n' + (it.detail ? '- ' + it.detail + '\n' : '') + (it.fix ? '- Fix: ' + it.fix + '\n' : '');
+    if (v === 'harvest') return '**' + it.title + '** — ' + it._sev + ' · ' + catLabel(it.category) + ' · ' + it.app + ' (unverified)\n' + (it.symptom ? '- ' + it.symptom + '\n' : '');
+    if (v === 'submitted') return '**' + it.title + '** — ' + it.kind + ' · ' + (it.severity || '') + ' · ' + it.app + '\n' + (it.symptom ? '- Symptom: ' + it.symptom + '\n' : '') + (it.fix ? '- Fix: ' + it.fix + '\n' : '') + (it.file ? '- Where: `' + it.file + '`\n' : '');
+    if (v === 'checks') return '**Check of ' + it.app + '** — ' + scopeLabel(it.scope) + ' · ' + (it.checkedBy || 'agent') + ' · ' + B.fmtDate(it.ts, true) + '\n- ' + (it.checkedCount || 0) + ' checked · ' + (it.foundCount || 0) + ' found\n';
+    return '';
+  }
+  function openPeek(id) {
+    var hit = findItem(id); if (!hit) return; var v = hit.view, it = hit.item; st.id = id; writeHash();
+    $$('.bl-row.sel').forEach(function (r) { r.classList.remove('sel'); }); var r = $('.bl-row[data-id="' + CSS.escape(id) + '"]'); if (r) { r.classList.add('sel'); }
+    if (findItem(id).view !== st.view && !current().custom) { /* opened from the palette: switch to the item's view */ setView(findItem(id).view, true); }
+    var tick = v === 'bugs' ? '<button class="btn' + (isDone(it) ? ' on' : '') + '" type="button" data-peektick="' + esc(id) + '">' + icon('check') + (isDone(it) ? 'Checked' : 'Mark checked') + '</button>' : '';
+    B.peek.open({ title: VIEWS[v].label, body: peekBody(v, it), nav: true, onNav: function (dir) { step(dir === 'next' ? 1 : -1, true); },
+      footer: tick + '<span class="grow"></span><button class="btn sm ghost" type="button" data-md="' + esc(id) + '">' + icon('copy') + 'Copy as Markdown</button><button class="btn sm ghost" type="button" data-link="' + esc(id) + '">' + icon('link') + 'Copy link</button>',
+      onClose: function () { st.id = ''; writeHash(); $$('.bl-row.sel').forEach(function (r) { r.classList.remove('sel'); }); } });
+  }
+  function step(dir, open) {
+    var rows = $$('#list .bl-row'); if (!rows.length) return; var i = rows.findIndex(function (r) { return r.classList.contains('sel'); }); i = i < 0 ? (dir > 0 ? 0 : rows.length - 1) : Math.max(0, Math.min(rows.length - 1, i + dir));
+    rows.forEach(function (r) { r.classList.remove('sel'); }); rows[i].classList.add('sel'); rows[i].scrollIntoView({ block: 'nearest' }); rows[i].focus({ preventScroll: true });
+    if (open || B.peek.isOpen()) openPeek(rows[i].getAttribute('data-id')); else { st.id = rows[i].getAttribute('data-id'); }
+  }
+  function toggleTick(id) { var hit = findItem(id); if (!hit || hit.view !== 'bugs') return; var it = hit.item; if (checked[id]) delete checked[id]; else checked[id] = true; save();
+    var r = $('.bl-row[data-id="' + CSS.escape(id) + '"]'); if (r) { r.classList.toggle('done', !!checked[id]); var c = r.querySelector('.cbx'); if (c) c.checked = !!checked[id]; var gh = r.previousElementSibling; while (gh && !gh.classList.contains('group-h')) gh = gh.previousElementSibling; if (gh) { var all = BUGS.filter(function (b) { return b.app === it.app; }), d = all.filter(isDone).length; var p = gh.querySelector('.progress i'); if (p) p.style.width = Math.round(d / all.length * 100) + '%'; var pc = gh.querySelector('.pct'); if (pc) pc.textContent = d + '/' + all.length; } }
+    if (r) { r.classList.remove('ticked'); void r.offsetWidth; if (checked[id]) r.classList.add('ticked'); }
+    if (st.open) render(); else updateProgress();
+    var dn = BUGS.filter(isDone).length; B.toast((checked[id] ? 'Re-verified · ' : 'Unticked · ') + B.fmtN(dn) + ' of ' + B.fmtN(BUGS.length) + ' checked', checked[id] ? 'ok' : '', 1400);
+    var pb = $('[data-peektick]'); if (pb && pb.getAttribute('data-peektick') === id) { pb.classList.toggle('on', !!checked[id]); pb.innerHTML = icon('check') + (checked[id] ? 'Checked' : 'Mark checked'); } }
 
-  var form=det.querySelector('form');
-  var kindSel=form.kind, catSel=form.category, appInp=form.app, msg=det.querySelector('.addmsg'), keyInp=det.querySelector('.lkey'), result=det.querySelector('.addresult');
-  keyInp.value=localStorage.getItem(KEYK)||'';
-  keyInp.addEventListener('change',function(){ localStorage.setItem(KEYK, keyInp.value.trim()); });
-  appInp.value=localStorage.getItem(LASTAPP)||'';
+  /* ---------- live note (agents working right now) ---------- */
+  function liveTick() {
+    if (document.hidden) return;
+    fetch('/api/sessions?active=1&limit=5', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      var live = (d.sessions || []).filter(function (s) { return s.live; }), n = $('#livenote'); var was = LIVE.length; LIVE = live; if (st.view === 'overview' && was !== live.length && ACTIVITY) render();
+      if (!live.length) { n.hidden = true; return; }
+      var s = live[0]; n.innerHTML = '<span class="pip live"></span><div><b>' + esc(s.app) + '</b> · ' + esc((s.current || '').replace(/[<>&]/g, '')) + (live.length > 1 ? ' <span class="muted">+' + (live.length - 1) + ' more</span>' : '') + '</div><a class="btn sm" href="/live">' + icon('live') + 'Watch</a>'; n.hidden = false;
+    }).catch(function () {});
+  }
 
-  function fillCats(){ var k=kindSel.value; catSel.innerHTML=CATS[k].map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join(''); }
-  kindSel.addEventListener('change',fillCats); fillCats();
-
-  function setMsg(t,cls){ msg.textContent=t||''; msg.className='addmsg'+(cls?' '+cls:''); }
-
-  // downscale big images to ≤1600px wide; PNG for fidelity, JPEG fallback if too heavy
-  function downscale(dataUrl, cb){
-    var img=new Image();
-    img.onload=function(){
-      var max=1600, w=img.width, h=img.height;
-      if(w>max){ h=Math.round(h*max/w); w=max; }
-      try{
-        var c=document.createElement('canvas'); c.width=w; c.height=h;
-        c.getContext('2d').drawImage(img,0,0,w,h);
-        var out=c.toDataURL('image/png');
-        if(out.length>3.8*1024*1024) out=c.toDataURL('image/jpeg',0.9);
-        cb(out);
-      }catch(e){ cb(dataUrl); }
+  /* ---------- new finding dialog ---------- */
+  var CATS = { bug: ['crash', 'data-loss', 'logic', 'ui', 'security', 'performance', 'race', 'sync', 'auth', 'other'], security: ['auth', 'xss', 'ssrf', 'secrets', 'injection', 'isolation', 'rate-limit', 'csrf', 'other'], optimiser: ['design-elevation', 'ux', 'performance', 'workflow', 'architecture', 'accessibility', 'copy', 'conversion', 'dx', 'integrity'] };
+  function getKey() { var k = ''; try { k = localStorage.getItem('bl_admin_key') || localStorage.getItem('bugledger.key') || ''; } catch (e) {} return k; }
+  function setKey(k) { try { localStorage.setItem('bl_admin_key', k); localStorage.setItem('bugledger.key', k); } catch (e) {} }
+  var slots = { before: null, after: null }, activeSlot = 'before';
+  function downscale(dataUrl, cb) { var img = new Image(); img.onload = function () { var MAX = 1600; if (img.width <= MAX && dataUrl.length < 3800000) return cb(dataUrl); var s = Math.min(1, MAX / img.width), c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); var out = c.toDataURL('image/png'); if (out.length > 3800000) out = c.toDataURL('image/jpeg', .9); cb(out); }; img.onerror = function () { cb(dataUrl); }; img.src = dataUrl; }
+  function readImage(file, role) { if (!file || !/^image\//.test(file.type)) { B.toast('That is not an image', 'err'); return; } var fr = new FileReader(); fr.onload = function () { downscale(fr.result, function (u) { slots[role] = u; renderSlot(role); }); }; fr.readAsDataURL(file); }
+  function renderSlot(role) { var dz = $('#dz-' + role); if (!dz) return; if (slots[role]) { dz.classList.add('has'); dz.innerHTML = '<img src="' + slots[role] + '" alt="' + role + ' screenshot"><button class="btn sm dz-clear" type="button" data-clear="' + role + '" aria-label="Remove ' + role + ' screenshot">' + icon('x') + 'Remove</button>'; } else { dz.classList.remove('has'); dz.innerHTML = '<div><b>' + (role === 'before' ? 'Before' : 'After') + '</b><br><span class="small">Click, drop, or paste ' + (role === 'before' ? 'the current state' : 'the improved state') + '</span></div><input type="file" accept="image/*" data-file="' + role + '">'; } }
+  function openNewFinding() {
+    var apps = {}; BUGS.forEach(function (b) { apps[b.app] = 1; }); var lastApp = ''; try { lastApp = localStorage.getItem('bugledger.lastapp') || ''; } catch (e) {}
+    slots = { before: null, after: null }; activeSlot = 'before';
+    var body = '<form id="nf" autocomplete="off" class="stack"><div class="nf-grid">' +
+      '<div class="field"><label for="nf-kind">Type</label><select class="select" id="nf-kind" style="width:100%"><option value="bug">Bug</option><option value="security">Security</option><option value="optimiser">Optimiser</option></select></div>' +
+      '<div class="field"><label for="nf-app">App</label><input class="input" id="nf-app" list="nf-apps" placeholder="e.g. Finished." required value="' + esc(lastApp) + '"><datalist id="nf-apps">' + Object.keys(apps).sort().map(function (a) { return '<option value="' + esc(a) + '">'; }).join('') + '</datalist></div>' +
+      '<div class="field"><label for="nf-cat">Category</label><select class="select" id="nf-cat" style="width:100%"></select></div>' +
+      '<div class="field"><label for="nf-sev">Severity</label><select class="select" id="nf-sev" style="width:100%"><option value="critical">Critical</option><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select></div>' +
+      '<div class="field span2"><label for="nf-title">Title</label><input class="input" id="nf-title" required placeholder="Short and specific, e.g. Search control looks unstyled"></div>' +
+      '<div class="field"><label for="nf-symptom">Symptom · what is wrong</label><textarea class="textarea" id="nf-symptom" placeholder="What the user sees, or why it matters"></textarea></div>' +
+      '<div class="field"><label for="nf-fix">Fix · the elevation</label><textarea class="textarea" id="nf-fix" placeholder="What fixes it, or the better pattern"></textarea></div>' +
+      '<div class="field span2"><label for="nf-file">File · location (optional)</label><input class="input" id="nf-file" placeholder="path/to/file.js:120, or the screen or route"></div>' +
+      '</div><div class="field"><span class="label">Screenshots · before and after</span><div class="nf-slots"><div class="nf-slot"><div class="drop" id="dz-before" data-role="before" tabindex="0"></div><input class="input cap" id="cap-before" value="Before" aria-label="Before caption"></div><div class="nf-slot"><div class="drop" id="dz-after" data-role="after" tabindex="0"></div><input class="input cap" id="cap-after" value="After" aria-label="After caption"></div></div><div class="hint">One screenshot is fine too. Tip: copy an image and paste it (⌘V) into a slot. Up to 5 MB each; large images are downscaled.</div></div>' +
+      '<div class="field"><label for="nf-key">Ledger key</label><input class="input" id="nf-key" type="password" placeholder="Needed only if the ledger requires a write key" value="' + esc(getKey()) + '"><div class="hint">Stored only in this browser.</div></div><div class="err" id="nf-msg" role="status" aria-live="polite"></div></form>';
+    B.modal.open({ title: 'New finding', size: 'lg', body: body, footer: '<span class="small muted grow">Appended to the ledger, append-only.</span><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="button" id="nf-go">' + icon('plus') + 'Add to ledger</button>' });
+    var kind = $('#nf-kind'), cat = $('#nf-cat'); function fillCats() { cat.innerHTML = CATS[kind.value].map(function (c) { return '<option value="' + c + '">' + esc(c) + '</option>'; }).join(''); } fillCats(); kind.onchange = fillCats;
+    renderSlot('before'); renderSlot('after');
+    var form = $('#nf');
+    form.addEventListener('click', function (e) { var cl = e.target.closest('[data-clear]'); if (cl) { slots[cl.getAttribute('data-clear')] = null; renderSlot(cl.getAttribute('data-clear')); return; } var dz = e.target.closest('.drop'); if (dz) { activeSlot = dz.getAttribute('data-role'); if (!slots[activeSlot]) { var f = dz.querySelector('input[type=file]'); if (f) f.click(); } } });
+    form.addEventListener('change', function (e) { var f = e.target.closest('[data-file]'); if (f && f.files[0]) readImage(f.files[0], f.getAttribute('data-file')); });
+    form.addEventListener('dragover', function (e) { var dz = e.target.closest('.drop'); if (dz) { e.preventDefault(); dz.classList.add('over'); } });
+    form.addEventListener('dragleave', function (e) { var dz = e.target.closest('.drop'); if (dz) dz.classList.remove('over'); });
+    form.addEventListener('drop', function (e) { var dz = e.target.closest('.drop'); if (!dz) return; e.preventDefault(); dz.classList.remove('over'); var f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) readImage(f, dz.getAttribute('data-role')); });
+    form.addEventListener('mouseover', function (e) { var dz = e.target.closest('.drop'); if (dz) activeSlot = dz.getAttribute('data-role'); });
+    document.addEventListener('paste', onPaste);
+    function onPaste(e) { if (!document.getElementById('nf')) { document.removeEventListener('paste', onPaste); return; } var items = (e.clipboardData && e.clipboardData.items) || []; for (var i = 0; i < items.length; i++) if (/^image\//.test(items[i].type)) { e.preventDefault(); var role = slots[activeSlot] ? (slots.before ? 'after' : 'before') : activeSlot; readImage(items[i].getAsFile(), role); return; } }
+    $('#nf-go').onclick = function () {
+      var msg = $('#nf-msg'), app = $('#nf-app').value.trim(), title = $('#nf-title').value.trim(); msg.textContent = '';
+      if (!app) { msg.textContent = 'App is required.'; $('#nf-app').focus(); return; } if (!title) { msg.textContent = 'Title is required.'; $('#nf-title').focus(); return; }
+      var key = $('#nf-key').value.trim(); if (key) setKey(key); try { localStorage.setItem('bugledger.lastapp', app); } catch (e) {}
+      var shots = []; ['before', 'after'].forEach(function (r) { if (slots[r]) shots.push({ dataUrl: slots[r], caption: $('#cap-' + r).value.trim() || (r === 'before' ? 'Before' : 'After') }); });
+      var btn = $('#nf-go'); btn.disabled = true; btn.textContent = shots.length ? 'Uploading screenshots and adding…' : 'Adding…';
+      var h = { 'content-type': 'application/json' }; if (key) h['x-ledger-key'] = key;
+      fetch('/api/bugs', { method: 'POST', headers: h, body: JSON.stringify({ app: app, project: '', kind: kind.value, title: title, category: cat.value, severity: $('#nf-sev').value, symptom: $('#nf-symptom').value.trim(), fix: $('#nf-fix').value.trim(), file: $('#nf-file').value.trim(), submittedBy: 'ledger-web', shots: shots }) })
+        .then(function (r) { return r.json().then(function (d) { return { s: r.status, d: d }; }); })
+        .then(function (x) { if (x.s === 401) throw new Error('Needs a ledger key — paste it in the Ledger key box.'); if (!x.d || !x.d.ok) throw new Error((x.d && x.d.error) || 'Failed.');
+          B.modal.close(); B.toast('Added to the ledger (append-only)', 'ok'); loadAsync().then(function () { setView('submitted'); if (x.d.id) openPeek(x.d.id); }); })
+        .catch(function (e) { msg.textContent = /Failed to fetch|Network/.test(e.message) ? 'Network error: ' + e.message : e.message; })
+        .finally(function () { btn.disabled = false; btn.innerHTML = icon('plus') + 'Add to ledger'; });
     };
-    img.onerror=function(){ cb(dataUrl); };
-    img.src=dataUrl;
   }
-  function renderSlot(role){
-    var dz=det.querySelector('.drop[data-role="'+role+'"]');
-    if(state[role]&&state[role].dataUrl){
-      dz.classList.add('filled');
-      dz.innerHTML='<button type="button" class="dz-clear" title="Remove">×</button><img src="'+state[role].dataUrl+'" alt="'+role+'">';
-      dz.querySelector('.dz-clear').addEventListener('click',function(ev){ ev.stopPropagation(); state[role]=null; resetSlot(role); });
-    }
-  }
-  function resetSlot(role){
-    var dz=det.querySelector('.drop[data-role="'+role+'"]');
-    dz.classList.remove('filled');
-    var ba=role==='before'?'Before':'After', hint=role==='before'?'Click, drop, or paste the current state':'Click, drop, or paste the improved state';
-    dz.innerHTML='<span class="dz-ba '+role+'">'+ba+'</span><span class="dz-hint">'+hint+'</span><input type="file" accept="image/*" hidden aria-label="Choose a screenshot">';
-    wireDrop(dz);
-  }
-  function readImage(file, role){
-    if(!file||!/^image\//.test(file.type)){ setMsg('That’s not an image.','err'); return; }
-    var fr=new FileReader();
-    fr.onload=function(){ downscale(fr.result,function(out){ state[role]={dataUrl:out}; renderSlot(role); setMsg(''); }); };
-    fr.readAsDataURL(file);
-  }
-  function wireDrop(dz){
-    var role=dz.getAttribute('data-role'), inp=dz.querySelector('input[type=file]');
-    dz.addEventListener('click',function(){ activeRole=role; if(!dz.classList.contains('filled')) inp.click(); });
-    dz.addEventListener('mouseenter',function(){ activeRole=role; });
-    inp.addEventListener('change',function(){ if(inp.files&&inp.files[0]) readImage(inp.files[0],role); });
-    dz.addEventListener('dragover',function(e){ e.preventDefault(); dz.classList.add('over'); });
-    dz.addEventListener('dragleave',function(){ dz.classList.remove('over'); });
-    dz.addEventListener('drop',function(e){ e.preventDefault(); dz.classList.remove('over'); activeRole=role;
-      var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readImage(f,role); });
-  }
-  det.querySelectorAll('.drop').forEach(wireDrop);
-  // paste an image straight into the active slot
-  det.addEventListener('paste',function(e){
-    var items=(e.clipboardData&&e.clipboardData.items)||[];
-    for(var i=0;i<items.length;i++){ if(items[i].type&&items[i].type.indexOf('image')===0){
-      var role=activeRole||(state.before?'after':'before'); readImage(items[i].getAsFile(),role); e.preventDefault(); return; } }
-  });
 
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    var app=appInp.value.trim(), title=form.title.value.trim();
-    if(!app){ setMsg('App is required.','err'); appInp.focus(); return; }
-    if(!title){ setMsg('Title is required.','err'); form.title.focus(); return; }
-    var shots=[];
-    ['before','after'].forEach(function(role){
-      if(state[role]&&state[role].dataUrl){
-        var cap=det.querySelector('.cap[data-role="'+role+'"]').value.trim();
-        shots.push({ dataUrl:state[role].dataUrl, caption:cap });
-      }
-    });
-    var payload={ app:app, project:'', kind:kindSel.value, title:title, category:catSel.value,
-      severity:form.severity.value, symptom:form.symptom.value.trim(), fix:form.fix.value.trim(),
-      file:form.file.value.trim(), submittedBy:'ledger-web', shots:shots };
-    var key=keyInp.value.trim(); if(key) localStorage.setItem(KEYK,key); localStorage.setItem(LASTAPP,app);
-    var headers={'content-type':'application/json'}; if(key) headers['x-ledger-key']=key;
-    var btn=form.querySelector('button[type=submit]'); btn.disabled=true;
-    setMsg(shots.length?'Uploading screenshot'+(shots.length>1?'s':'')+' & adding…':'Adding…');
-    fetch('/api/bugs',{method:'POST',headers:headers,body:JSON.stringify(payload)})
-      .then(function(r){return r.json();})
-      .then(function(d){
-        btn.disabled=false;
-        if(!d||!d.ok){ setMsg((d&&d.error)||'Failed.', 'err'); if(d&&/unauthor/i.test(d.error||'')){ setMsg('Needs a ledger key — paste it in the 🔑 box.','err'); keyInp.focus(); } return; }
-        setMsg('Added ✓ — appended to the ledger (append-only).','ok');
-        result.innerHTML='<div style="margin-top:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)">'+
-          '<div style="font-weight:700">'+esc(KLABEL[payload.kind])+' · '+esc(app)+' — '+esc(title)+'</div>'+
-          (window.BL_shotStrip?window.BL_shotStrip(d.shots||[]):'')+
-          '<div style="font-size:12.5px;color:var(--muted);margin-top:8px">Now in the 🧫 Agent-submitted panel &amp; the <a href="/timeline">🕘 Activity timeline</a>.</div></div>';
-        // reset for the next one (keep app + key)
-        form.title.value=''; form.symptom.value=''; form.fix.value=''; form.file.value='';
-        state.before=null; state.after=null; resetSlot('before'); resetSlot('after');
-      })
-      .catch(function(err){ btn.disabled=false; setMsg('Network error: '+err,'err'); });
+  /* ---------- async data ---------- */
+  function loadAsync() { /* each feed re-renders the overview as soon as it lands; the big check-log never blocks the chart */
+    var ov = function () { if (st.view === 'overview') render(); };
+    return Promise.all([
+      fetch('/api/activity?limit=200').then(function (r) { return r.json(); }).then(function (d) { ACTIVITY = d.events || []; ov(); }).catch(function () { ACTIVITY = ACTIVITY || []; }),
+      fetch('/api/bugs?limit=200').then(function (r) { return r.json(); }).then(function (d) { SUBMITTED = (d.submitted || []).map(function (s) { s._id = s.id; s._sev = s.severity || CAT2SEV[s.category] || 'low'; return s; }); VIEWS.submitted.loading = false; ov(); if (st.view === 'submitted') { fillFilters(); render(); } }).catch(function () { SUBMITTED = SUBMITTED || []; }),
+      fetch('/api/checks?limit=100').then(function (r) { return r.json(); }).then(function (d) { CHECKS = (d.checks || []).map(function (c) { c._id = c.id; c._sev = ''; return c; }); VIEWS.checks.loading = false; ov(); if (st.view === 'checks') { fillFilters(); render(); } }).catch(function () { CHECKS = CHECKS || []; })
+    ]).then(function () { VIEWS.checks.loading = false; VIEWS.submitted.loading = false; renderStats(); });
+  }
+
+  /* ---------- wiring ---------- */
+  var list = $('#list');
+  list.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-tick]'); if (t) { e.stopPropagation(); toggleTick(t.getAttribute('data-tick')); return; }
+    var g = e.target.closest('.group-h'); if (g) { var name = g.getAttribute('data-group'); openState[name] = openState[name] === false; saveOpen(); render(); return; }
+    var c = e.target.closest('[data-clear]'); if (c) { st.q = ''; st.app = ''; st.cat = ''; st.sev = ''; st.open = false; fillFilters(); writeHash(); render(); return; }
+    var r = e.target.closest('.bl-row'); if (r) openPeek(r.getAttribute('data-id'));
   });
+  list.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { var ov = e.target.closest('[data-ovopen]'); if (ov && e.target === ov) { e.preventDefault(); openPeek(ov.getAttribute('data-ovopen')); return; } var g = e.target.closest('.group-h'); if (g) { e.preventDefault(); g.click(); return; } var r = e.target.closest('.bl-row'); if (r && e.target === r) { e.preventDefault(); openPeek(r.getAttribute('data-id')); } } });
+  document.addEventListener('click', function (e) {
+    var s = e.target.closest('.stat[data-help]'); if (s && e.target.closest('.help')) { openHelp(s.getAttribute('data-help'), +s.querySelector('.n').textContent.replace(/,/g, '')); return; }
+    if (s) { var v = s.getAttribute('data-view'), cat = s.getAttribute('data-cat'); setView(v); if (cat === 'data-loss') { st.q = 'cat:data-loss'; } else if (cat) { st.cat = cat; } fillFilters(); writeHash(); render(); return; }
+    var gv = e.target.closest('[data-goview]'); if (gv) { setView(gv.getAttribute('data-goview')); return; }
+    var oa = e.target.closest('[data-ovapp]'); if (oa) { setView('bugs'); st.app = oa.getAttribute('data-ovapp'); fillFilters(); writeHash(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    var oc = e.target.closest('[data-ovcat]'); if (oc) { setView('bugs'); st.cat = oc.getAttribute('data-ovcat'); fillFilters(); writeHash(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    var oo = e.target.closest('[data-ovopen]'); if (oo) { openPeek(oo.getAttribute('data-ovopen')); return; }
+    var uf = e.target.closest('[data-unfilter]'); if (uf) { var k = uf.getAttribute('data-unfilter'); if (k === 'q') st.q = ''; else if (k === 'open') st.open = false; else st[k] = ''; fillFilters(); writeHash(); render(); return; }
+    var ca = e.target.closest('#activef [data-clear]'); if (ca) { st.q = ''; st.app = ''; st.cat = ''; st.sev = ''; st.open = false; fillFilters(); writeHash(); render(); return; }
+    var cp = e.target.closest('[data-copy]'); if (cp) { B.copy(cp.getAttribute('data-copy'), 'Path copied'); return; }
+    var md = e.target.closest('[data-md]'); if (md) { var hit = findItem(md.getAttribute('data-md')); if (hit) B.copy(itemMd(hit.view, hit.item), 'Copied as Markdown'); return; }
+    var ln = e.target.closest('[data-link]'); if (ln) { var hit2 = findItem(ln.getAttribute('data-link')); if (hit2) B.copy(location.origin + '/#view=' + hit2.view + '&id=' + ln.getAttribute('data-link'), 'Link copied'); return; }
+    var pt = e.target.closest('[data-peektick]'); if (pt) { toggleTick(pt.getAttribute('data-peektick')); return; }
+    var nf = e.target.closest('[data-newfinding]'); if (nf) { openNewFinding(); return; }
+    var pr = e.target.closest('[data-print]'); if (pr) { var V = current(); V.items().forEach(function (it) { var g = V.group === 'app' ? it.app : (V.typeName ? V.typeName(it[V.group]) : it[V.group]); openState[g] = true; }); render(); setTimeout(function () { window.print(); }, 80); return; }
+  });
+  $('#q').addEventListener('input', B.debounce(function () { st.q = $('#q').value; writeHash(); render(); }, 140));
+  $('#fApp').onchange = function () { st.app = this.value; writeHash(); render(); };
+  $('#fCat').onchange = function () { st.cat = this.value; writeHash(); render(); };
+  $('#fSev').onchange = function () { st.sev = this.value; writeHash(); render(); };
+  $('#onlyOpen').onchange = function () { st.open = this.checked; writeHash(); render(); };
+  $('#expand').onclick = function () { var V = current(); V.items().forEach(function (it) { var g = V.group === 'app' ? it.app : (V.typeName ? V.typeName(it[V.group]) : it[V.group]); openState[g] = true; }); saveOpen(); render(); };
+  $('#collapse').onclick = function () { var V = current(); V.items().forEach(function (it) { var g = V.group === 'app' ? it.app : (V.typeName ? V.typeName(it[V.group]) : it[V.group]); openState[g] = false; }); saveOpen(); render(); };
+  document.addEventListener('keydown', function (e) {
+    var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable) || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'j') { e.preventDefault(); step(1); } else if (e.key === 'k') { e.preventDefault(); step(-1); }
+    else if (e.key === 'x' && st.id) { e.preventDefault(); toggleTick(st.id); }
+    else if (e.key === 'Enter' && st.id && !B.peek.isOpen() && document.activeElement && document.activeElement.classList.contains('bl-row')) { e.preventDefault(); openPeek(st.id); }
+    else if (e.key === 'n' || e.key === 'N') { e.preventDefault(); openNewFinding(); }
+  });
+  window.addEventListener('hashchange', function () { var before = st.view; readHash(); if (st.view !== before) setView(st.view, true); else { fillFilters(); render(); } if (st.id) openPeek(st.id); });
+  window.BREAD_SEARCH = function (q) { var pq = parseQuery(q), out = []; VIEW_ORDER.forEach(function (v) { if (out.length >= 12) return; VIEWS[v].items().forEach(function (it) { if (out.length >= 12) return; var h = hay(v, it).toLowerCase(); if (pq.words.every(function (w) { return h.indexOf(w) >= 0; })) out.push({ group: VIEWS[v].label, label: it.title || it.app, icon: VIEWS[v].icon, sub: it.app, run: (function (id, vv) { return function () { setView(vv); openPeek(id); }; })(it._id || it.id, v) }); }); }); return out; };
+
+  /* the sticky group headers sit just under the filter bar, whatever its height */
+  var fbar = $('#filters'); function filtersH() { document.documentElement.style.setProperty('--filters-h', Math.round(fbar.getBoundingClientRect().height) + 'px'); }
+  if (window.ResizeObserver) new ResizeObserver(filtersH).observe(fbar); else window.addEventListener('resize', filtersH);
+  /* ---------- boot ---------- */
+  readHash(); filtersH();
+  B.mount({ active: 'ledger', view: st.view, title: 'Ledger', crumbs: ['Ledger'], actions: '<button class="btn" type="button" data-print>' + icon('print') + '<span class="lbl">Print</span></button><button class="btn primary" type="button" data-newfinding>' + icon('plus') + 'New finding <kbd style="margin-left:4px;border-color:transparent;background:rgba(255,255,255,.18);color:#fff">N</kbd></button>' });
+  renderStats(); setView(st.view, true);
+  if (st.id) openPeek(st.id);
+  loadAsync();
+  liveTick(); setInterval(liveTick, 5000);
+  document.addEventListener('bread:live', function () {});
 })();
 </script>
 </body>

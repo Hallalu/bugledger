@@ -2,163 +2,208 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="description" content="Bug Ledger admin — the same bug popping up across different apps and different analyses.">
-<title>Bug Ledger · Admin</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%81%3C/text%3E%3C/svg%3E">
+<title>Admin · Breadledger</title>
+<meta name="description" content="Breadledger admin — the same bug popping up across different apps and different analyses.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
 <style>
-  *{box-sizing:border-box}
-  :root{--bg:#f5f6fb;--ink:#12141c;--muted:#636879;--card:rgba(255,255,255,.76);--card2:rgba(255,255,255,.55);--line:rgba(18,20,28,.09);
-    --coral:#ff6a5a;--good:#12b886;--violet:#8b7bf0;--sky:#5b9dff;--amber:#e08a00;--red:#e5484d;--shadow:0 16px 44px -24px rgba(30,25,60,.32);
-    --crit:#b4227a;--high:#e5484d;--med:#d1620a;--low:#b58900;--info:#6b7280;
-    --s-catalogue:#8b7bf0;--s-harvested:#5b9dff;--s-scanner:#e08a00;--s-submitted:#ff6a5a;--s-check:#12b886;--s-story:#b4227a}
-  @media (prefers-color-scheme:dark){:root{--bg:#0b0d15;--ink:#eef0f7;--muted:#9aa0b4;--card:rgba(255,255,255,.055);--card2:rgba(255,255,255,.035);--line:rgba(255,255,255,.11);--shadow:0 24px 60px -24px rgba(0,0,0,.7);--low:#f0c000;--med:#f0883e}}
-  html,body{margin:0;min-height:100%}
-  body{font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;color:var(--ink);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-  .aurora{position:fixed;inset:-20vh -10vw;z-index:-1;filter:blur(72px) saturate(120%);opacity:.6;pointer-events:none}
-  .aurora span{position:absolute;border-radius:50%;animation:drift 26s ease-in-out infinite}
-  .aurora .a{width:50vw;height:50vw;left:-6vw;top:-8vh;background:radial-gradient(circle at 30% 30%,#ff9a7a,transparent 62%)}
-  .aurora .b{width:46vw;height:46vw;right:-8vw;top:-6vh;background:radial-gradient(circle at 60% 40%,#8ab6ff,transparent 62%);animation-delay:-8s}
-  .aurora .c{width:46vw;height:46vw;left:14vw;bottom:-16vh;background:radial-gradient(circle at 50% 50%,#7ff0cf,transparent 60%);animation-delay:-14s}
-  @media (prefers-color-scheme:dark){.aurora{opacity:.4}}
-  @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(3vw,4vh) scale(1.07)}66%{transform:translate(-3vw,-2vh) scale(.96)}}
-  @media (prefers-reduced-motion:reduce){.aurora span{animation:none}}
-  .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 90px}
-  header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 16px}
-  .brand{font-weight:800;letter-spacing:-.02em;font-size:20px}.brand .dot{color:var(--coral)}
-  .brand small{font-weight:700;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-left:8px;padding:3px 9px;border:1px solid var(--line);border-radius:99px}
-  .top nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-  .top nav a,.top nav button{color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:5px 12px;font:inherit;font-size:13px;background:transparent;cursor:pointer}
-  .top nav a:hover,.top nav button:hover{color:var(--ink)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);padding:20px 22px;margin:0 0 16px;animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
-  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  h1{font-size:24px;letter-spacing:-.02em;margin:0 0 4px}
-  h2{font-size:16px;margin:0 0 10px;font-weight:800;display:flex;align-items:center;gap:8px}
-  h2 .cnt{font-weight:700;color:var(--muted);font-size:13px}
-  .lede{color:var(--muted);margin:0 0 14px;font-size:14px}
-  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-  .tile{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-  .tile .n{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
-  .tile .l{color:var(--muted);font-size:12px;margin-top:4px}
-  .tile.hot .n{color:var(--coral)} .tile.good .n{color:var(--good)} .tile.vio .n{color:var(--violet)}
-  .tabs{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:8px;margin:0 0 16px;border-radius:16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border:1px solid var(--line)}
-  .tabs button{font:inherit;font-size:13.5px;font-weight:700;color:var(--muted);background:transparent;border:1px solid transparent;border-radius:12px;padding:8px 13px;cursor:pointer}
-  .tabs button[aria-selected="true"]{color:var(--ink);background:var(--card);border-color:var(--line)}
-  .tabs button .cnt{color:var(--muted);margin-left:4px}
+  /* Source hues: six distinct colours from the design palette, defined once. Dark mode swaps the accent for its
+     text shade so the number tiles keep 4.5:1 on the panel. --heat-on is the ink on a solid heat cell. */
+  :root{--src-catalogue:var(--accent);--src-harvested:var(--info);--src-scanner:var(--warn);--src-submitted:var(--danger);--src-check:var(--ok);--src-story:var(--sev-critical);--heat-on:var(--accent-on)}
+  :root[data-theme="dark"]{--src-catalogue:var(--accent-text);--heat-on:var(--bg)}
+  .s-catalogue{background:var(--src-catalogue)}.s-harvested{background:var(--src-harvested)}.s-scanner{background:var(--src-scanner)}.s-submitted{background:var(--src-submitted)}.s-check{background:var(--src-check)}.s-story{background:var(--src-story)}
+  .src{display:inline-block;width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  .srcn{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+
+  /* top-bar tools (moved under the top bar on phones so every action keeps its text) */
+  .adm-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .watch{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-3);white-space:nowrap;padding:0 4px}
+  #toolsSlot{margin:0 0 14px}
+  #toolsSlot:empty{display:none}
+
+  /* key gate */
+  .gate{max-width:420px;margin:6vh auto 0}
+  .gate .card-b{display:grid;gap:14px}
+  .gate p{color:var(--ink-2);font-size:14.5px;line-height:1.55}
+  .gate .row{justify-content:flex-end}
+
+  /* shared bits */
+  .card-h svg.ico{color:var(--ink-3)}
+  .chip svg.ico{width:14px;height:14px}
+  .badge svg.ico{width:13px;height:13px}
+  a.chip:hover{text-decoration:none}
+  .lead{color:var(--ink-3);font-size:14.5px;line-height:1.55;max-width:84ch;margin:0 0 14px}
+  .card-b>.lead:last-child,.panel>.lead:last-child{margin-bottom:0}
+  .panel>.section-h:first-child{margin-top:4px}
+  .panel .stats,.card-b .stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .card-b .stats:last-child{margin-bottom:0}
+  .stat.plain{cursor:default}.stat.plain:hover{transform:none;border-color:var(--line)}
+  .stat.hot .n{color:var(--danger-ink)}.stat.vio .n{color:var(--accent-text)}
+  .stat.s-ink-catalogue .n{color:var(--src-catalogue)}.stat.s-ink-harvested .n{color:var(--src-harvested)}.stat.s-ink-scanner .n{color:var(--src-scanner)}
+  .stat.s-ink-submitted .n{color:var(--src-submitted)}.stat.s-ink-check .n{color:var(--src-check)}.stat.s-ink-story .n{color:var(--src-story)}
+  .adm-top{margin-top:14px;color:var(--ink-2);font-size:14.5px}
+  .adm-top b{color:var(--ink);font-weight:600}
+  .adm-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .adm-chips .chip,.hits .chip{max-width:100%}
+  .adm-chips .chip .truncate,.hits .chip .truncate{min-width:0}
+  .adm-chips .badge{flex:0 0 auto}
+  .adm-foot{margin-top:28px;text-align:center}
+
+  /* tabs: sticky under the top bar on desktop; the classes filter bar sits under the tabs */
+  .adm-tabbar{position:sticky;top:var(--topbar);z-index:20;padding:8px 0;margin:0 0 12px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .adm-tabbar .seg button .n{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .adm-tabbar .seg button.on .n{color:var(--ink-2)}
   .panel[hidden]{display:none}
-  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-  .toolbar input,.toolbar select{font:inherit;font-size:13.5px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--ink)}
-  .toolbar input[type=search]{flex:1;min-width:200px}
-  :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-  .chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--muted);background:transparent;font-family:inherit;line-height:1.4;white-space:nowrap}
-  .chip.mono{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:600}
-  button.chip{cursor:pointer} button.chip:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 35%,transparent)}
-  button.chip[aria-pressed="true"]{color:var(--ink);background:color-mix(in srgb,var(--ink) 9%,transparent);border-color:color-mix(in srgb,var(--ink) 30%,transparent)}
-  .src{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-  .src.catalogue{background:var(--s-catalogue)}.src.harvested{background:var(--s-harvested)}.src.scanner{background:var(--s-scanner)}.src.submitted{background:var(--s-submitted)}.src.check{background:var(--s-check)}.src.story{background:var(--s-story)}
-  .pill{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:99px;white-space:nowrap}
-  .pill.critical{color:var(--crit);background:rgba(180,34,122,.12)}.pill.high{color:var(--high);background:rgba(229,72,77,.12)}.pill.medium{color:var(--med);background:rgba(209,98,10,.13)}.pill.low{color:var(--low);background:rgba(181,137,0,.14)}.pill.info{color:var(--info);background:rgba(107,114,128,.14)}
-  ol.classes{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:c}
-  li.cls{border:1px solid var(--line);border-radius:16px;background:var(--card2);overflow:hidden}
-  li.cls .head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:13px 16px;cursor:pointer}
-  li.cls .num{font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;min-width:26px}
-  li.cls .num::before{counter-increment:c;content:counter(c) "."}
-  li.cls .ttl{font-weight:750;font-size:15.5px;line-height:1.35}
-  li.cls .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-  li.cls .apps{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .appchip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:color-mix(in srgb,var(--violet) 12%,transparent);color:var(--ink)}
-  .appchip b{font-weight:800;color:var(--violet);font-variant-numeric:tabular-nums}
-  li.cls .right{text-align:right;min-width:120px}
-  li.cls .big{font-size:22px;font-weight:800;line-height:1;color:var(--coral)}
-  li.cls .big.one{color:var(--muted)}
-  li.cls .sub{color:var(--muted);font-size:12px;margin-top:2px}
-  .spark{display:block;margin-top:6px}
-  .srcbar{display:flex;height:6px;border-radius:99px;overflow:hidden;margin-top:8px;background:color-mix(in srgb,var(--muted) 14%,transparent)}
+  #p-classes .filters{top:calc(var(--topbar) + var(--adm-tabs,50px))}
+  .adm-srcs{display:flex;flex-wrap:wrap;gap:6px;width:100%}
+
+  /* class rows */
+  ol.adm-classes{list-style:none;margin:0;padding:0}
+  .cls+.cls{border-top:1px solid var(--line)}
+  .cls{scroll-margin-top:calc(var(--topbar) + var(--adm-tabs,50px) + var(--adm-filters,0px) + 8px)}
+  .cls .head{grid-template-columns:auto auto minmax(0,1fr) auto auto;align-items:center;padding:10px 14px;border-top:0}
+  .cls .head:focus-visible{outline-offset:-2px}
+  .cls .num{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums;min-width:26px;text-align:right}
+  .cls .sev{width:16px;height:16px}
+  .cls .tw{min-width:0}
+  .cls .t .badge{margin-left:8px;vertical-align:2px}
+  .cls .sub .sv{font-weight:550;color:var(--ink-2)}
+  .cls .sub .sv.critical{color:var(--sev-critical-ink)}.cls .sub .sv.high{color:var(--sev-high-ink)}.cls .sub .sv.medium{color:var(--sev-medium-ink)}.cls .sub .sv.low{color:var(--sev-low-ink)}
+  .sev.info i{background:var(--ink-3)}
+  .cls .side{display:grid;grid-template-columns:auto auto;gap:2px 12px;align-items:center;justify-self:end;text-align:right}
+  .cls .side .big{font-size:17px;font-weight:650;color:var(--danger-ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap;grid-column:2}
+  .cls .side .big.one{color:var(--ink-3)}
+  .cls .side .s{font-size:13px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums;grid-column:2}
+  .cls .side .spark{grid-column:1;grid-row:1/3;display:block}
+  .cls .chev{width:18px;height:18px;color:var(--ink-3);transition:transform var(--t-fast)}
+  .cls .chev svg{width:18px;height:18px;display:block}
+  .cls[data-open="false"] .chev{transform:rotate(-90deg)}
+  .cls[data-open="true"] .head .t,.cls[data-open="true"] .head .sub{white-space:normal;overflow:visible;text-overflow:clip}
+  .cls[data-open="true"] .head .t{text-wrap:pretty}
+  .cls[data-open="false"] .body{display:none}
+  .cls .body{padding:12px 16px 16px;border-top:1px solid var(--line);background:var(--bg-2);display:grid;gap:10px}
+  .appchips{display:flex;flex-wrap:wrap;gap:6px}
+  .appchip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px;border-radius:99px;background:var(--accent-soft);color:var(--accent-soft-ink);font-size:13px;font-weight:550;white-space:nowrap}
+  .appchip b{font-weight:700;font-variant-numeric:tabular-nums}
+  .srcbar{display:flex;height:6px;border-radius:99px;overflow:hidden;background:var(--line)}
   .srcbar i{display:block;height:100%}
-  li.cls[data-open="false"] .body{display:none}
-  li.cls .body{padding:0 16px 14px 54px}
-  @media (max-width:640px){li.cls .body{padding-left:16px} li.cls .head{grid-template-columns:auto 1fr} li.cls .right{grid-column:1/-1;text-align:left}}
-  table.inst{width:100%;border-collapse:collapse;font-size:13px}
-  table.inst th,table.inst td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-  table.inst th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
-  table.inst td.mono{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted)}
-  table.inst a{color:var(--coral);font-weight:700;text-decoration:none}
-  .caret{display:inline-block;transition:transform .2s;color:var(--muted);font-size:12px;margin-left:4px}
-  li.cls[data-open="false"] .caret{transform:rotate(-90deg)}
-  .heat{overflow:auto;border:1px solid var(--line);border-radius:14px}
-  table.hm{border-collapse:collapse;font-size:12px;min-width:100%}
-  table.hm th{position:sticky;top:0;background:var(--bg);z-index:1;font-weight:700;color:var(--muted);padding:6px 6px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
-  table.hm th.rot{writing-mode:vertical-rl;transform:rotate(180deg);height:120px;text-align:left;padding:6px 4px;border-bottom:0;border-left:1px solid var(--line)}
-  table.hm td{padding:0;border:1px solid var(--line);height:28px;min-width:28px;text-align:center;font-variant-numeric:tabular-nums}
-  table.hm td.lab{padding:0 10px;text-align:left;white-space:nowrap;max-width:360px;overflow:hidden;text-overflow:ellipsis;font-weight:600;position:sticky;left:0;background:var(--bg)}
-  table.hm td.cell{cursor:pointer;color:var(--ink);font-weight:700}
-  .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:8px;align-items:center}
-  .legend span i{display:inline-block;width:14px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:4px}
-  .empty{padding:30px;text-align:center;color:var(--muted)}
-  .gate{max-width:520px;margin:12vh auto}
-  .gate input{width:100%;font:inherit;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--ink);margin:8px 0}
-  .btn{font:inherit;font-weight:700;padding:9px 16px;border-radius:12px;border:1px solid var(--line);background:var(--ink);color:var(--bg);cursor:pointer}
-  .btn.ghost{background:transparent;color:var(--ink)}
-  .foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:26px}.foot a{color:inherit}
-  .spin{width:26px;height:26px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--coral);animation:sp 1s linear infinite;margin:16vh auto}
-  @keyframes sp{to{transform:rotate(360deg)}}
-  .an{display:grid;gap:8px}
-  .anrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2);font-size:13.5px}
-  .anrow .k{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px}
-  .anrow .k.check{color:var(--good);background:rgba(18,184,134,.14)} .anrow .k.story{color:var(--crit);background:rgba(180,34,122,.12)}
-  .anrow .hits{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-  .anrow a{color:var(--coral);font-weight:700;text-decoration:none;white-space:nowrap}
-  .tl{width:100%;height:160px}
-  .badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:99px;margin-left:8px;vertical-align:2px}
-  .badge.new{color:#fff;background:var(--coral)} .badge.grew{color:var(--coral);background:color-mix(in srgb,var(--coral) 14%,transparent)}
-  .since{border:1px solid color-mix(in srgb,var(--coral) 40%,transparent);background:color-mix(in srgb,var(--coral) 7%,transparent)}
-  .since .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .watch[hidden],.panel[hidden]{display:none!important}
-  .watch{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12.5px}
-  .watch i{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block;animation:beat 1.6s ease-out infinite}
-  @keyframes beat{0%{box-shadow:0 0 0 0 rgba(18,184,134,.55)}70%{box-shadow:0 0 0 8px rgba(18,184,134,0)}100%{box-shadow:0 0 0 0 rgba(18,184,134,0)}}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);opacity:0;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13.5px;font-weight:700;transition:.25s;pointer-events:none;z-index:9}
-  .toast.show{opacity:1}
-  @media (pointer:coarse){input,select,textarea{font-size:16px}}   /* iOS: no focus zoom */
+  .cls .body .table{font-size:13.5px}
+  .cls .body .table th,.heat .table th{top:0}
+  .cls .body .table td{min-width:120px}
+  .cls .body .table td.rec{min-width:260px}
+  .cls .body .table td.when{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+  .cls .body .table .note-t{font-size:13px;color:var(--ink-3);margin-top:2px}
+  .cls .body .table a{font-weight:600;white-space:nowrap}
+
+  /* heatmap */
+  .heat .table{width:auto;min-width:100%;font-size:13px}
+  .heat th.rot{writing-mode:vertical-rl;transform:rotate(180deg);height:160px;max-width:32px;padding:8px 6px;position:static;text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--panel);text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:0}
+  .heat th.lab,.heat td.lab{position:sticky;left:0;z-index:2;background:var(--panel);text-align:left;white-space:nowrap;max-width:360px;overflow:hidden;text-overflow:ellipsis;font-weight:550;padding:0 12px;font-size:13.5px;border-left:0}
+  .heat thead th.lab{z-index:3;top:auto;border-bottom:0}
+  .heat tr:hover td.lab{background:var(--panel-2)}
+  .heat td{padding:0;border-bottom:1px solid var(--line);border-left:1px solid var(--line);height:30px;min-width:30px;text-align:center;font-variant-numeric:tabular-nums;vertical-align:middle}
+  .heat td.c1,.heat tr:hover td.c1,.legend i.c1{background:color-mix(in srgb,var(--danger) 25%,var(--panel))}
+  .heat td.c2,.heat tr:hover td.c2,.legend i.c2{background:color-mix(in srgb,var(--danger) 55%,var(--panel))}
+  .heat td.c3,.heat tr:hover td.c3,.legend i.c3{background:var(--danger)}
+  .heat td.c3{color:var(--heat-on)}
+  .heat .hcell{display:block;width:100%;height:30px;min-width:30px;border:0;background:transparent;font:inherit;font-size:13px;font-weight:600;color:inherit;cursor:pointer;padding:0}
+  .heat .hcell:focus-visible{outline-offset:-2px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);align-items:center;margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{display:inline-block;width:14px;height:10px;border-radius:3px}
+
+  /* by analysis */
+  .an{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;padding:12px 14px;align-items:start}
+  .an+.an{border-top:1px solid var(--line)}
+  .an .line{font-size:14.5px;line-height:1.45}
+  .an .line b{font-weight:600}
+  .hits{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .an .right{display:grid;gap:4px;justify-items:end;text-align:right;white-space:nowrap}
+  .an .right a{font-weight:600}
+
+  /* over time */
+  #tl{overflow:hidden}
+  .tl{display:block;max-width:100%}
+
+  @media (max-width:900px){
+    .adm-tabbar{position:static;padding:0}
+    .adm-tabbar .seg{display:flex;flex-wrap:wrap}
+    .adm-srcs{grid-column:1/-1}
+    .cls{scroll-margin-top:calc(var(--topbar) + 8px)}
+    .cls .head{grid-template-columns:auto auto minmax(0,1fr) auto;padding:10px 12px;align-items:start}
+    .cls .num,.cls .sev,.cls .chev{margin-top:2px}
+    .cls .num{grid-column:1;grid-row:1}.cls .sev{grid-column:2;grid-row:1}.cls .tw{grid-column:3;grid-row:1}.cls .chev{grid-column:4;grid-row:1}
+    .cls .side{grid-column:3;grid-row:2;justify-self:start;text-align:left;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;max-width:100%}
+    .cls .side .big,.cls .side .s{white-space:normal}
+    .cls .body{padding:10px 12px 12px}
+    .heat th.lab,.heat td.lab{max-width:180px}
+    .an{grid-template-columns:auto minmax(0,1fr)}
+    .an .right{grid-column:2;justify-items:start;text-align:left;display:flex;gap:10px;align-items:center}
+    .gate{margin-top:3vh}
+  }
 </style>
 </head>
 <body>
-<div class="aurora"><span class="a"></span><span class="b"></span><span class="c"></span></div>
-<div class="wrap">
-  <header class="top"><div class="brand">Bug Ledger<span class="dot">.</span> <small>Admin</small></div>
-    <nav><a href="/">The ledger</a><a href="/timeline">Activity</a><a href="/live">Live</a><span class="watch" id="watch" hidden><i></i><span>watching for new reports</span></span><button type="button" id="refresh">↻ Re-read all reports</button><button type="button" id="exportJson">⇩ JSON</button><button type="button" id="exportCsv">⇩ CSV</button><button type="button" id="signout" title="Forget the admin key on this device">Sign out</button></nav></header>
-  <main id="app"><div class="spin"></div></main>
-  <div class="foot">Admin view · every instance from the catalogue, the harvester, the scanner, agent submissions, check-logs and scan stories, clustered into bug classes. Read-only. · <a href="/AGENT.md">protocol</a></div>
+<div class="bl-app" id="app">
+  <aside class="bl-side" id="side" aria-label="Sidebar"></aside>
+  <div class="bl-main">
+    <header class="bl-top" id="top"></header>
+    <main class="bl-content wide" id="page">
+      <div id="toolsSlot"></div>
+      <div id="view"></div>
+      <p class="meta adm-foot">Admin view · every instance from the catalogue, the harvester, the scanner, agent submissions, check-logs and scan stories, clustered into bug classes. Read-only. · <a href="/AGENT.md">protocol</a></p>
+    </main>
+  </div>
 </div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
-  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var $=Bread.$, $$=Bread.$$, esc=Bread.esc, icon=Bread.icon;
   var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function dts(ts){if(!ts)return '—';var d=new Date(ts);return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear();}
+  function dts(ts){return ts?Bread.fmtDate(ts):'—';}
   function mkey(ts){var d=new Date(ts);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);}
-  function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show')},1500);}
+  function toast(m,kind){Bread.toast(m,kind);}
   var SRC=['catalogue','harvested','scanner','submitted','check','story'];
   var SRCLBL={catalogue:'Catalogue (curated)',harvested:'Auto-harvested',scanner:'Scanner',submitted:'Agent-submitted',check:'Check-log',story:'Scan story'};
   var SEVR={critical:0,high:1,medium:2,low:3,info:4};
 
+  // ---------- shell ----------
+  var TOOLS='<div class="adm-tools" id="tools"><span class="watch" id="watch" hidden><span class="pip live"></span><span>watching for new reports</span></span>'+
+    '<button class="btn" type="button" id="refresh" title="Re-read all reports">'+icon('reset')+'Re-read</button>'+
+    '<button class="btn" type="button" id="exportJson" title="Download every bug class as JSON">'+icon('download')+'JSON</button>'+
+    '<button class="btn" type="button" id="exportCsv" title="Download every bug class as CSV">'+icon('download')+'CSV</button>'+
+    '<button class="btn" type="button" id="signout" title="Forget the admin key on this device">'+icon('logout')+'Sign out</button></div>';
+  Bread.mount({active:'admin',title:'Admin',crumbs:['Admin'],actions:TOOLS});
+  var MQ=window.matchMedia('(max-width:900px)');
+  function placeTools(){var t=$('#tools');if(!t)return;var slot=MQ.matches?$('#toolsSlot'):$('#top .actions');if(slot&&t.parentNode!==slot)slot.appendChild(t);}
+  try{MQ.addEventListener('change',placeTools)}catch(e){MQ.addListener(placeTools)} placeTools();
+  function measure(){var tb=$('.adm-tabbar'),f=$('#p-classes .filters'),r=document.documentElement.style;r.setProperty('--adm-tabs',(tb?tb.offsetHeight:0)+'px');r.setProperty('--adm-filters',(f?f.offsetHeight:0)+'px');}
+  window.addEventListener('resize',Bread.debounce(function(){measure();if(window.__DATA&&activeTab()==='timeline')renderTimeline();},150));
+
   // ---------- key gate ----------
   var KEY=null; try{KEY=localStorage.getItem('bl_admin_key')}catch(e){}
   function gate(msg){
-    $('#app').innerHTML='<div class="card gate"><h1>Admin</h1><p class="lede">This view reads every tier of the ledger at once. Paste the ledger write key (the <code>token</code> in <code>~/.bugledger.json</code>). It is kept only in this browser.</p>'+(msg?'<p style="color:var(--red);font-weight:700">'+esc(msg)+'</p>':'')+
-      '<form id="gate"><input type="password" id="key" autocomplete="off" placeholder="x-ledger-key" aria-label="Ledger key"><div style="display:flex;gap:8px;justify-content:flex-end"><a class="btn ghost" href="/" style="text-decoration:none">Back</a><button class="btn" type="submit">Open admin</button></div></form></div>';
-    $('#gate').onsubmit=function(e){e.preventDefault();KEY=$('#key').value.trim();try{localStorage.setItem('bl_admin_key',KEY)}catch(x){} load();};
+    var w=$('#watch'); if(w) w.hidden=true;
+    $('#view').innerHTML='<div class="gate"><form class="card" id="gate" novalidate><div class="card-h">'+icon('lock')+'<h1>Admin</h1></div><div class="card-b">'+
+      '<p>This view reads every tier of the ledger at once. Paste the ledger write key (the <code>token</code> in <code>~/.bugledger.json</code>). It is kept only in this browser.</p>'+
+      (msg?'<div class="note danger" role="alert">'+icon('alert')+'<span>'+esc(msg)+'</span></div>':'')+
+      '<div class="field"><label for="key">Ledger key</label><input class="input" type="password" id="key" autocomplete="off" placeholder="x-ledger-key"></div>'+
+      '<div class="row"><a class="btn" href="/">'+icon('left')+'Back</a><button class="btn primary" type="submit">'+icon('lock')+'Open admin</button></div></div></form></div>';
+    $('#gate').onsubmit=function(e){e.preventDefault();KEY=$('#key').value.trim();if(!KEY)return;try{localStorage.setItem('bl_admin_key',KEY)}catch(x){} load();};
+    setTimeout(function(){var k=$('#key');if(k)k.focus();},30);
   }
   $('#refresh').onclick=function(){ toast('Re-reading every report…'); load(); };
   $('#signout').onclick=function(){try{localStorage.removeItem('bl_admin_key')}catch(e){}KEY=null;gate();};
+  function fail(msg){ $('#view').innerHTML='<div class="note danger" role="alert">'+icon('alert')+'<span class="grow">'+esc(msg)+'</span><button class="btn" type="button" id="retry">'+icon('reset')+'Retry</button></div>'; $('#retry').onclick=function(){load()}; }
   function load(){
     if(!KEY){gate();return;}
-    $('#app').innerHTML='<div class="spin"></div>';
+    $('#view').innerHTML=Bread.empty('Loading…','Reading every tier of the ledger.','ledger');
     fetch('/api/admin/recurrence',{headers:{'x-ledger-key':KEY},cache:'no-store'}).then(function(r){if(r.status===401){gate('That key was not accepted.');throw 0;}return r.json();})
-      .then(function(d){ if(!d||!d.ok){$('#app').innerHTML='<div class="card empty">Could not load: '+esc(d&&d.error)+'</div>';return;} build(d); watch(); })
-      .catch(function(e){ if(e!==0) $('#app').innerHTML='<div class="card empty">Could not load — <a href="#" onclick="load();return false">retry</a></div>'; });
+      .then(function(d){ if(!d||!d.ok){fail('Could not load: '+(d&&d.error||'unknown error'));return;} build(d); watch(); })
+      .catch(function(e){ if(e!==0) fail('Could not load'); });
   }
+  window.addEventListener('bread:key',function(){try{KEY=localStorage.getItem('bl_admin_key')}catch(e){} load();});
   load();
 
   // ---------- clustering ----------
@@ -215,14 +260,14 @@
     D.since.newAnalyses=D.d.analyses.filter(function(x){return !seenAn.has(x.id)});
     D.classes.forEach(function(c){ var p=Object.prototype.hasOwnProperty.call(SNAP.sig||{},ckey(c.title))?SNAP.sig[ckey(c.title)]:null; c.flag=null; if(!p){ if(c.last&&c.last>SNAP.ts-1){c.flag='new';D.since.newClasses.push(c);} } else if(c.n>p.n||c.nApps>p.a){ c.flag='grew'; c.grewBy={n:c.n-p.n,a:c.nApps-p.a}; D.since.grew.push(c);} });
   }
-  function markSeen(){ SNAP=snapshotOf(window.__DATA); try{localStorage.setItem('bl_admin_snap',JSON.stringify(SNAP))}catch(e){} diffSinceSeen(); render(); toast('Marked as seen — new arrivals will be flagged from now'); }
+  function markSeen(){ SNAP=snapshotOf(window.__DATA); try{localStorage.setItem('bl_admin_snap',JSON.stringify(SNAP))}catch(e){} diffSinceSeen(); render(); toast('Marked as seen — new arrivals will be flagged from now','ok'); }
   // re-read all reports on a timer; rebuild only when something actually changed
   var WATCH=null;
-  function watch(){ if(WATCH)return; $('#watch').hidden=false; WATCH=setInterval(function(){ if(!KEY)return;
+  function watch(){ if(WATCH){$('#watch').hidden=false;return;} $('#watch').hidden=false; WATCH=setInterval(function(){ if(!KEY)return;
     fetch('/api/admin/recurrence',{headers:{'x-ledger-key':KEY},cache:'no-store'}).then(function(r){return r.json()}).then(function(d){ if(!d||!d.ok||!window.__DATA)return;
       var old=window.__DATA.d; if(d.counts.instances===old.counts.instances&&d.analyses.length===old.analyses.length)return;
-      var t=activeTab(); build(d); selectTab(t); toast((d.counts.instances-old.counts.instances)+' new instance(s) · '+(d.analyses.length-old.analyses.length)+' new report(s) read'); }).catch(function(){}); },60000); }
-  function activeTab(){var b=$('.tabs [aria-selected="true"]');return b?b.dataset.tab:'classes';}
+      var t=activeTab(); build(d); selectTab(t); toast((d.counts.instances-old.counts.instances)+' new instance(s) · '+(d.analyses.length-old.analyses.length)+' new report(s) read','ok'); }).catch(function(){}); },60000); }
+  function activeTab(){var b=$('.adm-tabbar [aria-selected="true"]');return b?b.dataset.tab:'classes';}
   var F={q:'',min:2,src:null,cat:null,sort:'apps',app:null};
   function render(){
     var D=window.__DATA, d=D.d, classes=D.classes;
@@ -231,44 +276,46 @@
     var appList=Object.keys(allApps).sort(function(a,b){return allApps[b]-allApps[a]});
     var cats=Object.create(null); classes.forEach(function(c){cats[c.cat]=(cats[c.cat]||0)+1});
     var top=multi[0];
-    var html='<div class="card"><h1>The same bug, across apps and analyses</h1><p class="lede">Every recorded instance of a bug — curated catalogue, hourly harvester, scanner, agent submissions, check-logs and scan stories — grouped into bug classes by detector id and fuzzy title. A class in several apps is a pattern, not a one-off: fix it once as a rule, a detector or a module.</p>'+
-      '<div class="tiles">'+tile(d.counts.instances,'bug instances','')+tile(classes.length,'bug classes','')+tile(multi.length,'classes in 2+ apps','hot')+tile(tri.length,'classes in 3+ apps','hot')+tile(appList.length,'apps','')+tile(d.analyses.length,'analyses (checks + stories)','vio')+'</div>'+
-      (top?'<p class="lede" style="margin:12px 0 0">Most widespread right now: <b style="color:var(--ink)">'+esc(top.title)+'</b> — seen in '+top.nApps+' apps, '+top.n+' instances'+(top.refs.length?', '+top.refs.length+' analyses':'')+'.</p>':'')+
-      '</div>';
-    var S=D.since||{}; var readLine='Read <b>'+d.analyses.length+'</b> analyses ('+d.counts.checks+' check-logs, '+d.counts.stories+' scan stories) and <b>'+d.counts.instances+'</b> instances at '+new Date(d.generated).toLocaleTimeString()+'; re-reads every minute.';
-    if(S.first){ html+='<div class="card since"><h2>Since your last visit</h2><p class="lede" style="margin:0">'+readLine+' This is your first visit on this device — <button class="chip" type="button" id="markSeen">mark everything as seen</button> and from now on new reports, new bug classes and classes that spread to more apps are flagged here.</p></div>'; }
+    var html='<section class="card adm-intro"><div class="card-b"><h1>The same bug, across apps and analyses</h1><p class="lead">Every recorded instance of a bug — curated catalogue, hourly harvester, scanner, agent submissions, check-logs and scan stories — grouped into bug classes by detector id and fuzzy title. A class in several apps is a pattern, not a one-off: fix it once as a rule, a detector or a module.</p>'+
+      '<div class="stats">'+tile(d.counts.instances,'bug instances','')+tile(classes.length,'bug classes','')+tile(multi.length,'classes in 2+ apps','hot')+tile(tri.length,'classes in 3+ apps','hot')+tile(appList.length,'apps','')+tile(d.analyses.length,'analyses (checks + stories)','vio')+'</div>'+
+      (top?'<p class="adm-top">Most widespread right now: <b>'+esc(top.title)+'</b> — seen in '+top.nApps+' apps, '+top.n+' instances'+(top.refs.length?', '+top.refs.length+' analyses':'')+'.</p>':'')+
+      '</div></section>';
+    var S=D.since||{}; var readLine='Read <b>'+Bread.fmtN(d.analyses.length)+'</b> analyses ('+Bread.fmtN(d.counts.checks)+' check-logs, '+Bread.fmtN(d.counts.stories)+' scan stories) and <b>'+Bread.fmtN(d.counts.instances)+'</b> instances at '+esc(Bread.fmtDate(d.generated,true))+'; re-reads every minute.';
+    if(S.first){ html+='<section class="card adm-since"><div class="card-h">'+icon('activity')+'<h2>Since your last visit</h2></div><div class="card-b stack"><p class="ink2">'+readLine+' This is your first visit on this device — mark everything as seen and from now on new reports, new bug classes and classes that spread to more apps are flagged here.</p><div class="row"><button class="btn" type="button" id="markSeen">'+icon('check')+'Mark everything as seen</button></div></div></section>'; }
     else { var nA=S.newAnalyses.length,nC=S.newClasses.length,nG=S.grew.length;
-      html+='<div class="card since"><h2>Since your last visit <span class="cnt">'+dts(SNAP.ts)+' '+new Date(SNAP.ts).toLocaleTimeString()+'</span></h2><p class="lede">'+readLine+'</p>'+
-        '<div class="tiles" style="margin-bottom:10px">'+tile(nA,'new reports read',nA?'hot':'')+tile(nC,'new bug classes',nC?'hot':'')+tile(nG,'classes that grew or spread',nG?'hot':'')+'</div>'+
-        (nA?'<div class="row" style="margin-bottom:8px"><span class="chip">new reports</span>'+S.newAnalyses.slice(0,12).map(function(x){return '<a class="chip" href="'+esc(x.url)+'" style="text-decoration:none">'+(x.kind==='story'?'📖 ':'📊 ')+esc(x.app)+' · '+esc(dts(x.ts))+'</a>'}).join('')+(nA>12?'<span class="chip">+'+(nA-12)+' more</span>':'')+'</div>':'')+
-        (nG?'<div class="row" style="margin-bottom:8px"><span class="chip">spread or grew</span>'+S.grew.slice(0,12).map(function(c){return '<button class="chip" type="button" data-go="'+D.classes.indexOf(c)+'">'+esc(c.title.length>44?c.title.slice(0,42)+'…':c.title)+(c.grewBy.a>0?' · +'+c.grewBy.a+' app'+(c.grewBy.a>1?'s':''):'')+(c.grewBy.n>0?' · +'+c.grewBy.n:'')+'</button>'}).join('')+'</div>':'')+
-        (nC?'<div class="row" style="margin-bottom:8px"><span class="chip">new classes</span>'+S.newClasses.slice(0,12).map(function(c){return '<button class="chip" type="button" data-go="'+D.classes.indexOf(c)+'">'+esc(c.title.length>44?c.title.slice(0,42)+'…':c.title)+'</button>'}).join('')+'</div>':'')+
-        (!nA&&!nC&&!nG?'<p class="lede" style="margin:0;color:var(--good)">Nothing new since then — every report has already been read and nothing spread.</p>':'')+
-        '<div class="row"><button class="chip" type="button" id="markSeen">✓ Mark all as seen</button></div></div>'; }
+      html+='<section class="card adm-since"><div class="card-h">'+icon('activity')+'<h2>Since your last visit</h2><span class="meta" title="Last marked as seen">'+esc(Bread.fmtDate(SNAP.ts,true))+'</span></div><div class="card-b stack"><p class="ink2">'+readLine+'</p>'+
+        '<div class="stats">'+tile(nA,'new reports read',nA?'hot':'')+tile(nC,'new bug classes',nC?'hot':'')+tile(nG,'classes that grew or spread',nG?'hot':'')+'</div>'+
+        (nA?'<div class="adm-chips"><span class="badge info">new reports</span>'+S.newAnalyses.slice(0,12).map(function(x){return '<a class="chip" href="'+esc(x.url)+'">'+icon(x.kind==='story'?'file':'checkcircle')+'<span class="truncate">'+esc(x.app)+' · '+esc(dts(x.ts))+'</span></a>'}).join('')+(nA>12?'<span class="badge outline">+'+(nA-12)+' more</span>':'')+'</div>':'')+
+        (nG?'<div class="adm-chips"><span class="badge warn">spread or grew</span>'+S.grew.slice(0,12).map(function(c){return '<button class="chip" type="button" data-go="'+D.classes.indexOf(c)+'"><span class="truncate">'+esc(c.title.length>44?c.title.slice(0,42)+'…':c.title)+(c.grewBy.a>0?' · +'+c.grewBy.a+' app'+(c.grewBy.a>1?'s':''):'')+(c.grewBy.n>0?' · +'+c.grewBy.n:'')+'</span></button>'}).join('')+'</div>':'')+
+        (nC?'<div class="adm-chips"><span class="badge danger">new classes</span>'+S.newClasses.slice(0,12).map(function(c){return '<button class="chip" type="button" data-go="'+D.classes.indexOf(c)+'"><span class="truncate">'+esc(c.title.length>44?c.title.slice(0,42)+'…':c.title)+'</span></button>'}).join('')+'</div>':'')+
+        (!nA&&!nC&&!nG?'<div class="note ok">'+icon('checkcircle')+'<span>Nothing new since then — every report has already been read and nothing spread.</span></div>':'')+
+        '<div class="row"><button class="btn" type="button" id="markSeen">'+icon('check')+'Mark all as seen</button></div></div></section>'; }
     var tabs=[['classes','Bug classes',classes.length],['heat','App × bug heatmap',null],['analyses','By analysis',d.analyses.length],['timeline','Over time',null],['sources','By source',null]];
-    html+='<div class="tabs" role="tablist">'+tabs.map(function(t,i){return '<button role="tab" type="button" data-tab="'+t[0]+'" aria-selected="'+(i===0)+'">'+t[1]+(t[2]!=null?'<span class="cnt">'+t[2]+'</span>':'')+'</button>'}).join('')+'</div>';
+    html+='<div class="adm-tabbar"><div class="seg" role="tablist" aria-label="Admin views">'+tabs.map(function(t,i){return '<button role="tab" type="button" id="tab-'+t[0]+'"'+(i===0?' class="on"':'')+' data-tab="'+t[0]+'" aria-selected="'+(i===0)+'" aria-controls="p-'+t[0]+'">'+esc(t[1])+(t[2]!=null?'<span class="n">'+Bread.fmtN(t[2])+'</span>':'')+'</button>'}).join('')+'</div></div>';
     // classes
-    html+='<section class="panel card" id="p-classes"><h2>Bug classes <span class="cnt" id="ccount"></span></h2>'+
-      '<div class="toolbar"><input type="search" id="q" placeholder="Search a bug, an app, a file, a detector…" aria-label="Search" value="'+esc(F.q)+'">'+
-      '<select id="min" aria-label="Minimum apps"><option value="1"'+(F.min===1?' selected':'')+'>any number of apps</option><option value="2"'+(F.min===2?' selected':'')+'>in 2+ apps</option><option value="3"'+(F.min===3?' selected':'')+'>in 3+ apps</option><option value="4"'+(F.min===4?' selected':'')+'>in 4+ apps</option></select>'+
-      '<select id="sort" aria-label="Sort"><option value="apps"'+(F.sort==='apps'?' selected':'')+'>most apps first</option><option value="inst"'+(F.sort==='inst'?' selected':'')+'>most instances first</option><option value="recent"'+(F.sort==='recent'?' selected':'')+'>most recent first</option><option value="analyses"'+(F.sort==='analyses'?' selected':'')+'>most analyses first</option></select>'+
-      '<select id="cat" aria-label="Category"><option value="">all categories</option>'+Object.keys(cats).sort().map(function(k){return '<option value="'+esc(k)+'"'+(F.cat===k?' selected':'')+'>'+esc(k)+' ('+cats[k]+')</option>'}).join('')+'</select>'+
-      '<select id="fapp" aria-label="App"><option value="">all apps</option>'+appList.map(function(a){return '<option value="'+esc(a)+'"'+(F.app===a?' selected':'')+'>'+esc(a)+' ('+allApps[a]+')</option>'}).join('')+'</select></div>'+
-      '<div class="toolbar" style="gap:6px">'+SRC.map(function(s){return '<button class="chip" type="button" data-src="'+s+'" aria-pressed="'+(F.src===s)+'"><span class="src '+s+'"></span>'+SRCLBL[s]+'</button>'}).join('')+'</div>'+
-      '<ol class="classes" id="clist"></ol><div class="empty" id="cempty" hidden>Nothing matches.</div></section>';
+    html+='<section class="panel" id="p-classes" role="tabpanel" aria-labelledby="tab-classes"><div class="filters">'+
+      '<div class="search-wrap">'+icon('search')+'<input class="input" type="search" id="q" data-search placeholder="Search a bug, an app, a file, a detector…" aria-label="Search bug classes" autocomplete="off" value="'+esc(F.q)+'"></div>'+
+      '<select class="select" id="min" aria-label="Minimum apps"><option value="1"'+(F.min===1?' selected':'')+'>any number of apps</option><option value="2"'+(F.min===2?' selected':'')+'>in 2+ apps</option><option value="3"'+(F.min===3?' selected':'')+'>in 3+ apps</option><option value="4"'+(F.min===4?' selected':'')+'>in 4+ apps</option></select>'+
+      '<select class="select" id="sort" aria-label="Sort"><option value="apps"'+(F.sort==='apps'?' selected':'')+'>most apps first</option><option value="inst"'+(F.sort==='inst'?' selected':'')+'>most instances first</option><option value="recent"'+(F.sort==='recent'?' selected':'')+'>most recent first</option><option value="analyses"'+(F.sort==='analyses'?' selected':'')+'>most analyses first</option></select>'+
+      '<select class="select" id="cat" aria-label="Category"><option value="">all categories</option>'+Object.keys(cats).sort().map(function(k){return '<option value="'+esc(k)+'"'+(F.cat===k?' selected':'')+'>'+esc(k)+' ('+cats[k]+')</option>'}).join('')+'</select>'+
+      '<select class="select" id="fapp" aria-label="App"><option value="">all apps</option>'+appList.map(function(a){return '<option value="'+esc(a)+'"'+(F.app===a?' selected':'')+'>'+esc(a)+' ('+allApps[a]+')</option>'}).join('')+'</select>'+
+      '<span class="count" id="ccount"></span>'+
+      '<div class="adm-srcs">'+SRC.map(function(s){return '<button class="chip'+(F.src===s?' on':'')+'" type="button" data-src="'+s+'" aria-pressed="'+(F.src===s)+'"><i class="src s-'+s+'"></i>'+SRCLBL[s]+'</button>'}).join('')+'</div></div>'+
+      '<ol class="list adm-classes" id="clist"></ol><div class="card" id="cempty" hidden><div class="empty">'+icon('filter')+'<b>Nothing matches.</b><p>Clear the search or a filter to see more classes.</p><button class="btn" type="button" id="clearF">'+icon('x')+'Clear filters</button></div></div></section>';
     // heatmap
-    html+='<section class="panel card" id="p-heat" hidden><h2>App × bug heatmap <span class="cnt">top classes seen in 2+ apps</span></h2><p class="lede">Rows are bug classes, columns are apps; a cell is how many instances of that class were recorded for that app. Click a cell to jump to the class.</p><div class="heat" id="heat"></div><div class="legend"><span><i style="background:color-mix(in srgb,var(--coral) 25%,transparent)"></i>1</span><span><i style="background:color-mix(in srgb,var(--coral) 55%,transparent)"></i>2–3</span><span><i style="background:var(--coral)"></i>4+</span></div></section>';
+    html+='<section class="panel" id="p-heat" role="tabpanel" aria-labelledby="tab-heat" hidden><div class="section-h"><h2>App × bug heatmap</h2><span class="meta">top classes seen in 2+ apps</span></div><p class="lead">Rows are bug classes, columns are apps; a cell is how many instances of that class were recorded for that app. Click a cell to jump to the class.</p><div class="table-wrap heat" id="heat"></div><div class="legend"><span><i class="c1"></i>1</span><span><i class="c2"></i>2–3</span><span><i class="c3"></i>4+</span></div></section>';
     // analyses
-    html+='<section class="panel card" id="p-analyses" hidden><h2>By analysis <span class="cnt">which recurring classes each scan hit</span></h2><p class="lede">Every check-log and scan story, newest first, with the cross-app bug classes it recorded. A class that keeps appearing analysis after analysis is not being fixed at the root.</p><div class="an" id="anlist"></div></section>';
+    html+='<section class="panel" id="p-analyses" role="tabpanel" aria-labelledby="tab-analyses" hidden><div class="section-h"><h2>By analysis</h2><span class="meta">which recurring classes each scan hit</span></div><p class="lead">Every check-log and scan story, newest first, with the cross-app bug classes it recorded. A class that keeps appearing analysis after analysis is not being fixed at the root.</p><div class="list adm-an" id="anlist"></div></section>';
     // timeline
-    html+='<section class="panel card" id="p-timeline" hidden><h2>Over time <span class="cnt">instances recorded per month, by source</span></h2><div id="tl"></div><div class="legend">'+SRC.map(function(s){return '<span><i style="background:var(--s-'+s+')"></i>'+SRCLBL[s]+'</span>'}).join('')+'</div></section>';
+    html+='<section class="panel" id="p-timeline" role="tabpanel" aria-labelledby="tab-timeline" hidden><div class="section-h"><h2>Over time</h2><span class="meta">instances recorded per month, by source</span></div><div class="card"><div class="card-b"><div id="tl"></div><div class="legend">'+SRC.map(function(s){return '<span><i class="s-'+s+'"></i>'+SRCLBL[s]+'</span>'}).join('')+'</div></div></div></section>';
     // sources
-    html+='<section class="panel card" id="p-sources" hidden><h2>By source</h2><p class="lede">Where instances come from, and how many classes each source is the only witness for. A class seen only by the scanner is a lead; one seen by the catalogue and a check-log is a confirmed regression.</p><div class="tiles" id="srctiles"></div></section>';
-    $('#app').innerHTML=html;
+    html+='<section class="panel" id="p-sources" role="tabpanel" aria-labelledby="tab-sources" hidden><div class="section-h"><h2>By source</h2></div><p class="lead">Where instances come from, and how many classes each source is the only witness for. A class seen only by the scanner is a lead; one seen by the catalogue and a check-log is a confirmed regression.</p><div class="stats" id="srctiles"></div></section>';
+    $('#view').innerHTML=html;
     wire(); renderClasses(); renderHeat(); renderAnalyses(); renderTimeline(); renderSources();
-    var h=(location.hash||'').slice(1); if(h&&$('#p-'+h)) selectTab(h);
+    var h=(location.hash||'').slice(1); if(/^[a-z]+$/.test(h)&&$('#p-'+h)) selectTab(h);
+    measure();
   }
-  function tile(n,l,cls){return '<div class="tile '+(cls||'')+'"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
+  function tile(n,l,cls,d){return '<div class="stat plain'+(cls?' '+cls:'')+'"><span class="n">'+Bread.fmtN(n)+'</span><span class="l">'+esc(l)+'</span>'+(d?'<span class="d">'+esc(d)+'</span>':'')+'</div>';}
   function filtered(){
     var D=window.__DATA, q=F.q.toLowerCase().trim();
     var list=D.classes.filter(function(c){
@@ -280,70 +327,96 @@
   }
   function spark(inst){
     var by=Object.create(null); inst.forEach(function(i){if(i.ts)by[mkey(i.ts)]=(by[mkey(i.ts)]||0)+1}); var keys=Object.keys(by).sort(); if(keys.length<2)return '';
-    var w=140,h=26,max=Math.max.apply(null,keys.map(function(k){return by[k]})); var bw=w/keys.length;
-    return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-label="instances per month">'+keys.map(function(k,i){var v=by[k],bh=Math.max(2,v/max*(h-2));return '<rect x="'+(i*bw+1).toFixed(1)+'" y="'+(h-bh).toFixed(1)+'" width="'+Math.max(1,bw-2).toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="1.5" fill="var(--coral)" opacity=".8"><title>'+k+': '+v+'</title></rect>'}).join('')+'</svg>';
+    var w=96,h=26,max=Math.max.apply(null,keys.map(function(k){return by[k]})); var bw=w/keys.length;
+    return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-label="instances per month">'+keys.map(function(k,i){var v=by[k],bh=Math.max(2,v/max*(h-2));return '<rect x="'+(i*bw+1).toFixed(1)+'" y="'+(h-bh).toFixed(1)+'" width="'+Math.max(1,bw-2).toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="1.5" fill="var(--danger)" opacity=".8"><title>'+k+': '+v+'</title></rect>'}).join('')+'</svg>';
   }
+  function cssName(s){return String(s||'').toLowerCase().replace(/[^a-z0-9-]+/g,'');}
+  function byCount(o){return function(a,b){return o[b]-o[a]||(a<b?-1:1)};}
   function renderClasses(){
-    var list=filtered(), D=window.__DATA; $('#ccount').textContent=list.length+' of '+D.classes.length; $('#cempty').hidden=list.length>0;
+    var list=filtered(), D=window.__DATA; $('#ccount').textContent=Bread.fmtN(list.length)+' of '+Bread.fmtN(D.classes.length)+' classes'; $('#cempty').hidden=list.length>0; $('#clist').hidden=!list.length;
     $('#clist').innerHTML=list.slice(0,400).map(function(c,ix){
-      var srcbar='<div class="srcbar" title="by source">'+SRC.filter(function(s){return c.srcs[s]}).map(function(s){return '<i style="width:'+(c.srcs[s]/c.n*100).toFixed(1)+'%;background:var(--s-'+s+')"></i>'}).join('')+'</div>';
-      var appChips=Object.keys(c.apps).sort(function(a,b){return c.apps[b]-c.apps[a]}).map(function(a){return '<span class="appchip">'+esc(a)+' <b>'+c.apps[a]+'</b></span>'}).join('');
-      var inst=c.inst.slice().sort(function(a,b){return (b.ts||0)-(a.ts||0)});
-      return '<li class="cls" data-open="'+(ix<3?'true':'false')+'" id="c'+D.classes.indexOf(c)+'"><div class="head" role="button" tabindex="0" aria-expanded="'+(ix<3)+'"><div class="num"></div><div>'+
-        '<div class="ttl">'+esc(c.title)+(c.flag==='new'?'<span class="badge new">new</span>':c.flag==='grew'?'<span class="badge grew">'+(c.grewBy.a>0?'+'+c.grewBy.a+' app'+(c.grewBy.a>1?'s':''):'+'+c.grewBy.n)+'</span>':'')+'<span class="caret">▼</span></div>'+
-        '<div class="meta">'+(c.sev?'<span class="pill '+c.sev+'">'+c.sev+'</span>':'')+'<span class="chip">'+esc(c.cat)+'</span>'+(c.det?'<span class="chip mono">'+esc(c.det)+'</span>':'')+SRC.filter(function(s){return c.srcs[s]}).map(function(s){return '<span class="chip"><span class="src '+s+'"></span>'+c.srcs[s]+' '+SRCLBL[s].toLowerCase()+'</span>'}).join('')+'</div>'+
-        '<div class="apps">'+appChips+'</div>'+srcbar+'</div>'+
-        '<div class="right"><div class="big'+(c.nApps<2?' one':'')+'">'+c.nApps+' app'+(c.nApps>1?'s':'')+'</div><div class="sub">'+c.n+' instance'+(c.n>1?'s':'')+(c.refs.length?' · '+c.refs.length+' analys'+(c.refs.length>1?'es':'is'):'')+'</div><div class="sub">'+dts(c.first)+(c.last&&c.last!==c.first?' → '+dts(c.last):'')+'</div>'+spark(c.inst)+'</div></div>'+
-        '<div class="body"><table class="inst"><thead><tr><th>Source</th><th>App</th><th>As recorded</th><th>Where</th><th>When</th><th></th></tr></thead><tbody>'+
-        inst.slice(0,60).map(function(i){return '<tr><td><span class="src '+i.source+'"></span>'+esc(SRCLBL[i.source])+(i.status?' · '+esc(i.status):'')+(i.verifiedBy?' · '+esc(i.verifiedBy):'')+'</td><td>'+esc(i.appC)+'</td><td>'+esc(i.title)+(i.note?'<div style="color:var(--muted);font-size:12px">'+esc(i.note)+'</div>':'')+'</td><td class="mono">'+esc(i.file||'')+'</td><td class="mono">'+esc(dts(i.ts))+'</td><td>'+(i.ref?'<a href="'+esc(i.ref)+'">'+(i.refKind==='story'?'story':'report')+' →</a>':'')+'</td></tr>'}).join('')+
-        (inst.length>60?'<tr><td colspan="6" style="color:var(--muted)">…and '+(inst.length-60)+' more</td></tr>':'')+'</tbody></table></div></li>';
+      var open=ix<3, gi=D.classes.indexOf(c), appKeys=Object.keys(c.apps).sort(byCount(c.apps));
+      var appsTop=appKeys.slice(0,4).map(function(a){return esc(a)+' '+c.apps[a]}).join(' · ')+(appKeys.length>4?' · +'+(appKeys.length-4)+' more':'');
+      var badge=c.flag==='new'?'<span class="badge danger">new</span>':c.flag==='grew'?'<span class="badge warn">'+(c.grewBy.a>0?'+'+c.grewBy.a+' app'+(c.grewBy.a>1?'s':''):'+'+c.grewBy.n)+'</span>':'';
+      var srcCounts=SRC.filter(function(s){return c.srcs[s]}).map(function(s){return '<span class="srcn"><i class="src s-'+s+'"></i>'+c.srcs[s]+' '+SRCLBL[s].toLowerCase()+'</span>'}).join(' · ');
+      return '<li class="cls" data-open="'+open+'" id="c'+gi+'" data-ix="'+gi+'"><div class="bl-row head" role="button" tabindex="0" aria-expanded="'+open+'">'+
+        '<span class="num">'+(ix+1)+'.</span><span class="sev '+cssName(c.sev)+'" title="'+esc(c.sev||'no severity')+'"><i></i></span>'+
+        '<div class="tw"><div class="t">'+esc(c.title)+badge+'</div><div class="sub">'+(c.sev?'<span class="sv '+cssName(c.sev)+'">'+esc(c.sev)+'</span> · ':'')+'<span class="cat '+cssName(c.cat)+'">'+esc(c.cat)+'</span>'+(c.det?' · <span class="id">'+esc(c.det)+'</span>':'')+' · '+srcCounts+' · <span class="apps">'+appsTop+'</span></div></div>'+
+        '<div class="side">'+spark(c.inst)+'<b class="big'+(c.nApps<2?' one':'')+'">'+c.nApps+' app'+(c.nApps>1?'s':'')+'</b><span class="s">'+c.n+' instance'+(c.n>1?'s':'')+(c.refs.length?' · '+c.refs.length+' analys'+(c.refs.length>1?'es':'is'):'')+' · '+esc(dts(c.first))+(c.last&&c.last!==c.first?' → '+esc(dts(c.last)):'')+'</span></div>'+
+        '<span class="chev">'+icon('down')+'</span></div>'+
+        '<div class="body">'+(open?bodyOf(c):'')+'</div></li>';
     }).join('');
   }
+  function bodyOf(c){
+    var inst=c.inst.slice().sort(function(a,b){return (b.ts||0)-(a.ts||0)});
+    var appChips=Object.keys(c.apps).sort(byCount(c.apps)).map(function(a){return '<span class="appchip">'+esc(a)+' <b>'+c.apps[a]+'</b></span>'}).join('');
+    var srcbar='<div class="srcbar" title="by source">'+SRC.filter(function(s){return c.srcs[s]}).map(function(s){return '<i class="s-'+s+'" style="width:'+(c.srcs[s]/c.n*100).toFixed(1)+'%" title="'+esc(SRCLBL[s])+': '+c.srcs[s]+'"></i>'}).join('')+'</div>';
+    return '<div class="appchips">'+appChips+'</div>'+srcbar+'<div class="table-wrap"><table class="table"><thead><tr><th>Source</th><th>App</th><th>As recorded</th><th>Where</th><th>When</th><th aria-label="Link"></th></tr></thead><tbody>'+
+      inst.slice(0,60).map(function(i){return '<tr><td><span class="srcn"><i class="src s-'+cssName(i.source)+'"></i>'+esc(SRCLBL[i.source]||i.source)+'</span>'+(i.status?' · '+esc(i.status):'')+(i.verifiedBy?' · '+esc(i.verifiedBy):'')+'</td><td>'+esc(i.appC)+'</td><td class="rec">'+esc(i.title)+(i.note?'<div class="note-t">'+esc(i.note)+'</div>':'')+'</td><td><span class="id">'+esc(i.file||'')+'</span></td><td class="when">'+esc(dts(i.ts))+'</td><td>'+(i.ref?'<a href="'+esc(i.ref)+'">'+(i.refKind==='story'?'story':'report')+' →</a>':'')+'</td></tr>'}).join('')+
+      (inst.length>60?'<tr><td colspan="6" class="muted">…and '+(inst.length-60)+' more</td></tr>':'')+'</tbody></table></div>';
+  }
+  function ensureBody(li){ var b=$('.body',li); if(b&&!b.firstChild){ var c=window.__DATA.classes[+li.dataset.ix]; if(c) b.innerHTML=bodyOf(c); } }
   function renderHeat(){
     var D=window.__DATA, rows=D.classes.filter(function(c){return c.nApps>=2}).slice(0,40);
-    if(!rows.length){$('#heat').innerHTML='<div class="empty">No class has been seen in two or more apps yet.</div>';return;}
+    if(!rows.length){$('#heat').innerHTML=Bread.empty('No class has been seen in two or more apps yet.','','grid');return;}
     var apps=Object.create(null); rows.forEach(function(c){Object.keys(c.apps).forEach(function(a){apps[a]=(apps[a]||0)+c.apps[a]})}); var cols=Object.keys(apps).sort(function(a,b){return apps[b]-apps[a]});
-    $('#heat').innerHTML='<table class="hm"><thead><tr><th></th>'+cols.map(function(a){return '<th class="rot">'+esc(a)+'</th>'}).join('')+'</tr></thead><tbody>'+
-      rows.map(function(c){return '<tr><td class="lab" title="'+esc(c.title)+'">'+esc(c.title)+'</td>'+cols.map(function(a){var v=c.apps[a]||0;var bg=v===0?'transparent':v===1?'color-mix(in srgb,var(--coral) 25%,transparent)':v<=3?'color-mix(in srgb,var(--coral) 55%,transparent)':'var(--coral)';return '<td class="'+(v?'cell':'')+'" style="background:'+bg+'" data-go="'+D.classes.indexOf(c)+'" data-app="'+esc(a)+'" title="'+esc(c.title)+' · '+esc(a)+': '+v+'">'+(v||'')+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table>';
+    $('#heat').innerHTML='<table class="table"><thead><tr><th class="lab" scope="col" aria-label="Bug class"></th>'+cols.map(function(a){return '<th class="rot" scope="col" title="'+esc(a)+'">'+esc(a)+'</th>'}).join('')+'</tr></thead><tbody>'+
+      rows.map(function(c){var gi=D.classes.indexOf(c);return '<tr><td class="lab" title="'+esc(c.title)+'">'+esc(c.title)+'</td>'+cols.map(function(a){var v=c.apps[a]||0;var k=v===0?'':v===1?'c1':v<=3?'c2':'c3';var lab=esc(c.title)+' · '+esc(a)+': '+v;return '<td'+(k?' class="'+k+'"':'')+'>'+(v?'<button class="hcell" type="button" data-go="'+gi+'" data-app="'+esc(a)+'" title="'+lab+'" aria-label="'+lab+'">'+v+'</button>':'')+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table>';
   }
   function renderAnalyses(){
     var D=window.__DATA, byRef=Object.create(null);
     D.classes.forEach(function(c){ if(c.nApps<2)return; c.refs.forEach(function(r){(byRef[r]=byRef[r]||[]).push(c)}); });
     var list=D.d.analyses.slice().sort(function(a,b){return b.ts-a.ts});
-    var seen={}; list=list.filter(function(a){ if(a.kind==='check'&&a.sessionId){ return false; } return true; }); // a check inside a story is shown once, via its story
+    list=list.filter(function(a){ if(a.kind==='check'&&a.sessionId){ return false; } return true; }); // a check inside a story is shown once, via its story
     $('#anlist').innerHTML=list.slice(0,150).map(function(a){var hits=(byRef[a.url]||[]); var allHits=D.classes.filter(function(c){return c.refs.indexOf(a.url)>=0}).length;
-      return '<div class="anrow"><span class="k '+a.kind+'">'+(a.kind==='story'?'📖 story':'📊 check')+'</span><div><b>'+esc(a.app)+'</b>'+(a.project&&a.project!==a.app?' <span style="color:var(--muted)">· '+esc(a.project)+'</span>':'')+(a.title?' <span style="color:var(--muted)">— '+esc(a.title)+'</span>':'')+(a.scope&&a.kind==='check'?' <span class="chip">'+esc(a.scope)+'</span>':'')+
-        '<div class="hits">'+(hits.length?hits.slice(0,8).map(function(c){return '<button class="chip" type="button" data-go="'+D.classes.indexOf(c)+'">'+esc(c.title.length>48?c.title.slice(0,46)+'…':c.title)+' · '+c.nApps+' apps</button>'}).join('')+(hits.length>8?'<span class="chip">+'+(hits.length-8)+' more</span>':''):'<span class="chip" style="color:var(--good)">no cross-app class recorded'+(allHits?' ('+allHits+' single-app)':'')+'</span>')+'</div></div>'+
-        '<div style="text-align:right"><div style="color:var(--muted);font-size:12px">'+esc(dts(a.ts))+'</div><a href="'+esc(a.url)+'">open →</a></div></div>'}).join('');
+      return '<div class="an"><span class="badge '+(a.kind==='story'?'critical':'ok')+'">'+icon(a.kind==='story'?'file':'checkcircle')+(a.kind==='story'?'story':'check')+'</span><div class="grow"><div class="line"><b>'+esc(a.app)+'</b>'+(a.project&&a.project!==a.app?' <span class="muted">· '+esc(a.project)+'</span>':'')+(a.title?' <span class="muted">— '+esc(a.title)+'</span>':'')+(a.scope&&a.kind==='check'?' <span class="badge outline">'+esc(a.scope)+'</span>':'')+'</div>'+
+        '<div class="hits">'+(hits.length?hits.slice(0,8).map(function(c){return '<button class="chip" type="button" data-go="'+D.classes.indexOf(c)+'"><span class="truncate">'+esc(c.title.length>48?c.title.slice(0,46)+'…':c.title)+' · '+c.nApps+' apps</span></button>'}).join('')+(hits.length>8?'<span class="badge outline">+'+(hits.length-8)+' more</span>':''):'<span class="badge ok">no cross-app class recorded'+(allHits?' ('+allHits+' single-app)':'')+'</span>')+'</div></div>'+
+        '<div class="right"><span class="meta">'+esc(dts(a.ts))+'</span><a href="'+esc(a.url)+'">open →</a></div></div>'}).join('');
   }
   function renderTimeline(){
     var D=window.__DATA, by=Object.create(null); D.d.instances.forEach(function(i){if(!i.ts)return;var k=mkey(i.ts);(by[k]=by[k]||{});by[k][i.source]=(by[k][i.source]||0)+1;});
-    var keys=Object.keys(by).sort(); if(!keys.length){$('#tl').innerHTML='<div class="empty">No dated instances.</div>';return;}
-    var w=900,h=170,pad=28,bw=(w-pad*2)/keys.length; var max=Math.max.apply(null,keys.map(function(k){return SRC.reduce(function(a,s){return a+(by[k][s]||0)},0)}));
-    var svg='<svg class="tl" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="instances per month by source">';
-    keys.forEach(function(k,i){var y=h-22; SRC.forEach(function(s){var v=by[k][s]||0;if(!v)return;var bh=v/max*(h-40);y-=bh;svg+='<rect x="'+(pad+i*bw+2).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+Math.max(2,bw-4).toFixed(1)+'" height="'+bh.toFixed(1)+'" fill="var(--s-'+s+')"><title>'+k+' · '+SRCLBL[s]+': '+v+'</title></rect>';});
-      svg+='<text x="'+(pad+i*bw+bw/2).toFixed(1)+'" y="'+(h-6)+'" text-anchor="middle" font-size="10" fill="var(--muted)">'+k.slice(2)+'</text>';});
-    $('#tl').innerHTML=svg+'</svg>';
+    var keys=Object.keys(by).sort(), box=$('#tl'); if(!box)return; if(!keys.length){box.innerHTML=Bread.empty('No dated instances.','','calendar');return;}
+    var W=Math.max(320,box.clientWidth||900), h=220, padL=48, padR=8, padT=12, padB=30, n=keys.length;
+    var bw=Math.min(110,(W-padL-padR)/n), max=Math.max.apply(null,keys.map(function(k){return SRC.reduce(function(a,s){return a+(by[k][s]||0)},0)}))||1, inner=h-padT-padB;
+    var svg='<svg class="tl" width="'+W+'" height="'+h+'" viewBox="0 0 '+W+' '+h+'" role="img" aria-label="instances per month by source">';
+    [0,0.5,1].forEach(function(g){var y=padT+(1-g)*inner;svg+='<line x1="'+padL+'" x2="'+(padL+bw*n).toFixed(1)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="var(--line)"/><text x="'+(padL-8)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" font-size="12.5" fill="var(--ink-3)">'+Bread.fmtN(Math.round(max*g))+'</text>';});
+    keys.forEach(function(k,i){var y=padT+inner, x=padL+i*bw; SRC.forEach(function(s){var v=by[k][s]||0;if(!v)return;var bh=v/max*inner;y-=bh;svg+='<rect x="'+(x+4).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+Math.max(2,bw-8).toFixed(1)+'" height="'+bh.toFixed(1)+'" fill="var(--src-'+s+')"><title>'+k+' · '+SRCLBL[s]+': '+v+'</title></rect>';});
+      var m=+k.slice(5)-1, lbl=bw>=72?MON[m]+' '+k.slice(0,4):MON[m]+' ’'+k.slice(2,4);
+      svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(h-8)+'" text-anchor="middle" font-size="12.5" fill="var(--ink-3)">'+lbl+'</text>';});
+    box.innerHTML=svg+'</svg>';
   }
   function renderSources(){
     var D=window.__DATA, only=Object.create(null), tot=Object.create(null); D.classes.forEach(function(c){var ks=Object.keys(c.srcs); ks.forEach(function(s){tot[s]=(tot[s]||0)+c.srcs[s]}); if(ks.length===1)only[ks[0]]=(only[ks[0]]||0)+1;});
-    $('#srctiles').innerHTML=SRC.map(function(s){return '<div class="tile"><div class="n" style="color:var(--s-'+s+')">'+(tot[s]||0)+'</div><div class="l">'+esc(SRCLBL[s])+' instances</div><div class="l">'+(only[s]||0)+' classes seen only here</div></div>'}).join('');
+    $('#srctiles').innerHTML=SRC.map(function(s){return tile(tot[s]||0,SRCLBL[s]+' instances','s-ink-'+s,Bread.fmtN(only[s]||0)+' classes seen only here')}).join('');
   }
-  function selectTab(name){$$('.tabs [role="tab"]').forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===name))});$$('.panel').forEach(function(p){p.hidden=(p.id!=='p-'+name)});try{history.replaceState(null,'','#'+name)}catch(e){}}
-  function goClass(ix,app){ F.min=1; if(app){F.app=app;} $('#min').value='1'; if(app)$('#fapp').value=app; F.q=''; $('#q').value=''; renderClasses(); selectTab('classes'); var el=document.getElementById('c'+ix); if(el){el.dataset.open='true';el.scrollIntoView({behavior:'smooth',block:'start'});} }
+  function selectTab(name){$$('.adm-tabbar [role="tab"]').forEach(function(b){var on=b.dataset.tab===name;b.setAttribute('aria-selected',String(on));b.classList.toggle('on',on)});$$('.panel').forEach(function(p){p.hidden=(p.id!=='p-'+name)});try{history.replaceState(null,'','#'+name)}catch(e){} if(name==='timeline')renderTimeline(); measure();}
+  function goClass(ix,app){ F.min=1; if(app){F.app=app;} $('#min').value='1'; if(app)$('#fapp').value=app; F.q=''; $('#q').value=''; renderClasses(); selectTab('classes'); var el=document.getElementById('c'+ix); if(el){el.dataset.open='true';$('.head',el).setAttribute('aria-expanded','true');ensureBody(el);el.scrollIntoView({behavior:'smooth',block:'start'});} }
+  function setSrcChips(){ $$('[data-src]').forEach(function(b){var on=F.src===b.dataset.src;b.setAttribute('aria-pressed',String(on));b.classList.toggle('on',on)}); }
   function wire(){
-    $('#q').oninput=function(){F.q=this.value;renderClasses()}; $('#min').onchange=function(){F.min=+this.value;renderClasses()}; $('#sort').onchange=function(){F.sort=this.value;renderClasses()};
+    $('#q').oninput=Bread.debounce(function(){F.q=this.value;renderClasses()},150); $('#min').onchange=function(){F.min=+this.value;renderClasses()}; $('#sort').onchange=function(){F.sort=this.value;renderClasses()};
     $('#cat').onchange=function(){F.cat=this.value||null;renderClasses()}; var ms=$('#markSeen'); if(ms) ms.onclick=markSeen; $('#fapp').onchange=function(){F.app=this.value||null;renderClasses()};
+    $('#clearF').onclick=function(){F.q='';F.min=1;F.src=null;F.cat=null;F.app=null;F.sort='apps';$('#q').value='';$('#min').value='1';$('#sort').value='apps';$('#cat').value='';$('#fapp').value='';setSrcChips();renderClasses();};
     document.onclick=function(ev){ var t=ev.target.closest('[data-tab],[data-src],[data-go],li.cls .head'); if(!t)return;
-      if(t.dataset.tab){selectTab(t.dataset.tab);return;} if(t.dataset.src){F.src=F.src===t.dataset.src?null:t.dataset.src;$$('[data-src]').forEach(function(b){b.setAttribute('aria-pressed',String(F.src===b.dataset.src))});renderClasses();return;}
+      if(t.dataset.tab){selectTab(t.dataset.tab);return;} if(t.dataset.src){F.src=F.src===t.dataset.src?null:t.dataset.src;setSrcChips();renderClasses();return;}
       if(t.dataset.go){goClass(+t.dataset.go,t.dataset.app);return;}
-      if(t.classList.contains('head')){var li=t.parentElement,o=li.dataset.open!=='false';li.dataset.open=String(!o);t.setAttribute('aria-expanded',String(!o));} };
+      if(t.classList.contains('head')){var li=t.parentElement,o=li.dataset.open!=='false';li.dataset.open=String(!o);t.setAttribute('aria-expanded',String(!o));if(!o)ensureBody(li);} };
     document.onkeydown=function(ev){if((ev.key==='Enter'||ev.key===' ')&&ev.target.classList&&ev.target.classList.contains('head')){ev.preventDefault();ev.target.click();}};
   }
   function exportRows(){ return window.__DATA.classes.map(function(c){return {title:c.title,category:c.cat,severity:c.sev,detector:c.det,apps:Object.keys(c.apps),appCount:c.nApps,instances:c.n,analyses:c.refs.length,firstSeen:c.first?new Date(c.first).toISOString():null,lastSeen:c.last?new Date(c.last).toISOString():null,sources:c.srcs}}); }
-  function download(name,text,type){ var b=new Blob([text],{type:type}); var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); a.remove(); toast('Downloaded '+name); }
-  $('#exportJson').onclick=function(){ if(!window.__DATA)return; download('bugledger-recurrence.json',JSON.stringify({generated:new Date().toISOString(),classes:exportRows()},null,2),'application/json'); };
-  $('#exportCsv').onclick=function(){ if(!window.__DATA)return; var rows=exportRows(); var csv=['title,category,severity,detector,appCount,apps,instances,analyses,firstSeen,lastSeen'].concat(rows.map(function(r){return [r.title,r.category,r.severity||'',r.detector||'',r.appCount,r.apps.join('; '),r.instances,r.analyses,r.firstSeen||'',r.lastSeen||''].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(',')})).join('\n'); download('bugledger-recurrence.csv',csv,'text/csv'); };
+  function download(name,text,type){ var b=new Blob([text],{type:type}); var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); a.remove(); toast('Downloaded '+name,'ok'); }
+  function exportJson(){ if(!window.__DATA){toast('Nothing loaded yet','err');return;} download('bugledger-recurrence.json',JSON.stringify({generated:new Date().toISOString(),classes:exportRows()},null,2),'application/json'); }
+  function exportCsv(){ if(!window.__DATA){toast('Nothing loaded yet','err');return;} var rows=exportRows(); var csv=['title,category,severity,detector,appCount,apps,instances,analyses,firstSeen,lastSeen'].concat(rows.map(function(r){return [r.title,r.category,r.severity||'',r.detector||'',r.appCount,r.apps.join('; '),r.instances,r.analyses,r.firstSeen||'',r.lastSeen||''].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(',')})).join('\n'); download('bugledger-recurrence.csv',csv,'text/csv'); }
+  $('#exportJson').onclick=exportJson; $('#exportCsv').onclick=exportCsv;
+
+  // ⌘K: admin actions, tabs and a search over the bug classes
+  Bread.cmdk.register([
+    {group:'Admin',label:'Re-read all reports',icon:'reset',run:function(){toast('Re-reading every report…');load();}},
+    {group:'Admin',label:'Download JSON',icon:'download',run:exportJson},{group:'Admin',label:'Download CSV',icon:'download',run:exportCsv},
+    {group:'Admin',label:'Mark all as seen',icon:'check',run:function(){if(window.__DATA)markSeen();}},
+    {group:'Admin tabs',label:'Bug classes',icon:'bug',run:function(){selectTab('classes')}},{group:'Admin tabs',label:'App × bug heatmap',icon:'grid',run:function(){selectTab('heat')}},
+    {group:'Admin tabs',label:'By analysis',icon:'file',run:function(){selectTab('analyses')}},{group:'Admin tabs',label:'Over time',icon:'activity',run:function(){selectTab('timeline')}},{group:'Admin tabs',label:'By source',icon:'inbox',run:function(){selectTab('sources')}}
+  ]);
+  window.BREAD_SEARCH=function(q){ if(!window.__DATA)return []; q=String(q||'').toLowerCase(); return window.__DATA.classes.filter(function(c){return c.title.toLowerCase().indexOf(q)>=0}).slice(0,12).map(function(c){return {group:'Bug classes',label:c.title,icon:'bug',sub:c.nApps+' app'+(c.nApps>1?'s':'')+' · '+c.n+' inst.',run:function(){goClass(window.__DATA.classes.indexOf(c))}}}); };
 </script>
 </body>
 </html>

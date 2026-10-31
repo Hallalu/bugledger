@@ -1,18 +1,25 @@
-# Bug Ledger
+# Breadledger (formerly Bug Ledger)
 
-An interactive, comprehensive record of **every bug fixed** across the app portfolio
-(304 bugs across 14 apps), a **full AI security audit**, a **code scanner** that checks
-whatever app you're working on against every known bug class, and an **hourly harvester**
-that keeps mining new conversations for fresh bugs.
+An append-only record of **every bug, security hole and optimiser ever fixed** across the app portfolio
+(1,117 bugs across 61 apps, 458 optimisers, a full security audit), a **code scanner** that checks whatever
+app you're working on against every known bug class, an **hourly harvester** that keeps mining new
+conversations for fresh bugs, **live boards** and **scan stories** written by the agents that check a project,
+and a private **prompt journal**.
+
+Redesigned on 31 Oct 2026 as Breadledger: one design system (`public/bread.css`, `public/bread-shell.js`), a
+sidebar with every page, a ⌘K palette, one list row and a side peek for detail, light and dark, phones first.
+Pages: `/` (Ledger: Bugs · Security audit · Optimisers · Scanner leads · Harvested · Agent checks · Submitted),
+`/live`, `/timeline`, `/story/<id>`, `/plans`, `/aiscan`, `/sanitize`, owner-only `/journal` and `/admin`.
 
 🔗 **Live:** https://bugledger.coconvo.workers.dev
 📋 **Flat checklist:** [CHECKLIST.md](./CHECKLIST.md) · **Detailed:** [BUGS.md](./BUGS.md) · **Raw:** [bugs.json](./bugs.json)
 🔒 **Security sweep:** [SECURITY-AUDIT.md](./SECURITY-AUDIT.md) · [security.json](./security.json)
 🔎 **Scanner leads:** [SCAN-FINDINGS.md](./SCAN-FINDINGS.md) · [scan-findings.json](./scan-findings.json)
 🌱 **Auto-harvested:** [HARVESTED.md](./HARVESTED.md) · [harvested.json](./harvested.json)
+✨ **Optimisers:** [OPTIMISERS.md](./OPTIMISERS.md) · [optimisers.json](./optimisers.json)
 
-Every list on the site filters by **app**, **type**, and **severity** (critical / high / medium / low)
-— the severity filter applies to the bugs, the security findings, and the scanner leads at once.
+Every view on the site filters by **app**, **type** and **severity** (critical / high / medium / low), searches
+with `app:` `cat:` `sev:` `is:open` prefixes, and opens any row in a side panel (j / k / Enter / x on the keyboard).
 
 ## The four layers
 

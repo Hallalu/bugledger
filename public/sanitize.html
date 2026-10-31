@@ -3,221 +3,157 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sanitizer · Breadledger</title>
 <meta name="description" content="Paste text or code; removes invisible, bidirectional and homoglyph characters with the same rules the ledger and scanner use.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Bug Ledger · Sanitizer — strip hidden and smuggled Unicode">
+<meta property="og:title" content="Breadledger · Sanitizer — strip hidden and smuggled Unicode">
 <meta property="og:description" content="Paste text or code; removes invisible, bidirectional and homoglyph characters with the same rules the ledger and scanner use.">
 <meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<title>Text Sanitizer — Bug Ledger</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
 <style>
-  :root{
-    --bg:#f6f7fb; --panel:#ffffff; --ink:#141726; --muted:#5b6178; --line:#e7e9f2;
-    --accent:#6b5cff; --accent2:#00b4a6; --chip:#f0f1f8;
-    --shadow:0 1px 2px rgba(20,23,38,.06),0 8px 24px rgba(20,23,38,.06);
-    --strip:#e5484d; --normalize:#d1620a; --flag:#2f6feb; --preserve:#12a150;
-    --ok:#e8f7ee;
+  /* page-only styles, tokens only (var(--…)) */
+  .pg{display:grid;gap:16px;align-content:start}
+  .pg .page-h{margin-bottom:0}
+  .bl-top .crumbs .sep{color:var(--ink-3)}               /* shell crumb separator measures 1.82:1 with --line-2; candidate for bread.css */
+  .card-h h2{font-size:15px;font-weight:600;min-width:0}
+  .badge .ico{width:13px;height:13px;flex:0 0 auto}      /* icon inside a badge; candidate for bread.css */
+  .promises{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .promises .note{align-items:flex-start}
+  .controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .controls .hint{font-size:13.5px;color:var(--ink-3)}
+  .panes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .panes .card{display:flex;flex-direction:column}
+  .panes .card-b{flex:1;display:flex}
+  .panes .textarea{min-height:260px;flex:1}
+  .card-f{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px;border-top:1px solid var(--line);background:var(--panel-2);border-radius:0 0 var(--r-2) var(--r-2)}   /* card footer; candidate for bread.css */
+  .card-f .meta{margin-left:auto;font-variant-numeric:tabular-nums}
+  #stats:empty,#revealWrap:empty{display:none}
+  .stats{margin-bottom:0}
+  .stats .stat{cursor:default}
+  .stats .stat:hover{transform:none;border-color:var(--line)}
+  .stat.strip .n{color:var(--danger-ink)} .stat.normalize .n{color:var(--warn-ink)} .stat.flag .n{color:var(--info-ink)} .stat.preserve .n{color:var(--ok-ink)}
+  .reveal{font-family:var(--mono);font-size:13.5px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;padding:12px 14px;border:1px dashed var(--line-2);border-radius:var(--r-2);background:var(--bg-2);color:var(--ink)}
+  .rc{display:inline-block;font-family:var(--font);font-size:12.5px;font-weight:700;line-height:1;padding:3px 5px;margin:0 1px;border-radius:5px;vertical-align:middle;cursor:help;letter-spacing:.02em}
+  .rc.strip{background:var(--danger-soft);color:var(--danger-ink)} .rc.normalize{background:var(--warn-soft);color:var(--warn-ink)} .rc.flag{background:var(--info-soft);color:var(--info-ink)}
+  .adv>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;min-height:34px;font-size:13.5px;font-weight:600;color:var(--ink-2);user-select:none;border-radius:var(--r-1)}
+  .adv>summary::-webkit-details-marker{display:none}
+  .adv>summary .ico{width:16px;height:16px;color:var(--ink-3);transition:transform var(--t-fast)}
+  .adv[open]>summary .ico{transform:rotate(90deg)}
+  .adv-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 18px;padding:6px 0 0}
+  .adv-body .check{align-items:flex-start;padding:6px 4px;line-height:1.4}
+  .adv-body .cbx{margin-top:2px}
+  .audit .group-h{cursor:default;position:static}
+  .audit .group-h .n{margin-left:auto}
+  .audit .bl-row{cursor:default;grid-template-columns:auto minmax(0,1fr) auto;align-items:start}
+  .audit .bl-row:hover{background:none}
+  .audit .bl-row .t,.audit .bl-row .sub{white-space:normal;overflow:visible;text-overflow:clip}
+  .audit .bl-row .sub{margin-top:2px}
+  .audit .gi{width:28px;height:28px;border-radius:var(--r-1);background:var(--bg-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink-2);margin-top:3px}
+  .audit .gi .ico{width:15px;height:15px}
+  .audit .cps{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .audit .cps .badge{height:auto;min-height:22px;padding:3px 8px;white-space:normal;font-weight:500}
+  .audit .bl-row .side{align-self:start;margin-top:5px}
+  .honest{display:grid;gap:8px}
+  .honest b{color:var(--ink)}
+  @media (max-width:900px){
+    .panes,.promises{grid-template-columns:1fr}
+    .audit .bl-row{grid-template-columns:auto minmax(0,1fr)}
+    .audit .bl-row .side{grid-column:2;justify-self:start;margin-top:0}
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0d0f18; --panel:#151826; --ink:#eef0fa; --muted:#9aa1bd; --line:#242940;
-      --chip:#1d2135; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35); --ok:#12291d;
-    }
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0}
-  body{background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:var(--accent);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 96px}
-
-  .topnav{display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-bottom:20px}
-  .topnav .brand{font-weight:800;color:var(--ink);letter-spacing:-.01em;font-size:15px}
-  .topnav .dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:inline-block;margin-right:7px;vertical-align:middle}
-  .topnav .sp{flex:1}
-
-  header.hero{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
-  .hero h1{font-size:32px;letter-spacing:-.02em;margin:0;font-weight:850}
-  .hero h1 .g{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  .hero .sub{color:var(--muted);max-width:76ch;font-size:15.5px}
-  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
-  .badge{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:12.5px;color:var(--muted);box-shadow:var(--shadow)}
-  .badge b{color:var(--ink);font-weight:700}
-  .badge .lk{width:8px;height:8px;border-radius:50%;background:var(--preserve)}
-
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media (max-width:900px){ .grid{grid-template-columns:1fr} }
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-  .card .hd{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line);font-weight:700}
-  .card .hd .tag{margin-left:auto;font-weight:600;font-size:12px;color:var(--muted)}
-  .card .bd{padding:14px 16px}
-
-  textarea{width:100%;min-height:260px;resize:vertical;font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    color:inherit;background:transparent;border:none;outline:none;padding:0}
-  textarea:focus-visible{outline:2px solid #ff6a5a;outline-offset:3px;border-radius:6px}
-  .io-actions{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--panel) 60%,var(--bg))}
-  .btn{font:inherit;font-size:13.5px;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 13px;color:inherit;display:inline-flex;gap:7px;align-items:center}
-  .btn:hover{border-color:var(--accent)}
-  .btn:disabled{opacity:.5;cursor:default}
-  .btn.solid{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
-  .btn.solid:hover{filter:brightness(1.05)}
-  .btn .k{font-size:12px;opacity:.85}
-
-  /* preset segmented control */
-  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:16px 0}
-  .seg{display:inline-flex;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
-  .seg button{font:inherit;font-size:13px;border:none;background:transparent;color:var(--muted);padding:7px 13px;border-radius:9px;cursor:pointer;font-weight:600}
-  .seg button[aria-pressed=true]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
-  .toggle{display:inline-flex;gap:8px;align-items:center;color:var(--muted);cursor:pointer;user-select:none;font-size:13.5px}
-  .toggle input{accent-color:var(--accent);width:16px;height:16px}
-  .spacer{flex:1}
-
-  /* stat strip */
-  .stats{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 8px}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 14px;min-width:96px;box-shadow:var(--shadow)}
-  .stat .n{font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
-  .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
-  .stat.s .n{color:var(--strip)} .stat.n2 .n{color:var(--normalize)} .stat.f .n{color:var(--flag)} .stat.p .n{color:var(--preserve)}
-  .clean-banner{display:flex;align-items:center;gap:10px;background:var(--ok);border:1px solid color-mix(in srgb,var(--preserve) 30%,var(--line));
-    border-radius:12px;padding:12px 15px;color:var(--ink);font-weight:600}
-
-  /* reveal view */
-  .reveal{font:13.5px/1.9 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;
-    max-height:320px;overflow:auto;padding:12px 14px;border:1px dashed var(--line);border-radius:12px;background:color-mix(in srgb,var(--panel) 60%,var(--bg))}
-  .rc{display:inline-block;font-size:10.5px;font-weight:800;line-height:1;padding:2px 4px;margin:0 1px;border-radius:5px;vertical-align:middle;transform:translateY(-1px);cursor:help;letter-spacing:.02em}
-  .rc.strip{background:color-mix(in srgb,var(--strip) 18%,transparent);color:var(--strip);border:1px solid color-mix(in srgb,var(--strip) 35%,transparent)}
-  .rc.normalize{background:color-mix(in srgb,var(--normalize) 18%,transparent);color:var(--normalize);border:1px solid color-mix(in srgb,var(--normalize) 35%,transparent)}
-  .rc.flag{background:color-mix(in srgb,var(--flag) 16%,transparent);color:var(--flag);border:1px solid color-mix(in srgb,var(--flag) 32%,transparent)}
-
-  /* audit list */
-  .audit{display:flex;flex-direction:column;gap:9px}
-  .grp-h{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:6px 2px 0}
-  .row{border:1px solid var(--line);border-radius:13px;padding:12px 14px;background:var(--panel)}
-  .row .top{display:flex;align-items:center;gap:10px}
-  .row .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--chip);font-size:14px;flex:none}
-  .row .nm{font-weight:700}
-  .row .cnt{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
-  .act{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:99px;white-space:nowrap}
-  .act.strip{background:color-mix(in srgb,var(--strip) 15%,transparent);color:var(--strip)}
-  .act.normalize{background:color-mix(in srgb,var(--normalize) 15%,transparent);color:var(--normalize)}
-  .act.flag{background:color-mix(in srgb,var(--flag) 14%,transparent);color:var(--flag)}
-  .act.preserve{background:color-mix(in srgb,var(--preserve) 15%,transparent);color:var(--preserve)}
-  .row .risk{color:var(--muted);font-size:13px;margin-top:7px;line-height:1.5}
-  .cps{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
-  .cp{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:11.5px;color:var(--muted)}
-  .cp code{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink);font-size:11px}
-  .empty{color:var(--muted);text-align:center;padding:28px 10px}
-
-  details.adv{margin-top:2px}
-  details.adv > summary{cursor:pointer;color:var(--muted);font-size:13.5px;font-weight:600;list-style:none;display:inline-flex;gap:7px;align-items:center;padding:6px 0}
-  details.adv > summary::-webkit-details-marker{display:none}
-  details.adv[open] > summary .chev{transform:rotate(90deg)}
-  .chev{transition:transform .2s;color:var(--muted)}
-  .adv-body{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;padding:10px 2px 4px}
   @media (max-width:640px){ .adv-body{grid-template-columns:1fr} }
-
-  footer.foot{margin-top:26px;color:var(--muted);font-size:13px;line-height:1.6;border-top:1px solid var(--line);padding-top:16px}
-  .foot b{color:var(--ink)}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;transition:.25s;
-    background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;font-size:13.5px;pointer-events:none;z-index:50}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  @media (pointer:coarse){input,select,textarea{font-size:16px}}   /* iOS: no focus zoom */
+  @media (pointer:coarse){ .textarea{font-size:16px} }   /* iOS: no focus zoom */
 </style>
 </head>
 <body>
-<div class="wrap">
-  <nav class="topnav">
-    <span class="brand"><span class="dot"></span>Bug Ledger</span>
-    <a href="/">Ledger</a>
-    <a href="/sanitize">Sanitizer</a>
-    <a href="/aiscan">AI footprint</a>
-    <a href="/timeline">Activity</a>
-    <a href="/live">Live</a>
-    <span class="sp"></span>
-  </nav>
+<div class="bl-app" id="app">
+  <aside class="bl-side" id="side" aria-label="Sidebar"></aside>
+  <div class="bl-main">
+    <header class="bl-top" id="top"></header>
+    <main class="bl-content pg" id="page">
+      <div class="page-h">
+        <div class="grow">
+          <h1>Text Sanitizer</h1>
+          <p class="lead">Paste an essay, an answer, code, a prompt — anything. This finds the <b>hidden, non-printing and steganographic Unicode</b> that rides along invisibly (zero-width characters, tag-block prompt-injection, look-alike spaces, Trojan-Source bidi) and shows you exactly what's there before it cleans it.</p>
+        </div>
+      </div>
 
-  <header class="hero">
-    <h1>Text <span class="g">Sanitizer</span></h1>
-    <p class="sub">Paste an essay, an answer, code, a prompt — anything. This finds the <b>hidden, non-printing and steganographic Unicode</b> that rides along invisibly (zero-width characters, tag-block prompt-injection, look-alike spaces, Trojan-Source bidi) and shows you exactly what's there before it cleans it.</p>
-    <div class="badges">
-      <span class="badge"><span class="lk"></span><b>100% local</b>&nbsp;— nothing you paste leaves this page</span>
-      <span class="badge">🛡️ Protects emoji &amp; multilingual text by default</span>
-      <span class="badge">🔎 Preview every character before removing</span>
-    </div>
-  </header>
+      <div class="promises">
+        <div class="note"><i data-icon="lock"></i><span><b>100% local</b> — nothing you paste leaves this page</span></div>
+        <div class="note"><i data-icon="shieldcheck"></i><span>Protects emoji &amp; multilingual text by default</span></div>
+        <div class="note"><i data-icon="eye"></i><span>Preview every character before removing</span></div>
+      </div>
 
-  <div class="controls">
-    <div class="seg" id="presets" role="group" aria-label="Cleaning preset">
-      <button data-p="safe" aria-pressed="true">Safe</button>
-      <button data-p="minimal" aria-pressed="false">Minimal</button>
-      <button data-p="aggressive" aria-pressed="false">Aggressive</button>
-      <button data-p="code" aria-pressed="false">Code</button>
-    </div>
-    <label class="toggle"><input type="checkbox" id="revealTog" checked> Reveal invisibles</label>
-    <span class="spacer"></span>
-    <label class="toggle" id="presetHint" style="font-size:12.5px"></label>
+      <div class="controls">
+        <div class="seg" id="presets" role="group" aria-label="Cleaning preset">
+          <button type="button" class="on" data-p="safe" aria-pressed="true">Safe</button>
+          <button type="button" data-p="minimal" aria-pressed="false">Minimal</button>
+          <button type="button" data-p="aggressive" aria-pressed="false">Aggressive</button>
+          <button type="button" data-p="code" aria-pressed="false">Code</button>
+        </div>
+        <label class="check"><input class="cbx" type="checkbox" id="revealTog" checked> Reveal invisibles</label>
+        <span class="hint" id="presetHint"></span>
+      </div>
+
+      <div class="panes">
+        <section class="card" aria-labelledby="h-in">
+          <div class="card-h"><h2 id="h-in">Your text</h2><span class="meta" id="inMeta">0 chars</span></div>
+          <div class="card-b">
+            <textarea id="input" class="textarea code" spellcheck="false" aria-label="Text or code to clean" placeholder="Paste text or code here… or press “Try a sample” below to see it in action."></textarea>
+          </div>
+          <div class="card-f">
+            <button class="btn" type="button" id="pasteBtn"><i data-icon="inbox"></i>Paste</button>
+            <button class="btn" type="button" id="sampleBtn"><i data-icon="sparkles"></i>Try a sample</button>
+            <button class="btn" type="button" id="clearBtn"><i data-icon="trash"></i>Clear</button>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="h-out">
+          <div class="card-h"><h2 id="h-out">Cleaned text</h2><span class="meta" id="outMeta"></span></div>
+          <div class="card-b">
+            <textarea id="output" class="textarea code" spellcheck="false" readonly aria-label="Cleaned output" placeholder="The cleaned version appears here."></textarea>
+          </div>
+          <div class="card-f">
+            <button class="btn primary" type="button" id="copyBtn"><i data-icon="copy"></i>Copy cleaned</button>
+            <button class="btn" type="button" id="dlBtn"><i data-icon="download"></i>Download .txt</button>
+            <span class="meta" id="delta"></span>
+          </div>
+        </section>
+      </div>
+
+      <div class="stats" id="stats"></div>
+      <div id="revealWrap"></div>
+
+      <details class="adv" id="adv">
+        <summary><i data-icon="right"></i>Advanced — per-category toggles &amp; options</summary>
+        <div class="adv-body" id="advBody"></div>
+      </details>
+
+      <section class="card audit" aria-labelledby="h-audit">
+        <div class="card-h"><h2 id="h-audit">What's in your text</h2><span class="meta" id="auditTag"></span></div>
+        <div id="audit"><div class="empty"><i data-icon="eye"></i><p>Paste something above and every hidden character will be listed here — grouped, named, counted, with the plain-English risk of each.</p></div></div>
+      </section>
+
+      <div class="note"><i data-icon="info"></i><div class="honest">
+        <p><b>How honest is this?</b> This tool cleans <b>third-party</b> hidden characters, prompt-injection / steganography payloads and formatting artefacts. It is <b>not</b> an “AI-watermark remover” — the only deployed LLM text watermark (Google SynthID-Text) lives in <i>word choice</i>, not characters, and cannot be removed by stripping. Em-dashes, curly quotes and ellipses are valid human typography and are <b>not</b> proof of AI, so they’re left untouched unless you opt in.</p>
+        <p>Same engine powers the Breadledger <a href="/">scanner &amp; API hardening</a>, so no project silently stores hidden characters. Everything runs in your browser — no upload, no tracking.</p>
+      </div></div>
+    </main>
   </div>
-
-  <div class="grid">
-    <!-- INPUT -->
-    <section class="card">
-      <div class="hd">✏️ Your text <span class="tag" id="inMeta">0 chars</span></div>
-      <div class="bd" style="padding-bottom:0">
-        <textarea id="input" spellcheck="false" aria-label="Text or code to clean" placeholder="Paste text or code here… or press “Try a sample” below to see it in action."></textarea>
-      </div>
-      <div class="io-actions">
-        <button class="btn" id="pasteBtn">📋 Paste</button>
-        <button class="btn" id="sampleBtn">✨ Try a sample</button>
-        <button class="btn" id="clearBtn">Clear</button>
-      </div>
-    </section>
-
-    <!-- OUTPUT -->
-    <section class="card">
-      <div class="hd">🧹 Cleaned text <span class="tag" id="outMeta"></span></div>
-      <div class="bd" style="padding-bottom:0">
-        <textarea id="output" spellcheck="false" readonly aria-label="Cleaned output" placeholder="The cleaned version appears here."></textarea>
-      </div>
-      <div class="io-actions">
-        <button class="btn solid" id="copyBtn">📋 Copy cleaned</button>
-        <button class="btn" id="dlBtn">⬇︎ Download .txt</button>
-        <span class="spacer"></span>
-        <span id="delta" style="font-size:12.5px;color:var(--muted);align-self:center"></span>
-      </div>
-    </section>
-  </div>
-
-  <!-- STATS + REVEAL -->
-  <div class="stats" id="stats"></div>
-  <div id="revealWrap" style="margin:8px 0 4px"></div>
-
-  <!-- ADVANCED -->
-  <details class="adv" id="adv">
-    <summary><span class="chev">▶</span> Advanced — per-category toggles &amp; options</summary>
-    <div class="adv-body" id="advBody"></div>
-  </details>
-
-  <!-- AUDIT -->
-  <section class="card" style="margin-top:16px">
-    <div class="hd">🔬 What's in your text <span class="tag" id="auditTag"></span></div>
-    <div class="bd">
-      <div class="audit" id="audit"><div class="empty">Paste something above and every hidden character will be listed here — grouped, named, counted, with the plain-English risk of each.</div></div>
-    </div>
-  </section>
-
-  <footer class="foot">
-    <p><b>How honest is this?</b> This tool cleans <b>third-party</b> hidden characters, prompt-injection / steganography payloads and formatting artefacts. It is <b>not</b> an “AI-watermark remover” — the only deployed LLM text watermark (Google SynthID-Text) lives in <i>word choice</i>, not characters, and cannot be removed by stripping. Em-dashes, curly quotes and ellipses are valid human typography and are <b>not</b> proof of AI, so they’re left untouched unless you opt in.</p>
-    <p>Same engine powers the Bug Ledger <a href="/">scanner &amp; API hardening</a>, so no project silently stores hidden characters. Everything runs in your browser — no upload, no tracking.</p>
-  </footer>
 </div>
-<div class="toast" id="toast"></div>
 
 <script src="/sanitize.js"></script>
 <script>
+/* icons written in the static markup, resolved from the shell's set */
+Bread.$$('[data-icon]').forEach(function (e) { e.outerHTML = Bread.icon(e.getAttribute('data-icon')); });
+Bread.mount({ active: 'sanitize', title: 'Sanitizer', crumbs: ['Tools', 'Sanitizer'] });
+
 (function(){
   var S = window.Sanitize;
   var $ = function(s){ return document.querySelector(s); };
-  var input=$("#input"), output=$("#output"), toast=$("#toast");
+  var input=$("#input"), output=$("#output");
   var preset="safe";
   // per-category / option overrides layered on top of the preset
   var opts = { stripOrphanJoiners:false, normalizeSpaces:true, smartPunct:false, flagHomoglyphs:true, enabled:{} };
@@ -225,9 +161,12 @@
 
   var GROUP_LABEL = { security:"Security threats", hidden:"Hidden characters", space:"Look-alike spaces",
     context:"Context-aware (protected)", info:"Flagged for review", style:"Smart punctuation (style)" };
+  var GROUP_ICON = { security:"alert", hidden:"eye", space:"keyboard", context:"shieldcheck", info:"info", style:"prompts" };
   var ACT_LABEL = { strip:"Removed", normalize:"Normalized", flag:"Flagged", preserve:"Protected" };
+  var ACT_CLASS = { strip:"danger", normalize:"warn", flag:"info", preserve:"ok" };
+  var ACT_ICON  = { strip:"x", normalize:"repeat", flag:"info", preserve:"shieldcheck" };
 
-  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+  function esc(s){ return Bread.esc(s); }
 
   // Build the option object handed to the engine (preset + user overrides).
   function buildOpts(){
@@ -262,7 +201,7 @@
 
     renderStats(r, text);
     renderReveal(r, text);
-    renderAudit(r);
+    renderAudit(r, text);
     $("#auditTag").textContent = r.categories.length ? (r.stats.total+" found in "+r.categories.length+" categor"+(r.categories.length===1?"y":"ies")) : "";
     $("#presetHint").textContent = PRESET_HINT[preset]||"";
   }
@@ -271,13 +210,13 @@
     var host=$("#stats");
     if(!text.length){ host.innerHTML=""; return; }
     if(r.stats.total===0){
-      host.innerHTML='<div class="clean-banner">✓ Clean — no hidden or suspicious characters found in this text.</div>';
+      host.innerHTML='<div class="note ok">'+Bread.icon("checkcircle")+'<span>Clean — no hidden or suspicious characters found in this text.</span></div>';
       return;
     }
     var s=r.stats;
     host.innerHTML =
-      stat("s","Removed",s.strip) + stat("n2","Normalized",s.normalize) +
-      stat("f","Flagged",s.flag) + stat("p","Protected",s.preserve) +
+      stat("strip","Removed",s.strip) + stat("normalize","Normalized",s.normalize) +
+      stat("flag","Flagged",s.flag) + stat("preserve","Protected",s.preserve) +
       stat("","Total",s.total);
   }
   function stat(cls,label,n){ return '<div class="stat '+cls+'"><div class="n">'+n+'</div><div class="l">'+label+'</div></div>'; }
@@ -301,35 +240,38 @@
       i+=len;
     }
     html += esc(text.slice(cursor));
-    wrap.innerHTML = '<div class="card"><div class="hd">👁️ Reveal — hidden characters shown inline <span class="tag">hover a chip for its name</span></div><div class="bd"><div class="reveal">'+html+'</div></div></div>';
+    wrap.innerHTML = '<div class="card"><div class="card-h"><h2>Reveal — hidden characters shown inline</h2><span class="meta">hover a chip for its name</span></div><div class="card-b"><div class="reveal">'+html+'</div></div></div>';
   }
 
-  function renderAudit(r){
+  function renderAudit(r, text){
     var host=$("#audit");
+    if(!text.length){
+      host.innerHTML='<div class="empty">'+Bread.icon("eye")+'<p>Paste something above and every hidden character will be listed here — grouped, named, counted, with the plain-English risk of each.</p></div>';
+      return;
+    }
     if(!r.categories.length){
-      host.innerHTML='<div class="empty">Nothing flagged. Paste text with hidden characters to see the breakdown.</div>';
+      host.innerHTML='<div class="empty">'+Bread.icon("eye")+'<p>Nothing flagged. Paste text with hidden characters to see the breakdown.</p></div>';
       return;
     }
     var groups={}; var order=["security","hidden","space","context","info","style"];
     r.categories.forEach(function(c){ (groups[c.group]=groups[c.group]||[]).push(c); });
-    var html="";
+    var html='<div class="list">';
     order.forEach(function(g){
       if(!groups[g]) return;
-      html += '<div class="grp-h">'+GROUP_LABEL[g]+'</div>';
+      html += '<div class="group-h" role="heading" aria-level="3"><span>'+GROUP_LABEL[g]+'</span><span class="n">'+groups[g].length+'</span></div>';
       groups[g].forEach(function(c){
-        var cps = c.samples.map(function(s){ return '<span class="cp"><code>'+esc(s.hex)+'</code> '+esc(s.name)+'</span>'; }).join("");
-        html += '<div class="row"><div class="top">'+
-          '<div class="ic">'+esc(c.icon||"·")+'</div>'+
-          '<div class="nm">'+esc(c.label)+'</div>'+
-          '<span class="cnt">×'+c.count+'</span>'+
-          '<span class="act '+c.action+'">'+ACT_LABEL[c.action]+'</span>'+
-          '</div>'+
-          '<div class="risk">'+esc(c.risk)+'</div>'+
-          (cps?'<div class="cps">'+cps+'</div>':'')+
+        var cps = c.samples.map(function(s){ return '<span class="badge outline"><span class="id">'+esc(s.hex)+'</span>'+esc(s.name)+'</span>'; }).join("");
+        html += '<div class="bl-row">'+
+          '<span class="gi">'+Bread.icon(GROUP_ICON[c.group]||"info")+'</span>'+
+          '<div class="body"><div class="t">'+esc(c.label)+'</div>'+
+          '<div class="sub">'+esc(c.risk)+'</div>'+
+          (cps?'<div class="cps">'+cps+'</div>':'')+'</div>'+
+          '<div class="side"><span class="when">×'+c.count+'</span>'+
+          '<span class="badge '+ACT_CLASS[c.action]+'">'+Bread.icon(ACT_ICON[c.action])+ACT_LABEL[c.action]+'</span></div>'+
           '</div>';
       });
     });
-    host.innerHTML=html;
+    host.innerHTML=html+'</div>';
   }
 
   // ---- advanced toggles ----
@@ -346,7 +288,7 @@
       ["cat:annotation","Remove annotation controls","enabled.annotation"]
     ];
     body.innerHTML = rows.map(function(row){
-      return '<label class="toggle"><input type="checkbox" data-opt="'+row[0]+'"> '+esc(row[1])+'</label>';
+      return '<label class="check"><input class="cbx" type="checkbox" data-opt="'+row[0]+'"> <span>'+esc(row[1])+'</span></label>';
     }).join("");
     body.querySelectorAll("input[data-opt]").forEach(function(el){
       el.addEventListener("change", function(){ applyAdvChange(el.getAttribute("data-opt"), el.checked); render(); });
@@ -375,7 +317,7 @@
   $("#presets").addEventListener("click", function(e){
     var b=e.target.closest("button[data-p]"); if(!b) return;
     preset=b.getAttribute("data-p");
-    Array.prototype.forEach.call(this.querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    Array.prototype.forEach.call(this.querySelectorAll("button"), function(x){ var on=(x===b); x.setAttribute("aria-pressed", on?"true":"false"); x.classList.toggle("on", on); });
     // reset user overrides so the preset shows through cleanly
     opts={ enabled:{} };
     var probe = S.analyze("", {preset:preset}).options;
@@ -398,11 +340,11 @@
   $("#copyBtn").addEventListener("click", function(){
     var v=output.value;
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(v).then(function(){ showToast("Cleaned text copied"); })
+      navigator.clipboard.writeText(v).then(function(){ showToast("Cleaned text copied", "ok"); })
         .catch(function(){ legacyCopy(v); });
     } else legacyCopy(v);
   });
-  function legacyCopy(v){ output.removeAttribute("readonly"); output.select(); try{document.execCommand("copy"); showToast("Cleaned text copied");}catch(e){} output.setAttribute("readonly","readonly"); }
+  function legacyCopy(v){ output.removeAttribute("readonly"); output.select(); try{document.execCommand("copy"); showToast("Cleaned text copied", "ok");}catch(e){} output.setAttribute("readonly","readonly"); }
 
   $("#dlBtn").addEventListener("click", function(){
     var blob=new Blob([output.value],{type:"text/plain;charset=utf-8"});
@@ -410,12 +352,12 @@
     document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },100);
   });
 
-  function showToast(msg){ toast.textContent=msg; toast.classList.add("show"); clearTimeout(showToast._t); showToast._t=setTimeout(function(){ toast.classList.remove("show"); },1600); }
+  function showToast(msg, kind){ Bread.toast(msg, kind); }
 
   // A demo string built from code points so THIS page's own source stays clean.
   function sample(){
     var C=String.fromCodePoint.bind(String);
-    var family = C(0x1F468)+C(0x200D)+C(0x1F469)+C(0x200D)+C(0x1F467); // 👨‍👩‍👧 (ZWJ — protected)
+    var family = C(0x1F468)+C(0x200D)+C(0x1F469)+C(0x200D)+C(0x1F467); // family emoji (ZWJ — protected)
     var persian = C(0x0645)+C(0x06CC)+C(0x200C)+C(0x0631)+C(0x0648)+C(0x062F); // می‌رود (ZWNJ — protected)
     var tag=""; "ignore".split("").forEach(function(ch){ tag+=C(0xE0000+ch.charCodeAt(0)); }); // invisible smuggled word
     return "Great work"+C(0x200B)+" on the report"+C(0x2014)+"it reads well.\n"+
@@ -423,6 +365,13 @@
       "Persian stays intact: "+persian+"   (that joiner is required).\n"+
       "Watch this "+C(0x202E)+"drowssap"+C(0x202C)+" and a look-alike p"+C(0x0430)+"ypal link.";
   }
+
+  Bread.cmdk.register([
+    { group: 'Sanitizer', label: 'Try a sample', icon: 'sparkles', run: function(){ $("#sampleBtn").click(); } },
+    { group: 'Sanitizer', label: 'Copy cleaned text', icon: 'copy', run: function(){ $("#copyBtn").click(); } },
+    { group: 'Sanitizer', label: 'Download cleaned .txt', icon: 'download', run: function(){ $("#dlBtn").click(); } },
+    { group: 'Sanitizer', label: 'Check the AI footprint of a file', icon: 'aiscan', href: '/aiscan', sub: 'AI footprint' }
+  ]);
 
   buildAdvanced();
   render();

@@ -2,116 +2,65 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity · Breadledger</title>
 <meta name="description" content="A permanent, append-only timeline of every scan, story and ledger addition across the portfolio.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Bug Ledger · Activity">
+<meta property="og:title" content="Breadledger · Activity">
 <meta property="og:description" content="A permanent, append-only timeline of every scan, story and ledger addition across the portfolio.">
 <meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<title>Bug Ledger · Activity</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%98%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
 <style>
-  *{box-sizing:border-box}
-  :root{
-    --bg:#f5f6fb; --ink:#12141c; --muted:#636879; --card:rgba(255,255,255,.72);
-    --line:rgba(18,20,28,.09); --coral:#ff6a5a; --good:#12b886; --violet:#8b7bf0; --sky:#5b9dff;
-    --shadow:0 16px 44px -24px rgba(30,25,60,.32);
-  }
-  @media (prefers-color-scheme:dark){
-    :root{ --bg:#0b0d15; --ink:#eef0f7; --muted:#9aa0b4; --card:rgba(255,255,255,.05);
-      --line:rgba(255,255,255,.11); --shadow:0 24px 60px -24px rgba(0,0,0,.7); }
-  }
-  html,body{margin:0;min-height:100%}
-  body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;color:var(--ink);
-    background:var(--bg);overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased}
-  .aurora{position:fixed;inset:-20vh -10vw;z-index:-1;filter:blur(72px) saturate(120%);opacity:.8;pointer-events:none}
-  .aurora span{position:absolute;border-radius:50%;animation:drift 24s ease-in-out infinite}
-  .aurora .a{width:50vw;height:50vw;left:-6vw;top:-8vh;background:radial-gradient(circle at 30% 30%,#ff9a7a,transparent 62%)}
-  .aurora .b{width:46vw;height:46vw;right:-8vw;top:-6vh;background:radial-gradient(circle at 60% 40%,#8ab6ff,transparent 62%);animation-delay:-7s}
-  .aurora .c{width:46vw;height:46vw;left:14vw;bottom:-16vh;background:radial-gradient(circle at 50% 50%,#7ff0cf,transparent 60%);animation-delay:-13s}
-  .aurora .d{width:38vw;height:38vw;right:6vw;bottom:-12vh;background:radial-gradient(circle at 50% 50%,#c9a3ff,transparent 62%);animation-delay:-18s}
-  @media (prefers-color-scheme:dark){.aurora{opacity:.5}}
-  @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(3vw,4vh) scale(1.07)}66%{transform:translate(-3vw,-2vh) scale(.96)}}
-  @media (prefers-reduced-motion:reduce){.aurora span{animation:none}}
-
-  .wrap{max-width:760px;margin:0 auto;padding:30px 20px 90px}
-  header.top{display:flex;align-items:center;gap:12px;margin:6px 0 6px}
-  .brand{font-weight:800;letter-spacing:-.02em;font-size:20px}
-  .brand .dot{color:var(--coral)}
-  .top .sub{color:var(--muted);font-size:13.5px;margin-left:auto;display:flex;align-items:center;gap:7px}
-  .beat{width:8px;height:8px;border-radius:50%;background:var(--good);animation:beat 1.6s ease-out infinite}
-  @keyframes beat{0%{box-shadow:0 0 0 0 rgba(18,184,134,.55)}70%{box-shadow:0 0 0 9px rgba(18,184,134,0)}100%{box-shadow:0 0 0 0 rgba(18,184,134,0)}}
-  .lede{color:var(--muted);font-size:14px;margin:0 0 20px}
-  .lede a{color:inherit}
-
-  .day{font-weight:800;font-size:13px;letter-spacing:.02em;color:var(--muted);text-transform:uppercase;margin:26px 0 10px;padding-left:34px}
-  .tl{position:relative;padding-left:34px}
-  .tl::before{content:"";position:absolute;left:11px;top:4px;bottom:4px;width:2px;
-    background:linear-gradient(var(--line),var(--line));border-radius:2px}
-  .ev{position:relative;margin:0 0 14px;animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
-  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .node{position:absolute;left:-27px;top:20px;width:14px;height:14px;border-radius:50%;
-    border:3px solid var(--bg);box-shadow:0 0 0 1px var(--line)}
-  .ev-session .node{background:var(--coral)}
-  .ev-check .node{background:var(--good)}
-  .ev-check.full .node{background:var(--violet)}
-  .ev-check.sec .node{background:#e5484d}
-  .ev-add .node{background:#7c5cff;width:11px;height:11px}
-  .kind.add{color:#7c5cff;background:color-mix(in srgb,#7c5cff 13%,transparent)}
-  .ev.live .node{background:var(--coral);animation:beat2 1.4s ease-out infinite}
-  @keyframes beat2{0%{box-shadow:0 0 0 0 rgba(255,106,90,.6)}70%{box-shadow:0 0 0 8px rgba(255,106,90,0)}100%{box-shadow:0 0 0 0 rgba(255,106,90,0)}}
-
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
-    backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);padding:14px 16px}
-  .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .kind{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px}
-  .kind.session{color:var(--coral);background:color-mix(in srgb,var(--coral) 13%,transparent)}
-  .kind.check{color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
-  .kind.full{color:var(--violet);background:color-mix(in srgb,var(--violet) 16%,transparent)}
-  .kind.sec{color:#e5484d;background:color-mix(in srgb,#e5484d 14%,transparent)}
-  .chip.sec{color:#e5484d;border-color:color-mix(in srgb,#e5484d 55%,transparent)}
-  a.chip.report{text-decoration:none;color:var(--coral);border-color:color-mix(in srgb,var(--coral) 50%,transparent);font-weight:800}
-  a.chip.report:hover{background:color-mix(in srgb,var(--coral) 12%,transparent)}
-  .app{font-weight:700}.proj{color:var(--muted);font-weight:500}
-  .when{margin-left:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
-  .title{font-weight:650;margin:6px 0 2px}
-  .cur{color:var(--muted);font-size:13.5px}
-  /* screenshots attached to an added finding (before → after) */
-  .shots{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-  .shot{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);
-    width:136px;text-decoration:none;transition:transform .12s ease,border-color .12s ease}
-  .shot:hover{transform:translateY(-2px);border-color:var(--coral)}
-  .shot img{display:block;width:100%;height:88px;object-fit:cover;object-position:top center}
-  .shot span{display:block;font-size:10.5px;font-weight:700;color:var(--muted);padding:4px 8px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
-  .chip{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
-  .chip.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 55%,transparent)}
-  .chip.warn{color:var(--coral);border-color:color-mix(in srgb,var(--coral) 55%,transparent)}
-  .chip.full{color:var(--violet);border-color:color-mix(in srgb,var(--violet) 55%,transparent)}
-  .live-pill{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--coral)}
-  .bar{height:7px;border-radius:99px;background:color-mix(in srgb,var(--muted) 18%,transparent);overflow:hidden;margin-top:9px}
-  .bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--coral),#ff9270);transition:width .5s}
-  .ev-check .bar>i{background:linear-gradient(90deg,var(--good),#4fd1a5)}
-  .ev-check.full .bar>i{background:linear-gradient(90deg,var(--violet),#b3a3ff)}
-  .empty{text-align:center;padding:16vh 20px;color:var(--muted)}
-  .empty h1{font-size:24px;color:var(--ink);font-weight:800;margin:0 0 8px}
-  .empty code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:2px 7px}
-  .foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:30px}
-  .foot a{color:inherit}
+  /* page-only styles, tokens only — candidates for bread.css: .poll, .ev .chips, .progress.info/.danger, .ev.live .ico */
+  .poll{display:inline-flex;align-items:center;gap:8px;height:34px;font-size:13.5px;color:var(--ink-3);white-space:nowrap}
+  .filters .seg{flex:0 0 auto}
+  .ev .line .proj{color:var(--ink-3)}
+  .ev .txt.t{font-weight:600;color:var(--ink)}
+  .ev .chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
+  .ev .progress{margin:5px 0 3px;max-width:520px}
+  .progress.info>i{background:var(--info)} .progress.danger>i{background:var(--danger)}
+  .ev.live .ico{box-shadow:0 0 0 3px var(--accent-soft)}
+  .ev .shots{margin-top:6px}
+  .ev .cat{margin-left:2px}
+  .badge svg.ico{width:13px;height:13px}
+  .foot{margin-top:28px;text-align:center}
+  #err{margin-bottom:14px}
+  .clear-wrap{display:flex;justify-content:center;margin-top:-28px;padding-bottom:28px}
+  @media (max-width:900px){ .filters .seg{grid-column:1/-1;display:flex} .filters .seg button{flex:1;justify-content:center;padding:0 6px} .filters .select{grid-column:1/-1;max-width:none} }
+  [hidden]{display:none!important}
 </style>
 </head>
 <body>
-<div class="aurora"><span class="a"></span><span class="b"></span><span class="c"></span><span class="d"></span></div>
-<div class="wrap">
-  <header class="top">
-    <div class="brand">Bug Ledger<span class="dot">.</span> Activity</div>
-    <div class="sub"><span class="beat"></span><span id="pollstate">live</span></div>
-  </header>
-  <p class="lede">Every work session and scan, saved and streamed. · <a href="/sanitize">sanitizer</a> · <a href="/live">live board</a> · <a href="/journal">prompt journal</a> · <a href="/">the ledger</a></p>
-  <main id="feed"></main>
-  <div class="foot">A permanent, append-only record of agent activity. · <a href="/admin">admin</a></div>
+<div class="bl-app" id="app">
+  <aside class="bl-side" id="side" aria-label="Sidebar"></aside>
+  <div class="bl-main">
+    <header class="bl-top" id="top"></header>
+    <main class="bl-content" id="page">
+      <div class="page-h">
+        <div>
+          <h1>Activity</h1>
+          <p class="lead">Every work session and scan, saved and streamed.</p>
+        </div>
+        <div class="actions"><span class="poll" id="poll"><span class="pip off" id="pollpip"></span><span id="pollstate">live</span></span></div>
+      </div>
+      <div class="filters" id="filters">
+        <div class="seg" role="group" aria-label="Kind" id="kindSeg">
+          <button type="button" class="on" data-kind="all" aria-pressed="true">All</button>
+          <button type="button" data-kind="session" aria-pressed="false">Worklogs</button>
+          <button type="button" data-kind="check" aria-pressed="false">Checks</button>
+          <button type="button" data-kind="addition" aria-pressed="false">Additions</button>
+        </div>
+        <select class="select" id="appSel" aria-label="App"><option value="">All apps</option></select>
+        <span class="count" id="count"></span>
+      </div>
+      <div id="err" hidden></div>
+      <section id="feed" aria-label="Activity feed"></section>
+      <p class="meta foot">A permanent, append-only record of agent activity. · <a href="/admin">admin</a></p>
+    </main>
+  </div>
 </div>
 <script>
   var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
@@ -120,105 +69,142 @@
   var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fullts(ts){var d=new Date(ts),p=function(n){return ('0'+n).slice(-2)};
     return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
-  function dayKey(ts){var d=new Date(ts);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();}
-  function dayLabel(ts){
-    var d=new Date(ts), n=new Date(); var td=dayKey(n.getTime());
-    var yd=new Date(n.getTime()-864e5);
-    if(dayKey(ts)===td) return 'Today';
-    if(dayKey(ts)===dayKey(yd.getTime())) return 'Yesterday';
-    return d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+  function dayKey(ts){return Bread.dayKey(ts);}
+  function dayLabel(ts){return Bread.dayLabel(Bread.dayKey(ts));}
+
+  // D9 fix: every check scope has a name (scopeLabel vocabulary) — optimiser sweeps and per-category checks no longer read "bug + security check … bugs"
+  function scopeLabel(sc){ sc=sc||'app'; if(sc==='app')return 'this app'; if(sc==='all')return 'all bugs (16 categories)'; if(sc==='security')return 'security sweep';
+    if(sc==='optimisers')return 'optimiser sweep'; if(sc==='full')return 'grand total (everything)'; var m=/^category:(.+)$/.exec(sc); if(m)return m[1]+' bugs'; return sc; }
+  function scopeUnit(sc){ sc=sc||'app'; if(sc==='security')return 'security'; if(sc==='optimisers')return 'optimisers'; if(sc==='full')return 'items'; var m=/^category:(.+)$/.exec(sc); if(m)return m[1]+' bugs'; return 'bugs'; }
+  function kindLabel(sc){ sc=sc||'app'; if(sc==='security')return 'full security sweep'; if(sc==='all')return 'full-catalog scan'; if(sc==='app')return 'bug + security check'; return scopeLabel(sc); }
+
+  function when(e){ return '<span class="when" title="'+esc(fullts(e.ts))+'">'+(e.live?rel(Date.now()-e.ts):Bread.ago(e.ts))+'</span>'; }
+  function line(e, kindBadge){
+    return '<div class="line">'+Bread.avatar(e.app||'','xs')+'<span class="who">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+kindBadge+
+      (e.live?'<span class="badge accent"><span class="pip live"></span>Live</span>':'')+when(e)+'</div>';
   }
+  function storyBtn(id, label){ return id?'<a class="btn sm" href="/story/'+encodeURIComponent(id)+'">'+Bread.icon('ledger')+esc(label||'Story')+'</a>':''; }
 
   function sessionCard(e){
     var live=e.live, done=e.status==='done';
     var pg=e.progress;
     var pct = pg&&pg.total ? Math.round(pg.done/pg.total*100) : (e.total?Math.round((e.done||0)/e.total*100):0);
     var countTxt = pg&&pg.total ? (pg.done+' / '+pg.total+' '+(pg.label||'')) : ((e.done||0)+' / '+(e.total||0)+' tasks');
-    return '<div class="card">'+
-      '<div class="row1"><span class="kind session">worklog</span>'+
-        '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
-        (live?'<span class="live-pill">● LIVE</span>':'')+
-        '<span class="when" title="'+fullts(e.ts)+'">'+(live?rel(Date.now()-e.ts):fullts(e.ts))+'</span></div>'+
-      (e.title?'<div class="title">'+esc(e.title)+'</div>':'')+
-      (e.current?'<div class="cur">'+esc(e.current)+'</div>':'')+
-      '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
-      '<div class="chips"><span class="chip">'+countTxt+'</span>'+(done?'<span class="chip ok">✓ complete</span>':'')+
-        (e.id?'<a class="chip report" href="/story/'+esc(e.id)+'">📖 Story →</a>':'')+'</div>'+
-    '</div>';
+    return '<div class="ev'+(live?' live':'')+'"><span class="ico accent">'+Bread.icon('live')+'</span><div class="body">'+
+      line(e, '<span class="badge">worklog</span>')+
+      (e.title?'<div class="txt t">'+esc(e.title)+'</div>':'')+
+      (e.current?'<div class="txt">'+esc(e.current)+'</div>':'')+
+      '<div class="progress sm'+(done?' ok':'')+'" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'" aria-label="Progress"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="chips"><span class="badge num">'+esc(countTxt)+'</span>'+(done?'<span class="badge ok">'+Bread.icon('check')+'complete</span>':'')+storyBtn(e.id)+'</div>'+
+    '</div></div>';
   }
   function checkCard(e){
-    var full=e.scope==='all', sec=e.scope==='security', cov=e.coverage;
-    var unit = sec?'security':'bugs';
-    var covChip = cov ? '<span class="chip '+(sec?'sec':full?'full':(cov.complete?'ok':'warn'))+'">'+
-      (cov.complete?'✓ ':'⚠ ')+cov.matched+'/'+cov.total+' '+unit+'</span>' :
-      ((e.checkedBy||'').indexOf('scan')>=0?'<span class="chip">🔍 detector scan</span>':'');
+    var full=e.scope==='all', sec=e.scope==='security', cov=e.coverage, unit=scopeUnit(e.scope);
+    var covChip = cov ? '<span class="badge '+(cov.complete?'ok':'warn')+' num">'+Bread.icon(cov.complete?'check':'alert')+cov.matched+'/'+cov.total+' '+esc(unit)+'</span>' :
+      ((e.checkedBy||'').indexOf('scan')>=0?'<span class="badge">'+Bread.icon('scan')+'detector scan</span>':'');
     var secOk=e.securityStatus==='clean';
     var pct=cov?cov.pct:0;
-    var kindLbl = sec?'full security sweep':full?'full-catalog scan':'bug + security check';
-    return '<div class="card">'+
-      '<div class="row1"><span class="kind '+(sec?'sec':full?'full':'check')+'">'+(sec?'🛡 ':'')+kindLbl+'</span>'+
-        '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
-        '<span class="when" title="'+fullts(e.ts)+'">'+fullts(e.ts)+'</span></div>'+
-      (cov?'<div class="bar"><i style="width:'+pct+'%"></i></div>':'')+
+    var ico = sec?'<span class="ico danger">'+Bread.icon('shieldcheck')+'</span>':full?'<span class="ico info">'+Bread.icon('ledger')+'</span>':'<span class="ico ok">'+Bread.icon('checkcircle')+'</span>';
+    return '<div class="ev">'+ico+'<div class="body">'+
+      line(e, '<span class="badge '+(sec?'danger':full?'info':'ok')+'">'+esc(kindLabel(e.scope))+'</span>')+
+      (cov?'<div class="progress sm '+(sec?'danger':full?'info':'ok')+'" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'" aria-label="Coverage"><i style="width:'+pct+'%"></i></div>':'')+
       '<div class="chips">'+covChip+
-        '<span class="chip '+(secOk?'ok':(e.securityStatus==='issues'?'warn':''))+'">security: '+esc(e.securityStatus||'n/a')+'</span>'+
-        (e.foundCount?'<span class="chip warn">'+e.foundCount+' present</span>':'')+
-        (e.sessionId?'<a class="chip report" href="/story/'+esc(e.sessionId)+'">📖 Story →</a>':'')+
-        (e.id?'<a class="chip report" href="/report?id='+esc(e.id)+(e.sessionId?'&legacy=1':'')+'">📊 Coverage →</a>':'')+
-      '</div></div>';
+        '<span class="badge '+(secOk?'ok':(e.securityStatus==='issues'?'warn':''))+'">security: '+esc(e.securityStatus||'n/a')+'</span>'+
+        (e.foundCount?'<span class="badge warn num">'+e.foundCount+' present</span>':'')+
+        storyBtn(e.sessionId)+
+        (e.id?'<a class="btn sm" href="/report?id='+encodeURIComponent(e.id)+(e.sessionId?'&legacy=1':'')+'">'+Bread.icon('checkcircle')+'Coverage</a>':'')+
+      '</div></div></div>';
   }
 
-  var lastSig=null;
+  var lastSig=null, EVS=[], F={kind:'all', app:''};
   function additionCard(e){
     var sk=e.subkind==='optimiser'?'optimiser':(e.subkind==='security'?'security':'bug');
-    var chip=sk==='optimiser'?'✨ optimiser':(sk==='security'?'🛡 security':'🐛 bug');
-    return '<div class="card"><div class="row1"><span class="kind add">➕ added · '+chip+'</span>'+
-      '<span class="app">'+esc(e.app||'')+'</span>'+(e.project?'<span class="proj">· '+esc(e.project)+'</span>':'')+
-      '<span class="when" title="'+fullts(e.ts)+'">'+fullts(e.ts)+'</span></div>'+
-      '<div class="title" style="font-weight:600;margin-bottom:0">'+esc(e.title)+'</div>'+shotStrip(e.shots)+
-      (e.sessionId?'<div class="chips"><a class="chip report" href="/story/'+esc(e.sessionId)+'">📖 From this story →</a></div>':'')+'</div>';
+    var ic=sk==='optimiser'?'sparkles':(sk==='security'?'shieldcheck':'bug');
+    var sev=['critical','high','medium','low'].indexOf(e.severity)>=0?e.severity:'';
+    return '<div class="ev"><span class="ico warn">'+Bread.icon('plus')+'</span><div class="body">'+
+      line(e, '<span class="badge warn">'+Bread.icon(ic)+'added · '+sk+'</span>'+(sev?'<span class="badge '+sev+'">'+esc(sev)+'</span>':'')+(e.category?'<span class="cat '+esc(e.category)+'">'+esc(e.category)+'</span>':''))+
+      '<div class="txt t">'+esc(e.title)+'</div>'+shotStrip(e.shots)+
+      (e.sessionId?'<div class="chips">'+storyBtn(e.sessionId,'From this story')+'</div>':'')+'</div></div>';
   }
-  // thumbnails for screenshots attached to a finding — each opens the full image
+  // thumbnails for screenshots attached to a finding — each opens in the shared lightbox (←/→, Esc)
   function shotStrip(shots){
     if(!Array.isArray(shots)||!shots.length) return '';
-    return '<div class="shots">'+shots.map(function(s){
-      if(!s||!s.url) return '';
-      return '<a class="shot" href="'+esc(s.url)+'" target="_blank" rel="noopener">'+
-        '<img loading="lazy" src="'+esc(s.url)+'" alt="'+esc(s.caption||'screenshot')+'">'+
-        (s.caption?'<span>'+esc(s.caption)+'</span>':'')+'</a>';
-    }).join('')+'</div>';
+    return Bread.shotStrip(shots.filter(function(s){ return s&&s.url; }).map(function(s){ return {url:s.url, caption:s.caption||''}; }));
+  }
+
+  function setPoll(state){
+    var pip=document.getElementById('pollpip'), tx=document.getElementById('pollstate');
+    pip.className='pip '+(state==='live'?'live':'off');
+    tx.textContent=state==='live'?'live':state==='reconnecting'?'reconnecting…':state==='waiting'?'waiting…':'up to date';
+  }
+  function showErr(on){
+    var el=document.getElementById('err');
+    if(!on){ el.hidden=true; el.innerHTML=''; return; }
+    if(el.hidden){ el.hidden=false; el.innerHTML='<div class="note danger" role="alert">'+Bread.icon('alert')+'<span class="grow">The timeline lost its connection — it keeps retrying every 4 s.</span><button class="btn sm" type="button" id="retry">'+Bread.icon('reset')+'Retry</button></div>';
+      document.getElementById('retry').onclick=poll; }
+  }
+
+  // filters: a kind segment + an app select, mirrored in the hash (#kind=check&app=Abba) so a view is linkable
+  function readHash(){ try{ var p=new URLSearchParams((location.hash||'').replace(/^#/,'')); F.kind=p.get('kind')||'all'; F.app=p.get('app')||''; }catch(e){} if(['all','session','check','addition'].indexOf(F.kind)<0) F.kind='all'; }
+  function writeHash(){ var p=[]; if(F.kind!=='all') p.push('kind='+encodeURIComponent(F.kind)); if(F.app) p.push('app='+encodeURIComponent(F.app)); try{ history.replaceState(null,'',location.pathname+(p.length?'#'+p.join('&'):'')); }catch(e){} }
+  function paintFilters(){
+    Bread.$$('#kindSeg button').forEach(function(b){ var on=b.getAttribute('data-kind')===F.kind; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); });
+    var sel=document.getElementById('appSel'), apps={}; EVS.forEach(function(e){ if(e.app) apps[e.app]=1; });
+    var names=Object.keys(apps).sort(function(a,b){ return a.localeCompare(b); });
+    var have=Bread.$$('option',sel).slice(1).map(function(o){ return o.value; });
+    if(have.join('|')!==names.join('|')) sel.innerHTML='<option value="">All apps</option>'+names.map(function(n){ return '<option value="'+esc(n)+'">'+esc(n)+'</option>'; }).join('');
+    sel.value=F.app; if(sel.value!==F.app){ F.app=''; sel.value=''; }
+  }
+  function clearFilters(){ F.kind='all'; F.app=''; writeHash(); paintFilters(); draw(); }
+  document.getElementById('kindSeg').addEventListener('click', function(ev){ var b=ev.target.closest('button[data-kind]'); if(!b) return; F.kind=b.getAttribute('data-kind'); writeHash(); paintFilters(); draw(); });
+  document.getElementById('appSel').addEventListener('change', function(){ F.app=this.value; writeHash(); draw(); });
+  window.addEventListener('hashchange', function(){ readHash(); paintFilters(); draw(); });
+
+  function draw(){
+    var feed=document.getElementById('feed');
+    var evs=EVS.filter(function(e){ return (F.kind==='all'||e.kind===F.kind) && (!F.app||e.app===F.app); });
+    var count=document.getElementById('count');
+    count.textContent = EVS.length ? (evs.length===EVS.length ? EVS.length+' events' : evs.length+' of '+EVS.length+' events') : '';
+    if(!EVS.length){
+      feed.innerHTML=Bread.empty('No activity yet', 'Run <code>/showwork</code> or <code>/bugcheck</code> in a project and it appears here — saved forever.', 'activity');
+      return;
+    }
+    if(!evs.length){
+      var named=[]; if(F.kind!=='all') named.push({all:'',session:'Worklogs',check:'Checks',addition:'Additions'}[F.kind]); if(F.app) named.push(F.app);
+      feed.innerHTML=Bread.empty('Nothing matches these filters', 'No events for '+named.map(function(n){ return '<span class="chip on">'+esc(n)+'</span>'; }).join(' ')+' yet.', 'filter')+
+        '<div class="clear-wrap"><button class="btn" type="button" id="clearF">'+Bread.icon('x')+'Clear filters</button></div>';
+      document.getElementById('clearF').onclick=clearFilters;
+      return;
+    }
+    var html='', lastDay=null;
+    evs.forEach(function(e){
+      var dk=dayKey(e.ts);
+      if(dk!==lastDay){ html+='<div class="day-h">'+esc(Bread.dayLabel(dk))+'</div>'; lastDay=dk; }
+      html+= e.kind==='session'?sessionCard(e):e.kind==='addition'?additionCard(e):checkCard(e);
+    });
+    feed.innerHTML=html;
+    Bread.$$('.shot img', feed).forEach(function(i){ i.setAttribute('data-framed',''); });   // screenshots are framed photos: their edges are the point
   }
   function render(data){
-    var feed=document.getElementById('feed');
     var evs=(data&&data.events)||[];
-    document.getElementById('pollstate').textContent = !evs.length?'waiting…':(evs.some(function(e){return e.live;})?'live':'up to date');
-    // only rebuild the DOM when the content actually changes — otherwise the entrance
-    // animation replays every poll and the timeline flickers (stable fields only, no volatile ts)
+    setPoll(!evs.length?'waiting':(evs.some(function(e){return e.live;})?'live':'uptodate'));
+    // only rebuild the DOM when the content actually changes — otherwise the timeline flickers on every poll
     var sig=evs.map(function(e){ return e.kind==='session'
       ? 's'+e.started+e.status+(e.done||0)+'/'+(e.total||0)+(e.progress?e.progress.done+'/'+e.progress.total:'')+(e.live?'L':'')+(e.current||'')
       : e.kind==='addition' ? 'a'+e.id
       : 'c'+e.id+(e.foundCount||0)+(e.coverage?e.coverage.matched+'/'+e.coverage.total:''); }).join('|');
     if(sig===lastSig) return;
-    lastSig=sig;
-    if(!evs.length){
-      feed.innerHTML='<div class="empty"><h1>No activity yet</h1><p>Run <code>/showwork</code> or <code>/bugcheck</code> in a project and it appears here — saved forever.</p></div>';
-      return;
-    }
-    var html='', lastDay=null;
-    evs.forEach(function(e){
-      var dl=dayLabel(e.ts);
-      if(dl!==lastDay){ if(lastDay!==null) html+='</div>'; html+='<div class="day">'+esc(dl)+'</div><div class="tl">'; lastDay=dl; }
-      var cls='ev '+(e.kind==='session'?'ev-session':e.kind==='addition'?'ev-add':'ev-check')+(e.kind==='check'&&e.scope==='all'?' full':'')+(e.kind==='check'&&e.scope==='security'?' sec':'')+(e.live?' live':'');
-      var inner = e.kind==='session'?sessionCard(e):e.kind==='addition'?additionCard(e):checkCard(e);
-      html+='<div class="'+cls+'"><span class="node"></span>'+inner+'</div>';
-    });
-    html+='</div>';
-    feed.innerHTML=html;
-    document.getElementById('pollstate').textContent = evs.some(function(e){return e.live;})?'live':'up to date';
+    lastSig=sig; EVS=evs;
+    paintFilters(); draw();
+    window.BREAD_SEARCH=function(q){ q=q.toLowerCase(); return EVS.filter(function(e){ return ((e.app||'')+' '+(e.project||'')+' '+(e.title||'')).toLowerCase().indexOf(q)>=0; }).slice(0,12).map(function(e){
+      var id=e.kind==='session'?e.id:e.sessionId; return {group:'Activity', label:(e.app||'')+' · '+(e.title||kindLabel(e.scope)), icon:e.kind==='session'?'live':e.kind==='addition'?'plus':'checkcircle', href:id?'/story/'+encodeURIComponent(id):(e.kind==='check'?'/report?id='+encodeURIComponent(e.id):'/timeline'), sub:Bread.ago(e.ts)}; }); };
   }
-  function poll(){ fetch('/api/activity?limit=120',{cache:'no-store'}).then(function(r){return r.json();}).then(render)
-    .catch(function(){document.getElementById('pollstate').textContent='reconnecting…';}); }
+  function poll(){ if(document.hidden) return; fetch('/api/activity?limit=120',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ showErr(false); render(d); })
+    .catch(function(){ setPoll('reconnecting'); showErr(true); }); }
+  readHash(); paintFilters();
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) poll(); });
   poll(); setInterval(poll, 4000);
+  Bread.mount({ active: 'activity', title: 'Activity', crumbs: ['Activity'] });
 </script>
 </body>
 </html>

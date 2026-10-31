@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plans · Breadledger</title>
+<meta name="description" content="Free public catalogue and tools; Team and Business add a private workspace.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Breadledger · Plans">
+<meta property="og:description" content="Free public catalogue and tools; Team and Business add a private workspace.">
+<meta property="og:image" content="https://bugledger.coconvo.workers.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
+<style>
+  /* page-only styles, tokens only (var(--…)) */
+  .pg{display:grid;gap:16px;align-content:start}
+  .pg .page-h{margin-bottom:0}
+  .bl-top .crumbs .sep{color:var(--ink-3)}               /* shell crumb separator measures 1.82:1 with --line-2; candidate for bread.css */
+  .card-h h2{font-size:15px;font-weight:600;min-width:0}
+  .badge .ico{width:13px;height:13px;flex:0 0 auto}      /* icon inside a badge; candidate for bread.css */
+  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch}
+  .plan{display:flex;flex-direction:column;gap:10px;padding:18px;transition:border-color var(--t-fast),box-shadow var(--t-fast)}
+  .plan.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .plan .pn{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:650;font-size:17px;letter-spacing:-.01em}
+  .plan .price{font-size:28px;font-weight:650;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums}
+  .plan .price small{display:block;font-size:13.5px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-top:3px}
+  .plan ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14.5px;color:var(--ink-2)}
+  .plan .btn{margin-top:auto;width:100%}
+  .fine{font-size:13.5px;color:var(--ink-3)}
+  .compare{font-size:14px;color:var(--ink-3)}
+  #signup{scroll-margin-top:72px}
+  #signupForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end;margin-top:12px}
+  #signupForm .select{width:100%}
+  .msg{font-size:14px;font-weight:600}
+  .msg:not(:empty){margin-top:10px}
+  .msg.err{color:var(--danger-ink)}
+  .keybox{display:none;margin-top:14px}
+  .keybox.show{display:flex}
+  .keybox .kb{display:grid;gap:8px;min-width:0;flex:1}
+  .keybox .krow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .keybox code{flex:1;min-width:0;font-size:13px;padding:7px 10px;overflow-wrap:anywhere;background:var(--panel);color:var(--ink)}
+  .keybox p{color:inherit}
+  .fine.after{margin-top:12px}
+  @media (max-width:760px){ .plans{grid-template-columns:1fr} }
+  @media (pointer:coarse){ .input,.select{font-size:16px} }   /* iOS: no focus zoom */
+</style>
+</head>
+<body>
+<div class="bl-app" id="app">
+  <aside class="bl-side" id="side" aria-label="Sidebar"></aside>
+  <div class="bl-main">
+    <header class="bl-top" id="top"></header>
+    <main class="bl-content narrow pg" id="page">
+      <section id="pricing" aria-labelledby="pricing-h" class="pg">
+        <div class="page-h">
+          <div class="grow">
+            <h1 id="pricing-h">Plans</h1>
+            <p class="lead">Start free with the full public catalogue and tools. Team and Business add a private workspace for your own findings. You are never charged until your private workspace is switched on, and we email you before that happens.</p>
+          </div>
+        </div>
+
+        <div class="plans">
+          <div class="card plan" data-plan="free">
+            <div class="pn">Free</div>
+            <div class="price">$0 <small>no card needed</small></div>
+            <ul>
+              <li>Search the full catalogue of bugs, security items and optimisers</li>
+              <li>Run the scanner on your own repository</li>
+              <li>Sanitizer and AI footprint check</li>
+              <li>Your own workspace key</li>
+            </ul>
+            <button class="btn" type="button" data-choose="free">Create a free account</button>
+          </div>
+          <div class="card plan" data-plan="team">
+            <div class="pn">Team <span class="badge accent">Early access</span></div>
+            <div class="price">$12 <small>per developer a month</small></div>
+            <ul>
+              <li>Everything in Free</li>
+              <li>A private workspace for your team's findings</li>
+              <li>Your own live boards and scan stories</li>
+              <li>Check-log history for every project</li>
+            </ul>
+            <p class="fine">No charge until your workspace opens.</p>
+            <button class="btn primary" type="button" data-choose="team">Join Team early access</button>
+          </div>
+          <div class="card plan" data-plan="business">
+            <div class="pn">Business <span class="badge accent">Early access</span></div>
+            <div class="price">$29 <small>per developer a month</small></div>
+            <ul>
+              <li>Everything in Team</li>
+              <li>Recurrence view across all your projects</li>
+              <li>Security sweep reports you can share</li>
+              <li>Priority email support and invoice billing</li>
+            </ul>
+            <p class="fine">No charge until your workspace opens.</p>
+            <button class="btn primary" type="button" data-choose="business">Join Business early access</button>
+          </div>
+        </div>
+        <p class="compare">For comparison, automated code review tools typically charge $24 to $72 per developer a month.</p>
+
+        <section class="card" id="signup" aria-labelledby="signup-h">
+          <div class="card-h"><h2 id="signup-h">Create your account</h2></div>
+          <div class="card-b">
+            <p class="fine">Takes ten seconds. No card needed.</p>
+            <form id="signupForm" novalidate>
+              <div class="field"><label for="su-name">Your name or team</label><input class="input" id="su-name" name="name" required maxlength="80" autocomplete="organization" placeholder="Acme engineering"></div>
+              <div class="field"><label for="su-email">Work email</label><input class="input" id="su-email" name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@company.com"></div>
+              <div class="field"><label for="su-plan">Plan</label><select class="select" id="su-plan" name="plan"><option value="free">Free</option><option value="team">Team, early access</option><option value="business">Business, early access</option></select></div>
+              <button class="btn primary" type="submit">Create account</button>
+            </form>
+            <p class="msg" id="signupMsg" role="status" aria-live="polite"></p>
+            <div class="note ok keybox" id="keybox"><i data-icon="checkcircle"></i><div class="kb">
+              <b>Your account is ready.</b>
+              <div class="krow"><code id="keyval"></code><button class="btn" type="button" id="keycopy"><i data-icon="copy"></i><span class="lbl">Copy key</span></button></div>
+              <p>This is your workspace key. Save it now, because we only show it once and cannot recover it. The free tools on this page work straight away. We will contact you at your email when your private workspace opens.</p>
+            </div></div>
+            <p class="fine after">We use your email only to contact you about your account. We do not sell it or pass it to anyone else.</p>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+/* icons written in the static markup, resolved from the shell's set */
+Bread.$$('[data-icon]').forEach(function (e) { e.outerHTML = Bread.icon(e.getAttribute('data-icon')); });
+Bread.mount({ active: 'plans', title: 'Plans', crumbs: ['Plans'] });
+
+(function(){
+  var form=document.getElementById('signupForm'); if(!form) return;
+  var msg=document.getElementById('signupMsg'), box=document.getElementById('keybox');
+  function pick(plan){
+    form.plan.value=plan;
+    document.querySelectorAll('.plan').forEach(function(c){c.classList.toggle('pick',c.dataset.plan===plan);});
+  }
+  function choose(plan){
+    pick(plan);
+    document.getElementById('signup').scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(function(){form.name.focus({preventScroll:true});},350);
+  }
+  document.querySelectorAll('[data-choose]').forEach(function(b){
+    b.addEventListener('click',function(){choose(b.dataset.choose);});
+  });
+  form.plan.addEventListener('change',function(){pick(form.plan.value);});
+  form.addEventListener('submit',function(e){
+    e.preventDefault(); msg.className='msg'; msg.textContent='';
+    var name=form.name.value.trim(), email=form.email.value.trim();
+    if(!name){msg.className='msg err';msg.textContent='Please enter your name or team.';form.name.focus();return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.className='msg err';msg.textContent='Please enter a valid email address.';form.email.focus();return;}
+    var btn=form.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Creating…';
+    fetch('/api/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name,email:email,plan:form.plan.value})})
+      .then(function(r){return r.json().catch(function(){return {ok:false,error:'Something went wrong. Please try again.'};});})
+      .then(function(d){
+        if(!d.ok){msg.className='msg err';msg.textContent=d.error||'Something went wrong. Please try again.';return;}
+        document.getElementById('keyval').textContent=d.key; box.classList.add('show'); form.reset(); pick(d.plan);
+        form.style.display='none';
+      })
+      .catch(function(){msg.className='msg err';msg.textContent='Could not reach the server. Please try again.';})
+      .finally(function(){btn.disabled=false;btn.textContent='Create account';});
+  });
+  document.getElementById('keycopy').addEventListener('click',function(){
+    var k=document.getElementById('keyval').textContent, lbl=this.querySelector('.lbl');
+    (navigator.clipboard?navigator.clipboard.writeText(k):Promise.reject()).then(function(){lbl.textContent='Copied';},function(){lbl.textContent='Select and copy';});
+  });
+  Bread.cmdk.register([
+    { group: 'Plans', label: 'Create a free account', icon: 'user', run: function(){ choose('free'); } },
+    { group: 'Plans', label: 'Join Team early access', icon: 'zap', run: function(){ choose('team'); } },
+    { group: 'Plans', label: 'Join Business early access', icon: 'zap', run: function(){ choose('business'); } }
+  ]);
+})();
+</script>
+</body>
+</html>
