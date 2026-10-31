@@ -171,6 +171,27 @@
     tick(); liveTimer = setInterval(tick, 30000);
   }
 
+  /* ---- a newer build is live: offer a one-tap refresh (the Hallalu CRM pattern) ----
+     autodeploy.mjs stamps the commit here and into /build.json; a page left open checks when it is shown, focused or
+     back online, and every 3 minutes, so it never quietly runs yesterday's build. Unstamped (local dev): no check. */
+  var BUILD = 'dev';
+  var updateShown = false, lastBuildCheck = 0;
+  function checkBuild() {
+    if (BUILD === 'dev' || updateShown || d.hidden || Date.now() - lastBuildCheck < 20000) return;
+    lastBuildCheck = Date.now();
+    fetch('/build.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.build || j.build === BUILD || updateShown) return;
+      updateShown = true;
+      var bar = d.createElement('div'); bar.className = 'update-bar'; bar.setAttribute('role', 'status');
+      bar.innerHTML = icon('sparkles') + '<span>A newer Breadledger is ready.</span><button class="btn primary sm" type="button">Refresh</button>';
+      bar.querySelector('button').onclick = function () { location.reload(); };
+      d.body.appendChild(bar);
+    }).catch(function () {});
+  }
+  ['visibilitychange', 'focus', 'online'].forEach(function (ev) { (ev === 'visibilitychange' ? d : w).addEventListener(ev, checkBuild); });
+  w.addEventListener('pageshow', function (e) { if (e.persisted) checkBuild(); });
+  setInterval(checkBuild, 180000); setTimeout(checkBuild, 4000);
+
   /* ---- time ---- */
   function ago(ts) { var t = typeof ts === 'number' ? ts : Date.parse(ts); if (!t) return ''; var s = Math.round((Date.now() - t) / 1000);
     if (s < 45) return 'just now'; if (s < 90) return '1 min ago'; var m = Math.round(s / 60); if (m < 60) return m + ' min ago';

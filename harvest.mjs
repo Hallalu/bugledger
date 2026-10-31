@@ -176,12 +176,13 @@ if (added > 0) {
   try { execSync(`node ${JSON.stringify(path.join(LEDGER, "gen.mjs"))}`, { stdio: QUIET ? "ignore" : "inherit" }); } catch {}
   if (flags.has("--deploy")) {
     try {
-      execSync("npx wrangler deploy", { cwd: LEDGER, stdio: QUIET ? "ignore" : "inherit" });
       // stage ONLY the harvester's own outputs — never `git add -A`, which would sweep a
       // co-editing session's in-progress work into this automated commit.
       execSync(`git add harvested.json public/data-harvest.js HARVESTED.md public/HARVESTED.md 2>/dev/null; git -c user.email=rhemajking@gmail.com -c user.name=Hallalu commit -q -m ${JSON.stringify(`harvest: +${added} auto-harvested bugs (${today})`)} && git push -q origin main`, { cwd: LEDGER, stdio: QUIET ? "ignore" : "inherit" });
-      log("deployed + pushed.");
-    } catch (e) { console.error("deploy/push failed:", e.message); }
+      // the site goes live from a clean copy of the pushed commit, never this working folder
+      execSync(`node ${JSON.stringify(path.join(LEDGER, "autodeploy.mjs"))}`, { cwd: LEDGER, stdio: QUIET ? "ignore" : "inherit" });
+      log("pushed + deployed.");
+    } catch (e) { console.error("push/deploy failed:", e.message); }
   }
 } else {
   log("nothing new — no rebuild/deploy.");
