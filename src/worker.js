@@ -285,6 +285,7 @@ async function handle(request, env) {
             e.meta && typeof e.meta === "object" ? JSON.stringify(e.meta).slice(0, 1000) : null));
         });
         if (!stmts.length) return json({ ok: false, error: "no events" }, 400);
+        stmts.push(env.DB.prepare("UPDATE sessions SET updated = ? WHERE id = ? AND status = 'active'").bind(now, sessionId));   // any move keeps the card "working"
         await env.DB.batch(stmts);
         return json({ ok: true, ids, count: ids.length, story: siteOrigin + "/story/" + sessionId });
       } catch (e) { return writeErr(e); }
@@ -299,7 +300,7 @@ async function handle(request, env) {
         if (!row) return json({ ok: false, error: "not found" }, 404);
         const session = mapSession(row);
         const [ev, ck, sb] = await Promise.all([
-          env.DB.prepare("SELECT * FROM session_events WHERE session_id = ? ORDER BY ts ASC, seq ASC LIMIT 2000").bind(id).all(),
+          env.DB.prepare("SELECT * FROM session_events WHERE session_id = ? AND kind != 'act' ORDER BY ts ASC, seq ASC LIMIT 2000").bind(id).all(),
           env.DB.prepare("SELECT * FROM checks WHERE session_id = ? ORDER BY ts ASC LIMIT 100").bind(id).all(),
           env.DB.prepare("SELECT * FROM submitted WHERE session_id = ? ORDER BY ts ASC LIMIT 200").bind(id).all(),
         ]);
@@ -320,7 +321,7 @@ async function handle(request, env) {
           if (rows.length) {
             const ph = rows.map(() => "?").join(",");
             const allEv = await env.DB.prepare(
-              `SELECT * FROM session_events WHERE session_id IN (${ph}) ORDER BY ts ASC, seq ASC LIMIT 12000`
+              `SELECT * FROM session_events WHERE session_id IN (${ph}) AND kind != 'act' ORDER BY ts ASC, seq ASC LIMIT 12000`
             ).bind(...rows.map((r) => r.id)).all();
             const byS = new Map();
             for (const e of (allEv.results || [])) { if (!byS.has(e.session_id)) byS.set(e.session_id, []); byS.get(e.session_id).push(mapEvent(e)); }
@@ -499,11 +500,17 @@ async function handle(request, env) {
         const sessions = (results || []).map(mapSession);
         if (one && !sessions.length) return json({ ok: false, error: "not found" }, 404);
         const ids = sessions.map((x) => x.id);
-        let evs = [];
+        let evs = []; const actN = {};
         if (ids.length) {
-          const q = await env.DB.prepare(`SELECT * FROM session_events WHERE session_id IN (${ids.map(() => "?").join(",")}) ORDER BY ts DESC LIMIT ?`)
-            .bind(...ids, one ? 600 : 1500).all();
-          evs = q.results || [];
+          const ph = ids.map(() => "?").join(",");
+          const [q, qa, qc] = await Promise.all([
+            env.DB.prepare(`SELECT * FROM session_events WHERE session_id IN (${ph}) AND kind != 'act' ORDER BY ts DESC LIMIT ?`).bind(...ids, one ? 600 : 1500).all(),
+            // the newest actions of EACH session, so one busy session never crowds the others off the board
+            env.DB.prepare(`SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY ts DESC) AS rn FROM session_events WHERE kind = 'act' AND session_id IN (${ph})) WHERE rn <= ?`).bind(...ids, one ? 500 : 40).all(),
+            env.DB.prepare(`SELECT session_id, COUNT(*) AS n FROM session_events WHERE kind = 'act' AND session_id IN (${ph}) GROUP BY session_id`).bind(...ids).all(),
+          ]);
+          evs = (q.results || []).concat((qa.results || []).sort((a, b) => b.ts - a.ts));
+          for (const r of qc.results || []) actN[r.session_id] = r.n;
         }
         const by = {};
         for (const e of evs) (by[e.session_id] = by[e.session_id] || []).push(e);
@@ -513,13 +520,17 @@ async function handle(request, env) {
           const pick = (e) => ({ id: e.id, ts: e.ts, kind: e.kind, phase: e.phase, severity: e.severity, status: e.status,
             category: e.category, title: e.title, detail: e.detail, impact: e.impact, fix: e.fix, file: e.file,
             before: e.before_v, after: e.after_v, meta: meta(e) });
-          const story = list.filter((e) => e.kind !== "shot" && e.kind !== "feature").slice(0, one ? 400 : 14).map(pick);
+          const story = list.filter((e) => e.kind !== "shot" && e.kind !== "feature" && e.kind !== "act").slice(0, one ? 400 : 14).map(pick);
+          // every action the agent took, newest first, each tagged with the step it happened in (phase)
+          const acts = list.filter((e) => e.kind === "act").slice(0, one ? 500 : 40).map((e) => { const m = meta(e);
+            return { id: e.id, ts: e.ts, text: e.title, step: e.phase || null, icon: m.icon || "act", ok: m.ok === false ? false : true }; });
+          const actCount = actN[x.id] || 0;
           const features = list.filter((e) => e.kind === "feature").reverse().map((e) => ({ ts: e.ts, title: e.title, detail: e.detail, status: e.status || null }));
           const shots = list.filter((e) => e.kind === "shot").reverse().map((e) => { const m = meta(e);
             return { ts: e.ts, url: m.url || "", label: e.title || m.label || "", stage: m.stage || null, caption: e.detail || "" }; }).filter((x) => x.url);
           const findings = list.filter((e) => e.kind === "found").length;
           const state = x.status === "done" ? "done" : now - x.updated < 5 * 60_000 ? "working" : "quiet";
-          return { ...x, state, story, features, shots, findings };
+          return { ...x, state, story, acts, actCount, features, shots, findings };
         });
         return json({ ok: true, now, count: out.length, sessions: out });
       } catch (e) { return writeErr(e); }
@@ -684,7 +695,7 @@ async function handle(request, env) {
 function safeParse(s, dflt) { try { return JSON.parse(s); } catch { return dflt; } }
 
 // ---- scan story: event kinds, severities, statuses ----
-const EVENT_KINDS = new Set(["phase", "say", "found", "fixed", "clean", "metric", "verdict", "caveat", "note", "feature", "shot"]);
+const EVENT_KINDS = new Set(["phase", "say", "found", "fixed", "clean", "metric", "verdict", "caveat", "note", "feature", "shot", "act"]);   // act = one thing the agent did (read, edit, run…), posted by breadhook.mjs
 // carry each step's start/finish times across updates (matched by position, then by text), and stamp new ones.
 // A step that goes active gets startedAt; a step that goes done gets doneAt (and a startedAt if it skipped active).
 function stampTasks(prev, next, now) {

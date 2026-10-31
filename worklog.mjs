@@ -131,6 +131,7 @@ if (cmd === "start") {
     agent: flag("agent") || "claude-code", status: "active",
     current: flag("current") || (tasks[0] ? tasks[0].text : "Getting started"),
     note: flag("note") || "", tasks, seq: 0, phase: null, findings: [],
+    cwd: process.cwd(), base: BASE, ...(/localhost|127\.0\.0\.1/.test(BASE) ? { token: TOKEN } : {}),   // breadhook.mjs finds the board by folder
   };
   const out = await post(s);
   s.id = out.id; saveState(s);

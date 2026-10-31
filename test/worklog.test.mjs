@@ -33,3 +33,11 @@ test("feature refuses to run without a session", () => {
   const r = run(["feature", "x"], dir);
   assert.equal(r.status, 1); assert.match(r.stderr, /no \.\/\.worklog\.json/);
 });
+test("breadhook.mjs stays silent with no board, and never leaks paths or keys", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bl-hook-"));
+  const r = spawnSync("node", [path.join(ROOT, "breadhook.mjs")], { cwd: dir, encoding: "utf8", env: { ...process.env, HOME: dir },
+    input: JSON.stringify({ session_id: "x", cwd: dir, tool_name: "Read", tool_input: { file_path: "/Users/a/b.js" } }) });
+  assert.equal(r.status, 0); assert.equal(r.stdout, "");
+  const src = fs.readFileSync(path.join(ROOT, "breadhook.mjs"), "utf8");
+  assert.match(src, /const scrub/); assert.match(src, /\[key\]/);
+});
