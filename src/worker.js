@@ -273,7 +273,7 @@ async function handle(request, env) {
           stmts.push(env.DB.prepare(
             `INSERT INTO session_events (id,session_id,ts,seq,kind,phase,severity,status,category,confidence,verified_by,title,detail,impact,fix,file,ref,before_v,after_v,meta)
              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-          ).bind(id, sessionId, now + i, num(e.seq) || null, kind, cleanStr(e.phase, 120),
+          ).bind(id, sessionId, (isChat(sessionId) && chatTs(e.at, now)) || now + i, num(e.seq) || null, kind, cleanStr(e.phase, 120),
             normSev(e.severity), normStatus(e.status), str(e.category, 30) || null,
             e.confidence === "high" || e.confidence === "review" ? e.confidence : null,
             e.verifiedBy ? normVer(e.verifiedBy) : null,
@@ -295,6 +295,7 @@ async function handle(request, env) {
     if (pathname === "/api/story" && request.method === "GET") {
       const id = url.searchParams.get("id");
       if (!id) return json({ ok: false, error: "id required" }, 400);
+      if (isChat(id) && !ownerOK(request, env)) return json({ ok: false, error: "owner only — send x-ledger-key" }, 401);
       try {
         const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
         if (!row) return json({ ok: false, error: "not found" }, 404);
@@ -492,12 +493,16 @@ async function handle(request, env) {
     if (pathname === "/api/now" && request.method === "GET") {
       const one = str(url.searchParams.get("id"), 60);
       const now = Date.now();
+      const owner = ownerOK(request, env);
+      // ?probe=1 — the follow-along hook asks whether this build shows chats before it posts one (older builds never see them)
+      if (url.searchParams.get("probe")) return json({ ok: true, chats: true, owner });
+      if (one && isChat(one) && !owner) return json({ ok: false, error: "owner only — send x-ledger-key" }, 401);
       try {
         const { results } = one
           ? await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(one).all()
           : await env.DB.prepare("SELECT * FROM sessions WHERE (status = 'active' AND updated > ?) OR (status = 'done' AND updated > ?) ORDER BY updated DESC LIMIT 40")
               .bind(now - 12 * 3600_000, now - 24 * 3600_000).all();
-        const sessions = (results || []).map(mapSession);
+        const sessions = (results || []).map(mapSession).filter((x) => owner || !isChat(x.id));   // chats: owner's eyes only
         if (one && !sessions.length) return json({ ok: false, error: "not found" }, 404);
         const ids = sessions.map((x) => x.id);
         let evs = []; const actN = {};
@@ -529,10 +534,16 @@ async function handle(request, env) {
           const shots = list.filter((e) => e.kind === "shot").reverse().map((e) => { const m = meta(e);
             return { ts: e.ts, url: m.url || "", label: e.title || m.label || "", stage: m.stage || null, caption: e.detail || "" }; }).filter((x) => x.url);
           const findings = list.filter((e) => e.kind === "found").length;
-          const state = x.status === "done" ? "done" : now - x.updated < 5 * 60_000 ? "working" : "quiet";
-          return { ...x, state, story, acts, actCount, features, shots, findings };
+          // a chat card says when its turn ended ("waiting" for the owner's next message) or the chat closed ("ended")
+          const chat = isChat(x.id) ? (safeParse(x.note, null) || {}) : null;
+          const flag = chat && ["waiting", "needs", "ended"].includes(chat.f) ? chat.f : "";
+          const state = x.status === "done" ? "done" : flag || (now - x.updated < 5 * 60_000 ? "working" : "quiet");
+          // the owner's latest ask in a chat (a "say" the hook marks you:true) — shown as "You asked" on the card
+          const youEv = chat ? list.find((e) => e.kind === "say" && meta(e).you) : null;
+          const you = youEv ? { ts: youEv.ts, text: youEv.detail || youEv.title } : null;
+          return { ...x, note: chat ? "" : x.note, chat, state, story, acts, actCount, features, shots, findings, you };
         });
-        return json({ ok: true, now, count: out.length, sessions: out });
+        return json({ ok: true, now, owner, chats: true, count: out.length, sessions: out });
       } catch (e) { return writeErr(e); }
     }
 
@@ -544,6 +555,7 @@ async function handle(request, env) {
         const { results } = await env.DB
           .prepare("SELECT * FROM sessions ORDER BY updated DESC LIMIT ?").bind(limit).all();
         let rows = (results || []).map(mapSession);
+        if (!ownerOK(request, env)) rows = rows.filter((x) => !isChat(x.id));   // chats: owner's eyes only
         // "live" = active and touched within 90s; keep done sessions from the last hour for context
         const now = Date.now();
         rows = rows.map((s) => ({ ...s, live: s.status === "active" && now - s.updated < 90_000 }));
@@ -554,6 +566,7 @@ async function handle(request, env) {
     if (pathname === "/api/session" && request.method === "GET") {
       const id = url.searchParams.get("id");
       if (!id) return json({ ok: false, error: "id required" }, 400);
+      if (isChat(id) && !ownerOK(request, env)) return json({ ok: false, error: "owner only — send x-ledger-key" }, 401);
       try {
         const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
         return row ? json({ ok: true, session: mapSession(row) }) : json({ ok: false, error: "not found" }, 404);
@@ -568,6 +581,7 @@ async function handle(request, env) {
       try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
       const id = str(body.id, 60) || crypto.randomUUID();
       const now = Date.now();
+      const chatCard = isChat(id);
       // a step carries its plain-English note (desc) and the wave it belongs to; the server stamps when
       // each step started and finished, so the board's timers come from the server, not the agent's clock
       let tasks = arr(body.tasks, 80, (t) => ({
@@ -575,6 +589,9 @@ async function handle(request, env) {
         status: ["pending", "active", "done"].includes(t && t.status) ? t.status : "pending",
         desc: cleanStr(t && t.desc, 600) || undefined,
         wave: cleanStr(t && t.wave, 80) || undefined,
+        // a chat card sends when each step really started and finished (from its transcript)
+        ...(chatCard && chatTs(t && t.startedAt, now) ? { startedAt: chatTs(t.startedAt, now) } : {}),
+        ...(chatCard && chatTs(t && t.doneAt, now) ? { doneAt: chatTs(t.doneAt, now) } : {}),
       }));
       const done = tasks.filter((t) => t.status === "done").length;
       const status = body.status === "done" ? "done" : "active";
@@ -586,22 +603,24 @@ async function handle(request, env) {
         // a finished session is frozen — you can't rewrite history, only start a new one
         if (existing && existing.status === "done")
           return json({ ok: false, error: "session already finished — start a new one" }, 409);
-        const started = existing ? existing.started : now;
+        const started = chatCard && chatTs(body.started, now) ? chatTs(body.started, now) : existing ? existing.started : now;
         tasks = stampTasks(existing ? safeParse(existing.tasks, []) : [], tasks, now);
-        // identity is set once at creation and never overwritten on update (append-only integrity)
-        const app = existing ? existing.app : cleanStr(body.app, 80);
-        const project = existing ? existing.project : cleanStr(body.project, 200);
-        const title = existing ? existing.title : cleanStr(body.title, 200);
+        // identity is set once at creation and never overwritten on update (append-only integrity) — except a live chat
+        // card, whose title is the first thing the owner asked and whose project is only known once it starts working
+        const chat = isChat(id);
+        const app = existing && !chat ? existing.app : cleanStr(body.app, 80) || (existing ? existing.app : "");
+        const project = existing && !chat ? existing.project : cleanStr(body.project, 200) || (existing ? existing.project : "");
+        const title = existing && !chat ? existing.title : cleanStr(body.title, 200) || (existing ? existing.title : "");
         const agent = existing ? existing.agent : str(body.agent || "claude-code", 60);
         await env.DB.prepare(
           `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note,prog_done,prog_total,prog_label)
            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-           ON CONFLICT(id) DO UPDATE SET updated=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?,prog_done=?,prog_total=?,prog_label=?`
+           ON CONFLICT(id) DO UPDATE SET updated=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?,prog_done=?,prog_total=?,prog_label=?,app=?,project=?,title=?,started=?`
         ).bind(
-          id, started, now, app, project, title, agent, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, 500),
+          id, started, now, app, project, title, agent, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, chatCard ? 2400 : 500),
           prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null,
-          now, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, 500),
-          prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null
+          now, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, chatCard ? 2400 : 500),
+          prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null, app, project, title, started
         ).run();
         return json({ ok: true, id, url: siteOrigin + "/now/" + id, board: siteOrigin + "/now", done, total: tasks.length });
       } catch (e) { return writeErr(e); }
@@ -617,7 +636,8 @@ async function handle(request, env) {
           env.DB.prepare("SELECT * FROM submitted ORDER BY ts DESC LIMIT ?").bind(limit).all(),
         ]);
         const now = Date.now();
-        const sessions = (s.results || []).map((r) => {
+        const owner = ownerOK(request, env);
+        const sessions = (s.results || []).filter((r) => owner || !isChat(r.id)).map((r) => {
           const m = mapSession(r);
           return { kind: "session", id: m.id, ts: m.updated, started: m.started, app: m.app, project: m.project,
             title: m.title, status: m.status, current: m.current, done: m.done, total: m.total,
@@ -702,8 +722,8 @@ function stampTasks(prev, next, now) {
   return next.map((t, i) => {
     const p = (prev[i] && prev[i].text === t.text) ? prev[i] : prev.find((x) => x && x.text === t.text) || null;
     const out = { ...t };
-    if (p && p.startedAt) out.startedAt = p.startedAt;
-    if (p && p.doneAt && t.status === "done") out.doneAt = p.doneAt;
+    if (p && p.startedAt && !t.startedAt) out.startedAt = p.startedAt;
+    if (p && p.doneAt && t.status === "done" && !t.doneAt) out.doneAt = p.doneAt;
     if (!out.desc && p && p.desc) out.desc = p.desc;
     if (!out.wave && p && p.wave) out.wave = p.wave;
     if ((t.status === "active" || t.status === "done") && !out.startedAt) out.startedAt = now;
@@ -774,9 +794,14 @@ function rollup(events) {
     verdict: verdict ? verdict.title || verdict.detail : null, caveats: events.filter((e) => e.kind === "caveat").length };
 }
 
+// a Claude chat registered by the follow-along hook (id "chat-…") is the owner's own work in progress: its title is what
+// they asked, so every read of one needs the owner's key; hand-started boards (worklog.mjs) stay public as before
+const isChat = (id) => typeof id === "string" && id.startsWith("chat-");
+const chatTs = (v, now) => (Number.isFinite(+v) && +v > now - 7 * 86400_000 && +v <= now + 60_000 ? Math.trunc(+v) : null);
+const ownerOK = (request, env) => !env.LEDGER_WRITE_TOKEN || request.headers.get("x-ledger-key") === env.LEDGER_WRITE_TOKEN;
 function mapSession(r) {
   return {
-    id: r.id, started: r.started, updated: r.updated, app: r.app, project: r.project,
+    id: r.id, kind: isChat(r.id) ? "chat" : "board", started: r.started, updated: r.updated, app: r.app, project: r.project,
     title: r.title, agent: r.agent, status: r.status, current: r.current,
     tasks: safeParse(r.tasks, []), done: r.done_count, total: r.total_count, note: r.note,
     progress: r.prog_total ? { done: r.prog_done || 0, total: r.prog_total, label: r.prog_label || "" } : null,
