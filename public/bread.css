@@ -535,7 +535,7 @@ svg.ico{width:18px;height:18px;flex:0 0 auto;vertical-align:-4px}
 @media (prefers-reduced-motion:reduce){.pt::before{animation:none}}
 .empty.art{padding:28px 20px 48px}
 .empty.art img{width:min(100%,420px);height:auto;border-radius:var(--r-2);margin-bottom:6px;filter:drop-shadow(0 10px 20px rgba(17,17,17,.08))}
-@media (max-width:900px){.hero{grid-template-columns:1fr;padding:22px 18px} .hero .art{justify-self:center;width:min(70%,240px);order:-1} .hero h2{font-size:24px} .bigwords{grid-template-columns:1fr} .bigword{min-height:0} .bigword .pic{height:170px}}
+@media (max-width:900px){.hero{grid-template-columns:1fr;padding:22px 18px} .hero .art{justify-self:center;width:min(70%,240px);order:-1} .hero h2{font-size:24px} .bigwords{grid-template-columns:1fr} .bigword{min-height:0} .bigword .pic{height:170px;display:flex;justify-content:center;background:#fff} .bigword .pic img{max-width:672px} .bigword .pic.brain{height:auto;max-width:672px;margin-left:auto;margin-right:auto;width:100%}}
 @media (prefers-reduced-motion:reduce){.hero::after,.hero .art::before,.hero .art img,.wall .track{animation:none}}
 
 /* ---------- voice (microphone) and media (+) ---------- */
