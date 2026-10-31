@@ -9322,5 +9322,89 @@
     "status": "unverified",
     "session": "7dda19ea",
     "found": "2026-10-31"
+  },
+  {
+    "key": "01053afd:continuingtheonethingafixlikethisleavesopenisthesamebugclass",
+    "app": "Hallalu CRM",
+    "title": "Continuing: the one thing a fix like this leaves open is the same bug class elsewhere…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Continuing: the one thing a fix like this leaves open is the same bug class elsewhere in the studio, so I'll sweep every place that adds a clip and then trusts \"the last clip on the timeline\", and fi…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "01053afd",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "01053afd:afailedremakekeepstheoldclipandsaysso",
+    "app": "Hallalu CRM",
+    "title": "A failed remake keeps the old clip and says so.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "A failed remake keeps the old clip and says so.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "01053afd",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "01053afd:myfirstcheckalsohidthatfailurebehindapipelinesotheretrysurfa",
+    "app": "Hallalu CRM",
+    "title": "My first check also hid that failure behind a pipeline, so the retry surfaced…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "My first check also hid that failure behind a pipeline, so the retry surfaced wrangler's exit code explicitly.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "01053afd",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "67a5388a:theoldtestsigninfilethatwentmissingwasremovedbythatsessionso",
+    "app": "Hallalu CRM",
+    "title": "Old test sign-in file that went missing was removed by that session, so nothing is broken.",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "The old test sign-in file that went missing was removed by that session, so nothing is broken.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "67a5388a",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7dda19ea:ialsofixedamappingbugwhenthevideohasblackbarsatthesidesdrawi",
+    "app": "Hallalu CRM",
+    "title": "- I also fixed a mapping bug: when the video has black bars at the sides, drawings now…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- I also fixed a mapping bug: when the video has black bars at the sides, drawings now land exactly where you click.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7dda19ea:thefeaturelistdidntshowintheuploadoutputireadsoillcheckitsin",
+    "app": "Hallalu CRM",
+    "title": "Feature list didn't show in the upload output I read, so I'll check it's in that folder.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The feature list didn't show in the upload output I read, so I'll check it's in that folder.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "7dda19ea:oneupdatefromthechromeextensionsessionitwastheonethatremoved",
+    "app": "Hallalu CRM",
+    "title": "One update from the Chrome extension session: it was the one that removed the old test…",
+    "category": "auth",
+    "severity": "high",
+    "symptom": "One update from the Chrome extension session: it was the one that removed the old test sign-in file, along with the local test account it had made, so nothing else is wrong.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "7dda19ea",
+    "found": "2026-10-31"
   }
 ]
