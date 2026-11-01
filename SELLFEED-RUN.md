@@ -11,7 +11,8 @@ the most it can cost. DRAFTS ONLY: never post, publish, email or send anything; 
    name a film studio or brand; "No text, no logos, no watermarks"). Tie the fact to what Breadledger does; close with
    "Scan your app today, secure your future." and the link.
    - Claim rules: only the item's fact + angle. Unverified → "X reports…" with the source named. Fines are maximums
-     ("up to …"); never say a person or company was charged unless the fact names a firm that was fined. No invented
+     ("up to …"); never say a person or company was charged unless the fact names a firm that was fined. A clearly fictional
+     what-if scene is allowed: an obvious cartoon character + small print "Dramatisation. <the real rule, up to …>" + source. No invented
      customers, results, testimonials or numbers. Source link at the end of every piece. Never mention the backend,
      hosting, AI models or providers.
    - kind "brief" = the owner's own idea: make it as given (script/shot list, caption, picture/video prompts), keep their
