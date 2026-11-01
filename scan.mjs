@@ -15,6 +15,10 @@
    --story     itemise this scan's high-confidence findings on the live session's story (/story/<id>)
    --story-all …and the review-confidence leads too (noisier; they are leads until read)
    --log       POST this scan as a check-log (coverage record) to the ledger
+   --share     send the results to your Breadledger account: prints the calm results link (/results/<id>) and, with
+               autofix on, the safe fixes for the agent to make now
+   --after ID  this scan follows fixes made for scan ID: whatever ID found and this scan doesn't is shown as FIXED
+   --todo ID   don't scan; print what to fix for scan ID (the safe autofixes and what the person said yes to)
 
  Static analysis only — it reads files, never executes the app. Treat findings as
  leads to verify, not proof. Pair with the printed manual checklist for the bugs
@@ -36,7 +40,34 @@ const argv = process.argv.slice(2);
 const flags = new Set(argv.filter(a => a.startsWith("--")));
 const positional = argv.filter(a => !a.startsWith("--"));
 const appFlag = (() => { const i = argv.indexOf("--app"); return i >= 0 ? argv[i+1] : null; })();
-const TARGET = path.resolve(positional.find(a => a !== appFlag) || process.cwd());
+const valOf = (f) => { const i = argv.indexOf(f); return i >= 0 && argv[i+1] && !argv[i+1].startsWith("--") ? argv[i+1] : null; };
+const afterId = valOf("--after"), todoId = valOf("--todo");
+const TARGET = path.resolve(positional.find(a => a !== appFlag && a !== afterId && a !== todoId) || process.cwd());
+
+// ---------- Breadledger account (for --share / --todo): a member's connect line, else the owner's key ----------
+function ledgerCfg() {
+  let c = {}; for (const f of [path.join(process.env.HOME, ".breadledger", "config.json"), path.join(process.env.HOME, ".bugledger.json")]) { try { c = JSON.parse(fs.readFileSync(f, "utf8")); if (c.token) break; } catch {} }
+  return { base: (process.env.BUGLEDGER_BASE || c.base || "https://breadledger.coconvo.workers.dev").replace(/\/$/, ""), token: process.env.BUGLEDGER_TOKEN || c.token || "" };
+}
+// the work list an agent acts on: each item, why it's on the list, and every place to change
+function printTodo(j, base) {
+  if (!j.todo.length) { console.log(`\n✓ Nothing to fix right now for ${j.app}. ${j.autofix ? "" : "(Autofix is off — safe fixes wait for a yes.)"}`); return; }
+  console.log(`\n🛠  FIX THESE NOW — ${j.todo.length} item${j.todo.length === 1 ? "" : "s"} for ${j.app} (${j.todo.filter(t => t.why === "autofix").length} safe autofix, ${j.todo.filter(t => t.why === "approved").length} approved by the owner)`);
+  for (const t of j.todo) {
+    console.log(`\n• [${t.why}${t.checkFirst ? " · CHECK FIRST" : ""}] ${t.check} — ${t.problem}\n  fix: ${t.fix}`);
+    for (const p of t.places.slice(0, 15)) console.log(`    ${p.file}:${p.line}   ${p.excerpt}`);
+    if (t.places.length > 15) console.log(`    …and ${t.places.length - 15} more`);
+  }
+  console.log(`\n→ ${j.instructions}\n  Re-scan: node ${path.join(LEDGER, "scan.mjs")} <app dir> --share --after ${j.scan}\n  Results for the owner: ${base}/results/${j.scan}`);
+}
+if (todoId) {
+  const { base, token } = ledgerCfg();
+  const r = await fetch(`${base}/api/scans/${todoId}/todo`, { headers: { "x-ledger-key": token } }).catch(() => null);
+  const j = r ? await r.json().catch(() => null) : null;
+  if (!j || !j.ok) { console.error(`--todo: ${(j && j.error) || "could not reach Breadledger"}`); process.exit(1); }
+  printTodo(j, base);
+  process.exit(0);
+}
 const AS_JSON = flags.has("--json");
 
 if (!fs.existsSync(TARGET)) { console.error("No such directory:", TARGET); process.exit(1); }
@@ -531,7 +562,9 @@ const QA11 = [
   ["Out-of-bound", ["BOUND-*"], "type too much, too little, negative and huge numbers into every field"],
 ];
 const qaMatch = (pat, id) => pat.endsWith("*") ? id.startsWith(pat.slice(0, -1)) : id === pat;
+const QA_ALL = () => [...D.map((d) => d.id), "TEST-NONE","TEST-NO-CI","PRIV-NO-POLICY","PRIV-NO-DELETE","OBS-NO-ERROR-HANDLER","AUTH-NO-MFA","AUTH-NO-SEC-HEADERS","AUTH-NO-BOT-CHECK","AUTH-NO-IP-LIMIT","AUTH-NO-BREACH-CHECK","AUTH-WEAK-HASH","AUTH-SHORT-MIN","AUTH-NO-EMAIL-VERIFY","FUNC-MISSING-ID","FUNC-UNDEFINED-HANDLER","INTEG-DEAD-ROUTE","WORKFLOW-NO-POPSTATE","WORKFLOW-DEAD-LINK","PERF-HUGE-ASSET"];
 function qa11Summary(allIds, found) {
+  if (typeof allIds === "function") allIds = allIds();
   return QA11.map(([type, pats, hands]) => {
     const dets = allIds.filter((id) => pats.some((p) => qaMatch(p, id)));
     const hits = found.filter((f) => pats.some((p) => qaMatch(p, f.detector)));
@@ -984,4 +1017,24 @@ if (flags.has("--log")) {
     if (out.ok) (AS_JSON ? console.error : console.log)(`\n✅ --log: recorded check for ${APP} (id ${out.id}). See ${base}/#checks`); // stderr in --json mode: stdout is the JSON contract
     else console.error(`\n--log failed: ${res.status} ${out.error||""}${token?"":" (no token — set ~/.bugledger.json)"}`);
   } catch(e) { console.error("--log failed:", e.message); }
+}
+
+// ---------- --share: send the results to the person's Breadledger, print the calm results link + the safe fixes ----------
+if (flags.has("--share")) {
+  const { base, token } = ledgerCfg();
+  const say = AS_JSON ? console.error : console.log;
+  try {
+    const res = await fetch(base + "/api/scans", { method: "POST", headers: { "content-type": "application/json", "x-ledger-key": token },
+      body: JSON.stringify({ app: APP, files: files.length, after: afterId, findings, qa11: qa11Summary(QA_ALL, findings) }) });
+    const out = await res.json().catch(() => ({}));
+    if (!out.ok) { console.error(`\n--share failed: ${out.error || res.status}${token ? "" : " (connect Claude Code on Breadledger first)"}`); }
+    else {
+      say(`\n📨 Results are ready for the owner: ${out.url}`);
+      say(`   ${out.fixed ? out.fixed + " fixed since last scan (checked again: gone) · " : ""}${out.auto} safe to fix automatically · ${out.ask} need the owner's yes · autofix is ${out.autofix ? "ON" : "OFF"}`);
+      if (out.autofix && out.auto) {
+        const t = await fetch(`${base}/api/scans/${out.id}/todo`, { headers: { "x-ledger-key": token } }).then((r) => r.json()).catch(() => null);
+        if (t && t.ok) printTodo(t, base);
+      }
+    }
+  } catch (e) { console.error("--share failed:", e.message); }
 }

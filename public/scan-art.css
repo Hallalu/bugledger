@@ -1,0 +1,74 @@
+/* Breadledger scan pictures — little characters for the 11 kinds of problem (drawn in scan-words.js).
+   Soft pastel shapes, a friendly face, a gentle idle movement; tap a picture (.fixed) to see what fixing does.
+   Colours are tokens with a dark-mode set; every movement stops for people who ask for reduced motion. */
+.art{--o:#3d3846;--sh:rgba(61,56,70,.10);--pink:#ffd6e0;--peach:#ffe2c6;--cream:#fff3dc;--mint:#cdf3e1;--sky:#d4e8ff;--lilac:#e4dcff;
+  --sun:#ffe7a3;--coffee:#a8744f;--coffee2:#c8936a;--cheek:#ff9db5;--ok:#2f9e66;--warn:#e8913a;--spark:#ffc94d;--paper:#ffffff}
+:root[data-theme="dark"] .art{--o:#e9e4f2;--sh:rgba(0,0,0,.35);--pink:#6b3a4b;--peach:#6e4a2c;--cream:#5a4b33;--mint:#24523f;--sky:#25405f;
+  --lilac:#3f3866;--sun:#6a5a24;--coffee:#c99569;--coffee2:#e0b38d;--cheek:#ff8fab;--ok:#5fd59a;--warn:#ffb05e;--spark:#ffd770;--paper:#2a2733}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .art{--o:#e9e4f2;--sh:rgba(0,0,0,.35);--pink:#6b3a4b;--peach:#6e4a2c;--cream:#5a4b33;
+  --mint:#24523f;--sky:#25405f;--lilac:#3f3866;--sun:#6a5a24;--coffee:#c99569;--coffee2:#e0b38d;--cheek:#ff8fab;--ok:#5fd59a;--warn:#ffb05e;--spark:#ffd770;--paper:#2a2733}}
+
+.art{overflow:visible}
+.art *{transform-box:fill-box;transform-origin:center}
+.art .o{stroke:var(--o);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.art .no{fill:none}
+.art .sh{fill:var(--sh)}
+.art .eye{fill:var(--o)}
+.art .ck{fill:var(--cheek);opacity:.55}
+.art .f-pink{fill:var(--pink)} .art .f-peach{fill:var(--peach)} .art .f-cream{fill:var(--cream)} .art .f-mint{fill:var(--mint)}
+.art .f-sky{fill:var(--sky)} .art .f-lilac{fill:var(--lilac)} .art .f-sun{fill:var(--sun)} .art .f-paper{fill:var(--paper)}
+.art .f-coffee{fill:var(--coffee)} .art .f-coffee2{fill:var(--coffee2)} .art .f-o{fill:var(--o)} .art .f-ok{fill:var(--ok)} .art .f-spark{fill:var(--spark)}
+.art .s-ok{stroke:var(--ok)} .art .s-warn{stroke:var(--warn)} .art .s-coffee{stroke:var(--coffee)} .art .s-soft{stroke:var(--o);opacity:.35}
+.art .happy,.art .good{opacity:0} .art.fixed .happy,.art.fixed .good{opacity:1} .art.fixed .sad,.art.fixed .bad{opacity:0}
+.art .happy,.art .sad,.art .good,.art .bad{transition:opacity .35s ease}
+
+/* idle life: bob, blink, sway — slow and soft */
+@keyframes art-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes art-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes art-sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes art-swing{0%,100%{transform:rotate(-24deg)}50%{transform:rotate(-14deg)}}
+@keyframes art-drip{0%{transform:translateY(-6px);opacity:0}20%{opacity:1}100%{transform:translateY(26px);opacity:0}}
+@keyframes art-steam{0%{transform:translateY(6px) scaleX(1);opacity:0}30%{opacity:.7}100%{transform:translateY(-18px) scaleX(1.3);opacity:0}}
+@keyframes art-float{0%{transform:translateY(4px);opacity:0}25%{opacity:1}100%{transform:translateY(-16px);opacity:0}}
+@keyframes art-twinkle{0%,100%{transform:scale(.6);opacity:.3}50%{transform:scale(1.15);opacity:1}}
+@keyframes art-press{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(4px)}}
+@keyframes art-glide{0%,100%{transform:translateX(-22px)}50%{transform:translateX(22px)}}
+@keyframes art-crawl{0%{transform:translateX(-10px)}50%{transform:translateX(10px)}100%{transform:translateX(-10px)}}
+@keyframes art-slide{0%,15%{transform:translateX(0)}55%,70%{transform:translateX(26px)}100%{transform:translateX(0)}}
+@keyframes art-reach{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+@keyframes art-reachL{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}
+@keyframes art-draw{0%{stroke-dashoffset:60}40%,100%{stroke-dashoffset:0}}
+@keyframes art-flap{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+@keyframes art-pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+
+.art .bob{animation:art-bob 3.2s ease-in-out infinite}
+.art .blink{animation:art-blink 4.6s ease-in-out infinite}
+.art .sway{animation:art-sway 3.6s ease-in-out infinite}
+.art .drip{animation:art-drip 1.8s ease-in infinite} .art .drip.d2{animation-delay:.9s}
+.art .steam{animation:art-steam 3s ease-out infinite} .art .steam.s2{animation-delay:1s} .art .steam.s3{animation-delay:2s}
+.art .float{animation:art-float 2.4s ease-out infinite}
+.art .twinkle{animation:art-twinkle 2.2s ease-in-out infinite} .art .twinkle.t2{animation-delay:.7s} .art .twinkle.t3{animation-delay:1.4s}
+.art .press{animation:art-press 2.4s ease-in-out infinite}
+.art .glide{animation:art-glide 4s ease-in-out infinite}
+.art .crawl{animation:art-crawl 5s ease-in-out infinite}
+.art .slide{animation:art-slide 3.6s ease-in-out infinite}
+.art .reach{animation:art-reach 2.2s ease-in-out infinite} .art .reachL{animation:art-reachL 2.2s ease-in-out infinite}
+.art .draw{stroke-dasharray:60;animation:art-draw 3s ease-in-out infinite}
+.art .flap{transform-origin:0% 0%;animation:art-flap 1.6s ease-in-out infinite}
+
+/* what fixing does (tap the picture) */
+.art .shackle{transform-origin:12% 100%;animation:art-swing 2.6s ease-in-out infinite;transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.art.fixed .shackle{animation:none;transform:translateY(10px) rotate(0)}
+.art .level{transition:transform .6s ease} .art.fixed .level{transform:translateY(12px)}
+.art.fixed .drip,.art.fixed .flap,.art.fixed .slide,.art.fixed .float{animation:none}
+.art.fixed .drip,.art.fixed .float{opacity:0}
+.art.fixed .slide{transform:translateX(0)}
+.art .plugL,.art .plugR{transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.art.fixed .plugL{animation:none;transform:translateX(14px)} .art.fixed .plugR{animation:none;transform:translateX(-14px)}
+.art .armR{transition:transform .5s ease;transform-origin:100% 50%} .art.fixed .armR{transform:rotate(180deg) translateY(0)}
+.art .grow{transition:transform .5s ease;transform-origin:0% 50%} .art.fixed .grow{transform:scaleX(1.12) scaleY(1.6)}
+.art.fixed .glide{animation-duration:6s}
+.art.fixed .crawl{animation:art-crawl 1.2s ease-in-out infinite}
+.art .good.pop{transform:scale(.4)} .art.fixed .good.pop{animation:art-pop .5s ease forwards}
+
+@media (prefers-reduced-motion:reduce){.art *{animation:none!important;transition:none!important}}

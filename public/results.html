@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your check · Breadledger</title>
+<meta name="description" content="What we found when we checked your app, what we fixed for you, and the few things that need your OK.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
+<script src="/scan-words.js"></script>
+<link rel="stylesheet" href="/scan-art.css">
+<style>
+  /* calm mode: one thing at a time, big and kind. Body 19px, buttons 20px, tap targets 58px. */
+  body{background:var(--bg);font-size:19px;line-height:1.6;color:var(--ink)}
+  .ct{max-width:640px;margin:0 auto;padding:0 max(18px,env(safe-area-inset-left)) 64px}
+  .ctop{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .ctop .in{max-width:640px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:12px;min-height:64px}
+  .ctop .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;color:var(--ink);text-decoration:none}
+  .ctop .brand svg{width:26px;height:26px}
+  .ctop .sp{flex:1}
+  .back{display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 14px 0 8px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 17px var(--font);cursor:pointer}
+  .back svg{width:20px;height:20px}
+  .back[hidden]{display:none}
+  .screen{padding-top:28px;display:grid;gap:22px;animation:fade .35s var(--ease)}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.screen{animation:none}}
+  .eyebrow{font-size:16px;color:var(--ink-3);font-weight:600}
+  h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0}
+  h2{font-size:28px;line-height:1.2;letter-spacing:-.015em;margin:0}
+  p{margin:0}
+  .lead{color:var(--ink-2)}
+  .tiles{display:grid;gap:12px}
+  .tile{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:20px;background:var(--panel);border:1px solid var(--line)}
+  .tile .n{font-size:40px;font-weight:750;line-height:1;min-width:2.2ch;font-variant-numeric:tabular-nums}
+  .tile .t b{display:block;font-size:20px}
+  .tile .t span{font-size:16.5px;color:var(--ink-3)}
+  .tile.ok{background:var(--ok-soft);border-color:transparent} .tile.ok .n{color:var(--ok-ink)}
+  .tile.you{background:var(--warn-soft);border-color:transparent} .tile.you .n{color:var(--warn-ink)}
+  .tile.way{background:var(--info-soft);border-color:transparent} .tile.way .n{color:var(--info-ink)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px}
+  /* not ".switch": bread.css already uses that name for its small toggle, which squashed this card */
+  .autocard{display:flex;gap:16px;align-items:flex-start;width:auto;height:auto;border-radius:20px}
+  .autocard .txt{flex:1}
+  .autocard .txt b{display:block;font-size:19px;margin-bottom:4px}
+  .autocard .txt p{font-size:17px;color:var(--ink-2)}
+  .tog{flex:none;width:72px;height:42px;border-radius:999px;border:0;background:var(--line-2);position:relative;cursor:pointer;transition:background var(--t)}
+  .tog::after{content:"";position:absolute;top:4px;left:4px;width:34px;height:34px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:transform var(--t) var(--ease)}
+  .tog[aria-checked="true"]{background:var(--ok)}
+  .tog[aria-checked="true"]::after{transform:translateX(30px)}
+  .tog:focus-visible{outline:3px solid var(--ring);outline-offset:3px}
+  .tog-state{font-size:16px;font-weight:700;margin-top:8px}
+  .big{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:60px;padding:12px 20px;border-radius:16px;font:650 20px/1.25 var(--font);cursor:pointer;border:2px solid transparent;text-align:center;text-decoration:none}
+  .big.go{background:var(--accent);color:var(--accent-on);box-shadow:0 6px 18px -8px var(--accent)}
+  .big.go:hover{background:var(--accent-hover)}
+  .big.soft{background:var(--panel);color:var(--ink);border-color:var(--line-2)}
+  .big.yes{background:var(--ok);color:#fff}
+  .big svg{width:22px;height:22px}
+  .big:focus-visible,.link:focus-visible{outline:3px solid var(--ring);outline-offset:3px}
+  .stack{display:grid;gap:12px}
+  .link{background:none;border:0;color:var(--accent-text);font:600 18px var(--font);cursor:pointer;padding:12px 4px;text-decoration:underline;text-underline-offset:4px;justify-self:center}
+  .pic{display:grid;justify-items:center;gap:6px}
+  .pic svg{width:min(300px,82%);height:auto;cursor:pointer;border-radius:24px;-webkit-tap-highlight-color:transparent}
+  .pic svg:focus-visible{outline:3px solid var(--ring);outline-offset:6px}
+  .pic .tap{font-size:15.5px;color:var(--ink-3);font-weight:600}
+  .art.still *{animation:none!important}
+  .kind{justify-self:center;display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:650;padding:6px 14px;border-radius:999px;background:var(--accent-soft);color:var(--accent-soft-ink)}
+  .ask h2{text-align:center}
+  .say{display:grid;gap:6px}
+  .say b{font-size:17px;color:var(--ink-3);font-weight:650}
+  .say p{font-size:19px}
+  .bigjob{display:flex;gap:10px;padding:14px 16px;border-radius:14px;background:var(--warn-soft);color:var(--warn-ink);font-size:17px}
+  details.learn{border-radius:16px;background:var(--panel-2);padding:4px 18px}
+  details.learn summary{cursor:pointer;font-weight:650;font-size:18px;padding:14px 0;list-style:none;display:flex;align-items:center;gap:10px}
+  details.learn summary::-webkit-details-marker{display:none}
+  details.learn summary::before{content:"+";display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--panel);border:1px solid var(--line-2);font-size:20px;line-height:1}
+  details.learn[open] summary::before{content:"\2212"}
+  details.learn p{padding:0 0 16px;color:var(--ink-2);font-size:18px}
+  .places{font:15px/1.5 var(--mono);color:var(--ink-2);padding-bottom:14px;display:grid;gap:4px;overflow-wrap:anywhere}
+  .prog{display:flex;align-items:center;gap:10px;justify-content:center;font-size:16px;color:var(--ink-3);font-weight:600}
+  .dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+  .dots i{width:10px;height:10px;border-radius:50%;background:var(--line-2)}
+  .dots i.d{background:var(--accent)} .dots i.c{background:var(--ink);transform:scale(1.25)}
+  .saved{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;background:var(--ok-soft);color:var(--ok-ink);font-size:17px;font-weight:600}
+  .chosen{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;background:var(--panel-2);font-size:17px}
+  .saved svg,.chosen svg{width:22px;height:22px;flex:none}
+  .list{display:grid;gap:10px}
+  .row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
+  .row .mini{flex:none;width:64px}
+  .row .mini svg{width:64px;height:auto}
+  .row b{display:block;font-size:18px;line-height:1.35}
+  .row span{font-size:16px;color:var(--ink-3)}
+  .row .tick{margin-left:auto;flex:none;color:var(--ok-ink);font-weight:700;font-size:16px}
+  .copyline{background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font:15.5px/1.5 var(--mono);overflow-wrap:anywhere}
+  .center{text-align:center}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+<header class="ctop"><div class="in">
+  <button class="back" id="back" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Back</button>
+  <a class="brand" href="/" id="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="9" width="24" height="16" rx="8" fill="#c27a26"/><path d="M10 15h12M10 19h9" stroke="#f8ead4" stroke-width="2" stroke-linecap="round"/></svg>Breadledger</a>
+  <span class="sp"></span><span id="acct" class="acct"></span>
+</div></header>
+<main class="ct" id="main" aria-live="polite"><div class="screen"><p class="lead">Opening your results…</p></div></main>
+<script src="/bread-auth.js"></script>
+<script>
+(function () {
+  'use strict';
+  var B = window.Bread, W = window.ScanWords, esc = B.esc, main = document.getElementById('main'), back = document.getElementById('back');
+  var id = (location.pathname.match(/\/results\/([a-f0-9]{16})/) || [])[1];
+  var S = null, asks = [], ways = [], at = 0, savedNote = '', history = [];
+  var ICON = {
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+  };
+  // the big picture is a little character you can tap to see what fixing does; small list pictures stay still
+  function pic(type, cls) {
+    var t = W.TYPES[type] || W.TYPES.other, big = !cls;
+    return '<div class="' + (cls || 'pic') + '"><svg class="art' + (big ? '' : ' still') + '" viewBox="0 0 240 180" ' +
+      (big ? 'role="button" tabindex="0" aria-pressed="false" aria-label="' + esc(t.name) + ': tap to see it fixed"' : 'role="img" aria-label="' + esc(t.name) + '"') + '>' + t.pic + '</svg>' +
+      (big ? '<span class="tap">Tap the picture to see it fixed</span>' : '') + '</div>';
+  }
+  main.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('.pic svg.art'); if (a) poke(a); });
+  main.addEventListener('keydown', function (e) { var a = e.target.closest && e.target.closest('.pic svg.art'); if (a && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); poke(a); } });
+  function poke(a) { var on = !a.classList.contains('fixed'); a.classList.toggle('fixed', on); a.setAttribute('aria-pressed', on); var t = a.parentNode.querySelector('.tap'); if (t) t.textContent = on ? 'Fixed! Tap again to see it before' : 'Tap the picture to see it fixed'; }
+  // the walker on the path moves by SVG animation, which CSS can't pause: honour reduced motion here
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  new MutationObserver(function () { main.querySelectorAll('svg.art').forEach(function (s) { if ((still || s.classList.contains('still')) && s.pauseAnimations) s.pauseAnimations(); }); }).observe(main, { childList: true });
+  function plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+  function api(path, body) {
+    return fetch('/api/scans/' + id + path, body === undefined ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (j) { j.status = r.status; return j; }); })
+      .catch(function () { return { ok: false, error: "We can't reach Breadledger right now. Check your internet connection, then try again." }; });
+  }
+  function show(html, isStep) { main.innerHTML = '<div class="screen">' + html + '</div>'; back.hidden = !isStep; window.scrollTo(0, 0); var h = main.querySelector('h1,h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
+  function go(fn) { history.push(fn); fn(); }
+  back.onclick = function () { history.pop(); (history[history.length - 1] || home)(); };
+
+  /* ---- 1. the summary: everything caught, what's fixed, what needs you ---- */
+  function home() {
+    history = [home];
+    var g = S.groups, fixedN = S.fixed.reduce(function (n, x) { return n + (x.count || 1); }, 0);
+    var undecided = asks.filter(function (x) { return !S.choices[x.key]; }).length;
+    var when = new Date(S.ts).toLocaleString(undefined, { weekday: 'long', hour: 'numeric', minute: '2-digit' });
+    if (!S.caught) return show('<span class="eyebrow">' + esc(S.app) + ' · checked ' + esc(when) + '</span><h1>Great news: we found nothing to fix.</h1>' + pic('unit') +
+      '<p class="lead">We ran every check (the 11 kinds of problems apps usually have) and ' + esc(S.app) + ' passed them all.</p><button class="big go" type="button" id="learn">' + ICON.arrow + 'See what we checked</button>'), wireLearn();
+    show(
+      '<span class="eyebrow">' + esc(S.app) + ' · checked ' + esc(when) + '</span>' +
+      '<h1>We checked ' + esc(S.app) + '.</h1>' +
+      '<p class="lead">Here is everything we found, counting every place it showed up.</p>' +
+      '<div class="tiles">' +
+        '<div class="tile"><span class="n">' + S.caught + '</span><span class="t"><b>' + (S.caught === 1 ? 'problem caught' : 'problems caught') + '</b><span>' + plural(S.caughtKinds, 'kind of problem', 'kinds of problem') + ' in total</span></span></div>' +
+        (fixedN ? '<div class="tile ok"><span class="n">' + fixedN + '</span><span class="t"><b>fixed for you</b><span>We checked again: they’re gone</span></span></div>' : '') +
+        (ways.length && S.autofix ? '<div class="tile way"><span class="n">' + countPlaces(ways) + '</span><span class="t"><b>' + (fixedN ? 'more being fixed' : 'being fixed for you') + '</b><span>' + plural(ways.length, 'kind') + ' of safe repair. We’ll check again afterwards.</span></span></div>' : '') +
+        // every tile counts problems (each place one showed up), so the tiles add up to the total caught
+        (asks.length ? '<div class="tile you"><span class="n">' + countPlaces(asks) + '</span><span class="t"><b>' + (countPlaces(asks) === 1 ? 'needs your OK' : 'need your OK') + '</b><span>' + plural(asks.length, 'decision') + (undecided ? (undecided < asks.length ? ', ' + undecided + ' still to make' : ' to make') : ', all made. Thank you.') + '</span></span></div>' : '') +
+      '</div>' +
+      '<div class="card autocard"><div class="txt"><b>Fix safe things for me automatically</b><p>Small, safe repairs (like a typing mistake or a picture that’s too heavy) are made for you and then checked again. Anything that changes how your app looks, what it says or what it does always waits for your OK.</p><p class="tog-state" id="togState"></p></div>' +
+        '<button class="tog" type="button" role="switch" id="tog" aria-checked="' + !!S.autofix + '" aria-label="Fix safe things for me automatically"></button></div>' +
+      '<div class="stack">' +
+        (asks.length ? '<button class="big go" type="button" id="start">' + ICON.arrow + (undecided ? (undecided === asks.length ? 'Make your ' + plural(asks.length, 'decision') : 'Carry on: ' + undecided + ' left') : 'See your choices') + '</button>'
+                     : '<p class="saved">' + ICON.check + 'Nothing needs your OK. You’re all set.</p>') +
+        (S.fixed.length || ways.length ? '<button class="big soft" type="button" id="seeFixed">See what we fixed</button>' : '') +
+      '</div>' +
+      '<button class="link" type="button" id="learn">What do we check for?</button>');
+    var tog = document.getElementById('tog'), st = document.getElementById('togState');
+    function paintTog() { st.textContent = S.autofix ? 'On: safe repairs happen by themselves.' : 'Off: everything waits for your OK, even small repairs.'; st.style.color = S.autofix ? 'var(--ok-ink)' : 'var(--ink-3)'; }
+    paintTog();
+    tog.onclick = function () {
+      var want = !S.autofix; tog.setAttribute('aria-checked', want); S.autofix = want; paintTog();
+      fetch('/api/scans/prefs', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ autofix: want }) })
+        .then(function (r) { return r.json(); }).then(function (j) { if (!j.ok) throw 0; B.toast(want ? 'Saved. Safe repairs will happen by themselves.' : 'Saved. Everything will wait for your OK.', 'ok'); split(); })
+        .catch(function () { S.autofix = !want; tog.setAttribute('aria-checked', !want); paintTog(); B.toast('That didn’t save. Please try again.', 'err'); });
+    };
+    var s = document.getElementById('start'); if (s) s.onclick = function () { var i = asks.findIndex(function (x) { return !S.choices[x.key]; }); if (i < 0) go(done); else { at = i; go(ask); } };
+    var f = document.getElementById('seeFixed'); if (f) f.onclick = function () { go(fixedList); };
+    wireLearn();
+  }
+  function countPlaces(list) { return list.reduce(function (n, x) { return n + (x.count || 1); }, 0); }
+  function wireLearn() { var l = document.getElementById('learn'); if (l) l.onclick = function () { go(learn); }; }
+
+  /* ---- 2. one decision per screen ---- */
+  function ask() {
+    var g = asks[at], e = W.explain(g), t = W.TYPES[e.type] || W.TYPES.other, chosen = S.choices[g.key];
+    var dots = asks.map(function (x, i) { return '<i class="' + (i === at ? 'c' : S.choices[x.key] ? 'd' : '') + '"></i>'; }).join('');
+    show(
+      (savedNote ? '<p class="saved" role="status">' + ICON.check + esc(savedNote) + '</p>' : '') +
+      '<div class="prog"><span>' + (at + 1) + ' of ' + asks.length + '</span><span class="dots" aria-hidden="true">' + dots + '</span></div>' +
+      '<div class="ask stack" style="gap:18px">' + pic(e.type) + '<span class="kind">' + esc(t.name) + '</span><h2>' + esc(e.title) + '</h2></div>' +
+      '<div class="say"><b>What this means</b><p>' + esc(e.means) + '</p></div>' +
+      '<div class="say"><b>What we’d change</b><p>' + esc(e.change) + '</p></div>' +
+      (e.big ? '<div class="bigjob">This is a bigger job. It may take a while, and it’s worth a quick look afterwards.</div>' : '') +
+      (chosen ? '<p class="chosen">' + (chosen === 'fix' ? ICON.check + 'You said <b>&nbsp;yes, fix this</b>.' : 'You said <b>&nbsp;not now</b>.') + '</p>' : '') +
+      '<div class="stack">' +
+        '<button class="big ' + (chosen === 'fix' ? 'soft' : 'yes') + '" type="button" data-c="fix">' + ICON.check + (chosen === 'fix' ? 'Keep: fix this' : 'Yes, fix this') + '</button>' +
+        '<button class="big soft" type="button" data-c="later">' + (chosen === 'later' ? 'Keep: not now' : 'Not now') + '</button>' +
+      '</div>' +
+      '<details class="learn"><summary>Why does this matter?</summary><p>' + esc(t.lesson) + '</p></details>' +
+      '<details class="learn"><summary>Show me where (' + plural(g.count, 'place') + ')</summary><div class="places">' + g.places.slice(0, 12).map(function (p) { return '<span>' + esc(p.file) + ', line ' + p.line + '</span>'; }).join('') + (g.count > 12 ? '<span>…and ' + (g.count - 12) + ' more</span>' : '') + '</div></details>', true);
+    savedNote = '';
+    main.querySelectorAll('[data-c]').forEach(function (b) {
+      b.onclick = function () {
+        var c = b.getAttribute('data-c'); main.querySelectorAll('[data-c]').forEach(function (x) { x.disabled = true; }); b.textContent = 'Saving…';
+        api('/decide', { key: g.key, choice: c }).then(function (j) {
+          if (!j.ok) { B.toast(j.error || 'That didn’t save. Please try again.', 'err'); return ask(); }
+          S.choices[g.key] = c;
+          savedNote = c === 'fix' ? 'Saved: we’ll fix “' + e.title + '”.' : 'Saved: we’ll leave “' + e.title + '” for now.';
+          var next = asks.findIndex(function (x, i) { return i > at && !S.choices[x.key]; });
+          if (next < 0) next = asks.findIndex(function (x) { return !S.choices[x.key]; });
+          if (next < 0) { history.push(done); done(); } else { at = next; history.push(ask); ask(); }
+        });
+      };
+    });
+  }
+
+  /* ---- 3. all decided: what you chose, and the one line that hands it to Claude Code ---- */
+  function done() {
+    var yes = asks.filter(function (x) { return S.choices[x.key] === 'fix'; }), later = asks.filter(function (x) { return S.choices[x.key] === 'later'; });
+    var line = 'Please fix what I approved on Breadledger. Run: node ~/BugLedger/scan.mjs --todo ' + id;
+    show(savedNote ? '<p class="saved" role="status">' + ICON.check + esc(savedNote) + '</p>' : '', true); savedNote = '';
+    main.firstChild.insertAdjacentHTML('beforeend',
+      pic('unit') + '<h2 class="center">That’s everything. Thank you.</h2>' +
+      '<p class="lead center">You said yes to ' + plural(yes.length, 'thing') + (later.length ? ' and “not now” to ' + later.length : '') + '.</p>' +
+      (yes.length ? '<div class="list">' + yes.map(function (x) { var e = W.explain(x); return '<div class="row">' + pic(e.type, 'mini') + '<div><b>' + esc(e.title) + '</b><span>' + esc(W.TYPES[e.type].name) + '</span></div></div>'; }).join('') + '</div>' +
+        '<div class="card stack"><b style="font-size:20px">Last step: tell Claude Code</b><p style="font-size:18px;color:var(--ink-2)"><b>1.</b> Press the button to copy. <b>2.</b> Paste it into Claude Code and press Enter. It fixes what you approved and checks again, and the fixes then show here.</p>' +
+        '<div class="copyline">' + esc(line) + '</div><button class="big go" type="button" id="copy">' + ICON.copy + 'Copy for Claude Code</button></div>' : '') +
+      (later.length ? '<p class="lead">The things you left for now stay here. You can come back to this page any time and change your mind.</p>' : '') +
+      '<button class="big soft" type="button" id="home">Back to the summary</button>');
+    var c = document.getElementById('copy'); if (c) c.onclick = function () { B.copy(line, 'Copied. Now paste it into Claude Code'); c.innerHTML = ICON.check + 'Copied. Now paste it into Claude Code'; };
+    document.getElementById('home').onclick = home;
+  }
+
+  /* ---- what we fixed (proven by a second scan) and what's on its way ---- */
+  function fixedList() {
+    function rows(list, tick) { return list.map(function (x) { var e = W.explain(x); return '<div class="row">' + pic(e.type, 'mini') + '<div><b>' + esc(e.title) + '</b><span>' + plural(x.count || 1, 'place') + '</span></div><span class="tick">' + tick + '</span></div>'; }).join(''); }
+    show('<h2>What we fixed for you</h2>' +
+      (S.fixed.length ? '<p class="lead">Each of these was fixed, then we checked again to make sure it’s really gone.</p><div class="list">' + rows(S.fixed, '✓ Fixed') + '</div>' : '') +
+      (ways.length && S.autofix ? '<h2 style="font-size:24px;margin-top:8px">Being fixed now</h2><p class="lead">Safe repairs Claude Code is making. They’ll move up to “fixed” once we’ve checked again.</p><div class="list">' + rows(ways, 'On its way') + '</div>' : '') +
+      '<button class="big soft" type="button" id="home">Back to the summary</button>', true);
+    document.getElementById('home').onclick = home;
+  }
+
+  /* ---- the 11 kinds of problems, so people learn what was checked ---- */
+  function learn() {
+    var map = { 'Syntax': 'syntax', 'Logical': 'logical', 'Functional': 'functional', 'Unit-level': 'unit', 'System integration': 'integration', 'Usability': 'usability', 'Workflow': 'workflow', 'Compatibility': 'compat', 'Performance': 'performance', 'Security': 'security', 'Out-of-bound': 'bounds' };
+    show('<h2>What we check for</h2><p class="lead">Apps usually go wrong in 11 ways. We checked yours for all of them. Here is what each one means.</p><div class="list">' +
+      (S.qa11 || []).map(function (q) { var k = map[q.type] || 'other', t = W.TYPES[k];
+        return '<details class="learn" style="background:var(--panel);border:1px solid var(--line)"><summary>' + esc(t.name) + '<span style="margin-left:auto;font-size:16px;color:' + (q.findings ? 'var(--warn-ink)' : 'var(--ok-ink)') + '">' + (q.findings ? plural(q.findings, 'found', 'found') : '✓ Clear') + '</span></summary>' + pic(k) + '<p>' + esc(t.lesson) + '</p></details>'; }).join('') +
+      '</div><button class="big soft" type="button" id="home">Back to the summary</button>', true);
+    document.getElementById('home').onclick = home;
+  }
+
+  // split what's left into "safe, being fixed" and "needs you" (with autofix off, everything needs you)
+  function split() {
+    ways = S.autofix ? S.groups.filter(function (g) { return g.auto && S.choices[g.key] !== 'later'; }) : [];
+    asks = S.groups.filter(function (g) { return !(S.autofix && g.auto) || S.choices[g.key] === 'later'; });
+  }
+  function signIn(msg) {
+    show(pic('security') + '<h2 class="center">' + esc(msg) + '</h2><p class="lead center">Sign in with the email you used, and your results open straight away.</p><button class="big go" type="button" id="si">Sign in</button>');
+    document.getElementById('si').onclick = function () { B.auth.open(); };
+  }
+  function load() {
+    if (!id) return show('<h2>We couldn’t find those results.</h2><p class="lead">The link may be incomplete. Ask Claude Code to share the scan again.</p>');
+    api('').then(function (j) {
+      if (j.status === 401) return signIn('These results are private.');
+      if (!j.ok) return show('<h2>We couldn’t open these results.</h2><p class="lead">' + esc(j.error || 'Please try again in a minute.') + '</p><button class="big go" type="button" onclick="location.reload()">Try again</button>');
+      S = j; split(); home();
+    });
+  }
+  document.addEventListener('bread:auth', function once(e) { document.removeEventListener('bread:auth', once); load(); });
+})();
+</script>
+</body>
+</html>
