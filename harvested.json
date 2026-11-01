@@ -10126,5 +10126,89 @@
     "status": "unverified",
     "session": "433062a7",
     "found": "2026-11-01"
+  },
+  {
+    "key": "665c9db2:thefirstentrywasntrepeated",
+    "app": "Finished.",
+    "title": "First entry wasn't repeated.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The first entry wasn't repeated.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "665c9db2",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "665c9db2:notificationemailthegitbagelnotificationpostedbutididntconfi",
+    "app": "Finished.",
+    "title": "- Notification email: the GitBagel notification posted, but I didn't confirm the email…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Notification email:** the GitBagel notification posted, but I didn't confirm the email arrived in your inbox.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "665c9db2",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "665c9db2:wave5ididntdeployanythingforthisrequestandfreepicturesisnotl",
+    "app": "Finished.",
+    "title": "Wave 5: I didn't deploy anything for this request, and free pictures is not live.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Wave 5:** I didn't deploy anything for this request, and free pictures is not live.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "665c9db2",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "b7a9f328:wave15itoldyousomethingwronglasttime",
+    "app": "Budget LevelUp",
+    "title": "Wave 15: I told you something wrong last time.",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "Wave 15: I told you something wrong last time.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b7a9f328",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "b7a9f328:sofreepicturesisntliveandneedsitsownyeslivenowthelearnedjour",
+    "app": "Budget LevelUp",
+    "title": "Free pictures isn't live and needs its own yes. - Live now: the Learned journal and the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**So free pictures isn't live and needs its own yes.** - **Live now:** the Learned journal and the quote checker fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b7a9f328",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "d67e5e3f:fineleatherscameoutstrongbutexoticsfromsmallphotosstillfail",
+    "app": "Hallalu CRM",
+    "title": "Fine leathers came out strong, but exotics from small photos still fail.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Fine leathers came out strong, but exotics from small photos still fail.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d67e5e3f",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "d67e5e3f:cowzebraplasterandcrocodilestillpassandeverypictureyoureject",
+    "app": "Hallalu CRM",
+    "title": "Cow, zebra, plaster and crocodile still pass, and every picture you rejected still fails.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Cow, zebra, plaster and crocodile still pass, and every picture you rejected still fails.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d67e5e3f",
+    "found": "2026-11-01"
   }
 ]

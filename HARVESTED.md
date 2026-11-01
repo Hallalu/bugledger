@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-844 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+851 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (587)
+## Hallalu CRM (589)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -591,8 +591,10 @@
 - [ ] `low` `other` (2026-11-01, #30f2b2ce) — Live app didn't change.
 - [ ] `low` `other` (2026-11-01, #433062a7) — - Bug fixed: premium voices were locked for Max customers, and they now unlock on every…
 - [ ] `low` `other` (2026-11-01, #433062a7) — If that isn't a real sale, I'd remove it, since visitors would read it as real.
+- [ ] `low` `other` (2026-11-01, #d67e5e3f) — Fine leathers came out strong, but exotics from small photos still fail.
+- [ ] `low` `other` (2026-11-01, #d67e5e3f) — Cow, zebra, plaster and crocodile still pass, and every picture you rejected still fails.
 
-## Finished. (99)
+## Finished. (102)
 
 - [ ] `high` `security` (2026-08-10, #04df6fb8) — Culprit is likely Storage bucket RLS (image upload) — which would also explain the…
 - [ ] `high` `sync` (2026-08-10, #04df6fb8) — Countdowns ("celebrations") is localStorage-only (finished.countdowns), never pushed to…
@@ -693,6 +695,9 @@
 - [ ] `low` `other` (2026-10-12, #ce9bddab) — Supabase isn't authenticated here, and per the PLAN deploys are owner-run — so the…
 - [ ] `low` `other` (2026-10-12, #16382522) — Demo photos fixed. Let me log the before/after to Aprizely and record the bug, then…
 - [ ] `low` `ui` (2026-10-31, #3dc4ad5a) — One test failed and the help cut off its last line.
+- [ ] `low` `other` (2026-11-01, #665c9db2) — First entry wasn't repeated.
+- [ ] `low` `other` (2026-11-01, #665c9db2) — - Notification email: the GitBagel notification posted, but I didn't confirm the email…
+- [ ] `low` `other` (2026-11-01, #665c9db2) — Wave 5: I didn't deploy anything for this request, and free pictures is not live.
 
 ## Listing Lab Pro (46)
 
@@ -814,11 +819,12 @@
 - [ ] `low` `other` (2026-10-22, #2f439d37) — Same sources also show where this fails: - Config pushes that skip the rollout. Google…
 - [ ] `low` `other` (2026-10-22, #2f439d37) — You can build it: a small watcher that compares error rates between the old and new…
 
-## Budget LevelUp (15)
+## Budget LevelUp (17)
 
 - [ ] `high` `security` (2026-10-07, #e8725186) — - The Era image with her real PFP in the gold frame is fixed and filed in Pixelbake,…
 - [ ] `high` `security` (2026-10-12, #ce9bddab) — Confirmed GitBagel is genuinely blocked: importFromGitHub uses unauthenticated GitHub…
 - [ ] `high` `security` (2026-10-12, #ce9bddab) — Done — the Content Vault now holds everything Why your PFP wasn't there: /vault was…
+- [ ] `medium` `logic` (2026-11-01, #b7a9f328) — Wave 15: I told you something wrong last time.
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — My new code is clean — no dup-id collisions (the one debt-add-row also in app.js is…
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — Scanner flagged one genuine trivial issue in the static pitch page (duplicate id="price").
 - [ ] `low` `other` (2026-08-16, #5d4b033a) — 39 "missed" are the category:"security" bugs — they count toward the bug total of 337.
@@ -831,6 +837,7 @@
 - [ ] `low` `other` (2026-10-11, #28a0b8d5) — Both addresses now return the engine's {"error":"not found"}.
 - [ ] `low` `other` (2026-10-11, #28a0b8d5) — PFP error I can't tell which copy of the app gave you that message.
 - [ ] `low` `other` (2026-10-12, #ce9bddab) — Blocked — need you - Coupon codes: that fix is a Supabase edge function…
+- [ ] `low` `other` (2026-11-01, #b7a9f328) — Free pictures isn't live and needs its own yes. - Live now: the Learned journal and the…
 
 ## Wedding Planner (10)
 
