@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/bread.css">
 <script src="/bread-shell.js"></script>
 <script src="/scan-words.js"></script>
+<script src="/scan-laws.js"></script>
 <link rel="stylesheet" href="/scan-art.css">
 <style>
   /* calm mode: one thing at a time, big and kind. Body 19px, buttons 20px, tap targets 58px. */
@@ -94,6 +95,18 @@
   .row .tick{margin-left:auto;flex:none;color:var(--ok-ink);font-weight:700;font-size:16px}
   .copyline{background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font:15.5px/1.5 var(--mono);overflow-wrap:anywhere}
   .center{text-align:center}
+  .law{display:grid;gap:10px;padding:16px 18px;border-radius:18px;background:var(--sev-high-soft);color:var(--ink)}
+  .law-h{display:flex;align-items:center;gap:10px;color:var(--sev-high-ink);font-size:19px}
+  .law-h svg,.lawline svg{width:24px;height:24px;flex:none}
+  .law p{font-size:17px;color:var(--ink-2)}
+  .law-one{background:var(--panel);border-radius:14px;padding:4px 14px}
+  .law-one summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:12px 0;font-size:17px}
+  .law-one summary::-webkit-details-marker{display:none}
+  .law-one .where{font-weight:700} .law-one .fine{color:var(--sev-high-ink);font-weight:650}
+  .law-one p{padding-bottom:10px;font-size:16.5px}
+  .law-one a{color:var(--accent-text);font-weight:600}
+  .law-note{font-size:15px!important;color:var(--ink-3)!important}
+  .lawline{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--sev-high-soft);color:var(--sev-high-ink);font-size:17px}
   .hide{display:none!important}
 </style>
 </head>
@@ -158,6 +171,8 @@
         // every tile counts problems (each place one showed up), so the tiles add up to the total caught
         (asks.length ? '<div class="tile you"><span class="n">' + countPlaces(asks) + '</span><span class="t"><b>' + (countPlaces(asks) === 1 ? 'needs your OK' : 'need your OK') + '</b><span>' + plural(asks.length, 'decision') + (undecided ? (undecided < asks.length ? ', ' + undecided + ' still to make' : ' to make') : ', all made. Thank you.') + '</span></span></div>' : '') +
       '</div>' +
+      (function () { var n = S.groups.filter(function (x) { return lawsOf(x.detector) && !(lawsOf(x.detector).laws.every(function (l) { return l.store; })); }).length;
+        return n ? '<p class="lawline">' + LAWICON + '<span><b>' + plural(n, 'thing') + ' may break the law.</b> We show which law, where, and the most it can cost, with the official source.</span></p>' : ''; })() +
       '<div class="card autocard"><div class="txt"><b>Fix safe things for me automatically</b><p>Small, safe repairs (like a typing mistake or a picture that’s too heavy) are made for you and then checked again. Anything that changes how your app looks, what it says or what it does always waits for your OK.</p><p class="tog-state" id="togState"></p></div>' +
         '<button class="tog" type="button" role="switch" id="tog" aria-checked="' + !!S.autofix + '" aria-label="Fix safe things for me automatically"></button></div>' +
       '<div class="stack">' +
@@ -179,6 +194,24 @@
     var f = document.getElementById('seeFixed'); if (f) f.onclick = function () { go(fixedList); };
     wireLearn();
   }
+  // the law a finding may breach, where, and the most it can cost: only figures confirmed on the official page
+  var FLAG = { UK: 'United Kingdom', EU: 'European Union', 'US': 'United States', 'US-CA': 'California, US', 'App Store': 'Apple App Store', 'Google Play': 'Google Play' };
+  function lawsOf(det) { var L = window.ScanLaws && ScanLaws.checks[det]; return L && L.laws && L.laws.length ? L : null; }
+  function lawBox(det) {
+    var L = lawsOf(det); if (!L) return '';
+    var laws = L.laws.filter(function (x) { return !x.store; }), store = L.laws.filter(function (x) { return x.store; });
+    return '<div class="law"><div class="law-h">' + LAWICON + '<b>' + (laws.length ? 'This may break the law' : 'This breaks app store rules') + '</b></div>' +
+      (L.plain ? '<p>' + esc(L.plain) + '</p>' : '') +
+      laws.concat(store).map(function (x) {
+        return '<details class="law-one"><summary><span class="where">' + esc(FLAG[x.where] || x.where) + '</span><span class="fine">' + (x.store ? 'Rule, not a fine' : x.fine ? 'Up to ' + esc(x.fine) : 'Amount set case by case') + '</span></summary>' +
+          '<p><b>' + esc(x.law) + '.</b> ' + esc(x.breach) + '</p>' +
+          (x.appliesTo ? '<p><b>Who it applies to:</b> ' + esc(x.appliesTo) + '</p>' : '') +
+          (x.realistic ? '<p><b>In practice:</b> ' + esc(x.realistic) + '</p>' : '') +
+          (x.source ? '<p><a href="' + esc(x.source) + '" target="_blank" rel="noopener">Read the official source</a></p>' : '') + '</details>';
+      }).join('') +
+      '<p class="law-note">' + esc(ScanLaws.disclaimer) + '</p></div>';
+  }
+  var LAWICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 21h14M6 7h12M6 7l-3 6a3 3 0 0 0 6 0zM18 7l-3 6a3 3 0 0 0 6 0z"/></svg>';
   function countPlaces(list) { return list.reduce(function (n, x) { return n + (x.count || 1); }, 0); }
   function wireLearn() { var l = document.getElementById('learn'); if (l) l.onclick = function () { go(learn); }; }
 
@@ -193,6 +226,7 @@
       '<div class="say"><b>What this means</b><p>' + esc(e.means) + '</p></div>' +
       '<div class="say"><b>What we’d change</b><p>' + esc(e.change) + '</p></div>' +
       (e.big ? '<div class="bigjob">This is a bigger job. It may take a while, and it’s worth a quick look afterwards.</div>' : '') +
+      lawBox(g.detector) +
       (chosen ? '<p class="chosen">' + (chosen === 'fix' ? ICON.check + 'You said <b>&nbsp;yes, fix this</b>.' : 'You said <b>&nbsp;not now</b>.') + '</p>' : '') +
       '<div class="stack">' +
         '<button class="big ' + (chosen === 'fix' ? 'soft' : 'yes') + '" type="button" data-c="fix">' + ICON.check + (chosen === 'fix' ? 'Keep: fix this' : 'Yes, fix this') + '</button>' +
