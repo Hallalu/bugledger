@@ -9694,5 +9694,17 @@
     "status": "unverified",
     "session": "6d67ef7e",
     "found": "2026-10-31"
+  },
+  {
+    "key": "0b681277:theotherdifferenceismydeliberateshelffix",
+    "app": "Hallalu CRM",
+    "title": "Other difference is my deliberate shelf fix.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The other difference is my deliberate shelf fix.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "0b681277",
+    "found": "2026-10-31"
   }
 ]

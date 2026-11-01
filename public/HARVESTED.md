@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-808 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+809 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (551)
+## Hallalu CRM (552)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -555,6 +555,7 @@
 - [ ] `low` `other` (2026-10-31, #49c5f5e6) — Deploy didn't go through because [deploy tool]'s [host] sign-in has expired…
 - [ ] `low` `other` (2026-10-31, #49c5f5e6) — [host] has now put a short block on your account ("Rate limited") because of the…
 - [ ] `low` `ui` (2026-10-31, #6d67ef7e) — On the board, I filed one screenshot under the wrong label: your earlier screenshot of…
+- [ ] `low` `other` (2026-10-31, #0b681277) — Other difference is my deliberate shelf fix.
 
 ## Finished. (99)
 
