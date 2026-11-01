@@ -10,6 +10,7 @@ import Sanitize from "../public/sanitize.js";
 import { redactPublic } from "./redact.mjs";
 import { handleJournal } from "./journal.mjs";
 import { resolve, handleAuth, who } from "./auth.mjs";
+import { handleScans } from "./scans.mjs";
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -139,6 +140,12 @@ async function handle(request, env) {
     await resolve(request, env);
     const authRes = await handleAuth(request, env, url);
     if (authRes) return authRes;
+
+    // ---- scan results (src/scans.mjs): /api/scans… and the calm results page at /results/<id> ----
+    const scanRes = await handleScans(request, env, url, ownerOK);
+    if (scanRes) return scanRes;
+    if (/^\/results\/[a-f0-9]{16}$/.test(pathname) && request.method === "GET")
+      return env.ASSETS.fetch(new Request(new URL("/results", request.url), { method: "GET" }));
 
     // ---- GET /api/health : is the site and its database answering ----
     if (pathname === "/api/health" && request.method === "GET") {
@@ -729,7 +736,14 @@ async function handle(request, env) {
     if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);
 
     // everything else → static assets
-    return env.ASSETS.fetch(request);
+    // a missing page gets the friendly /404 page (done here, not with assets' not_found_handling: that setting serves
+    // browser page visits straight from assets, which bypassed this worker and broke /now/<id> and /story/<id>)
+    const res = await env.ASSETS.fetch(request);
+    if (res.status === 404 && request.method === "GET" && /text\/html/.test(request.headers.get("accept") || "")) {
+      const nf = await env.ASSETS.fetch(new Request(new URL("/404", request.url)));
+      if (nf.ok) return new Response(nf.body, { status: 404, headers: nf.headers });
+    }
+    return res;
 }
 
 function safeParse(s, dflt) { try { return JSON.parse(s); } catch { return dflt; } }
