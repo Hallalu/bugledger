@@ -24,6 +24,10 @@
   .now-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;align-items:start}
   @media (max-width:1080px){.now-grid{grid-template-columns:minmax(0,1fr)}}
   #sessions,#waiting{display:grid;gap:18px}
+  /* tandem: several boards side by side, Pulse underneath (the Aprizely live grid) */
+  .now-grid.tandem{grid-template-columns:minmax(0,1fr)}
+  #sessions.tandem,#waiting.tandem{grid-template-columns:repeat(auto-fill,minmax(min(380px,100%),1fr));align-items:start}
+  .tandem-pick{margin-left:auto} .tandem-pick[hidden]{display:none}
 
   /* ---- a session ---- */
   .sess{position:relative;overflow:hidden}
@@ -529,7 +533,7 @@
     document.title = (open.length ? '(' + open.length + ') ' : '') + 'Now · Breadledger';
     if (!open.length && !fin.length) { cardEls = {}; root.innerHTML = startHTML(); wireStart(); return; }
     if (!root.querySelector('#sessions')) {
-      root.innerHTML = '<section class="stats now-stats" id="stats" aria-label="Summary"></section><section class="card lanes" id="lanesWrap" aria-label="At a glance"><div class="card-h">' + I('grid') + 'At a glance<span class="meta" id="lanesMeta"></span></div><div id="lanes"></div></section><div class="now-grid"><div><div class="section-h" id="liveH"><h2>Working now</h2><span class="meta" id="liveMeta"></span></div><div id="sessions"></div><div id="emptyLive" hidden></div><section id="waitWrap" class="group-gap" hidden><div class="section-h"><h2>Waiting for you</h2><span class="meta" id="waitMeta"></span></div><div id="waiting"></div></section><section id="finWrap" class="group-gap" hidden><div class="section-h"><h2>Finished in the last day</h2><span class="meta" id="finMeta"></span></div><div class="fin" id="fin"></div></section></div><aside class="card pulse" aria-label="Every move, across every session"><div class="card-h">' + I('activity') + 'Pulse<div class="seg" role="group" aria-label="Show"><button type="button" data-pmode="m" class="' + (pmode === 'm' ? 'on' : '') + '">Milestones</button><button type="button" data-pmode="a" class="' + (pmode === 'a' ? 'on' : '') + '">Every action</button></div></div><div class="card-b" id="pulse"></div></aside></div>';
+      root.innerHTML = '<section class="stats now-stats" id="stats" aria-label="Summary"></section><section class="card lanes" id="lanesWrap" aria-label="At a glance"><div class="card-h">' + I('grid') + 'At a glance<span class="meta" id="lanesMeta"></span></div><div id="lanes"></div></section><div class="now-grid"><div><div class="section-h" id="liveH"><h2>Working now</h2><span class="meta" id="liveMeta"></span><div class="seg tandem-pick" role="group" aria-label="Layout"><button type="button" data-lay="grid">Side by side</button><button type="button" data-lay="list">One column</button></div></div><div id="sessions"></div><div id="emptyLive" hidden></div><section id="waitWrap" class="group-gap" hidden><div class="section-h"><h2>Waiting for you</h2><span class="meta" id="waitMeta"></span></div><div id="waiting"></div></section><section id="finWrap" class="group-gap" hidden><div class="section-h"><h2>Finished in the last day</h2><span class="meta" id="finMeta"></span></div><div class="fin" id="fin"></div></section></div><aside class="card pulse" aria-label="Every move, across every session"><div class="card-h">' + I('activity') + 'Pulse<div class="seg" role="group" aria-label="Show"><button type="button" data-pmode="m" class="' + (pmode === 'm' ? 'on' : '') + '">Milestones</button><button type="button" data-pmode="a" class="' + (pmode === 'a' ? 'on' : '') + '">Every action</button></div></div><div class="card-b" id="pulse"></div></aside></div>';
       cardEls = {};
     }
     // summary: what is moving, what waits on you, and how far through every plan the work is
@@ -546,6 +550,13 @@
       ['Actions', B.fmtN(acts), 'tool calls so far']
     ].map(function(x){ return '<div class="stat plain"><span class="l">' + x[0] + '</span><span class="n">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
     document.getElementById('liveMeta').textContent = [working ? working + ' working' : '', quiet ? quiet + ' quiet' : '', needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' you' : ''].filter(Boolean).join(' · ');
+    // several boards at once sit side by side (the Aprizely tandem grid), with Pulse moving underneath; one board stays a column
+    var many = live.length + wait.length > 1, tandem = many && layout !== 'list';
+    document.querySelector('.now-grid').classList.toggle('tandem', tandem);
+    ['sessions', 'waiting'].forEach(function(id){ document.getElementById(id).classList.toggle('tandem', tandem); });
+    document.querySelector('#liveH h2').textContent = tandem && live.length > 1 ? live.length + ' boards in tandem' : 'Working now';
+    var pick = document.querySelector('.tandem-pick'); pick.hidden = !many;
+    pick.querySelectorAll('[data-lay]').forEach(function(b){ var on = b.getAttribute('data-lay') === (tandem ? 'grid' : 'list'); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
     var keep = {};
     placeCards(live, document.getElementById('sessions'), keep);
     placeCards(wait, document.getElementById('waiting'), keep);
@@ -647,6 +658,11 @@
   }
   function wireStart(){ var b = document.getElementById('copy2'); if (b) b.onclick = function(){ B.copy(PROMPT, 'The one prompt'); };
     var c = document.getElementById('connect1'); if (c) c.onclick = function(){ if (B.auth) B.auth.connect(); }; }
+
+  // ---------- layout: side by side (default when several boards are open) or one column, remembered per device ----------
+  var layout = 'grid'; try { layout = localStorage.getItem('bl_now_layout') || 'grid'; } catch (e) {}
+  document.addEventListener('click', function(ev){ var b = ev.target.closest && ev.target.closest('[data-lay]'); if (!b) return;
+    layout = b.getAttribute('data-lay'); try { localStorage.setItem('bl_now_layout', layout); } catch (e) {} render(); });
 
   // ---------- events ----------
   root.addEventListener('click', function(ev){
