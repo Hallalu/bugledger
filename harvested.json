@@ -9598,5 +9598,53 @@
     "status": "unverified",
     "session": "97ec418b",
     "found": "2026-10-31"
+  },
+  {
+    "key": "51177854:thebugrowsreadcleanlyandarerealcatalogueentries",
+    "app": "Hallalu CRM",
+    "title": "Bug rows read cleanly and are real catalogue entries.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The bug rows read cleanly and are real catalogue entries.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "51177854",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "51177854:hscaptioncontradictshersmilesheshappywhilethebugtriestocomeb",
+    "app": "Hallalu CRM",
+    "title": "H's caption contradicts her smile: she's happy while the bug \"tries to come back\".",
+    "category": "other",
+    "severity": "low",
+    "symptom": "H's caption contradicts her smile: she's happy while the bug \"tries to come back\".",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "51177854",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "868d42eb:capturingemailsinthedmfixesthis",
+    "app": "Hallalu CRM",
+    "title": "Capturing emails in the DM fixes this.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Capturing emails in the DM fixes this.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "868d42eb",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "b031d96e:thatsthebugregressionchecklistnotanappchecklist",
+    "app": "Hallalu CRM",
+    "title": "That's the bug regression checklist, not an app checklist.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That's the bug regression checklist, not an app checklist.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "b031d96e",
+    "found": "2026-10-31"
   }
 ]

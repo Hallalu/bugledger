@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-800 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+804 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (543)
+## Hallalu CRM (547)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -547,6 +547,10 @@
 - [ ] `low` `other` (2026-10-31, #97ec418b) — Arrows fixed, page renders correctly (live counters show "—" only because /api isn't on…
 - [ ] `low` `ui` (2026-10-31, #97ec418b) — - Verified: renders correctly (I fixed an arrow-escape bug I introduced), no overflow,…
 - [ ] `low` `other` (2026-10-31, #97ec418b) — So: - A deploy from a clean checkout of my commit would fail — study.js isn't in git,…
+- [ ] `low` `other` (2026-10-31, #51177854) — Bug rows read cleanly and are real catalogue entries.
+- [ ] `low` `other` (2026-10-31, #51177854) — H's caption contradicts her smile: she's happy while the bug "tries to come back".
+- [ ] `low` `other` (2026-10-31, #868d42eb) — Capturing emails in the DM fixes this.
+- [ ] `low` `other` (2026-10-31, #b031d96e) — That's the bug regression checklist, not an app checklist.
 
 ## Finished. (99)
 
