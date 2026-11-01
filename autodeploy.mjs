@@ -99,7 +99,8 @@ function run() {
   notify(`Live: ${subject}`);
 }
 try { run(); } catch (e) {
-  if (!e.quiet) { log("error: " + String(e.stderr || e.message).split("\n").slice(0, 3).join(" | ")); notify("Auto-deploy hit an error — see the log"); }
+  // the reason is at the END of wrangler's output (the first line only says "Command failed"); strip colour codes
+  if (!e.quiet) { const t = String(e.stderr || "") + "\n" + String(e.stdout || "") + "\n" + String(e.message || ""); log("error: " + t.replace(/\x1b\[[0-9;]*m/g, "").split("\n").map((l) => l.trim()).filter(Boolean).filter((l) => /error|✘|failed|denied|auth|token|limit|binding|invalid/i.test(l)).slice(-6).join(" | ")); notify("Auto-deploy hit an error — see the log"); }
   process.exitCode = 1;
 } finally {
   if (work) fs.rmSync(work, { recursive: true, force: true });
