@@ -7,7 +7,7 @@
 const HEAD = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
 const out = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: HEAD });
 const str = (v, n) => String(v == null ? "" : v).replace(/\s+/g, " ").trim().slice(0, n);
-const KINDS = new Set(["fine", "law", "competitor", "stat", "news", "customer", "feature"]);
+const KINDS = new Set(["fine", "law", "competitor", "stat", "news", "customer", "feature", "brief"]);   // brief = a creative idea from the owner, made as given
 
 let ready = null;
 const ensure = (env) => ready || (ready = env.DB.batch([

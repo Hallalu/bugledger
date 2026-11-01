@@ -8,7 +8,7 @@
    node ~/BugLedger/sellfeed.mjs list [--status new|done|all] [--app Breadledger]
    node ~/BugLedger/sellfeed.mjs done <id> --pack pack.md [--link https://…]…
 
- kinds: fine · law · competitor · stat · news · customer · feature. --verified only when the fact was checked on the
+ kinds: fine · law · competitor · stat · news · customer · feature · brief (the owner's own creative idea, made as given). --verified only when the fact was checked on the
  primary source (the official page, the company's own announcement). Unverified signals are fine to add: the content
  run words them as "reported", never as fact. Uses the owner key in ~/.bugledger.json.
 */
