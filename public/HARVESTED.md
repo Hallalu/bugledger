@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-804 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+808 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (547)
+## Hallalu CRM (551)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -551,6 +551,10 @@
 - [ ] `low` `other` (2026-10-31, #51177854) — H's caption contradicts her smile: she's happy while the bug "tries to come back".
 - [ ] `low` `other` (2026-10-31, #868d42eb) — Capturing emails in the DM fixes this.
 - [ ] `low` `other` (2026-10-31, #b031d96e) — That's the bug regression checklist, not an app checklist.
+- [ ] `low` `ui` (2026-10-31, #49c5f5e6) — Same kind of overflow in the Log income form (the Note box pokes out of the card), so…
+- [ ] `low` `other` (2026-10-31, #49c5f5e6) — Deploy didn't go through because [deploy tool]'s [host] sign-in has expired…
+- [ ] `low` `other` (2026-10-31, #49c5f5e6) — [host] has now put a short block on your account ("Rate limited") because of the…
+- [ ] `low` `ui` (2026-10-31, #6d67ef7e) — On the board, I filed one screenshot under the wrong label: your earlier screenshot of…
 
 ## Finished. (99)
 

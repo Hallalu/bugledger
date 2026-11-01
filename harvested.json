@@ -9646,5 +9646,53 @@
     "status": "unverified",
     "session": "b031d96e",
     "found": "2026-10-31"
+  },
+  {
+    "key": "49c5f5e6:samekindofoverflowinthelogincomeformthenoteboxpokesoutofthec",
+    "app": "Hallalu CRM",
+    "title": "Same kind of overflow in the Log income form (the Note box pokes out of the card), so…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "Same kind of overflow in the Log income form (the Note box pokes out of the card), so I'll fix both.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "49c5f5e6",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "49c5f5e6:thedeploydidntgothroughbecausewranglerscloudflaresigninhasex",
+    "app": "Hallalu CRM",
+    "title": "Deploy didn't go through because Wrangler's Cloudflare sign-in has expired…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The deploy didn't go through because Wrangler's Cloudflare sign-in has expired (\"Authentication error\").",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "49c5f5e6",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "49c5f5e6:cloudflarehasnowputashortblockonyouraccountratelimitedbecaus",
+    "app": "Hallalu CRM",
+    "title": "Cloudflare has now put a short block on your account (\"Rate limited\") because of the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Cloudflare has now put a short block on your account (\"Rate limited\") because of the failed sign-in tries.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "49c5f5e6",
+    "found": "2026-10-31"
+  },
+  {
+    "key": "6d67ef7e:ontheboardifiledonescreenshotunderthewronglabelyourearliersc",
+    "app": "Hallalu CRM",
+    "title": "On the board, I filed one screenshot under the wrong label: your earlier screenshot of…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "On the board, I filed one screenshot under the wrong label: your earlier screenshot of the card is labelled as the header button's \"before\".",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "6d67ef7e",
+    "found": "2026-10-31"
   }
 ]
