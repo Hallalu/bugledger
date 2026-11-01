@@ -10318,5 +10318,41 @@
     "status": "unverified",
     "session": "86f8bc3a",
     "found": "2026-11-01"
+  },
+  {
+    "key": "146b3f7c:inviteafriendlocal8cf1ca6c20ce4464a484f94aa01cbc1fisbuiltand",
+    "app": "Hallalu CRM",
+    "title": "Invite a friend is built and committed as cfd5102, but isn't pushed or live yet.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "[Invite a friend](#local_8cf1ca6c-20ce-4464-a484-f94aa01cbc1f) is built and committed as `cfd5102`, but isn't pushed or live yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "146b3f7c",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "146b3f7c:round2isdoneandthelionisnoticeablyclosertonumber32especially",
+    "app": "Hallalu CRM",
+    "title": "Round 2 is done and the lion is noticeably closer to number 32, especially the face,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Round 2 is done and the lion is noticeably closer to number 32, especially the face, but it still isn't exact.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "146b3f7c",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "e5401328:italsoflagsthathallalureplysfixesarentliveandthatnorealpayme",
+    "app": "Hallalu CRM",
+    "title": "It also flags that Hallalu Reply's fixes aren't live and that no real payment has been…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "It also flags that Hallalu Reply's fixes aren't live and that no real payment has been tried on Hallalu CRM.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e5401328",
+    "found": "2026-11-01"
   }
 ]
