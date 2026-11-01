@@ -132,7 +132,89 @@ perLine("FIND-DEREF","medium","crash","Property access directly on a .find()/.ma
   "Guard the result before dereferencing to avoid 'cannot read property of undefined'.",
   isCode, /\.(?:find|match)\s*\([^)]*\)\s*\.[a-zA-Z_]/);
 
+// --- the 11 QA bug types (syntax · logical · functional · unit · integration · usability · workflow ·
+//     compatibility · performance · security · out-of-bound) — the per-line checks for the ones the scanner missed ---
+perLine("SYNTAX-CONFLICT","high","syntax","Merge-conflict marker left in the file — it will not parse or will ship the marker",
+  "Resolve the conflict: keep the right side, delete the <<<<<<< / ======= / >>>>>>> lines, then run the tests.",
+  f=>!/\.md$/i.test(f), /^(?:<{7}|>{7}) \S|^<{7}$|^>{7}$/);
+perLine("LOGIC-NAN-COMPARE","high","logic","Comparison with NaN is always false",
+  "Use Number.isNaN(x) — x === NaN (or ==, !=) can never be true.",
+  isCode, /[=!]==?\s*NaN\b|\bNaN\s*[=!]==?/);
+perLine("LOGIC-TYPEOF-TYPO","high","logic","typeof compared with a string it can never return",
+  "typeof only returns undefined, object, boolean, number, bigint, string, symbol or function — use Array.isArray / === null for those cases.",
+  isCode, /typeof\s+[\w.$\[\]]+\s*[=!]==?\s*["'`](?!(?:undefined|object|boolean|number|bigint|string|symbol|function)["'`])[a-z]+["'`]/);
+perLine("LOGIC-ASYNC-FOREACH","high","logic","async callback in forEach — nothing waits for it, errors are lost and the next line runs first",
+  "Use for…of with await (in order) or await Promise.all(list.map(async …)) (in parallel).",
+  isCode, /\.forEach\s*\(\s*async\b/);
+perLine("LOGIC-ASSIGN-IN-IF","medium","logic","Assignment inside an if condition — usually a typo for === (the branch always runs on truthy values)",
+  "Use === to compare; if the assignment is deliberate, wrap it in its own parentheses and compare the result.",
+  isCode, /\bif\s*\(\s*[A-Za-z_$][\w.$]*\s=\s(?!=)[^)]*\)/);
+perLine("INTEG-NO-RES-OK","low","integration","Response body used without checking it succeeded — a 4xx/5xx page is parsed as data",
+  "Check r.ok (or r.status) before r.json(), and show the user a clear error when the other side fails.",
+  isCode, /fetch\([^)]*\)\s*\.then\(\s*\(?\s*(\w+)\s*\)?\s*=>\s*\1\.json\(\)\s*\)/);
+perLine("USAB-TINY-TEXT","low","usability","Text set below 12px — hard to read, fails the house bigger-words rule",
+  "Body 15px, hints 13.5px or more, labels 12.5px or more.",
+  f=>/\.(css|html?|vue|svelte|jsx|tsx)$/i.test(f), /font-size\s*:\s*(?:[0-9]|1[01])(?:\.\d+)?px/);
+perLine("COMPAT-100VH","low","compatibility","100vh on phones includes the hidden address bar — the page jumps or cuts off",
+  "Use 100dvh (with 100vh as the fallback before it) or min-height: 100svh.",
+  f=>/\.(css|html?|vue|svelte|jsx|tsx)$/i.test(f), /^(?!.*\b100[dsl]vh\b)(?=.*(?<![\w-])100vh\b)/);
+perLine("PERF-SYNC-XHR","high","performance","Synchronous XMLHttpRequest — freezes the whole page until the network answers",
+  "Use fetch() or an async XMLHttpRequest (third argument true or left out).",
+  isCode, /\.open\s*\(\s*["'`][A-Z]+["'`]\s*,[^,]+,\s*false\s*\)/);
+perLine("PERF-AWAIT-IN-LOOP","low","performance","await inside a loop runs the calls one after another",
+  "If the calls don't depend on each other, start them together: await Promise.all(items.map(fn)).",
+  isCode, /\bfor\s*\([^)]*\)\s*\{?[^}]*\bawait\s+(?:fetch|env\.\w+|\w+\.(?:prepare|get|put|run|first|all))\b/);
+perLine("PERF-TIGHT-INTERVAL","medium","performance","Timer firing more than 10 times a second — drains battery and CPU",
+  "Use requestAnimationFrame for animation, or 250ms+ for polling.",
+  isCode, /setInterval\s*\([\s\S]*?,\s*(?:[0-9]|[1-9][0-9])\s*\)\s*;?\s*$/);
+perLine("BOUND-LE-LENGTH","high","bounds","Loop runs to <= length — the last pass reads one past the end",
+  "Use i < list.length.",
+  isCode, /for\s*\([^;]*;\s*(\w+)\s*<=\s*([\w.$]+)\.length\s*;/);
+perLine("BOUND-ARRAY-LAST","high","bounds","list[list.length] is always undefined — one past the last item",
+  "The last item is list[list.length - 1] (or list.at(-1)).",
+  isCode, /([A-Za-z_$][\w$]*)\s*\[\s*\1\.length\s*\]/);
+perLine("BOUND-INPUT-NO-MAX","low","bounds","Text box with no maxlength — any length goes to the server and the page",
+  "Add maxlength to the field and enforce the same limit on the server.",
+  isHTML, /<(?:textarea\b|input\b(?![^>]*type\s*=\s*["']?(?:checkbox|radio|hidden|file|range|color|date|time|number|submit|button|reset|image)))(?![^>]*maxlength)[^>]*>/i);
+
 // --- whole-file detectors ---
+// --- syntax: the file must parse (the scanner reads files, it doesn't run the app) ---
+perFile("SYNTAX-JS","high","syntax","JavaScript file that does not parse — the whole file fails to load",
+  "Fix the syntax error at the reported line, then run node --check on the file.",
+  (c, fp) => {
+    if (!/\.(js|mjs|cjs)$/i.test(fp)) return [];
+    try { execSync(`${JSON.stringify(process.execPath)} --check ${JSON.stringify(fp)}`, { stdio: ["ignore", "ignore", "pipe"], timeout: 15000 }); return []; }
+    catch (e) { const t = String(e.stderr || e.message); const m = t.match(/:(\d+)\n/); const why = (t.match(/SyntaxError: [^\n]+/) || ["syntax error"])[0];
+      return /SyntaxError/.test(t) ? [{ line: m ? +m[1] : 1, excerpt: why.slice(0, 120) }] : []; }
+  });
+perFile("SYNTAX-JSON","high","syntax","JSON file that does not parse",
+  "Fix the JSON (trailing comma, comment, missing quote) — whatever reads it gets nothing or crashes.",
+  (c, fp) => {
+    if (!/\.json$/i.test(fp) || /tsconfig|jsconfig|\.vscode/i.test(fp)) return [];
+    try { JSON.parse(c); return []; }
+    catch (e) { const pos = +((String(e.message).match(/position (\d+)/) || [])[1] || 0); return [{ line: c.slice(0, pos).split("\n").length, excerpt: String(e.message).slice(0, 120) }]; }
+  });
+perFile("SYNTAX-INLINE-SCRIPT","high","syntax","Inline <script> in a page that does not parse — none of that script runs",
+  "Fix the syntax error inside the <script> block (often an unescaped quote or a stray bracket).",
+  (c, fp) => {
+    if (!/\.html?$/i.test(fp)) return [];
+    const out = [], re = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi; let m;
+    while ((m = re.exec(c))) {
+      const attrs = m[1], body = m[2];
+      if (/\bsrc\s*=/.test(attrs) || !body.trim()) continue;
+      const line = c.slice(0, m.index).split("\n").length;
+      if (/application\/(?:ld\+)?json/i.test(attrs)) { try { JSON.parse(body); } catch (e) { out.push({ line, excerpt: "JSON block: " + String(e.message).slice(0, 90) }); } continue; }
+      if (/type\s*=\s*["']?module/i.test(attrs) || (/type\s*=/i.test(attrs) && !/javascript/i.test(attrs))) continue;
+      try { new Function(body); } catch (e) { if (e instanceof SyntaxError) out.push({ line, excerpt: String(e.message).slice(0, 120) }); }
+    }
+    return out;
+  });
+perFile("COMPAT-BACKDROP-NO-WEBKIT","low","compatibility","backdrop-filter with no -webkit- version — no blur in Safari before 18",
+  "Add -webkit-backdrop-filter with the same value next to each backdrop-filter.",
+  (c, fp) => {
+    if (!/\.(css|html?|vue|svelte)$/i.test(fp) || !/(?<!-webkit-)backdrop-filter\s*:/.test(c) || /-webkit-backdrop-filter/.test(c)) return [];
+    const i = c.search(/(?<!-webkit-)backdrop-filter\s*:/); return [{ line: c.slice(0, i).split("\n").length, excerpt: c.slice(i, i + 60).split("\n")[0] }];
+  });
 perFile("ESC-QUOTES","high","security","esc()/escape helper that does not escape quotes",
   "Add .replace(/\"/g,'&quot;').replace(/'/g,'&#39;') — unescaped quotes break out of HTML attributes (stored-XSS class).",
   (c) => {
@@ -427,9 +509,35 @@ const HIGH_CONF = new Set([
   "AUTH-NO-MFA","AUTH-NO-SEC-HEADERS","AUTH-NO-BOT-CHECK","AUTH-NO-BREACH-CHECK",
   "PRIV-3P-TRACKER","PRIV-NO-POLICY","PRIV-NO-DELETE","PRIV-PII-IN-URL","CLAIM-PLACEHOLDER",
   "INVIS-SMUGGLE","INVIS-BIDI","INVIS-HIDDEN","INVIS-HOMOGLYPH","INVIS-EXOTIC-SPACE",
+  "SYNTAX-JS","SYNTAX-JSON","SYNTAX-INLINE-SCRIPT","SYNTAX-CONFLICT","LOGIC-NAN-COMPARE","LOGIC-TYPEOF-TYPO","LOGIC-ASYNC-FOREACH",
+  "PERF-SYNC-XHR","PERF-HUGE-ASSET","BOUND-LE-LENGTH","BOUND-ARRAY-LAST",
 ]);
 // Everything else is a lead to confirm (XSS-INNERHTML, FIND-DEREF, DATE-TOISO, OBS-*, CLAIM-*, …).
 const confOf = (id) => HIGH_CONF.has(id) ? "high" : "review";
+
+// The 11 QA bug types every scan reports on (A. Choubey, "11 Types of Software Bugs Every QA Should Know", Medium 2024):
+// each type → the detectors that look for it (a trailing * matches a prefix); "hands" is what only a person can check.
+const QA11 = [
+  ["Syntax", ["SYNTAX-*"], "nothing — the parse checks cover it"],
+  ["Logical", ["LOGIC-*", "DATE-TOISO"], "walk the main flow with odd values (0, empty, a long name, a past date)"],
+  ["Functional", ["FUNC-*", "FIND-DEREF", "ARGUMENTS-CALLEE", "IMG-DROP"], "press every button and save once: it must do what it says"],
+  ["Unit-level", ["TEST-*"], "run the test suite"],
+  ["System integration", ["INTEG-*", "SW-CACHE-FIRST"], "use each feature that talks to the server, signed in and signed out"],
+  ["Usability", ["USAB-*", "A11Y-*", "NATIVE-DIALOG", "DUP-DOM-ID"], "a first-time user finishes the main task without help"],
+  ["Workflow", ["WORKFLOW-*"], "Back, Forward and reload on every screen; finish a journey end to end"],
+  ["Compatibility", ["COMPAT-*", "SEO-NO-VIEWPORT"], "open it on a phone (Safari and Chrome) and a laptop"],
+  ["Performance", ["PERF-*"], "first load on a slow phone connection; scroll a long list"],
+  ["Security", ["XSS-INNERHTML", "SECRET", "ESC-QUOTES", "PBKDF2-WEAK", "STATIC-SALT", "SSRF-GOTO", "LOCALSTORAGE-GLOBAL", "NO-CSP", "AUTH-*", "PRIV-*", "INVIS-*"], "the security sweep (/securitysweep)"],
+  ["Out-of-bound", ["BOUND-*"], "type too much, too little, negative and huge numbers into every field"],
+];
+const qaMatch = (pat, id) => pat.endsWith("*") ? id.startsWith(pat.slice(0, -1)) : id === pat;
+function qa11Summary(allIds, found) {
+  return QA11.map(([type, pats, hands]) => {
+    const dets = allIds.filter((id) => pats.some((p) => qaMatch(p, id)));
+    const hits = found.filter((f) => pats.some((p) => qaMatch(p, f.detector)));
+    return { type, checks: dets.length, findings: hits.length, high: hits.filter((f) => f.confidence === "high").length, hands };
+  });
+}
 
 // Is a single interpolated expression provably safe to drop into HTML?
 // Deliberately conservative — only forms that CANNOT carry markup: escaper-wrapped, pure
@@ -465,7 +573,22 @@ function citationNear(content, lineIdx) {
   return /<a\b[^>]*\bhref\s*=|<sup\b|class\s*=\s*["'][^"']*\b(?:source|src|cite|citation|s|ref|footnote)\b|\bcite\s*=|\bhref\s*=\s*["']https?:|\[\d+\]|↗|†|‡/i.test(win);
 }
 // refine(ctx) → "skip" to drop the hit, a confidence string to override, or undefined for the default.
+// the code checks of the 11 QA types: a test file plants these on purpose, and a match inside a quoted string
+// (help text, a fixture) is words about the bug, not the bug — both are dropped so the checks stay precise
+const inQuotes = (line, idx) => { let q = null; for (let k = 0; k < idx; k++) { const ch = line[k]; if (q) { if (ch === "\\") k++; else if (ch === q) q = null; } else if (ch === '"' || ch === "'" || ch === "`") q = ch; } return !!q; };
+const codeOnly = ({ line, m, fp }) => isTestFile(fp) || inQuotes(line, m.index) ? "skip" : undefined;
+// <= length is only a bug when the loop then reads list[i] with no i < list.length guard (a boundary pass or slice(0, i) is deliberate)
+const pastEnd = ({ m, content, lineIdx, fp, line }) => {
+  if (codeOnly({ line, m, fp })) return "skip";
+  const [, v, arr] = m, body = content.split("\n").slice(lineIdx, lineIdx + 4).join("\n"), esc = (t) => t.replace(/[.$[\]]/g, "\\$&");
+  if (!new RegExp(esc(arr) + "\\[\\s*" + v + "\\s*\\]").test(body)) return "skip";
+  if (new RegExp("\\b" + v + "\\s*<\\s*" + esc(arr) + "\\.length").test(body)) return "skip";
+  return undefined;
+};
 const REFINE = {
+  "BOUND-LE-LENGTH": pastEnd,
+  ...Object.fromEntries(["LOGIC-NAN-COMPARE","LOGIC-TYPEOF-TYPO","LOGIC-ASYNC-FOREACH","LOGIC-ASSIGN-IN-IF","INTEG-NO-RES-OK",
+    "PERF-SYNC-XHR","PERF-AWAIT-IN-LOOP","PERF-TIGHT-INTERVAL","BOUND-ARRAY-LAST"].map((id) => [id, codeOnly])),
   "XSS-INNERHTML": ({ line }) => interpAllSafe(line) ? "skip" : "review",
   "CLAIM-UNSOURCED-STAT": ({ content, lineIdx }) => citationNear(content, lineIdx) ? "skip" : undefined,
 };
@@ -517,7 +640,7 @@ try { const ai = await aiScanDir(TARGET); findings.push(...asScanFindings(ai.hit
 catch (e) { if (!AS_JSON) console.error("AI-footprint pass skipped:", e.message); }
 
 // ---------- project-level detectors (only visible across the whole repo) ----------
-const PROJECT_DETECTORS = 13 + Object.keys(AI_DETECTORS).length; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-DELETE, OBS-NO-ERROR-HANDLER, + 8 AUTH-* sign-in checks, + 5 AI-* footprint checks (aiscan.mjs)
+const PROJECT_DETECTORS = 19 + Object.keys(AI_DETECTORS).length; // TEST-NONE, TEST-NO-CI, PRIV-NO-POLICY, PRIV-NO-DELETE, OBS-NO-ERROR-HANDLER, + 8 AUTH-* sign-in checks, + 6 cross-file QA checks (FUNC-MISSING-ID, FUNC-UNDEFINED-HANDLER, INTEG-DEAD-ROUTE, WORKFLOW-NO-POPSTATE, WORKFLOW-DEAD-LINK, PERF-HUGE-ASSET), + 5 AI-* footprint checks (aiscan.mjs)
 {
   const all = corpus.join("\n");
   const proj = (detector, severity, category, bug, advice, file, excerpt) =>
@@ -597,6 +720,82 @@ const PROJECT_DETECTORS = 13 + Object.keys(AI_DETECTORS).length; // TEST-NONE, T
         "Send a one-time link before the address is trusted (resets, notifications, team invites); otherwise anyone can register someone else's email.",
         ".", "sign-up route found, no email verification step");
   }
+
+  // ---- cross-file QA checks: functional, integration, workflow, performance (need the whole project in view) ----
+  const src = [];   // [{ f, c }] authored, readable text files
+  for (const fp of files) { let c; try { c = fs.readFileSync(fp, "utf8"); } catch { continue; } if (!c.includes("\0") && !/\.min\.(js|css)$/i.test(fp)) src.push({ f: rel(fp), c }); }
+  const lineOf = (c, i) => c.slice(0, i).split("\n").length;
+  const hit = (detector, severity, category, bug, advice, list) => list.slice(0, 25).forEach((h) =>
+    findings.push({ detector, severity, category, bug, advice, confidence: confOf(detector), file: h.f, line: h.line, excerpt: h.x }));
+  const allText = src.map((x) => x.c).join("\n");
+
+  // functional: an element looked up by an id that no page or script ever creates
+  {
+    const ids = new Set(); for (const { c } of src) { for (const m of c.matchAll(/\bid\s*=\s*["'`]([\w-]+)["'`]/g)) ids.add(m[1]); for (const m of c.matchAll(/\.id\s*=\s*["'`]([\w-]+)["'`]/g)) ids.add(m[1]); for (const m of c.matchAll(/\bid=\\?["']([\w-]+)/g)) ids.add(m[1]); }
+    // ids built at run time (id = "x" + n, id="${…}") can't be checked statically: then the check stays quiet
+    const dynIds = /\bid\s*=\s*["'`][^"'`]*\$\{|\.id\s*=\s*[^"'`\s]|setAttribute\(\s*["']id["']\s*,\s*[^"'`]/;
+    const out = [];
+    for (const { f, c } of src) if (/\.(js|mjs|cjs|ts|tsx|jsx|html?|vue|svelte)$/i.test(f))
+      for (const m of c.matchAll(/getElementById\(\s*["'`]([\w-]+)["'`]\s*\)|querySelector\(\s*["'`]#([\w-]+)["'`]\s*\)/g)) { const id = m[1] || m[2]; if (!ids.has(id) && !dynIds.test(allText)) out.push({ f, line: lineOf(c, m.index), x: m[0] }); }
+    hit("FUNC-MISSING-ID","medium","functional","Looks up a page element by an id that nothing creates — the feature silently does nothing (or crashes on null)",
+      "Give the element that id, or fix the spelling in the lookup; guard the result before using it.", out);
+  }
+  // functional: an onclick/onsubmit calls a function defined nowhere in the project
+  {
+    const out = [];
+    for (const { f, c } of src) if (/\.html?$/i.test(f))
+      for (const m of c.matchAll(/\son(?:click|submit|change|input|keydown|keyup|load)\s*=\s*["']\s*(?:return\s+)?([A-Za-z_$][\w$]*)\s*\(/gi)) {
+        const fn = m[1]; if (/^(?:alert|confirm|prompt|history|location|window|document|event|this|setTimeout|console|if|else|return|typeof|void|new|delete|var|let|const|function|async|await|true|false|null|undefined|Bread|B)$/.test(fn)) continue;
+        if (!new RegExp("(?:function\\s+" + fn + "\\b|\\b" + fn + "\\s*[:=]\\s*(?:async\\s*)?(?:function|\\(|[\\w$]+\\s*=>)|window\\." + fn + "\\s*=)").test(allText)) out.push({ f, line: lineOf(c, m.index), x: m[0].trim() });
+      }
+    hit("FUNC-UNDEFINED-HANDLER","high","functional","A button or form calls a function that doesn't exist — clicking it does nothing",
+      "Define the function (on window if the page uses inline handlers), or fix the name.", out);
+  }
+  // integration: the page calls an /api/ route the server never mentions
+  {
+    const server = src.filter((x) => /\.(js|mjs|cjs|ts)$/i.test(x.f) && /new Response\(|pathname|app\.(?:get|post|put|delete)\(|router\.|export default\s*\{[\s\S]{0,200}fetch/.test(x.c)).map((x) => x.c).join("\n");
+    const out = [];
+    if (server) for (const { f, c } of src) for (const m of c.matchAll(/fetch\(\s*["'`](\/api\/[\w\/-]+)/g)) {
+      const route = m[1].replace(/\/+$/, ""), stem = route.split("/").slice(0, 3).join("/");
+      // a router that strips the /api prefix first matches "/export" for "/api/export"
+      const bare = route.replace(/^\/api/, ""), bareStem = stem.replace(/^\/api/, "");
+      const named = (t) => ['"', "'", "`"].some((q) => server.includes(q + t + q) || server.includes(q + t + "/") || server.includes(q + t + "?"));
+      if (!server.includes(route) && !server.includes(stem + "/") && !named(stem) && !named(bare) && !named(bareStem)) out.push({ f, line: lineOf(c, m.index), x: m[0] });
+    }
+    hit("INTEG-DEAD-ROUTE","high","integration","The page calls an API route the server doesn't have — that feature always fails",
+      "Add the route to the server, or point the call at the route that exists (check the spelling and the /api prefix).", out);
+  }
+  // workflow: in-page navigation with nothing handling the browser's Back button
+  if (/history\.pushState\s*\(/.test(allText) && !/popstate|hashchange|navigation\.addEventListener/.test(allText)) {
+    const x = src.find((s) => /history\.pushState\s*\(/.test(s.c));
+    proj("WORKFLOW-NO-POPSTATE","medium","workflow","Pages change with history.pushState but nothing listens for Back — Back changes the address and nothing else",
+      "Listen for popstate and re-render from location (or use hashchange); test Back and Forward on every view.", x.f, "history.pushState with no popstate listener");
+  }
+  // workflow: an internal link to a page that doesn't exist
+  {
+    const pages = new Set(src.filter((x) => /\.html?$/i.test(x.f)).map((x) => "/" + x.f.replace(/^(?:public|static|dist|site|www)\//, "").replace(/(?:index)?\.html?$/i, "").replace(/\/$/, "")));
+    // a server or router that names the path serves it — the pages' own links don't count as proof
+    const routeText = src.filter((x) => !/\.html?$/i.test(x.f)).map((x) => x.c).join("\n");
+    const out = [];
+    if (pages.size > 1) for (const { f, c } of src) if (/\.html?$/i.test(f))
+      for (const m of c.matchAll(/href\s*=\s*["'](\/[\w\/-]*)(?:[?#][^"']*)?["']/g)) {
+        const p = m[1].replace(/\/$/, "") || "/";
+        if (p === "/" || pages.has(p) || pages.has(p.replace(/\.html?$/, "")) || /^\/(?:api|static|assets|img|images|art|fonts)\b/.test(p) || routeText.includes('"' + p + '"') || routeText.includes("'" + p + "'") || routeText.includes("`" + p)) continue;
+        out.push({ f, line: lineOf(c, m.index), x: m[0] });
+      }
+    hit("WORKFLOW-DEAD-LINK","medium","workflow","A link inside the app goes to a page that doesn't exist",
+      "Fix the address, or add the page; a dead link mid-journey is where people give up.", out);
+  }
+  // performance: very large images shipped to the browser
+  {
+    const big = []; const IMG = /\.(png|jpe?g|gif|webp|avif|bmp|tiff?)$/i;
+    (function walkImg(dir) { let ents; try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+      for (const e of ents) { if (e.name.startsWith(".")) continue; const fp = path.join(dir, e.name);
+        if (e.isDirectory()) { if (!SKIP_DIRS.has(e.name)) walkImg(fp); continue; }
+        if (IMG.test(e.name)) { try { const n = fs.statSync(fp).size; if (n > 1_000_000) big.push({ f: rel(fp), line: 1, x: (n / 1e6).toFixed(1) + " MB" }); } catch {} } } })(TARGET);
+    hit("PERF-HUGE-ASSET","high","performance","Image over 1 MB — slow first load, worst on phones",
+      "Export it at the size it is shown, as WebP/AVIF (or JPEG for photos); keep page images under ~300 KB.", big);
+  }
 }
 
 // ---------- classify vs ledger ----------
@@ -621,7 +820,7 @@ if (AS_JSON) {
     c.total++; if (f.confidence === "high") c.high++;
     c.detectors[f.detector] = (c.detectors[f.detector] || 0) + 1;
   }
-  console.log(JSON.stringify({ app:APP, target:TARGET, filesScanned:files.length, byCategory, findings }, null, 2));
+  console.log(JSON.stringify({ app:APP, target:TARGET, filesScanned:files.length, byCategory, qa11: qa11Summary([...D.map((d) => d.id), "TEST-NONE","TEST-NO-CI","PRIV-NO-POLICY","PRIV-NO-DELETE","OBS-NO-ERROR-HANDLER","AUTH-NO-MFA","AUTH-NO-SEC-HEADERS","AUTH-NO-BOT-CHECK","AUTH-NO-IP-LIMIT","AUTH-NO-BREACH-CHECK","AUTH-WEAK-HASH","AUTH-SHORT-MIN","AUTH-NO-EMAIL-VERIFY","FUNC-MISSING-ID","FUNC-UNDEFINED-HANDLER","INTEG-DEAD-ROUTE","WORKFLOW-NO-POPSTATE","WORKFLOW-DEAD-LINK","PERF-HUGE-ASSET"], findings), findings }, null, 2));
 } else {
   const bar = "─".repeat(60);
   console.log(`\n🔎 Bug Ledger scan — ${APP}`);
@@ -647,6 +846,10 @@ if (AS_JSON) {
     if (fs_.length > 12) console.log(`    …and ${fs_.length-12} more`);
   }
   // manual checklist
+  // the 11 QA bug types — what the scan checked for each, what it found, and what still needs a person
+  console.log(`\n${bar}\n🧪 THE 11 QA BUG TYPES — checked on every scan:\n${bar}`);
+  for (const q of qa11Summary([...D.map((d) => d.id), "TEST-NONE","TEST-NO-CI","PRIV-NO-POLICY","PRIV-NO-DELETE","OBS-NO-ERROR-HANDLER","AUTH-NO-MFA","AUTH-NO-SEC-HEADERS","AUTH-NO-BOT-CHECK","AUTH-NO-IP-LIMIT","AUTH-NO-BREACH-CHECK","AUTH-WEAK-HASH","AUTH-SHORT-MIN","AUTH-NO-EMAIL-VERIFY","FUNC-MISSING-ID","FUNC-UNDEFINED-HANDLER","INTEG-DEAD-ROUTE","WORKFLOW-NO-POPSTATE","WORKFLOW-DEAD-LINK","PERF-HUGE-ASSET"], findings))
+    console.log(`  ${q.findings ? "●" : "✓"} ${q.type.padEnd(19)} ${String(q.checks).padStart(2)} checks · ${q.findings ? q.findings + " found" + (q.high ? " (" + q.high + " high)" : "") : "clean"}   by hand: ${q.hands}`);
   console.log(`\n${bar}\n📋 MANUAL CHECKLIST — every known bug for ${APP} (${appBugs.length}) — verify each:\n${bar}`);
   if (!appBugs.length) console.log("  (no ledger entries for this app yet)");
   const SEV2 = { security:0,"data-loss":1,crash:2,auth:3,sync:4,race:5,logic:6,performance:7,ui:8,other:9 };
