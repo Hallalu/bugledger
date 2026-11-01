@@ -81,6 +81,9 @@ function run() {
   }
   try { sh("npm test --silent", { cwd: work, timeout: 180e3 }); } catch (e) { fail("tests failed: " + (String(e.stdout || "").match(/# fail \d+/) || ["see log"])[0]); }
 
+  // the chat reporter a member's "Connect Claude Code" line downloads is served from the site (one source: chathook.mjs)
+  fs.copyFileSync(path.join(work, "chathook.mjs"), path.join(work, "public", "chathook.mjs"));
+
   // stamp the build so open pages can tell a newer one is live
   const build = { build: short, sha, subject, at: new Date().toISOString() };
   const shell = path.join(work, "public", "bread-shell.js"), src = fs.readFileSync(shell, "utf8");

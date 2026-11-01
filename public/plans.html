@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Plans · Breadledger</title>
-<meta name="description" content="Free public catalogue and tools; Team and Business add a private workspace.">
+<meta name="description" content="Start free with your email: the public catalogue, the tools and your own private board. Pro, Max and Ultra add more as they open.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Breadledger · Plans">
-<meta property="og:description" content="Free public catalogue and tools; Team and Business add a private workspace.">
+<meta property="og:description" content="Start free with your email: the public catalogue, the tools and your own private board. Pro, Max and Ultra add more as they open.">
 <meta property="og:image" content="https://breadledger.coconvo.workers.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -32,17 +32,11 @@
   .fine{font-size:13.5px;color:var(--ink-3)}
   .compare-line{font-size:14px;color:var(--ink-3)}
   #signup{scroll-margin-top:72px}
-  #signupForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end;margin-top:12px}
-  #signupForm .select{width:100%}
+  .startrow{margin-top:12px}
+  .startrow .btn{height:46px;font-size:16px}
   .msg{font-size:14px;font-weight:600}
   .msg:not(:empty){margin-top:10px}
   .msg.err{color:var(--danger-ink)}
-  .keybox{display:none;margin-top:14px}
-  .keybox.show{display:flex}
-  .keybox .kb{display:grid;gap:8px;min-width:0;flex:1}
-  .keybox .krow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .keybox code{flex:1;min-width:0;font-size:13px;padding:7px 10px;overflow-wrap:anywhere;background:var(--panel);color:var(--ink)}
-  .keybox p{color:inherit}
   .fine.after{margin-top:12px}
   @media (max-width:760px){ .plans{grid-template-columns:1fr} }
   @media (pointer:coarse){ .input,.select{font-size:16px} }   /* iOS: no focus zoom */
@@ -95,7 +89,7 @@
         <div class="page-h">
           <div class="grow">
             <h1 id="pricing-h">Plans</h1>
-            <p class="lead">Start free with the full public catalogue and tools. Team and Business add a private workspace for your own findings. You are never charged until your private workspace is switched on, and we email you before that happens.</p>
+            <p class="lead">Start free with your email: the full public catalogue and tools, plus your own private board for every Claude Code chat. Pro, Max and Ultra add more as they open. You are never charged until your private workspace is switched on, and we email you before that happens.</p>
           </div>
         </div>
 
@@ -164,22 +158,11 @@
         <p class="compare-line">For comparison, automated code review tools typically charge $24 to $72 per developer a month.</p>
 
         <section class="card" id="signup" aria-labelledby="signup-h">
-          <div class="card-h"><h2 id="signup-h">Create your account</h2></div>
+          <div class="card-h"><h2 id="signup-h">Start now</h2></div>
           <div class="card-b">
-            <p class="fine">Takes ten seconds. No card needed.</p>
-            <form id="signupForm" novalidate>
-              <div class="field"><label for="su-name">Your name or team</label><input class="input" id="su-name" name="name" required maxlength="80" autocomplete="organization" placeholder="Acme engineering"></div>
-              <div class="field"><label for="su-email">Work email</label><input class="input" id="su-email" name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@company.com"></div>
-              <div class="field"><label for="su-plan">Plan</label><select class="select" id="su-plan" name="plan"><option value="free">Free</option><option value="pro">Pro, early access</option><option value="max">Max, early access</option><option value="ultra">Ultra, early access</option></select></div>
-              <button class="btn primary" type="submit">Create account</button>
-            </form>
-            <p class="msg" id="signupMsg" role="status" aria-live="polite"></p>
-            <div class="note ok keybox" id="keybox"><i data-icon="checkcircle"></i><div class="kb">
-              <b>Your account is ready.</b>
-              <div class="krow"><code id="keyval"></code><button class="btn" type="button" id="keycopy"><i data-icon="copy"></i><span class="lbl">Copy key</span></button></div>
-              <p>This is your workspace key. Save it now, because we only show it once and cannot recover it. The free tools on this page work straight away. We will contact you at your email when your private workspace opens.</p>
-            </div></div>
-            <p class="fine after">We use your email only to contact you about your account. We do not sell it or pass it to anyone else.</p>
+            <p class="fine">Type your email, then the code we send you. You're on your own board in under a minute. No card, nothing to copy.</p>
+            <div class="startrow"><button class="btn primary" type="button" id="startBtn"><i data-icon="user"></i><span class="lbl">Start free with your email</span></button></div>
+            <p class="fine after">We use your email to sign you in and about your account. We never sell it or pass it on. <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
           </div>
         </section>
       </section>
@@ -193,45 +176,16 @@ Bread.$$('[data-icon]').forEach(function (e) { e.outerHTML = Bread.icon(e.getAtt
 Bread.mount({ active: 'plans', title: 'Plans', crumbs: ['Plans'] });
 
 (function(){
-  var form=document.getElementById('signupForm'); if(!form) return;
-  var msg=document.getElementById('signupMsg'), box=document.getElementById('keybox');
-  function pick(plan){
-    form.plan.value=plan;
+  // one way in for every plan: email + code (bread-auth.js); paid plans open as early access on the same account
+  function start(plan){
     document.querySelectorAll('.plan').forEach(function(c){c.classList.toggle('pick',c.dataset.plan===plan);});
+    if (Bread.auth && Bread.auth.me) { location.href='/now'; return; }
+    if (Bread.auth) Bread.auth.open({ title: 'Start with your email' });
   }
-  function choose(plan){
-    pick(plan);
-    document.getElementById('signup').scrollIntoView({behavior:'smooth',block:'start'});
-    setTimeout(function(){form.name.focus({preventScroll:true});},350);
-  }
-  document.querySelectorAll('[data-choose]').forEach(function(b){
-    b.addEventListener('click',function(){choose(b.dataset.choose);});
-  });
-  form.plan.addEventListener('change',function(){pick(form.plan.value);});
-  form.addEventListener('submit',function(e){
-    e.preventDefault(); msg.className='msg'; msg.textContent='';
-    var name=form.name.value.trim(), email=form.email.value.trim();
-    if(!name){msg.className='msg err';msg.textContent='Please enter your name or team.';form.name.focus();return;}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.className='msg err';msg.textContent='Please enter a valid email address.';form.email.focus();return;}
-    var btn=form.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Creating…';
-    fetch('/api/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name,email:email,plan:form.plan.value})})
-      .then(function(r){return r.json().catch(function(){return {ok:false,error:'Something went wrong. Please try again.'};});})
-      .then(function(d){
-        if(!d.ok){msg.className='msg err';msg.textContent=d.error||'Something went wrong. Please try again.';return;}
-        document.getElementById('keyval').textContent=d.key; box.classList.add('show'); form.reset(); pick(d.plan);
-        form.style.display='none';
-      })
-      .catch(function(){msg.className='msg err';msg.textContent='Could not reach the server. Please try again.';})
-      .finally(function(){btn.disabled=false;btn.textContent='Create account';});
-  });
-  document.getElementById('keycopy').addEventListener('click',function(){
-    var k=document.getElementById('keyval').textContent, lbl=this.querySelector('.lbl');
-    (navigator.clipboard?navigator.clipboard.writeText(k):Promise.reject()).then(function(){lbl.textContent='Copied';},function(){lbl.textContent='Select and copy';});
-  });
+  document.getElementById('startBtn').addEventListener('click',function(){start('free');});
+  document.querySelectorAll('[data-choose]').forEach(function(b){ b.addEventListener('click',function(){start(b.dataset.choose);}); });
   Bread.cmdk.register([
-    { group: 'Plans', label: 'Create a free account', icon: 'user', run: function(){ choose('free'); } },
-    { group: 'Plans', label: 'Join Team early access', icon: 'zap', run: function(){ choose('team'); } },
-    { group: 'Plans', label: 'Join Business early access', icon: 'zap', run: function(){ choose('business'); } }
+    { group: 'Plans', label: 'Start free with your email', icon: 'user', run: function(){ start('free'); } }
   ]);
 })();
 </script>

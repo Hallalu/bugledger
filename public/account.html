@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your account · Breadledger</title>
+<meta name="description" content="Your Breadledger account: your name, connected agents, signed-in devices, your data and deleting your account.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/bread.css">
+<script src="/bread-shell.js"></script>
+<style>
+  /* page-only styles, tokens only (var(--…)) */
+  .acc{display:grid;gap:16px;align-content:start;max-width:760px}
+  .acc .card-h h2{font-size:16px;font-weight:600}
+  .acc .card-b{display:grid;gap:12px}
+  .acc p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}
+  .acc .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .acc .row .input{flex:1 1 220px;min-width:0;height:42px;font-size:15px}
+  .acc .who{display:flex;gap:14px;align-items:center}
+  .acc .who .avatar{width:48px;height:48px;font-size:18px;border-radius:12px}
+  .acc .who b{display:block;font-size:18px}
+  .acc .who span{font-size:15px;color:var(--ink-3)}
+  .acc .list{display:grid;gap:0;border:1px solid var(--line);border-radius:var(--r-1)}
+  .acc .li{display:flex;gap:12px;align-items:center;padding:12px 14px;font-size:15px}
+  .acc .li + .li{border-top:1px solid var(--line)}
+  .acc .li .grow{min-width:0}
+  .acc .li .grow b{display:block;font-weight:600}
+  .acc .li .grow span{font-size:13.5px;color:var(--ink-3)}
+  .acc .li .btn{margin-left:auto;flex:none}
+  .acc .none{padding:12px 14px;font-size:14.5px;color:var(--ink-3)}
+  .acc .danger-card{border-color:color-mix(in srgb,var(--danger-ink) 35%,var(--line))}
+  .acc .msg{font-size:14px;font-weight:600;min-height:0}
+  .acc .msg.err{color:var(--danger-ink)}
+  .acc #delStep[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="bl-app" id="app">
+  <aside class="bl-side" id="side"></aside>
+  <div class="bl-main">
+    <header class="bl-top" id="top"></header>
+    <main class="bl-content" id="main">
+      <div class="page-h"><div><h1>Your account</h1><p class="lead">Your name, the agents and devices signed in as you, your data, and leaving.</p></div></div>
+      <div class="acc" id="acc"><div class="card"><div class="card-b"><p>Loading…</p></div></div></div>
+    </main>
+  </div>
+</div>
+<script>
+Bread.mount({ active: '', title: 'Your account', crumbs: ['Your account'], media: false });
+(function () {
+  var B = Bread, esc = B.esc, I = B.icon, root = document.getElementById('acc');
+  function api(path, body) {
+    return fetch('/api/auth/' + path, body === undefined ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false, error: 'Something went wrong. Try again.' }; }); })
+      .catch(function () { return { ok: false, error: "Can't reach Breadledger. Check your connection." }; });
+  }
+  function when(ts) { return ts ? B.fmtDate(ts, true) : 'never'; }
+
+  function signedOut() {
+    root.innerHTML = '<div class="card">' + B.empty('Sign in to see your account', 'Type your email, then the code we send you. That\'s all.', 'user') +
+      '<div class="card-b" style="justify-items:center;padding-bottom:28px"><button class="btn primary" type="button" id="si">' + I('user') + 'Sign in</button></div></div>';
+    document.getElementById('si').onclick = function () { B.auth.open(); };
+  }
+
+  function draw(me) {
+    root.innerHTML =
+      '<section class="card"><div class="card-h"><h2>You</h2></div><div class="card-b">' +
+        '<div class="who">' + B.avatar(me.name || me.email) + '<div><b id="nm">' + esc(me.name || 'Your account') + '</b><span>' + esc(me.email) + (me.role === 'owner' ? ' · owner' : '') + '</span></div></div>' +
+        '<form class="row" id="nameF"><label class="sr-only" for="nameIn">Your name</label><input class="input" id="nameIn" maxlength="60" autocomplete="name" value="' + esc(me.name || '') + '" placeholder="Your name"><button class="btn" type="submit">Save name</button></form>' +
+        '<p class="msg" id="nameMsg" role="status"></p>' +
+      '</div></section>' +
+
+      '<section class="card"><div class="card-h"><h2>Claude Code</h2></div><div class="card-b">' +
+        '<p>Connect Claude Code once and every chat shows up on your board, live. Each connection has its own key; switch one off here if you no longer use that computer.</p>' +
+        '<div><button class="btn primary" type="button" id="connect">' + I('link') + 'Connect Claude Code</button></div>' +
+        '<div class="list" id="keys"><div class="none">Loading…</div></div>' +
+      '</div></section>' +
+
+      '<section class="card"><div class="card-h"><h2>Signed in on</h2></div><div class="card-b">' +
+        '<div class="list" id="devs"><div class="none">Loading…</div></div>' +
+        '<div class="row"><button class="btn" type="button" id="outAll">' + I('logout') + 'Sign out everywhere</button></div>' +
+      '</div></section>' +
+
+      '<section class="card"><div class="card-h"><h2>Your data</h2></div><div class="card-b">' +
+        '<p>Download everything Breadledger keeps for your account (your boards and their steps, your agent connections and devices) as one file.</p>' +
+        '<div><a class="btn" href="/api/auth/export" download>' + I('download') + 'Download my data</a></div>' +
+        '<p>How we handle it: <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>' +
+      '</div></section>' +
+
+      (me.role === 'owner' ? '' :
+      '<section class="card danger-card"><div class="card-h"><h2>Delete your account</h2></div><div class="card-b">' +
+        '<p>This signs you out everywhere, switches off every connected agent and frees your email. Your boards stop showing to anyone, you included. We\'ll email you a code first to be sure it\'s you.</p>' +
+        '<div><button class="btn" type="button" id="del">' + I('trash') + 'Delete my account…</button></div>' +
+        '<form class="row" id="delStep" hidden><label class="sr-only" for="delIn">Code from the email</label><input class="input" id="delIn" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code"><button class="btn primary" type="submit">Delete for good</button></form>' +
+        '<p class="msg" id="delMsg" role="status"></p>' +
+      '</div></section>');
+
+    document.getElementById('nameF').onsubmit = function (e) {
+      e.preventDefault(); var v = document.getElementById('nameIn').value, m = document.getElementById('nameMsg');
+      api('name', { name: v }).then(function (j) { m.className = 'msg' + (j.ok ? '' : ' err'); m.textContent = j.ok ? 'Saved.' : j.error; if (j.ok) document.getElementById('nm').textContent = j.user.name; });
+    };
+    document.getElementById('connect').onclick = function () { B.auth.connect(); document.addEventListener('click', function once() { setTimeout(keys, 400); document.removeEventListener('click', once); }); };
+    document.getElementById('outAll').onclick = function () {
+      if (!confirm('Sign out on every device, this one included?')) return;
+      api('signout', { all: true }).then(function () { location.href = '/'; });
+    };
+    var del = document.getElementById('del');
+    if (del) del.onclick = function () {
+      var m = document.getElementById('delMsg'); del.disabled = true;
+      api('delete/start', {}).then(function (j) {
+        del.disabled = false;
+        if (!j.ok) { m.className = 'msg err'; m.textContent = j.error; return; }
+        m.className = 'msg'; m.textContent = 'We sent a code to ' + j.email + '. Type it to delete your account.';
+        var f = document.getElementById('delStep'); f.hidden = false; document.getElementById('delIn').focus();
+        f.onsubmit = function (e) {
+          e.preventDefault();
+          api('delete', { code: document.getElementById('delIn').value.replace(/\D/g, '') }).then(function (r) {
+            if (!r.ok) { m.className = 'msg err'; m.textContent = r.error; return; }
+            location.href = '/?deleted=1';
+          });
+        };
+      });
+    };
+    keys(); devs();
+  }
+
+  function keys() {
+    api('keys').then(function (j) {
+      var el = document.getElementById('keys'); if (!el) return;
+      var ks = (j && j.keys) || [];
+      el.innerHTML = ks.length ? ks.map(function (k) {
+        return '<div class="li">' + I('link') + '<div class="grow"><b>Agent key ' + esc(k.prefix) + '…</b><span>Connected ' + esc(when(k.created)) + ' · last used ' + esc(when(k.last_used)) + '</span></div><button class="btn sm" type="button" data-rev="' + esc(k.id) + '">Switch off</button></div>';
+      }).join('') : '<div class="none">Nothing connected yet.</div>';
+      el.querySelectorAll('[data-rev]').forEach(function (b) { b.onclick = function () { api('keys/revoke', { id: b.getAttribute('data-rev') }).then(keys); }; });
+    });
+  }
+  function devs() {
+    api('devices').then(function (j) {
+      var el = document.getElementById('devs'); if (!el) return;
+      el.innerHTML = ((j && j.devices) || []).map(function (x) {
+        return '<div class="li">' + I(x.current ? 'checkcircle' : 'user') + '<div class="grow"><b>' + esc(x.device || 'A device') + (x.current ? ' · this one' : '') + '</b><span>Signed in ' + esc(when(x.created)) + ' · last seen ' + esc(when(x.last_seen)) + '</span></div>' +
+          (x.current ? '' : '<button class="btn sm" type="button" data-out="' + esc(x.id) + '">Sign out</button>') + '</div>';
+      }).join('') || '<div class="none">Only this device.</div>';
+      el.querySelectorAll('[data-out]').forEach(function (b) { b.onclick = function () { api('signout', { id: b.getAttribute('data-out') }).then(devs); }; });
+    });
+  }
+
+  function start() { B.auth.ready.then(function (me) { me ? draw(me) : signedOut(); }); }
+  if (B.auth) start(); else document.addEventListener('bread:auth', function once() { document.removeEventListener('bread:auth', once); start(); });
+})();
+</script>
+</body>
+</html>

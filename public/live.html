@@ -78,10 +78,10 @@
         <div class="card-h">Show your work here<span class="meta">from any project folder</span></div>
         <div class="card-b">
           <p class="ink2">An agent streams its progress to this board with <code>worklog.mjs</code>: start a session with its tasks, mark each step as it begins and ends, then finish. The board polls every 1.5 s, ticks tasks off as they are done, shows the story so far, and keeps each finished session here for an hour with a link to its itemised story.</p>
-<pre><code>node ~/BugLedger/worklog.mjs start --app "APP" --project "$(basename "$PWD")" --title "Checking APP vs the ledger" --tasks "Pull checklist|Check each bug|Run detectors|Log the pass"
-node ~/BugLedger/worklog.mjs step 1 --current "checking the localStorage scoping"
-node ~/BugLedger/worklog.mjs done 1
-node ~/BugLedger/worklog.mjs finish</code></pre>
+<pre><code>node worklog.mjs start --app "APP" --project "$(basename "$PWD")" --title "Checking APP vs the ledger" --tasks "Pull checklist|Check each bug|Run detectors|Log the pass"
+node worklog.mjs step 1 --current "checking the localStorage scoping"
+node worklog.mjs done 1
+node worklog.mjs finish</code></pre>
           <p class="meta">A full scan streams its counter with <code>worklog.mjs progress &lt;done&gt; &lt;total&gt;</code>. The whole protocol is in <a href="/AGENT.md">AGENT.md</a>.</p>
         </div>
       </section>

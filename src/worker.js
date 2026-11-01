@@ -9,6 +9,7 @@
 import Sanitize from "../public/sanitize.js";
 import { redactPublic } from "./redact.mjs";
 import { handleJournal } from "./journal.mjs";
+import { resolve, handleAuth, who } from "./auth.mjs";
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -134,6 +135,17 @@ async function handle(request, env) {
     if (request.method === "OPTIONS")
       return new Response(null, { status: 204, headers: JSON_HEADERS });
 
+    // ---- accounts (src/auth.mjs): who is asking (session cookie or agent key), then /api/auth/* ----
+    await resolve(request, env);
+    const authRes = await handleAuth(request, env, url);
+    if (authRes) return authRes;
+
+    // ---- GET /api/health : is the site and its database answering ----
+    if (pathname === "/api/health" && request.method === "GET") {
+      try { await env.DB.prepare("SELECT 1").first(); return json({ ok: true, db: "ok", at: Date.now() }); }
+      catch { return json({ ok: false, db: "down", at: Date.now() }, 503); }
+    }
+
     // ---- Prompt Journal (owner-only; src/journal.mjs): /journal, /api/journal, /api/journal/photo, /api/journal/refile, /api/journal/img/* ----
     const journalRes = await handleJournal(request, env, url);
     if (journalRes) return journalRes;
@@ -254,16 +266,17 @@ async function handle(request, env) {
     // Append-only: every event is immutable once written; a later "fixed" event references the
     // earlier "found" event by id instead of editing it.
     if (pathname === "/api/session/event" && request.method === "POST") {
-      if (env.LEDGER_WRITE_TOKEN && request.headers.get("x-ledger-key") !== env.LEDGER_WRITE_TOKEN)
-        return json({ ok: false, error: "unauthorized" }, 401);
+      const by = writer(request, env);
+      if (!by) return json({ ok: false, error: "unauthorized" }, 401);
       let body;
       try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
       const sessionId = str(body && body.sessionId, 60);
       if (!sessionId) return json({ ok: false, error: "sessionId required" }, 400);
       const list = Array.isArray(body.events) ? body.events.slice(0, 50) : [body];
       try {
-        const sess = await env.DB.prepare("SELECT id FROM sessions WHERE id = ?").bind(sessionId).first();
+        const sess = await env.DB.prepare("SELECT id, owner_id FROM sessions WHERE id = ?").bind(sessionId).first();
         if (!sess) return json({ ok: false, error: "session not found — run worklog.mjs start first" }, 404);
+        if ((sess.owner_id || null) !== (by.member || null)) return json({ ok: false, error: "not your session" }, 403);
         const now = Date.now(), ids = [];
         const stmts = [];
         list.forEach((e, i) => {
@@ -295,9 +308,9 @@ async function handle(request, env) {
     if (pathname === "/api/story" && request.method === "GET") {
       const id = url.searchParams.get("id");
       if (!id) return json({ ok: false, error: "id required" }, 400);
-      if (isChat(id) && !ownerOK(request, env)) return json({ ok: false, error: "owner only — send x-ledger-key" }, 401);
       try {
         const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
+        if (row && !canSee(row, request, env)) return json({ ok: false, error: "private — sign in to see it" }, 401);
         if (!row) return json({ ok: false, error: "not found" }, 404);
         const session = mapSession(row);
         const [ev, ck, sb] = await Promise.all([
@@ -495,15 +508,21 @@ async function handle(request, env) {
       const now = Date.now();
       const owner = ownerOK(request, env);
       // ?probe=1 — the follow-along hook asks whether this build shows chats before it posts one (older builds never see them)
-      if (url.searchParams.get("probe")) return json({ ok: true, chats: true, owner });
-      if (one && isChat(one) && !owner) return json({ ok: false, error: "owner only — send x-ledger-key" }, 401);
+      if (url.searchParams.get("probe")) return json({ ok: true, chats: true, owner: owner || !!who(request).user });   // a member's agent key may post its own chats
+      if (one && isChat(one) && !owner && !who(request).user) return json({ ok: false, error: "owner only — send x-ledger-key" }, 401);
       try {
         const { results } = one
           ? await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(one).all()
-          : await env.DB.prepare("SELECT * FROM sessions WHERE (status = 'active' AND updated > ?) OR (status = 'done' AND updated > ?) ORDER BY updated DESC LIMIT 40")
-              .bind(now - 12 * 3600_000, now - 24 * 3600_000).all();
-        const sessions = (results || []).map(mapSession).filter((x) => owner || !isChat(x.id));   // chats: owner's eyes only
+          : !owner && who(request).user
+            ? await env.DB.prepare("SELECT * FROM sessions WHERE owner_id = ? AND ((status = 'active' AND updated > ?) OR (status = 'done' AND updated > ?)) ORDER BY updated DESC LIMIT 40")
+                .bind(who(request).user.id, now - 12 * 3600_000, now - 24 * 3600_000).all()
+            : await env.DB.prepare("SELECT * FROM sessions WHERE owner_id IS NULL AND ((status = 'active' AND updated > ?) OR (status = 'done' AND updated > ?)) ORDER BY updated DESC LIMIT 40")
+                .bind(now - 12 * 3600_000, now - 24 * 3600_000).all();
+        // a signed-in member's board is theirs alone; the owner and the public see the owner's boards as before
+        const mine = !owner && who(request).user ? who(request).user.id : null;
+        const sessions = (results || []).filter((r) => mine ? r.owner_id === mine : canSee(r, request, env)).map(mapSession);   // chats: their owner's eyes only
         if (one && !sessions.length) return json({ ok: false, error: "not found" }, 404);
+        const me = who(request).user;
         const ids = sessions.map((x) => x.id);
         let evs = []; const actN = {};
         if (ids.length) {
@@ -543,7 +562,8 @@ async function handle(request, env) {
           const you = youEv ? { ts: youEv.ts, text: youEv.detail || youEv.title } : null;
           return { ...x, note: chat ? "" : x.note, chat, state, story, acts, actCount, features, shots, findings, you };
         });
-        return json({ ok: true, now, owner, chats: true, count: out.length, sessions: out });
+        // owner = "you can see your chats" (the owner's key/account, or a signed-in member seeing their own)
+        return json({ ok: true, now, owner: owner || !!me, me: me ? { name: me.name, role: me.role } : null, chats: true, count: out.length, sessions: out });
       } catch (e) { return writeErr(e); }
     }
 
@@ -554,8 +574,7 @@ async function handle(request, env) {
       try {
         const { results } = await env.DB
           .prepare("SELECT * FROM sessions ORDER BY updated DESC LIMIT ?").bind(limit).all();
-        let rows = (results || []).map(mapSession);
-        if (!ownerOK(request, env)) rows = rows.filter((x) => !isChat(x.id));   // chats: owner's eyes only
+        let rows = (results || []).filter((r) => canSee(r, request, env)).map(mapSession);   // chats: their owner's eyes only
         // "live" = active and touched within 90s; keep done sessions from the last hour for context
         const now = Date.now();
         rows = rows.map((s) => ({ ...s, live: s.status === "active" && now - s.updated < 90_000 }));
@@ -566,17 +585,17 @@ async function handle(request, env) {
     if (pathname === "/api/session" && request.method === "GET") {
       const id = url.searchParams.get("id");
       if (!id) return json({ ok: false, error: "id required" }, 400);
-      if (isChat(id) && !ownerOK(request, env)) return json({ ok: false, error: "owner only — send x-ledger-key" }, 401);
       try {
         const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
+        if (row && !canSee(row, request, env)) return json({ ok: false, error: "private — sign in to see it" }, 401);
         return row ? json({ ok: true, session: mapSession(row) }) : json({ ok: false, error: "not found" }, 404);
       } catch (e) { return writeErr(e); }
     }
 
     // ---- POST /api/session : upsert a live worklog session ----
     if (pathname === "/api/session" && request.method === "POST") {
-      if (env.LEDGER_WRITE_TOKEN && request.headers.get("x-ledger-key") !== env.LEDGER_WRITE_TOKEN)
-        return json({ ok: false, error: "unauthorized" }, 401);
+      const by = writer(request, env);
+      if (!by) return json({ ok: false, error: "unauthorized" }, 401);
       let body;
       try { body = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
       const id = str(body.id, 60) || crypto.randomUUID();
@@ -599,7 +618,8 @@ async function handle(request, env) {
         ? { done: num(body.progress.done), total: num(body.progress.total), label: str(body.progress.label, 40) } : null;
       try {
         const existing = await env.DB.prepare(
-          "SELECT started,status,app,project,title,agent,tasks FROM sessions WHERE id = ?").bind(id).first();
+          "SELECT started,status,app,project,title,agent,tasks,owner_id FROM sessions WHERE id = ?").bind(id).first();
+        if (existing && (existing.owner_id || null) !== (by.member || null)) return json({ ok: false, error: "not your session" }, 403);
         // a finished session is frozen — you can't rewrite history, only start a new one
         if (existing && existing.status === "done")
           return json({ ok: false, error: "session already finished — start a new one" }, 409);
@@ -613,12 +633,12 @@ async function handle(request, env) {
         const title = existing && !chat ? existing.title : cleanStr(body.title, 200) || (existing ? existing.title : "");
         const agent = existing ? existing.agent : str(body.agent || "claude-code", 60);
         await env.DB.prepare(
-          `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note,prog_done,prog_total,prog_label)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+          `INSERT INTO sessions (id,started,updated,app,project,title,agent,status,current,tasks,done_count,total_count,note,prog_done,prog_total,prog_label,owner_id)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
            ON CONFLICT(id) DO UPDATE SET updated=?,status=?,current=?,tasks=?,done_count=?,total_count=?,note=?,prog_done=?,prog_total=?,prog_label=?,app=?,project=?,title=?,started=?`
         ).bind(
           id, started, now, app, project, title, agent, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, chatCard ? 2400 : 500),
-          prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null,
+          prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null, by.member || null,
           now, status, cleanStr(body.current, 300), JSON.stringify(tasks), done, tasks.length, cleanStr(body.note, chatCard ? 2400 : 500),
           prog ? prog.done : null, prog ? prog.total : null, prog ? prog.label : null, app, project, title, started
         ).run();
@@ -637,7 +657,7 @@ async function handle(request, env) {
         ]);
         const now = Date.now();
         const owner = ownerOK(request, env);
-        const sessions = (s.results || []).filter((r) => owner || !isChat(r.id)).map((r) => {
+        const sessions = (s.results || []).filter((r) => canSee(r, request, env)).map((r) => {
           const m = mapSession(r);
           return { kind: "session", id: m.id, ts: m.updated, started: m.started, app: m.app, project: m.project,
             title: m.title, status: m.status, current: m.current, done: m.done, total: m.total,
@@ -798,7 +818,12 @@ function rollup(events) {
 // they asked, so every read of one needs the owner's key; hand-started boards (worklog.mjs) stay public as before
 const isChat = (id) => typeof id === "string" && id.startsWith("chat-");
 const chatTs = (v, now) => (Number.isFinite(+v) && +v > now - 7 * 86400_000 && +v <= now + 60_000 ? Math.trunc(+v) : null);
-const ownerOK = (request, env) => !env.LEDGER_WRITE_TOKEN || request.headers.get("x-ledger-key") === env.LEDGER_WRITE_TOKEN;
+const ownerOK = (request, env) => !env.LEDGER_WRITE_TOKEN || request.headers.get("x-ledger-key") === env.LEDGER_WRITE_TOKEN || !!who(request).isOwner;
+// a member's boards and chats (owner_id set) are seen by that member only — not the public, not the owner;
+// the owner's own rows keep the old rule: boards are public, chats are the owner's eyes only
+const canSee = (row, request, env) => row.owner_id ? !!(who(request).user && who(request).user.id === row.owner_id) : (!isChat(row.id) || ownerOK(request, env));
+// who may write a board or chat: the owner's key/account, or a signed-in member (their own rows only)
+const writer = (request, env) => ownerOK(request, env) ? { owner: true } : who(request).user ? { member: who(request).user.id } : null;
 function mapSession(r) {
   return {
     id: r.id, kind: isChat(r.id) ? "chat" : "board", started: r.started, updated: r.updated, app: r.app, project: r.project,

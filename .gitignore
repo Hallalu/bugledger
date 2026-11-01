@@ -10,3 +10,4 @@ daily.launchd.err.log
 .worklog.json
 .worklog-history.jsonl
 .bake/
+public/chathook.mjs

@@ -32,7 +32,9 @@ const DIR = process.env.CHATS_STATE || path.join(HOME, ".breadboard", "chats");
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => { const i = argv.indexOf("--" + n); return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith("--") ? argv[i + 1] : d; };
 const DRY = argv.includes("--dry");
-let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(path.join(HOME, ".bugledger.json"), "utf8")); } catch {}
+// installed by a member's "Connect Claude Code" line, it lives in ~/.breadledger with its own config.json (their agent key)
+const SELF = new URL(import.meta.url).pathname, OWN_CFG = path.join(path.dirname(SELF), "config.json");
+let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(fs.existsSync(OWN_CFG) ? OWN_CFG : path.join(HOME, ".bugledger.json"), "utf8")); } catch {}
 const BASE = (process.env.CHATS_BASE || process.env.BUGLEDGER_BASE || cfg.base || "https://breadledger.coconvo.workers.dev").replace(/\/$/, "");
 const TOKEN = process.env.CHATS_TOKEN || process.env.BUGLEDGER_TOKEN || cfg.token || "";
 fs.mkdirSync(DIR, { recursive: true });
@@ -422,7 +424,7 @@ function recentTranscripts(mins) {
 const mode = argv[0];
 if (mode === "install" || mode === "uninstall") {
   // the owner runs this once: every Claude chat then reports itself (async, never slows a chat)
-  const SETTINGS = path.join(HOME, ".claude", "settings.json"), CMD = "node ~/BugLedger/chathook.mjs";
+  const SETTINGS = path.join(HOME, ".claude", "settings.json"), CMD = "node " + (SELF.startsWith(HOME + "/") ? "~" + SELF.slice(HOME.length) : SELF);
   const raw = fs.existsSync(SETTINGS) ? fs.readFileSync(SETTINGS, "utf8") : "{}";
   let s; try { s = JSON.parse(raw); } catch { console.error("~/.claude/settings.json is not valid JSON — nothing changed."); process.exit(1); }
   const backup = SETTINGS + ".bak-chathook-" + new Date().toISOString().replace(/[:.]/g, "-");
@@ -441,7 +443,7 @@ if (mode === "install" || mode === "uninstall") {
   fs.writeFileSync(SETTINGS, JSON.stringify(s, null, 2) + "\n");
   console.log(changed.length ? `${mode === "install" ? "Added the chat reporter to" : "Removed the chat reporter from"}: ${changed.join(", ")}` : `Nothing to change (${mode === "install" ? "already installed" : "not installed"}).`);
   console.log("Backup of your settings: " + backup);
-  if (mode === "install") console.log("New chats report themselves from now on. Run 'node ~/BugLedger/chathook.mjs scan' to put the chats already open on the board.");
+  if (mode === "install") console.log(`New chats report themselves from now on. Run '${CMD} scan' to put the chats already open on the board.`);
   process.exit(0);
 }
 if (mode === "scan" || mode === "watch") {

@@ -133,8 +133,11 @@
         '<button class="search" type="button" data-act="cmdk" aria-label="Search and commands"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P.search + '</svg><span class="lbl">' + esc(o.searchLabel || 'Search or jump to…') + '</span><span class="k"><kbd>⌘</kbd><kbd>K</kbd></span></button>' +
         '<button class="btn icon mic" type="button" data-voice="command" aria-label="Voice command" title="Voice command: say a view, a page, an action or words to search">' + icon('mic') + '</button>' +
         (o.media !== false ? '<button class="btn icon plus" type="button" data-media aria-label="Add a finding with media" title="Add a finding: screenshots, before and after">' + icon('plus') + '</button>' : '') +
-        (o.actions || '') + '</div>';
+        (o.actions || '') + '<span id="acct" class="acct"></span></div>';
     }
+    // accounts: "Sign in" or your avatar menu, on every page (bread-auth.js)
+    if (!w.Bread.auth && !d.getElementById('bread-auth')) { var sa = d.createElement('script'); sa.id = 'bread-auth'; sa.src = '/bread-auth.js'; sa.defer = true; d.head.appendChild(sa); }
+    else d.dispatchEvent(new Event('bread:mounted'));
     d.body.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-act],[data-media]'); if (!b) return;
       var a = b.hasAttribute('data-media') ? 'media' : b.getAttribute('data-act');

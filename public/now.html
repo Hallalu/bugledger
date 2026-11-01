@@ -275,6 +275,7 @@
   .keybar .gx svg{width:17px;height:17px}
   .keybar b{display:block;font-size:15px;color:var(--ink)} .keybar p{margin:2px 0 0;font-size:14px;color:var(--ink-2);line-height:1.5}
   .keybar form{display:flex;gap:8px;flex-wrap:wrap;align-items:center} .keybar .input{width:220px;max-width:100%}
+  .keybar .keyacts{display:flex;gap:8px;align-items:center;flex-wrap:wrap} .keybar form{grid-column:1/-1;justify-content:flex-end} .keybar form[hidden]{display:none}
   .keybar .bad{grid-column:2 / 4;font-size:13.5px;color:var(--danger-ink)}
   @media (max-width:760px){.keybar{grid-template-columns:minmax(0,1fr)} .keybar .gx{display:none} .keybar .bad{grid-column:1}}
   .group-gap{margin-top:26px}
@@ -339,9 +340,13 @@
     if (!data || data.owner) { el.hidden = true; el.innerHTML = ''; return; }
     if (el.dataset.k === k && !el.hidden) return;
     el.dataset.k = k; el.hidden = false; el.className = 'card keybar';
-    el.innerHTML = '<span class="gx">' + I('lock') + '</span><div><b>Your chats are private</b><p>Enter your Breadledger key once on this device to see every chat you have open, with its steps and progress.</p></div>' +
-      '<form id="keyform"><input class="input" id="keyin" type="password" aria-label="Breadledger key" autocomplete="current-password" placeholder="Breadledger key"><button class="btn primary" type="submit">' + I('eye') + 'Show my chats</button></form>' +
+    // signing in is the way in (email + code); an owner key still works, folded away under "Use a key instead"
+    el.innerHTML = '<span class="gx">' + I('lock') + '</span><div><b>Your chats are private</b><p>Sign in with your email to see every chat you have open, with its steps and progress.</p></div>' +
+      '<div class="keyacts"><button class="btn primary" type="button" id="keysignin">' + I('user') + 'Sign in</button><button class="btn ghost sm" type="button" id="keyuse">Use a key instead</button></div>' +
+      '<form id="keyform"' + (k && keyTried === k ? '' : ' hidden') + '><input class="input" id="keyin" type="password" aria-label="Breadledger key" autocomplete="current-password" placeholder="Breadledger key"><button class="btn" type="submit">' + I('eye') + 'Show my chats</button></form>' +
       (k && keyTried === k ? '<span class="bad" role="alert">That key did not open your chats. Check it and try again.</span>' : '');
+    document.getElementById('keysignin').onclick = function(){ if (B.auth) B.auth.open(); };
+    document.getElementById('keyuse').onclick = function(){ var f = document.getElementById('keyform'); f.hidden = !f.hidden; if (!f.hidden) document.getElementById('keyin').focus(); };
     document.getElementById('keyform').onsubmit = function(e){ e.preventDefault(); var v = document.getElementById('keyin').value.trim(); if (!v) return; setKey(v); keyTried = v; el.dataset.k = ''; try { window.dispatchEvent(new Event('bread:key')); } catch (x) {} poll(); };
   }
   function dur(ms){ ms = Math.max(0, ms|0); var s = Math.floor(ms/1000); if (s < 60) return s + 's'; var m = Math.floor(s/60); if (m < 60) return m + 'm ' + ('0'+(s%60)).slice(-2) + 's'; var h = Math.floor(m/60); return h + 'h ' + ('0'+(m%60)).slice(-2) + 'm'; }
@@ -629,13 +634,19 @@
 
   // ---------- empty: the one prompt ----------
   function startHTML(){
+    // a signed-in member's own board: two steps and they're working (connect once, then just chat)
+    if (data && data.me && data.me.role !== 'owner') return '<section class="card start"><div class="art"><img src="/art/empty-desk.png" alt="" width="520" height="300" loading="lazy" data-framed></div><div class="copy">' +
+      '<span class="badge accent" style="justify-self:start">' + I('zap') + (/welcome=1/.test(location.search) ? 'Welcome' : 'Your board') + '</span><h2>Your board is ready.</h2>' +
+      '<p class="ink2"><b>1.</b> Connect Claude Code once: one line to copy and paste. <b>2.</b> Chat with Claude Code as you always do. Every chat appears here live, with what you asked, what it is doing and each step it ticks off. Only you can see it.</p>' +
+      '<div><button class="btn primary" type="button" id="connect1">' + I('link') + 'Connect Claude Code</button></div></div></section>';
     return '<section class="card start"><div class="art"><img src="/art/empty-desk.png" alt="" width="520" height="300" loading="lazy" data-framed></div><div class="copy">' +
       '<span class="badge accent" style="justify-self:start">' + I('zap') + 'One prompt</span><h2>Nothing is running yet.</h2>' +
       '<p class="ink2">Say this to any coding agent on any project. It plans the work in waves, puts every step here with a note on what it does and why, ticks them off as it goes, adds the screens it checks and names every feature it ships — then closes with a report.</p>' +
       '<div class="prompt"><span>' + PROMPT + '</span><button class="btn sm" type="button" id="copy2">' + I('copy') + 'Copy</button></div>' +
       '<p class="meta">Or in plain words: “show my work on Breadledger”. Several agents at once each get their own card on this board.</p></div></section>';
   }
-  function wireStart(){ var b = document.getElementById('copy2'); if (b) b.onclick = function(){ B.copy(PROMPT, 'The one prompt'); }; }
+  function wireStart(){ var b = document.getElementById('copy2'); if (b) b.onclick = function(){ B.copy(PROMPT, 'The one prompt'); };
+    var c = document.getElementById('connect1'); if (c) c.onclick = function(){ if (B.auth) B.auth.connect(); }; }
 
   // ---------- events ----------
   root.addEventListener('click', function(ev){
@@ -671,7 +682,8 @@
     if (data && !focusId) { var c = document.querySelector('[data-clock]'); if (c) c.textContent = short(data.sessions.filter(function(s){ return s.state !== 'done'; }).reduce(function(a, s){ return a + now() - s.started; }, 0)); }
   }
   poll(); setInterval(function(){ if (!document.hidden) poll(); }, 2500); setInterval(tick, 1000);
-  window.addEventListener('bread:key', function(){ var kb = document.getElementById('keybar'); kb.dataset.k = ''; poll(); });   // a key entered anywhere opens the chats at once
+  window.addEventListener('bread:key', function(){ var kb = document.getElementById('keybar'); kb.dataset.k = ''; poll(); });
+  document.addEventListener('bread:auth', function(){ var kb = document.getElementById('keybar'); kb.dataset.k = ''; poll(); });   // signed in (or out) → the board follows at once   // a key entered anywhere opens the chats at once
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) poll(); });
 })();
 </script>
