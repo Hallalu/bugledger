@@ -10210,5 +10210,113 @@
     "status": "unverified",
     "session": "d67e5e3f",
     "found": "2026-11-01"
+  },
+  {
+    "key": "3a6f7dfa:notprovenididntcomparetheliveservercodedirectly",
+    "app": "Hallalu CRM",
+    "title": "Not proven: I didn't compare the live server code directly.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Not proven:** I didn't compare the live server code directly.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "3a6f7dfa:ialsodidntcompareheadersorthecardstylepagetemplatesbecauseth",
+    "app": "Hallalu CRM",
+    "title": "Also didn't compare headers or the card-style page templates, because those aren't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I also didn't compare `_headers` or the `_card`-style page templates, because those aren't served as plain files.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "3a6f7dfa:notprovenonlivepaymentnobodyhaspaidyetsothescriptloadingdoes",
+    "app": "Hallalu CRM",
+    "title": "Not proven on live: - Payment: nobody has paid yet, so the script loading doesn't show…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**Not proven on live:** - **Payment:** nobody has paid yet, so the script loading doesn't show checkout works from start to finish.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "44e361f2:activitylog11features3bugfixes4itemsstilltodoand1insight",
+    "app": "Hallalu CRM",
+    "title": "- Activity log: 11 features, 3 bug fixes, 4 items still to do and 1 insight.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Activity log:** 11 features, 3 bug fixes, 4 items still to do and 1 insight.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "44e361f2",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "44e361f2:whenitwouldbeworthitifpeoplestrugglewiththebookmarkdragorthe",
+    "app": "Hallalu CRM",
+    "title": "When it would be worth it: if people struggle with the bookmark drag, or the button…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "**When it would be worth it:** if people struggle with the bookmark drag, or the button fails on real Canvas or Classroom pages.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "44e361f2",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "44e361f2:theresearchchangedthepitchinwaysyoushouldknowbeforeyouuseiti",
+    "app": "Hallalu CRM",
+    "title": "Research changed the pitch in ways you should know before you use it: - It isn't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The research changed the pitch in ways you should know before you use it: - **It isn't pitched to venture investors:** the evidence doesn't support it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "44e361f2",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "86f8bc3a:yourcolourstaysbeforechanginganimalresetthecolour",
+    "app": "Hallalu CRM",
+    "title": "- Your colour stays: before, changing animal reset the colour.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Your colour stays:** before, changing animal reset the colour.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "86f8bc3a",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "86f8bc3a:wrongrepogitbagelsbagelsmithcoconvocopieshallalucoconvobutth",
+    "app": "Hallalu CRM",
+    "title": "- Wrong repo: GitBagel's bagelsmith/coconvo copies Hallalu/coconvo, but this code is…",
+    "category": "logic",
+    "severity": "medium",
+    "symptom": "- **Wrong repo:** GitBagel's `bagelsmith/coconvo` copies `Hallalu/coconvo`, but this code is pushed to `Hallalu/coconvo-meet`.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "86f8bc3a",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "86f8bc3a:thatusuallymeansitsprivateandgitbageldoesnthaveareadonlygith",
+    "app": "Hallalu CRM",
+    "title": "That usually means it's private and GitBagel doesn't have a read-only GitHub key for it…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "That usually means it's private and GitBagel doesn't have a read-only GitHub key for it yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "86f8bc3a",
+    "found": "2026-11-01"
   }
 ]
