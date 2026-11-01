@@ -10054,5 +10054,77 @@
     "status": "unverified",
     "session": "fef8c001",
     "found": "2026-11-01"
+  },
+  {
+    "key": "160bd5ed:itsnotedoesntsaywhatthefixwas",
+    "app": "Hallalu CRM",
+    "title": "Its note doesn't say what the fix was.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Its note doesn't say what the fix was.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "160bd5ed",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "30f2b2ce:whatididntcheckwhetherthepaymentkeysforhallalureplyandhallal",
+    "app": "Hallalu CRM",
+    "title": "What I didn't check - Whether the payment keys for Hallalu Reply and Hallalu Art are…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## What I didn't check - Whether the payment keys for Hallalu Reply and Hallalu Art are live or test keys, or whether a real payment goes through.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "30f2b2ce",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "30f2b2ce:thecustomercountwhichcomesfromthe31octstudyandwasntrecounted",
+    "app": "Hallalu CRM",
+    "title": "- The customer count, which comes from the 31 Oct study and wasn't re-counted today.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- The customer count, which comes from the 31 Oct study and wasn't re-counted today.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "30f2b2ce",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "30f2b2ce:theliveappdidntchange",
+    "app": "Hallalu CRM",
+    "title": "Live app didn't change.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The live app didn't change.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "30f2b2ce",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "433062a7:bugfixedpremiumvoiceswerelockedformaxcustomersandtheynowunlo",
+    "app": "Hallalu CRM",
+    "title": "- Bug fixed: premium voices were locked for Max customers, and they now unlock on every…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Bug fixed:** premium voices were locked for Max customers, and they now unlock on every paid plan.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "433062a7",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "433062a7:ifthatisntarealsaleidremoveitsincevisitorswouldreaditasreal",
+    "app": "Hallalu CRM",
+    "title": "If that isn't a real sale, I'd remove it, since visitors would read it as real.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "If that isn't a real sale, I'd remove it, since visitors would read it as real.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "433062a7",
+    "found": "2026-11-01"
   }
 ]

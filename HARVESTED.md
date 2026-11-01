@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-838 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+844 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (581)
+## Hallalu CRM (587)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -585,6 +585,12 @@
 - [ ] `low` `other` (2026-11-01, #b7f3ff09) — Its last edit also wasn't followed by a passing check.
 - [ ] `low` `other` (2026-11-01, #fef8c001) — Reddit couldn't be reached, so the user evidence is thinner than planned, and none of…
 - [ ] `low` `other` (2026-11-01, #fef8c001) — Before you decide - Going live: the Hopefil World code also holds the CEO Office…
+- [ ] `low` `other` (2026-11-01, #160bd5ed) — Its note doesn't say what the fix was.
+- [ ] `low` `other` (2026-11-01, #30f2b2ce) — What I didn't check - Whether the payment keys for Hallalu Reply and Hallalu Art are…
+- [ ] `low` `other` (2026-11-01, #30f2b2ce) — - The customer count, which comes from the 31 Oct study and wasn't re-counted today.
+- [ ] `low` `other` (2026-11-01, #30f2b2ce) — Live app didn't change.
+- [ ] `low` `other` (2026-11-01, #433062a7) — - Bug fixed: premium voices were locked for Max customers, and they now unlock on every…
+- [ ] `low` `other` (2026-11-01, #433062a7) — If that isn't a real sale, I'd remove it, since visitors would read it as real.
 
 ## Finished. (99)
 
