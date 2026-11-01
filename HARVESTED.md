@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-863 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+865 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (601)
+## Hallalu CRM (603)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -605,6 +605,8 @@
 - [ ] `low` `other` (2026-11-01, #146b3f7c) — Invite a friend is built and committed as cfd5102, but isn't pushed or live yet.
 - [ ] `low` `other` (2026-11-01, #146b3f7c) — Round 2 is done and the lion is noticeably closer to number 32, especially the face,…
 - [ ] `low` `other` (2026-11-01, #e5401328) — It also flags that Hallalu Reply's fixes aren't live and that no real payment has been…
+- [ ] `low` `other` (2026-11-01, #146b3f7c) — You asked for smooth clay earlier, so tell me if that isn't what you meant, as raised…
+- [ ] `low` `other` (2026-11-01, #146b3f7c) — One 503 error showed in the console, the same kind as in earlier rounds, and I haven't…
 
 ## Finished. (102)
 

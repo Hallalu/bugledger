@@ -10354,5 +10354,29 @@
     "status": "unverified",
     "session": "e5401328",
     "found": "2026-11-01"
+  },
+  {
+    "key": "146b3f7c:youaskedforsmoothclayearliersotellmeifthatisntwhatyoumeantas",
+    "app": "Hallalu CRM",
+    "title": "You asked for smooth clay earlier, so tell me if that isn't what you meant, as raised…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "You asked for smooth clay earlier, so tell me if that isn't what you meant, as raised strands would look quite different.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "146b3f7c",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "146b3f7c:one503errorshowedintheconsolethesamekindasinearlierroundsand",
+    "app": "Hallalu CRM",
+    "title": "One 503 error showed in the console, the same kind as in earlier rounds, and I haven't…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "One 503 error showed in the console, the same kind as in earlier rounds, and I haven't traced its source.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "146b3f7c",
+    "found": "2026-11-01"
   }
 ]
