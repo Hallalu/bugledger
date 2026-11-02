@@ -68,11 +68,6 @@
   @keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
 
   /* finished in the last day */
-  .fin{display:grid;gap:8px}
-  .finrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-2);background:var(--panel);color:inherit;transition:border-color var(--t-fast),transform var(--t)}
-  .finrow:hover{text-decoration:none;border-color:var(--line-2);transform:translateY(-1px)}
-  .finrow .t{font-weight:620;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .finrow .s{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 
   /* focus view */
   .back{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;margin-bottom:14px}
@@ -375,10 +370,55 @@
   .nx-pulse{max-height:calc(100vh - var(--topbar) - 120px);overflow:auto}
   .now-grid.tandem .nx-pulse{max-height:520px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:0 44px}
   .pv{border:0;border-bottom:1px solid var(--line);padding:10px 0;grid-template-columns:22px minmax(0,1fr)}
-  .fin{gap:0}
-  .finrow{border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:12px 0}
-  .finrow:hover{transform:none}
+  .fin-f{display:flex;flex-wrap:wrap;gap:6px;padding:14px 0 4px}
+  .chipf{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 10px 0 6px;border:1px solid var(--line);border-radius:99px;background:none;font:inherit;font-size:13.5px;font-weight:500;color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:border-color var(--t-fast),color var(--t-fast),background var(--t-fast)}
+  .chipf:first-child{padding-left:12px}
+  .chipf .n{font-family:var(--mono);font-size:12.5px;color:var(--ink-3)}
+  .chipf:hover{border-color:var(--line-2);color:var(--ink)}
+  .chipf.on{background:var(--ink);border-color:var(--ink);color:var(--bg)} .chipf.on .n{color:var(--bg);opacity:.75}
+  .fin-sum{margin:14px 0 0;grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+  .fin-sum dd{font-size:18px}
+  .fin-hist{display:inline-block;margin-top:8px}
+  .fin{display:block}
+  .fin-d{margin-top:20px}
+  .fin-d>h3{padding-bottom:6px;border-bottom:1px solid var(--line-2)}
+  .fin-l{list-style:none;margin:0;padding:0}
+  .finx{border-bottom:1px solid var(--line)}
+  .finrow{display:grid;grid-template-columns:30px minmax(0,1fr) auto 16px;gap:12px;align-items:center;width:100%;padding:12px 0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+  .finrow .m{min-width:0;display:grid;gap:1px}
+  .finrow .t{font-weight:550;font-size:15px;line-height:1.35;overflow-wrap:anywhere;transition:color var(--t-fast)}
   .finrow:hover .t{color:var(--accent-text)}
+  .finrow .s{font-size:13.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .finrow .w{font-family:var(--mono);font-size:13px;color:var(--ink-3)}
+  .finrow .cv{width:16px;height:16px;color:var(--ink-3);transition:transform var(--t)} .finrow .cv svg{width:15px;height:15px;display:block}
+  .finx.open .cv{transform:rotate(180deg)}
+  .fin-p{padding:0 0 18px 42px}
+  .fin-p .fx-spec{margin:0;border-top:1px solid var(--line-2);grid-template-columns:repeat(auto-fit,minmax(112px,1fr))}
+  .fin-p .fx-spec>div{padding:9px 10px 10px 0;gap:3px} .fin-p .fx-spec>div+div{padding-left:12px}
+  .fin-p .fx-spec dd{font-size:15px;letter-spacing:-.005em} .fin-p .fx-spec dd small{font-size:13px}
+  .fl{list-style:none;margin:6px 0 0;padding:0}
+  .fl li{display:grid;grid-template-columns:128px 18px minmax(0,1fr);gap:10px;padding:7px 0;align-items:start}
+  .fl li+li{border-top:1px solid var(--line)}
+  .fl .w{font-family:var(--mono);font-size:12.5px;line-height:1.7;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .fl .k{color:var(--ink-3);padding-top:2px} .fl .k svg{width:15px;height:15px;display:block}
+  .fl .t{font-size:14px;line-height:1.5;color:var(--ink-2);overflow-wrap:anywhere}
+  .fl .t em{font-style:normal;color:var(--ink-3)}
+  .fl li.big .t{color:var(--ink);font-weight:550}
+  .fl li.bad .k{color:var(--danger)}
+  .fl .d{font-size:13.5px;line-height:1.5;color:var(--ink-3);margin-top:2px;overflow-wrap:anywhere}
+  .fin-p .bx-foot{margin-top:12px}
+  @media (max-width:640px){
+    .fin-f{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+    .fin-f::-webkit-scrollbar{display:none}
+    .chipf{flex:0 0 auto;min-height:40px}
+    .fin-p{padding-left:0}
+    .fl li{grid-template-columns:18px minmax(0,1fr);gap:2px 8px}
+    .fl .w{grid-column:1 / -1}
+    .fin-p .fx-spec,.fx-spec.fin-sum{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .fin-p .fx-spec>div,.fin-p .fx-spec>div+div,.fx-spec.fin-sum>div,.fx-spec.fin-sum>div+div{padding-left:0;border-left:0;border-top:0}
+    .fin-p .fx-spec>div:nth-child(even),.fx-spec.fin-sum>div:nth-child(even){padding-left:12px;border-left:1px solid var(--line)}
+    .fin-p .fx-spec>div:nth-child(n+3),.fx-spec.fin-sum>div:nth-child(n+3){border-top:1px solid var(--line)}
+  }
   .nx-none{display:flex;align-items:center;gap:10px;padding:14px 0;margin-top:14px;font-size:15px;color:var(--ink-2)}
   @media (max-width:1180px){.nx-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.nx-stats>div:nth-child(4){padding-left:0;border-left:0}.nx-stats>div:nth-child(n+4){border-top:1px solid var(--line)}.lane{grid-template-columns:30px minmax(0,1.1fr) minmax(0,1.3fr) 176px}.lane>.pr{display:none}}
   @media (max-width:1080px){.now-grid{grid-template-columns:minmax(0,1fr)}.pulse{position:static}}
@@ -589,7 +629,7 @@
     document.title = (open.length ? '(' + open.length + ') ' : '') + 'Now · Breadledger';
     if (!open.length && !fin.length) { cardEls = {}; root.innerHTML = startHTML(); wireStart(); return; }
     if (!root.querySelector('#sessions')) {
-      root.innerHTML = '<dl class="fx-spec nx-stats" id="stats" aria-label="Summary"></dl><section class="lanes" id="lanesWrap" aria-label="At a glance"><div class="fx-h"><h2>At a glance</h2><span class="fx-l" id="lanesMeta"></span></div><div id="lanes"></div></section><div class="now-grid"><div class="nx-main"><div class="fx-h" id="liveH"><h2>Working now</h2><span class="fx-l" id="liveMeta"></span><div class="seg tandem-pick" role="group" aria-label="Layout"><button type="button" data-lay="grid">Side by side</button><button type="button" data-lay="list">One column</button></div></div><div id="sessions"></div><div id="emptyLive" hidden></div><section id="waitWrap" class="group-gap" hidden><div class="fx-h"><h2>Waiting for you</h2><span class="fx-l" id="waitMeta"></span></div><div id="waiting"></div></section><section id="finWrap" class="group-gap" hidden><div class="fx-h"><h2>Finished in the last day</h2><span class="fx-l" id="finMeta"></span></div><div class="fin" id="fin"></div></section></div> <aside class="pulse" aria-label="Every move, across every session"><div class="fx-h"><h2>Pulse</h2><div class="seg" role="group" aria-label="Show"><button type="button" data-pmode="m" class="' + (pmode === 'm' ? 'on' : '') + '">Milestones</button><button type="button" data-pmode="a" class="' + (pmode === 'a' ? 'on' : '') + '">Every action</button></div></div><div class="nx-pulse" id="pulse"></div></aside></div>';
+      root.innerHTML = '<dl class="fx-spec nx-stats" id="stats" aria-label="Summary"></dl><section class="lanes" id="lanesWrap" aria-label="At a glance"><div class="fx-h"><h2>At a glance</h2><span class="fx-l" id="lanesMeta"></span></div><div id="lanes"></div></section><div class="now-grid"><div class="nx-main"><div class="fx-h" id="liveH"><h2>Working now</h2><span class="fx-l" id="liveMeta"></span><div class="seg tandem-pick" role="group" aria-label="Layout"><button type="button" data-lay="grid">Side by side</button><button type="button" data-lay="list">One column</button></div></div><div id="sessions"></div><div id="emptyLive" hidden></div><section id="waitWrap" class="group-gap" hidden><div class="fx-h"><h2>Waiting for you</h2><span class="fx-l" id="waitMeta"></span></div><div id="waiting"></div></section><section id="finWrap" class="group-gap" hidden><div class="fx-h"><h2>Finished in the last day</h2><span class="fx-l" id="finMeta"></span></div><div class="fin-f" id="finF" role="group" aria-label="Filter by project"></div><div id="finSum"></div><div class="fin" id="fin"></div></section></div> <aside class="pulse" aria-label="Every move, across every session"><div class="fx-h"><h2>Pulse</h2><div class="seg" role="group" aria-label="Show"><button type="button" data-pmode="m" class="' + (pmode === 'm' ? 'on' : '') + '">Milestones</button><button type="button" data-pmode="a" class="' + (pmode === 'a' ? 'on' : '') + '">Every action</button></div></div><div class="nx-pulse" id="pulse"></div></aside></div>';
       cardEls = {};
     }
     // summary: what is moving, what waits on you, and how far through every plan the work is
@@ -629,12 +669,71 @@
     if (!live.length) el.innerHTML = '<div class="nx-none">' + I('checkcircle') + '<span class="grow">' + (wait.length ? 'Nothing is working this second — ' + wait.length + ' chat' + (wait.length === 1 ? ' is' : 's are') + ' waiting for your reply, below.' : 'Nothing is running right now. Send a message in any chat, or say <code>' + PROMPT + '</code> to a coding agent, and its work appears here.') + '</span></div>';
     // finished
     var fw = document.getElementById('finWrap'); fw.hidden = !fin.length;
-    document.getElementById('finMeta').textContent = fin.length ? fin.length + ' session' + (fin.length === 1 ? '' : 's') : '';
-    document.getElementById('fin').innerHTML = fin.map(function(s){ var done = doneOf(s);
-      return '<a class="finrow" href="/now/' + encodeURIComponent(s.id) + '">' + B.avatar(s.app || s.project) + '<div style="min-width:0"><div class="t">' + esc(s.title) + '</div><div class="s">' + esc(s.app || s.project) + (s.kind === 'chat' ? ' · chat closed' : '') + ' · ' + done + ' steps · ' + (s.kind === 'chat' ? 'open ' : 'took ') + short(s.updated - s.started) + ((s.features || []).length ? ' · ' + s.features.length + ' features' : '') + ((s.shots || []).length ? ' · ' + s.shots.length + ' screens' : '') + '</div></div><span class="s">' + when(s.updated) + '</span></a>'; }).join('');
+    renderFinished(fin);
     renderPulse(list);
     firstLoad = false;
   }
+  // ---------- finished: filter by project, grouped by day, each job opens in place ----------
+  var finFilter = new URLSearchParams(location.search).get('project') || '', finOpen = {}, finDetail = {}, finBusy = {}, finAll = {}, finSigLast = '';
+  function appOf(s){ return s.app || s.project || 'Project'; }
+  function dayKey(ts){ var d = new Date(ts); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
+  function dayName(ts){ var d = new Date(ts), t = new Date(), y = new Date(t.getTime() - 86400000), full = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    return d.toDateString() === t.toDateString() ? 'Today · ' + full : d.toDateString() === y.toDateString() ? 'Yesterday · ' + full : full; }
+  function stamp(ts){ var d = new Date(ts); return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', ' + clock(ts) + ':' + ('0' + d.getSeconds()).slice(-2); }
+  function finTimeline(s, d){
+    var items = [], FK = 'finAll' + s.id;
+    (d.story || []).forEach(function(e){ items.push({ ts: e.ts, id: 's' + e.id, big: e.kind === 'found' || e.kind === 'verdict', ic: evIcon(e), html: evText(e), det: [e.detail, e.fix && 'Fix: ' + e.fix, e.file].filter(Boolean).map(esc).join(' · ') }); });
+    (d.acts || []).forEach(function(a){ items.push({ ts: a.ts, id: 'a' + a.id, act: a, html: esc(a.text) + (a.step ? ' <em>· ' + esc(a.step) + '</em>' : '') }); });
+    (d.features || []).forEach(function(f){ items.push({ ts: f.ts, id: 'f' + f.ts, big: true, ic: ['checkcircle', 'ok'], html: 'Shipped: ' + esc(f.title) }); });
+    items.sort(function(a, b){ return b.ts - a.ts; });
+    if (!items.length) return '<p class="fx-empty">No actions were recorded for this job.</p>';
+    var show = finAll[s.id] ? items : items.slice(0, 30);
+    return '<ol class="fl">' + show.map(function(i){ return '<li class="' + (i.big ? 'big' : '') + (i.act && i.act.ok === false ? ' bad' : '') + '"><time class="w" datetime="' + new Date(i.ts).toISOString() + '">' + stamp(i.ts) + '</time><span class="k">' + (i.act ? aIco(i.act.icon) : I(i.ic[0])) + '</span><div><div class="t">' + i.html + '</div>' + (i.det ? '<div class="d">' + i.det + '</div>' : '') + '</div></li>'; }).join('') + '</ol>' +
+      (items.length > show.length ? '<button class="more" type="button" data-finall="' + esc(s.id) + '">Show all ' + B.fmtN(items.length) + '</button>' : '');
+  }
+  function finPanel(s){
+    var d = finDetail[s.id] || s, done = doneOf(s), total = totalOf(s), c = [];
+    if (total) c.push(spec('Steps', done + '<small>of ' + total + '</small>'));
+    c.push(spec('Started', esc(when(s.started)))); c.push(spec('Finished', esc(when(s.updated)))); c.push(spec('Took', esc(short(s.updated - s.started))));
+    if (s.actCount) c.push(spec('Actions', B.fmtN(s.actCount))); if (s.findings) c.push(spec('Findings', B.fmtN(s.findings)));
+    var body = s.redacted || d.redacted ? privateLine() : finBusy[s.id] ? '<p class="fx-empty">Loading its actions…</p>' : finBusy[s.id] === false ? '<p class="fx-empty">Its actions could not load. <button class="more" type="button" data-fin-retry="' + esc(s.id) + '">Try again</button></p>' : finTimeline(s, d);
+    return '<div class="fin-p"><dl class="fx-spec">' + c.join('') + '</dl>' + body + '<div class="bx-foot"><a class="btn sm" href="/now/' + encodeURIComponent(s.id) + '">' + I('eye') + 'Open</a><a class="btn sm ghost" href="/story/' + encodeURIComponent(s.id) + '">' + I('file') + 'Full story</a></div></div>';
+  }
+  function finRow(s){
+    var open = finOpen[s.id], total = totalOf(s), bits = [];
+    if (total) bits.push(doneOf(s) + ' step' + (doneOf(s) === 1 ? '' : 's'));
+    bits.push((s.kind === 'chat' ? 'open ' : 'took ') + short(s.updated - s.started));
+    if (s.actCount) bits.push(B.fmtN(s.actCount) + ' action' + (s.actCount === 1 ? '' : 's'));
+    if (s.findings) bits.push(B.fmtN(s.findings) + ' finding' + (s.findings === 1 ? '' : 's'));
+    return '<li class="finx' + (open ? ' open' : '') + '"><button class="finrow" type="button" data-fin="' + esc(s.id) + '" aria-expanded="' + !!open + '">' + B.avatar(appOf(s)) + '<span class="m"><span class="t">' + esc(s.title) + '</span><span class="s">' + esc(appOf(s)) + (s.kind === 'chat' ? ' · chat closed' : '') + ' · ' + bits.join(' · ') + '</span></span><time class="w">' + clock(s.updated) + '</time><span class="cv">' + I('down') + '</span></button>' + (open ? finPanel(s) : '') + '</li>';
+  }
+  function renderFinished(fin){
+    var fw = document.getElementById('finWrap'); fw.hidden = !fin.length; if (!fin.length) return;
+    fin = fin.slice().sort(function(a, b){ return b.updated - a.updated; });
+    var apps = [], by = {};
+    fin.forEach(function(s){ var a = appOf(s); if (!by[a]) { by[a] = []; apps.push(a); } by[a].push(s); });
+    if (finFilter && !by[finFilter]) finFilter = '';
+    var shown = finFilter ? by[finFilter] : fin;
+    var sg = JSON.stringify([finFilter, finOpen, finAll, finBusy, Object.keys(finDetail), fin.map(function(s){ return [s.id, s.updated, s.done, s.actCount]; }), new Date().toDateString()]);
+    if (sg === finSigLast) return; finSigLast = sg;
+    document.getElementById('finMeta').textContent = shown.length + ' session' + (shown.length === 1 ? '' : 's') + (finFilter ? ' of ' + fin.length : '');
+    document.getElementById('finF').innerHTML = apps.length < 2 ? '' : '<button class="chipf' + (finFilter ? '' : ' on') + '" type="button" data-finf="" aria-pressed="' + !finFilter + '">All<span class="n">' + fin.length + '</span></button>' +
+      apps.slice().sort(function(a, b){ return a.localeCompare(b); }).map(function(a){ var on = a === finFilter; return '<button class="chipf' + (on ? ' on' : '') + '" type="button" data-finf="' + esc(a) + '" aria-pressed="' + on + '">' + B.avatar(a, 'xs') + esc(a) + '<span class="n">' + by[a].length + '</span></button>'; }).join('');
+    var sum = document.getElementById('finSum');
+    if (finFilter) { var ms = shown.reduce(function(t, s){ return t + (s.updated - s.started); }, 0), ac = shown.reduce(function(t, s){ return t + (s.actCount || 0); }, 0), fd = shown.reduce(function(t, s){ return t + (s.findings || 0); }, 0);
+      sum.innerHTML = '<dl class="fx-spec fin-sum">' + spec('Sessions', shown.length) + spec('Time', esc(short(ms))) + spec('Actions', B.fmtN(ac)) + spec('Findings', B.fmtN(fd)) + '</dl><a class="more fin-hist" href="/timeline#app=' + encodeURIComponent(finFilter) + '">All ' + esc(finFilter) + ' history</a>'; }
+    else sum.innerHTML = '';
+    var days = [], seen = {};
+    shown.forEach(function(s){ var k = dayKey(s.updated); if (!seen[k]) { seen[k] = { ts: s.updated, rows: [] }; days.push(seen[k]); } seen[k].rows.push(s); });
+    document.getElementById('fin').innerHTML = days.map(function(d){ return '<section class="fin-d"><h3 class="fx-l">' + esc(dayName(d.ts)) + '</h3><ol class="fin-l">' + d.rows.map(finRow).join('') + '</ol></section>'; }).join('');
+  }
+  function loadFin(id){
+    finBusy[id] = true; rerenderFin();
+    var k = getKey();
+    fetch('/api/now?id=' + encodeURIComponent(id), { cache: 'no-store', headers: k ? { 'x-ledger-key': k } : {} }).then(function(r){ return r.json(); }).then(function(j){ if (!j.ok || !j.sessions || !j.sessions[0]) throw 0; finDetail[id] = j.sessions[0]; delete finBusy[id]; rerenderFin(); })
+      .catch(function(){ finBusy[id] = false; rerenderFin(); });
+  }
+  function rerenderFin(){ finSigLast = ''; if (data && !focusId) renderBoard(); }
   function renderPulse(list){
     var all = [];
     list.forEach(function(s){
@@ -807,7 +906,11 @@
 
   // ---------- events ----------
   root.addEventListener('click', function(ev){
-    var t = ev.target.closest('[data-signin],[data-fxstep],[data-fxall],[data-ev],[data-step],[data-wave],[data-jump],[data-more],[data-go],[data-shot],[data-pmode]'); if (!t) return;
+    var t = ev.target.closest('[data-finf],[data-fin],[data-finall],[data-fin-retry],[data-signin],[data-fxstep],[data-fxall],[data-ev],[data-step],[data-wave],[data-jump],[data-more],[data-go],[data-shot],[data-pmode]'); if (!t) return;
+    if (t.dataset.finf != null) { finFilter = t.dataset.finf; try { var u = new URL(location.href); if (finFilter) u.searchParams.set('project', finFilter); else u.searchParams.delete('project'); history.replaceState(null, '', u); } catch (x) {} rerenderFin(); return; }
+    if (t.dataset.fin) { var fid = t.dataset.fin; finOpen[fid] = !finOpen[fid]; if (!finOpen[fid]) delete finOpen[fid]; else if (!finDetail[fid]) { loadFin(fid); return; } rerenderFin(); return; }
+    if (t.dataset.finall) { finAll[t.dataset.finall] = 1; rerenderFin(); return; }
+    if (t.dataset.finRetry) { loadFin(t.dataset.finRetry); return; }
     if (t.dataset.signin) { if (B.auth) B.auth.open(); return; }
     if (t.dataset.fxstep) { var fl = t.closest('.fxs'), fo = !fl.classList.contains('open'); openSteps[t.dataset.fxstep] = fo; fl.classList.toggle('open', fo); t.setAttribute('aria-expanded', fo); var c0 = cardEls[t.dataset.fxstep.split('|')[0]]; if (c0) c0.sig = ''; return; }
     if (t.dataset.fxall) { fxAll = !fxAll; openSteps = {}; focusSig = ''; render(); return; }
