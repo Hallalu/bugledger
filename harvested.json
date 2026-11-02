@@ -10558,5 +10558,65 @@
     "status": "unverified",
     "session": "8a2ece44",
     "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:ididntrerunthoseattacksonlivebecausethatwouldmeancreatingacc",
+    "app": "Breadcrumb",
+    "title": "Didn't re-run those attacks on live, because that would mean creating accounts and…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I didn't re-run those attacks on live, because that would mean creating accounts and writing real data.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "4465dc7a:twomorefaultstofixtheataglancecolumnsdontlineupfromrowtorowa",
+    "app": "Hallalu CRM",
+    "title": "Two more faults to fix: the At a glance columns don't line up from row to row, and…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Two more faults to fix: the At a glance columns don't line up from row to row, and tapping a row isn't jumping to its card in my test.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "4465dc7a",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "8a2ece44:whatwasnttestedrealphoneandemailthepagehasntbeentriedonareal",
+    "app": "Hallalu CRM",
+    "title": "What wasn't tested - Real phone and email: the page hasn't been tried on a real phone,…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## What wasn't tested - **Real phone and email:** the page hasn't been tried on a real phone, and nobody is emailed when they join the list.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8a2ece44",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "8a2ece44:othershoppagesididntclickthroughtheoldshoporsellerpagesafter",
+    "app": "Hallalu CRM",
+    "title": "- Other shop pages: I didn't click through the old shop or seller pages after the 29…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Other shop pages:** I didn't click through the old shop or seller pages after the 29 October fixes went live, only sign-in and sign-out, on a local copy.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8a2ece44",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "e37c736a:italsosaysplainlythatnoneofthesefixesarelivetheaprizelystart",
+    "app": "Hallalu CRM",
+    "title": "It also says plainly that none of these fixes are live, the Aprizely starter database…",
+    "category": "ui",
+    "severity": "low",
+    "symptom": "It also says plainly that none of these fixes are live, the Aprizely starter database item isn't fixed, and the pause button hasn't been tested on a real agent; the app suggestions for Hallalu CRM, K…",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "e37c736a",
+    "found": "2026-11-02"
   }
 ]
