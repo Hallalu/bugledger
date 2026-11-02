@@ -79,12 +79,17 @@
   function paintState() {
     if (!CARDS && !LINK) return;
     Object.keys(buttons).forEach(function (id) {
-      if (view(id) === 'running') return;
       (buttons[id] || []).forEach(function (el) {
         var scope = el.closest('.bp-scope') || document, st = scope.querySelector('.state');
-        if (st && !/^(Finished|Closed)/.test(st.textContent)) {
-          var t = view(id) === 'paused' ? 'Paused' : 'Pausing…';
-          if (st.textContent !== t) st.innerHTML = '<span class="pip"></span>' + t;
+        if (!st || /^(Finished|Closed)/.test(st.textContent)) return;
+        if (view(id) === 'running') {          // back to what the page last drew
+          if (st.dataset.bpWas != null) { st.innerHTML = st.dataset.bpWas; delete st.dataset.bpWas; }
+          return;
+        }
+        var t = view(id) === 'paused' ? 'Paused' : 'Pausing…';
+        if (st.textContent !== t) {
+          if (st.dataset.bpWas == null) st.dataset.bpWas = st.innerHTML;
+          st.innerHTML = '<span class="pip"></span>' + t;
         }
       });
     });
