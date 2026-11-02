@@ -203,6 +203,8 @@
   function poll(){ if(document.hidden) return; var seq=++pollSeq; fetch('/api/activity?limit=120'+(F.app?'&app='+encodeURIComponent(F.app):''),{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ if(seq!==pollSeq) return; showErr(false); render(d); })
     .catch(function(){ setPoll('reconnecting'); showErr(true); }); }
   readHash(); paintFilters();
+  // arriving on one project, the events only name that project: fetch the wider list once, so the dropdown can still switch
+  if(F.app) fetch('/api/activity?limit=120',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ ((d&&d.events)||[]).forEach(function(e){ if(e.app) KNOWN[e.app]=1; }); paintFilters(); }).catch(function(){});
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) poll(); });
   poll(); setInterval(poll, 4000);
   Bread.mount({ active: 'activity', title: 'Activity', crumbs: ['Activity'] });
