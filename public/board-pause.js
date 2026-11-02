@@ -78,20 +78,22 @@
   /* Breadledger's cards carry a "Working now" badge the page redraws on its own: while held, that badge says so too. */
   function paintState() {
     if (!CARDS && !LINK) return;
+    function paint(st, id) {
+      if (!st || /^(Finished|Closed)/.test(st.textContent)) return;
+      if (view(id) === 'running') {            // back to what the page last drew
+        if (st.dataset.bpWas != null) { st.innerHTML = st.dataset.bpWas; delete st.dataset.bpWas; }
+        return;
+      }
+      var t = view(id) === 'paused' ? 'Paused' : 'Pausing…';
+      if (st.textContent !== t) {
+        if (st.dataset.bpWas == null) st.dataset.bpWas = st.innerHTML;
+        st.innerHTML = '<span class="pip"></span>' + t;
+      }
+    }
     Object.keys(buttons).forEach(function (id) {
-      (buttons[id] || []).forEach(function (el) {
-        var scope = el.closest('.bp-scope') || document, st = scope.querySelector('.state');
-        if (!st || /^(Finished|Closed)/.test(st.textContent)) return;
-        if (view(id) === 'running') {          // back to what the page last drew
-          if (st.dataset.bpWas != null) { st.innerHTML = st.dataset.bpWas; delete st.dataset.bpWas; }
-          return;
-        }
-        var t = view(id) === 'paused' ? 'Paused' : 'Pausing…';
-        if (st.textContent !== t) {
-          if (st.dataset.bpWas == null) st.dataset.bpWas = st.innerHTML;
-          st.innerHTML = '<span class="pip"></span>' + t;
-        }
-      });
+      (buttons[id] || []).forEach(function (el) { paint((el.closest('.bp-scope') || document).querySelector('.state'), id); });
+      // the card's one-line summary at the top of the page
+      document.querySelectorAll('[data-go]').forEach(function (row) { if (row.getAttribute('data-go') === id) paint(row.querySelector('.state'), id); });
     });
   }
   function signinUrl() {
