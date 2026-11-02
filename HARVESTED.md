@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-867 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+870 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (605)
+## Hallalu CRM (608)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -609,6 +609,9 @@
 - [ ] `low` `other` (2026-11-01, #146b3f7c) — One 503 error showed in the console, the same kind as in earlier rounds, and I haven't…
 - [ ] `low` `other` (2026-11-01, #bbff9217) — Task expected this couldn't be read, but node /pixelbake/tools/ai-today.mjs reads it…
 - [ ] `low` `other` (2026-11-01, #bbff9217) — Its cost isn't in the neuron figures and I didn't measure it, so you may want to decide…
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — Two two-factor failures didn't come back, so the full disk most likely caused them.
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — Old Turnstile failure went away because the test setup was corrected, not because the…
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — My privacy page check didn't complete, but it was part of the same deploy.
 
 ## Finished. (102)
 

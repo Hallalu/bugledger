@@ -10402,5 +10402,41 @@
     "status": "unverified",
     "session": "bbff9217",
     "found": "2026-11-01"
+  },
+  {
+    "key": "3a6f7dfa:thetwotwofactorfailuresdidntcomebacksothefulldiskmostlikelyc",
+    "app": "Hallalu CRM",
+    "title": "Two two-factor failures didn't come back, so the full disk most likely caused them.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The two two-factor failures didn't come back, so the full disk most likely caused them.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:theoldturnstilefailurewentawaybecausethetestsetupwascorrecte",
+    "app": "Hallalu CRM",
+    "title": "Old Turnstile failure went away because the test setup was corrected, not because the…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The old Turnstile failure went away because the test setup was corrected, not because the app changed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:myprivacypagecheckdidntcompletebutitwaspartofthesamedeploy",
+    "app": "Hallalu CRM",
+    "title": "My privacy page check didn't complete, but it was part of the same deploy.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "My privacy page check didn't complete, but it was part of the same deploy.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
   }
 ]
