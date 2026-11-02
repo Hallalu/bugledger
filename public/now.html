@@ -600,6 +600,7 @@
     document.getElementById('stats').innerHTML = [
       // without the key only public boards are counted, so a 0 there would hide chats that are working: show – instead
       ['Agents working', C.agents, 'each chat is one agent, working in the last 5 minutes'],
+      ['Helpers running', C.helpers || 0, 'helper agents these chats started'],
       ['Boards live', C.boards, 'boards updated in the last 5 minutes'],
       ['Waiting for you', C.waiting + C.needs + (C.needs ? '<small>' + C.needs + ' need you</small>' : ''), 'their turn is done'],
       ['Chats in use', data.owner ? chats : '–', data.owner ? 'used in the last 12 hours' : 'enter your key to see them'],
@@ -608,7 +609,7 @@
       ['Actions', B.fmtN(acts), 'tool calls so far']
     ].map(function(x){ return '<div title="' + x[2] + '"><dt class="fx-l">' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
     var line = document.getElementById('agentLine');
-    if (line) { line.innerHTML = '<span class="pip ' + (C.agents ? 'live' : 'off') + '"></span><b>' + (C.agents === 1 ? '1 agent' : C.agents + ' agents') + ' working right now</b>' + (C.waiting + C.needs ? '<span class="muted"> · ' + (C.waiting + C.needs) + ' waiting for you</span>' : '') + (C.boards ? '<span class="muted"> · ' + C.boards + ' board' + (C.boards === 1 ? '' : 's') + ' live</span>' : ''); line.hidden = false; }
+    if (line) { line.innerHTML = '<span class="pip ' + (C.agents ? 'live' : 'off') + '"></span><b>' + (C.agents === 1 ? '1 agent' : C.agents + ' agents') + ' working right now</b>' + (C.helpers ? '<span class="muted"> · ' + C.helpers + ' helper' + (C.helpers === 1 ? '' : 's') + ' running</span>' : '') + (C.waiting + C.needs ? '<span class="muted"> · ' + (C.waiting + C.needs) + ' waiting for you</span>' : '') + (C.boards ? '<span class="muted"> · ' + C.boards + ' board' + (C.boards === 1 ? '' : 's') + ' live</span>' : ''); line.hidden = false; }
     document.getElementById('liveMeta').textContent = [working ? working + ' working' : '', quiet ? quiet + ' quiet' : '', needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' you' : ''].filter(Boolean).join(' · ');
     // several boards at once sit side by side (the Aprizely tandem grid), with Pulse moving underneath; one board stays a column
     var many = live.length + wait.length > 1, tandem = many && layout !== 'list';

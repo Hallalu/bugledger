@@ -580,7 +580,7 @@ async function handle(request, env) {
           // a chat card says when its turn ended ("waiting" for the owner's next message) or the chat closed ("ended")
           const chat = isChat(x.id) ? (safeParse(x.note, null) || {}) : null;
           const flag = chat && ["waiting", "needs", "ended"].includes(chat.f) ? chat.f : "";
-          const state = x.status === "done" ? "done" : flag || (now - x.updated < 5 * 60_000 ? "working" : "quiet");
+          const state = x.status === "done" ? "done" : flag === "ended" || flag === "needs" ? flag : chat && helpersRunning(chat, now) ? "working" : flag || (now - x.updated < 5 * 60_000 ? "working" : "quiet");
           // the owner's latest ask in a chat (a "say" the hook marks you:true) — shown as "You asked" on the card
           const youEv = chat ? list.find((e) => e.kind === "say" && meta(e).you) : null;
           const you = youEv ? { ts: youEv.ts, text: youEv.detail || youEv.title } : null;
@@ -859,21 +859,25 @@ const ownerOK = (request, env) => !env.LEDGER_WRITE_TOKEN || request.headers.get
 const canSee = (row, request, env) => row.owner_id ? !!(who(request).user && who(request).user.id === row.owner_id) : (!isChat(row.id) || ownerOK(request, env));
 // who may write a board or chat: the owner's key/account, or a signed-in member (their own rows only)
 const writer = (request, env) => ownerOK(request, env) ? { owner: true } : who(request).user ? { member: who(request).user.id } : null;
+// helper agents still going; a helper silent for an hour is treated as gone, so a closed app can't inflate the count
+const helpersRunning = (chat, now) => (Array.isArray(chat.helpers) ? chat.helpers : []).filter((h) => h && !h.done && now - (+h.ts || 0) < 3600_000).length;
 // How many agents are working, for everyone to read. Numbers only: a chat is one agent, so a chat's own board isn't
 // counted twice; boards are reported beside it. Working = touched in the last 5 minutes and not waiting on a person.
 async function agentCounts(env, now, ownerId) {
   const q = ownerId
     ? env.DB.prepare("SELECT id, note, updated FROM sessions WHERE owner_id = ? AND status = 'active' AND updated > ?").bind(ownerId, now - 12 * 3600_000)
     : env.DB.prepare("SELECT id, note, updated FROM sessions WHERE owner_id IS NULL AND status = 'active' AND updated > ?").bind(now - 12 * 3600_000);
-  const counts = { agents: 0, boards: 0, waiting: 0, needs: 0, at: now };
+  const counts = { agents: 0, helpers: 0, boards: 0, waiting: 0, needs: 0, at: now };
   for (const r of (await q.all()).results || []) {
     const fresh = now - r.updated < 5 * 60_000;
     if (!isChat(r.id)) { if (fresh) counts.boards++; continue; }
-    const f = (safeParse(r.note, null) || {}).f;
-    if (f === "ended") continue;
-    if (f === "needs") counts.needs++;
-    else if (f === "waiting") counts.waiting++;
-    else if (fresh) counts.agents++;
+    const chat = safeParse(r.note, null) || {};
+    if (chat.f === "ended") continue;
+    const running = helpersRunning(chat, now);
+    counts.helpers += running;
+    if (chat.f === "needs") counts.needs++;
+    else if (running || (fresh && chat.f !== "waiting")) counts.agents++;   // a chat whose helpers still run is working, whatever its own turn says
+    else if (chat.f === "waiting") counts.waiting++;
   }
   return counts;
 }

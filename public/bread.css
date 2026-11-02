@@ -126,7 +126,7 @@ svg.ico{width:18px;height:18px;flex:0 0 auto;vertical-align:-4px}
 .section-h .meta{margin-left:auto}
 
 /* live pip */
-.pip{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 20%,transparent)}
+.pip{flex:none;width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 20%,transparent)}
 .pip.off{background:var(--ink-3);box-shadow:none}
 .pip.live{animation:pip 1.6s ease-in-out infinite}
 @keyframes pip{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 20%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ok) 8%,transparent)}}
@@ -642,6 +642,7 @@ svg.ico{width:18px;height:18px;flex:0 0 auto;vertical-align:-4px}
   .hero .dismiss{min-width:36px;min-height:36px}
 }
 @media (max-width:400px){
+  .bl-top:has(.actions>:nth-child(5)) .crumbs{display:none}
   .bl-content{padding:12px 12px 80px}
   .stats{gap:6px}
   .stat{padding:10px 12px}
