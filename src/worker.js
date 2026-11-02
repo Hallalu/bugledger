@@ -12,6 +12,7 @@ import { handleJournal } from "./journal.mjs";
 import { resolve, handleAuth, who } from "./auth.mjs";
 import { handleScans } from "./scans.mjs";
 import { handleSellFeed } from "./sellfeed.mjs";
+import { handlePause, withPauseButton } from "./pause.mjs";
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -509,8 +510,14 @@ async function handle(request, env) {
     // ---- /now and /now/:id : the "everything I'm doing" board (served by now.html, which reads the path) ----
     if ((pathname === "/now" || pathname.startsWith("/now/")) && (request.method === "GET" || request.method === "HEAD")) {
       const res = await env.ASSETS.fetch(new Request(new URL("/now", request.url), { method: "GET" }));
-      return new Response(request.method === "HEAD" ? null : res.body, { status: res.status, headers: res.headers });
+      const focus = pathname.startsWith("/now/") ? decodeURIComponent(pathname.slice(5)).slice(0, 60) : "";
+      const page = withPauseButton(res, focus);
+      return new Response(request.method === "HEAD" ? null : page.body, { status: res.status, headers: res.headers });
     }
+
+    // ---- /api/session/pause, /api/session/held : the pause / play button (src/pause.mjs) ----
+    const pauseRes = await handlePause(request, env, url, writer);
+    if (pauseRes) return pauseRes;
 
     // ---- GET /api/now[?id=] : every session in progress (+ finished in the last 24 h), each with its
     // story tail, features and screenshots — one request feeds the whole Now board. ?id= narrows to one.

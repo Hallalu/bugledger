@@ -13,6 +13,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/bread.css">
 <script src="/bread-shell.js"></script>
+<script src="/board-pause.js" data-api="/api/session/pause?id=:id" data-signin="/account" defer></script>
 <style>
   /* page-only styles, tokens only — candidates for bread.css: .poll, .current (+ .car), .barlbl, .story, .sev.info, .sevlbl */
   .poll{display:inline-flex;align-items:center;gap:8px;height:34px;font-size:13.5px;color:var(--ink-3);white-space:nowrap}
@@ -127,7 +128,9 @@ node worklog.mjs finish</code></pre>
         '<div class="note snote" hidden>'+Bread.icon('info')+'<span class="ntx"></span></div>'+
         '<div class="story" hidden><div class="story-h"><span>Story so far</span><a class="btn sm storylink" href="#">'+Bread.icon('ledger')+'<span class="sltx">open the full story</span></a></div><ol class="storylines"></ol></div>'+
         '<a class="btn primary reportcta" hidden>'+Bread.icon('checkcircle')+'Complete — open the itemised story</a>'+
+        '<div class="pause-host" style="margin-top:14px"></div>'+
       '</div>';
+    if(s.status!=='done') el.querySelector('.pause-host').dataset.pauseId=s.id;
     var refs = { status:el.querySelector('.status'), who:el.querySelector('.who'), proj:el.querySelector('.proj'), meta:el.querySelector('.meta'), title:el.querySelector('.stitle'),
       current:el.querySelector('.current'), progress:el.querySelector('.progress'), bar:el.querySelector('.progress>i'), dn:el.querySelector('.dn'),
       pct:el.querySelector('.pct'), tasks:el.querySelector('.steps'), note:el.querySelector('.snote'), ntx:el.querySelector('.ntx'), report:el.querySelector('.reportcta'),
