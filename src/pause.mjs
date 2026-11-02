@@ -56,6 +56,6 @@ export async function handlePause(request, env, url, writer) {
 export const withPauseButton = (res, focus) => new HTMLRewriter().on("head", {
   element(h) {
     if (focus) h.append(`<script>window.BOARD_PAUSE_ID=${JSON.stringify(focus)}</script>`, { html: true });
-    h.append('<script src="/board-pause.js" data-api="/api/session/pause?id=:id" data-signin="/account" data-cards=".card-f" data-link="/now/" defer></script>', { html: true });
+    h.append('<script src="/board-pause.js" data-api="/api/session/pause?id=:id" data-signin="/account" data-keyed="1" data-cards=".card-f" data-link="/now/" defer></script>', { html: true });
   },
 }).transform(res);

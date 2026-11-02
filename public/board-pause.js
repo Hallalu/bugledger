@@ -106,7 +106,9 @@
     busy[id] = true; delete el.dataset.note;
     known[id] = { paused: want, held: false, active: true };   // the button answers at once; the server confirms
     draw(id);
-    fetch(url(id), { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, paused: want }) })
+    var headers = { 'content-type': 'application/json' };
+    try { var key = localStorage.getItem('bl_admin_key') || localStorage.getItem('bugledger.key'); if (key && cfg.keyed) headers['x-ledger-key'] = key; } catch (e) {}   // Breadledger's "Use a key instead"
+    fetch(url(id), { method: 'POST', credentials: 'same-origin', headers: headers, body: JSON.stringify({ id: id, paused: want }) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { s: r.status, d: d }; }); })
       .then(function (x) {
         busy[id] = false;
