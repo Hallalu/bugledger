@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-885 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+888 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (621)
+## Hallalu CRM (624)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -625,6 +625,9 @@
 - [ ] `low` `other` (2026-11-02, #8a2ece44) — What wasn't tested - Real phone and email: the page hasn't been tried on a real phone,…
 - [ ] `low` `other` (2026-11-02, #8a2ece44) — - Other shop pages: I didn't click through the old shop or seller pages after the 29…
 - [ ] `low` `ui` (2026-11-02, #e37c736a) — It also says plainly that none of these fixes are live, the Aprizely starter database…
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — As first written, it didn't work: it let finished-app straight through.
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — Finished-app is now refused with "deploys on push", and Joy Day, which isn't connected…
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — What this doesn't prove: I checked the stored file names, not the files themselves.
 
 ## Finished. (102)
 

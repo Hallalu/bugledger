@@ -10618,5 +10618,41 @@
     "status": "unverified",
     "session": "e37c736a",
     "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:asfirstwrittenitdidntworkitletfinishedappstraightthrough",
+    "app": "Hallalu CRM",
+    "title": "As first written, it didn't work: it let finished-app straight through.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "As first written, it didn't work: it let `finished-app` straight through.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:finishedappisnowrefusedwithdeploysonpushandjoydaywhichisntco",
+    "app": "Hallalu CRM",
+    "title": "Finished-app is now refused with \"deploys on push\", and Joy Day, which isn't connected…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "`finished-app` is now refused with \"deploys on push\", and Joy Day, which isn't connected that way, still goes through.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:whatthisdoesntproveicheckedthestoredfilenamesnotthefilesthem",
+    "app": "Hallalu CRM",
+    "title": "What this doesn't prove: I checked the stored file names, not the files themselves.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**What this doesn't prove:** I checked the stored file names, not the files themselves.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
   }
 ]
