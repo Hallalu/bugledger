@@ -351,15 +351,18 @@
   @keyframes breathe{50%{transform:scale(.6);opacity:.6}}
   .bx-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
   .bx-foot .up{margin-left:auto;letter-spacing:0;text-transform:none}
+  .bx-foot .bp{margin-left:12px!important}
+  /* a narrow card: these out-rank the .bx rules above, so a card follows its own width, not the page's */
   @container (max-width:520px){
-    .fx-hero{grid-template-columns:minmax(0,1fr) auto}
-    .fx-spec{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .fx-spec>div:nth-child(odd){padding-left:0;border-left:0}
-    .fx-spec>div:nth-child(n+3){border-top:1px solid var(--line)}
-    .fx-say{grid-template-columns:minmax(0,1fr)} .fx-say .note2,.fx-say .more,.fx-say .helpers{grid-column:1}
-    .fxs-row{grid-template-columns:18px 24px minmax(0,1fr) auto 16px;gap:4px 8px}
-    .fxs .gantt{grid-column:3 / 6;grid-row:2;height:4px;margin-bottom:2px}
-    .fxs-more{padding-left:0}
+    .bx .fx-hero{grid-template-columns:minmax(0,1fr) auto}
+    .bx .fx-spec{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .bx .fx-spec>div,.bx .fx-spec>div+div{padding:10px 10px 11px 0;border-left:0;border-top:0}
+    .bx .fx-spec>div:nth-child(even){padding-left:12px;border-left:1px solid var(--line)}
+    .bx .fx-spec>div:nth-child(n+3){border-top:1px solid var(--line)}
+    .bx .fx-say{grid-template-columns:minmax(0,1fr)} .bx .fx-say .note2,.bx .fx-say .more,.bx .fx-say .helpers{grid-column:1}
+    .bx .fxs-row{grid-template-columns:18px 24px minmax(0,1fr) auto 16px;gap:4px 8px}
+    .bx .fxs .gantt{grid-column:3 / 6;grid-row:2;height:4px;margin-bottom:2px}
+    .bx .fxs-more{padding-left:0}
   }
   .pulse{position:sticky;top:calc(var(--topbar) + 20px)}
   .now-grid.tandem .pulse{position:static}
