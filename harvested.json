@@ -10498,5 +10498,65 @@
     "status": "unverified",
     "session": "8a2ece44",
     "found": "2026-11-02"
+  },
+  {
+    "key": "378e99bd:smalladditionsyoudidntaskforsamepageifyoutickedwhileonapaget",
+    "app": "Hallalu CRM",
+    "title": "Small additions you didn't ask for - Same page: if you ticked while on a page, the next…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "## Small additions you didn't ask for - **Same page:** if you ticked while on a page, the next one offers \"Or look on the same page\", so you don't paste the link again.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "378e99bd",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "378e99bd:ticksmadebeforetodayhavenosavedtimesotheysitunderdoneearlier",
+    "app": "Hallalu CRM",
+    "title": "Ticks made before today have no saved time, so they sit under \"Done earlier\" and say…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Ticks made before today have no saved time, so they sit under \"Done earlier\" and say the time wasn't kept.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "378e99bd",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:therepohasnogithubworkflowssothepushdidntstartabuildandnothi",
+    "app": "Breadcrumb",
+    "title": "Repo has no GitHub workflows, so the push didn't start a build, and nothing was deployed.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The repo has no GitHub workflows, so the push didn't start a build, and nothing was deployed.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "8a2ece44:nottestednothinghasrunonthelivesiteandididntclickthroughtheo",
+    "app": "Hallalu CRM",
+    "title": "- Not tested: nothing has run on the live site, and I didn't click through the old shop…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Not tested:** nothing has run on the live site, and I didn't click through the old shop pages.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8a2ece44",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "8a2ece44:onechangeyoudidntaskforthehomepagewillredirecttottbecausethe",
+    "app": "Hallalu CRM",
+    "title": "One change you didn't ask for: the home page will redirect to /tt, because the shop…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "**One change you didn't ask for:** the home page will redirect to `/tt`, because the shop would look empty once the products are hidden.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8a2ece44",
+    "found": "2026-11-02"
   }
 ]
