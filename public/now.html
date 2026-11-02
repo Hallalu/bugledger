@@ -26,6 +26,9 @@
   .tandem-pick{margin-left:auto} .tandem-pick[hidden]{display:none}
 
   .state{display:inline-flex;align-items:center;gap:7px;height:24px;padding:0 10px 0 8px;border-radius:99px;font-size:12.5px;font-weight:650;letter-spacing:.01em;white-space:nowrap}
+  .agent-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:clamp(20px,3.4vw,27px);letter-spacing:-.02em;margin:0 0 8px}
+  .agent-line b{font-weight:600}
+  .agent-line .muted{font-size:15px;letter-spacing:0}
   .state.working{background:var(--ok-soft);color:var(--ok-ink)}
   .state.quiet{background:var(--warn-soft);color:var(--warn-ink)}
   .state.done{background:var(--bg-2);color:var(--ink-2);border:1px solid var(--line)}
@@ -401,6 +404,7 @@
       <div class="page-h" id="head">
         <div>
           <h1>Now</h1>
+          <p class="agent-line" id="agentLine" hidden aria-live="polite"></p>
           <p class="lead">Every chat you have open and every board in progress — what you asked, what it is doing this second, each step with its tick and timer, and how far through it is, live.</p>
         </div>
         <div class="actions">
@@ -592,15 +596,19 @@
     var steps = 0, stepsDone = 0, acts = 0, chats = 0;
     open.forEach(function(s){ steps += totalOf(s); stepsDone += doneOf(s); acts += s.actCount || 0; if (s.kind === 'chat') chats++; });
     var working = live.filter(function(s){ return s.state === 'working'; }).length, quiet = live.filter(function(s){ return s.state === 'quiet'; }).length, needs = live.filter(function(s){ return s.state === 'needs'; }).length;
+    var C = data.counts || { agents: working, boards: 0, waiting: wait.length, needs: needs };
     document.getElementById('stats').innerHTML = [
       // without the key only public boards are counted, so a 0 there would hide chats that are working: show – instead
-      ['Working now', !data.owner && !working ? '–' : working + (quiet ? '<small>+' + quiet + ' quiet</small>' : ''), data.owner ? 'chats and boards' : 'enter your key to count your chats'],
-      ['Waiting for you', !data.owner && !(wait.length + needs) ? '–' : (wait.length + needs) + (needs ? '<small>' + needs + ' need you</small>' : ''), data.owner ? 'their turn is done' : 'enter your key to count your chats'],
+      ['Agents working', C.agents, 'each chat is one agent, working in the last 5 minutes'],
+      ['Boards live', C.boards, 'boards updated in the last 5 minutes'],
+      ['Waiting for you', C.waiting + C.needs + (C.needs ? '<small>' + C.needs + ' need you</small>' : ''), 'their turn is done'],
       ['Chats in use', data.owner ? chats : '–', data.owner ? 'used in the last 12 hours' : 'enter your key to see them'],
       ['Steps done', stepsDone + '<small>/ ' + steps + '</small>', 'across every plan'],
       ['Overall', (steps ? Math.round(stepsDone / steps * 100) : 0) + '<small>%</small>', 'of every step'],
       ['Actions', B.fmtN(acts), 'tool calls so far']
     ].map(function(x){ return '<div title="' + x[2] + '"><dt class="fx-l">' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
+    var line = document.getElementById('agentLine');
+    if (line) { line.innerHTML = '<span class="pip ' + (C.agents ? 'live' : 'off') + '"></span><b>' + (C.agents === 1 ? '1 agent' : C.agents + ' agents') + ' working right now</b>' + (C.waiting + C.needs ? '<span class="muted"> · ' + (C.waiting + C.needs) + ' waiting for you</span>' : '') + (C.boards ? '<span class="muted"> · ' + C.boards + ' board' + (C.boards === 1 ? '' : 's') + ' live</span>' : ''); line.hidden = false; }
     document.getElementById('liveMeta').textContent = [working ? working + ' working' : '', quiet ? quiet + ' quiet' : '', needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' you' : ''].filter(Boolean).join(' · ');
     // several boards at once sit side by side (the Aprizely tandem grid), with Pulse moving underneath; one board stays a column
     var many = live.length + wait.length > 1, tandem = many && layout !== 'list';

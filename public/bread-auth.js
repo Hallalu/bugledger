@@ -126,7 +126,7 @@
   function paint() {
     var slot = d.getElementById('acct'); if (!slot) return;
     if (!A.me) {
-      slot.innerHTML = '<button class="btn primary sm acct-in" type="button">' + icon('user') + '<span>Sign in</span></button>';
+      slot.innerHTML = '<button class="btn primary sm acct-in" type="button" aria-label="Sign in">' + icon('user') + '<span class="lbl">Sign in</span></button>';
       slot.firstChild.onclick = function () { A.open(); };
       return;
     }
