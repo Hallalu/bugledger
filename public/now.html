@@ -17,10 +17,6 @@
 <style>
   /* Now board — page styles on bread.css tokens only */
   .poll{display:inline-flex;align-items:center;gap:8px;height:34px;font-size:13.5px;color:var(--ink-3);white-space:nowrap}
-  .now-stats{grid-template-columns:repeat(6,minmax(0,1fr))}
-  @media (max-width:1180px){.now-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  @media (max-width:560px){.now-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  .now-stats .stat .n small{font-size:15px;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px}
   .now-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;align-items:start}
   @media (max-width:1080px){.now-grid{grid-template-columns:minmax(0,1fr)}}
   #sessions,#waiting{display:grid;gap:18px}
@@ -29,89 +25,11 @@
   #sessions.tandem,#waiting.tandem{grid-template-columns:repeat(auto-fill,minmax(min(380px,100%),1fr));align-items:start}
   .tandem-pick{margin-left:auto} .tandem-pick[hidden]{display:none}
 
-  /* ---- a session ---- */
-  .sess{position:relative;overflow:hidden}
-  .sess.enter{animation:rise .4s var(--ease) both}
-  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .sess::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,hsl(var(--h) 70% 60%),var(--accent));opacity:.9}
-  .sess.quiet::before{background:var(--line-2)} .sess.done::before{background:var(--ok)}
-  .sess-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:start;padding:20px 20px 0}
-  .sess-who{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13.5px;color:var(--ink-3);font-weight:500}
-  .sess-who b{color:var(--ink-2);font-weight:650}
-  .sess-title{font-size:20px;font-weight:680;letter-spacing:-.018em;line-height:1.28;margin-top:3px;text-wrap:pretty;overflow-wrap:anywhere}
-  .sess-title a{color:inherit} .sess-title a:hover{text-decoration:none;color:var(--accent-text)}
-  .sess-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
-  .sess-meta .sep{opacity:.5}
   .state{display:inline-flex;align-items:center;gap:7px;height:24px;padding:0 10px 0 8px;border-radius:99px;font-size:12.5px;font-weight:650;letter-spacing:.01em;white-space:nowrap}
   .state.working{background:var(--ok-soft);color:var(--ok-ink)}
   .state.quiet{background:var(--warn-soft);color:var(--warn-ink)}
   .state.done{background:var(--bg-2);color:var(--ink-2);border:1px solid var(--line)}
   .state .pip{width:7px;height:7px;box-shadow:none} .state.quiet .pip{background:var(--warn)} .state.done .pip{background:var(--ok)}
-
-  .ring{width:64px;height:64px;position:relative;flex:0 0 auto}
-  .ring svg{width:64px;height:64px;transform:rotate(-90deg)}
-  .ring circle{fill:none;stroke-width:6}
-  .ring .trk{stroke:var(--bg-2)}
-  .ring .val{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .8s var(--ease)}
-  .sess.done .ring .val{stroke:var(--ok)}
-  .ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-
-  .doing{margin:16px 20px 0;padding:12px 14px;border-radius:var(--r-2);background:var(--accent-soft);color:var(--accent-soft-ink);display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
-  .sess.quiet .doing{background:var(--bg-2);color:var(--ink-2)} .sess.done .doing{background:var(--ok-soft);color:var(--ok-ink)}
-  .doing .k{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;opacity:.85}
-  .doing .v{font-size:16.5px;font-weight:620;line-height:1.4;color:var(--ink);overflow-wrap:anywhere}
-  .doing .car{display:inline-block;width:7px;height:1em;vertical-align:-2px;margin-left:4px;border-radius:2px;background:var(--accent);animation:blink 1.1s step-end infinite}
-  .sess:not(.working) .doing .car{display:none}
-  @keyframes blink{50%{opacity:0}}
-  .doing .note2{grid-column:2;font-size:13.5px;color:var(--ink-2);line-height:1.5}
-
-  /* wave track: one segment per wave, width ∝ its steps, fill = its progress */
-  .waves{display:flex;gap:14px;margin:18px 20px 0}
-  .wave{flex:calc(var(--n) + 1) 1 0;min-width:96px;display:grid;gap:7px;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
-  .wave .bar{height:8px;border-radius:99px;background:var(--bg-2);border:1px solid var(--line);overflow:hidden}
-  .wave .bar i{display:block;height:100%;width:var(--p);background:var(--accent);border-radius:99px;transition:width .7s var(--ease)}
-  .wave.done .bar i{background:var(--ok)}
-  .wave .wl{display:flex;gap:6px;align-items:baseline;font-size:12.5px;color:var(--ink-3);min-width:0}
-  .wave .wl b{font-weight:650;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-  .wave .wl span{margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .wave.on .wl b{color:var(--accent-text)} .wave.on .bar{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
-
-  /* steps, grouped by wave */
-  .plan{padding:8px 20px 4px}
-  .wgroup{border-top:1px solid var(--line);margin-top:12px;padding-top:4px}
-  .wgroup:first-child{border-top:0;margin-top:6px}
-  .wgh{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:8px 0;font:inherit;color:var(--ink-3);cursor:pointer;text-align:left}
-  .wgh .t{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
-  .wgh.on .t{color:var(--accent-text)}
-  .wgh .c{font-size:12.5px;font-variant-numeric:tabular-nums}
-  .wgh .chev{margin-left:auto;transition:transform var(--t)}
-  .wgh .chev svg{width:15px;height:15px}
-  .wgroup.shut .chev{transform:rotate(-90deg)}
-  .wgroup.shut .steps2{display:none}
-  .steps2{list-style:none;margin:0;padding:0}
-  .st{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:0 10px;padding:7px 0;position:relative;align-items:start}
-  .st+.st::before{content:"";position:absolute;left:11px;top:-7px;height:14px;border-left:2px solid var(--line)}
-  .st .dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--line-2);background:var(--panel);display:flex;align-items:center;justify-content:center;color:#fff;margin-top:-1px}
-  .st .dot svg{width:13px;height:13px}
-  .st.done .dot{background:var(--ok);border-color:var(--ok)}
-  .st.active .dot{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
-  .st.active .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);animation:breathe 1.6s ease-in-out infinite}
-  @keyframes breathe{50%{transform:scale(.6);opacity:.6}}
-  .sess:not(.working) .st.active .dot::after{animation:none}
-  .st.pop .dot{animation:pop .55s var(--spring)}
-  @keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
-  .st .lbl{font-size:15px;line-height:1.45;min-width:0;overflow-wrap:anywhere;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:default;display:block;width:100%}
-  .st .lbl.has{cursor:pointer}
-  .st .lbl .i{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--line-2);font-size:12.5px;font-weight:700;color:var(--ink-3);margin-left:6px;vertical-align:1px;transition:background var(--t-fast),color var(--t-fast)}
-  .st .lbl.has:hover .i,.st.open .lbl .i{background:var(--accent-soft);color:var(--accent-soft-ink);border-color:transparent}
-  .st.pending .lbl{color:var(--ink-3)}
-  .st.done .lbl{color:var(--ink-2)}
-  .st.active .lbl{font-weight:650;color:var(--ink)}
-  .st .tm{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:2px}
-  .st.active .tm{color:var(--accent-text);font-weight:650}
-  .st .desc{grid-column:2 / 4;font-size:14px;line-height:1.55;color:var(--ink-2);margin-top:5px;padding:9px 12px;border-radius:var(--r-1);background:var(--bg-2);border:1px solid var(--line);display:none;overflow-wrap:anywhere}
-  .st.open .desc,.st.active .desc{display:block}
-  .st.active .desc{background:var(--panel);border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
 
   /* shipped features + screens + story */
   .blk{padding:14px 20px 0}
@@ -134,8 +52,6 @@
   .tail .ev .txt{font-size:14px;color:var(--ink-2)}
   .tail .ev.phase .txt,.tail .ev.verdict .txt{font-weight:650;color:var(--ink)}
   .tail .ev .when{font-size:12.5px;color:var(--ink-3);margin-left:6px;white-space:nowrap}
-  .sess .card-f{margin-top:18px}
-  .sess .card-f .meta{margin-left:auto}
 
   /* pulse — every move, across every session */
   .pulse{position:sticky;top:calc(var(--topbar) + 16px)}
@@ -161,29 +77,6 @@
   .sevt{font-size:12.5px;font-weight:700;padding:1px 6px;border-radius:5px;margin-right:6px;vertical-align:1px}
   .sevt.critical{background:var(--sev-critical-soft);color:var(--sev-critical-ink)} .sevt.high{background:var(--sev-high-soft);color:var(--sev-high-ink)}
   .sevt.medium{background:var(--sev-medium-soft);color:var(--sev-medium-ink)} .sevt.low{background:var(--sev-low-soft);color:var(--sev-low-ink)} .sevt.info{background:var(--info-soft);color:var(--info-ink)}
-
-  /* at a glance: one lane per session, so many things at once stay readable */
-  .lanes{margin-bottom:22px}
-  .lanes .card-h .meta{margin-left:auto}
-  .lane{display:grid;grid-template-columns:4px auto minmax(0,1.2fr) minmax(0,1.5fr) 168px 176px;gap:14px;align-items:center;padding:12px 16px 12px 0;border-top:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background var(--t-fast)}
-  .lane:first-child{border-top:0}
-  .lane:hover{background:var(--bg-2)}
-  .lane .stripe{align-self:stretch;border-radius:0 3px 3px 0;background:hsl(var(--h) 65% 55%)}
-  .lane.quiet .stripe{background:var(--line-2)}
-  .lane .who{min-width:0}
-  .lane .who b{display:block;font-size:13px;font-weight:650;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .lane .who span{display:block;font-size:15px;font-weight:650;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .lane .where{min-width:0;display:grid;gap:3px}
-  .lane .where .step{font-size:14.5px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;padding:0}
-  .lane .where .step::before{display:none}
-  .lane .where .act{font-size:13.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px;min-width:0}
-  .lane .where .act span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .lane .where .act svg{width:14px;height:14px;flex:0 0 auto}
-  .lane .pr{display:grid;gap:5px;font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
-  .lane .pr .progress{height:6px}
-  .lane .pr .progress>i{background:hsl(var(--h) 65% 50%)}
-  @media (max-width:1180px){.lane{grid-template-columns:4px auto minmax(0,1.1fr) minmax(0,1.4fr) 150px}.lane>.state{display:none}}
-  @media (max-width:820px){.lane{grid-template-columns:4px auto minmax(0,1fr) auto}.lane>.state{display:inline-flex}.lane .where{grid-column:3 / 5;grid-row:2}.lane .pr{display:none}.lane .stripe{grid-row:1 / 3}.lane .who span{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
 
   /* follow along: every action the agent takes, under the step it belongs to */
   .follow{margin:12px 20px 0;border:1px solid var(--line);border-radius:var(--r-2);background:var(--panel-2)}
@@ -237,19 +130,8 @@
   .state.waiting{background:var(--info-soft);color:var(--info-ink)} .state.waiting .pip{background:var(--info);box-shadow:none}
   .state.needs{background:var(--danger-soft);color:var(--danger-ink)} .state.needs .pip{background:var(--danger);box-shadow:none}
   .state.ended{background:var(--bg-2);color:var(--ink-3);border:1px solid var(--line)} .state.ended .pip{background:var(--line-2);box-shadow:none}
-  .sess.waiting::before{background:linear-gradient(90deg,var(--info),hsl(var(--h) 60% 62%))} .sess.needs::before{background:var(--danger)} .sess.ended::before{background:var(--line-2)}
-  .sess.waiting .doing{background:var(--info-soft);color:var(--info-ink)} .sess.needs .doing{background:var(--danger-soft);color:var(--danger-ink)} .sess.ended .doing{background:var(--bg-2);color:var(--ink-2)}
-  .sess.waiting .ring .val{stroke:var(--info)}
   .chipk{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:99px;background:var(--bg-2);border:1px solid var(--line);font-size:12.5px;font-weight:650;color:var(--ink-2)}
   .chipk svg{width:13px;height:13px}
-  .you{margin:16px 20px 0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:baseline;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-2);background:var(--panel)}
-  .you .k,.recap .k{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
-  .you .v{font-size:15px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .you.open .v{display:block}
-  .you .w{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
-  .you .more{grid-column:2;justify-self:start}
-  .recap{margin:12px 20px 0;padding:12px 14px;border-radius:var(--r-2);background:var(--bg-2);display:grid;gap:4px}
-  .recap .v{font-size:14.5px;line-height:1.55;color:var(--ink-2);overflow-wrap:anywhere}
   .helpers{display:flex;flex-wrap:wrap;gap:8px;margin:12px 20px 0;align-items:center}
   .helpers .hl{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-right:2px}
   .helper{display:inline-flex;align-items:center;gap:7px;min-height:30px;padding:4px 11px 4px 9px;border-radius:99px;border:1px solid var(--line);background:var(--panel);font-size:13.5px;color:var(--ink-2);max-width:100%;min-width:0}
@@ -259,37 +141,30 @@
   .earlier{display:flex;align-items:center;gap:8px;width:100%;margin-top:6px;padding:10px 0;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;font-size:13.5px;color:var(--ink-3);cursor:pointer;text-align:left}
   .earlier b{color:var(--ink-2);font-weight:650} .earlier svg{width:15px;height:15px;color:var(--ok);flex:0 0 auto}
   .earlier:hover b{color:var(--accent-text)}
-  .lane .pr .pc{font-weight:700;color:var(--ink);font-size:13.5px}
-  .lane .who .lpc{display:none;font-style:normal;color:var(--ink-2)}
-  .lane .who b{display:flex;min-width:0} .lane .who b .an{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
   @media (max-width:820px){.lane .who .lpc{display:inline;flex:0 0 auto;white-space:pre} .lane .state .bt{display:none}}
-  .lane .pr>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lane>.state{justify-self:end}
   .pv .txt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .lane.waiting .stripe{background:var(--info)} .lane.needs .stripe{background:var(--danger)}
-  .keybar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;margin-bottom:18px}
-  .keybar .gx{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-soft-ink)}
-  .keybar .gx svg{width:17px;height:17px}
   .keybar b{display:block;font-size:15px;color:var(--ink)} .keybar p{margin:2px 0 0;font-size:14px;color:var(--ink-2);line-height:1.5}
   .keybar form{display:flex;gap:8px;flex-wrap:wrap;align-items:center} .keybar .input{width:220px;max-width:100%}
   .keybar .keyacts{display:flex;gap:8px;align-items:center;flex-wrap:wrap} .keybar form{grid-column:1/-1;justify-content:flex-end} .keybar form[hidden]{display:none}
-  .keybar .bad{grid-column:2 / 4;font-size:13.5px;color:var(--danger-ink)}
-  @media (max-width:760px){.keybar{grid-template-columns:minmax(0,1fr)} .keybar .gx{display:none} .keybar .bad{grid-column:1}}
+  .keybar .bad{grid-column:1 / -1;font-size:13.5px;color:var(--danger-ink)}
   .group-gap{margin-top:26px}
-  @media (max-width:600px){
-    .you,.recap,.helpers{margin-left:16px;margin-right:16px}
-    .sess-top{grid-template-columns:minmax(0,1fr) auto;padding:16px 16px 0}
-    .sess-top>.avatar{display:none}
-    .sess-top .ring,.sess-top .ring svg{width:46px;height:46px} .sess-top .ring b{font-size:12.5px}
-    .now-stats{gap:8px} .now-stats .stat{padding:12px 14px} .now-stats .stat .d{display:none} .now-stats .stat .n{font-size:22px}
-    .doing,.waves{margin-left:16px;margin-right:16px} .plan,.blk{padding-left:16px;padding-right:16px}
-    .waves{flex-wrap:wrap} .wave{flex:1 1 40%}
-    .sess-title{font-size:18px}
-  }
+
+  /* wave groups inside a steps ledger */
+  .wgroup{border-top:1px solid var(--line);margin-top:12px;padding-top:4px}
+  .wgroup:first-child{border-top:0;margin-top:6px}
+  .wgh{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:8px 0;font:inherit;color:var(--ink-3);cursor:pointer;text-align:left}
+  .wgh .t{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+  .wgh.on .t{color:var(--accent-text)}
+  .wgh .c{font-size:12.5px;font-variant-numeric:tabular-nums}
+  .wgh .chev{margin-left:auto;transition:transform var(--t)}
+  .wgh .chev svg{width:15px;height:15px}
+  .wgroup.shut .chev{transform:rotate(-90deg)}
+  .wgroup.shut .steps2{display:none}
+  @keyframes blink{50%{opacity:0}}
 
   /* ---- one session: an editorial spec sheet, hairlines not boxes (study: Awwwards Sites of the Day, Oct–Nov 2026) ---- */
-  .fx{--lab:12.5px;display:grid;gap:0;max-width:1120px}
-  .fx-l{font-family:var(--mono);font-size:var(--lab);font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);line-height:1.4}
+  .fx{display:grid;gap:0;max-width:1120px}
+  .fx-l{font-family:var(--mono);font-size:12.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);line-height:1.4}
   .fx-eye{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
   .fx-eye .an{font-size:15px;font-weight:600;color:var(--ink)}
   .fx-eye .pj{font-family:var(--mono);font-size:13px;color:var(--ink-3)}
@@ -346,7 +221,7 @@
   .fx .wgroup{border-top:0;margin:0;padding:0}
   .fx .wgh{padding:18px 0 8px;border-bottom:1px solid var(--line)}
   .fx .wgh .t,.fx .wgh .c{font-family:var(--mono);font-weight:500;letter-spacing:.06em;color:var(--ink-3);font-size:12.5px}
-  .fx .wgh .c{letter-spacing:0} .fx .wgh.on .t{color:var(--ink)}
+  .fx .wgh .c{letter-spacing:0} .fx .wgh.on .t{color:var(--ink)} .fx .wgh .t{text-transform:uppercase}
   .fx-steps{list-style:none;margin:0;padding:0}
   .fxs{border-bottom:1px solid var(--line)}
   .fxs-row{display:grid;grid-template-columns:18px 24px minmax(0,1fr) minmax(70px,120px) 62px 16px;gap:10px;align-items:center;width:100%;min-height:46px;padding:9px 0;background:none;border:0;font:inherit;color:inherit;text-align:left}
@@ -402,6 +277,113 @@
     .fxs .gantt{grid-column:3 / 6;grid-row:2;height:4px;margin-bottom:2px}
     .fxs-more{padding-left:0}
   }
+
+  /* ---- the board: same parts as a session, no boxes ---- */
+  #head.nx-head{margin-bottom:30px;align-items:flex-start}
+  #liveH,.pulse>.fx-h{min-height:48px;align-items:flex-end}
+  #head.nx-head h1{font-size:clamp(46px,6.2vw,84px);font-weight:500;letter-spacing:-.04em;line-height:1}
+  #head.nx-head .lead{color:var(--ink-2);font-size:16px;margin-top:14px;max-width:60ch}
+  .guide{margin:-14px 0 24px}
+  .guide .gi{border:0;border-top:1px solid var(--line);border-radius:0;background:none;padding:12px 0}
+  .keybar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:center;padding:14px 0;margin-bottom:24px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .keybar .keyacts{flex-wrap:nowrap}
+  .nx-stats{grid-template-columns:repeat(6,minmax(0,1fr));margin:0 0 48px}
+  .nx-stats dd{font-size:clamp(26px,2.6vw,36px);letter-spacing:-.03em;font-weight:500;line-height:1.1}
+  .nx-stats dd small{font-size:13.5px;letter-spacing:0;white-space:nowrap}
+  .lanes{margin-bottom:48px}
+  .fx-h h3{font-size:17px;font-weight:550;letter-spacing:-.012em;line-height:1.3}
+  .fx-h h3 small{font-size:13.5px;font-weight:400;letter-spacing:0;color:var(--ink-3);margin-left:8px}
+  .fx-h .seg{margin-left:auto;margin-bottom:-3px}
+  .fx-h .fx-l+.seg{margin-left:12px}
+  .lane{display:grid;grid-template-columns:30px minmax(0,1.15fr) minmax(0,1.4fr) 150px 176px;gap:14px;align-items:center;width:100%;padding:13px 0;background:none;border:0;border-bottom:1px solid var(--line);font:inherit;color:inherit;text-align:left;cursor:pointer}
+  .lane:hover .who span{color:var(--accent-text)}
+  .lane .who,.lane .where{min-width:0;display:grid;gap:2px}
+  .lane .who b{display:flex;min-width:0;font-size:13.5px;font-weight:500;color:var(--ink-3)}
+  .lane .who b .an{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .lane .who .lpc{display:none;font-style:normal;color:var(--ink-2);flex:0 0 auto;white-space:pre}
+  .lane .who span:not(.an){font-size:15.5px;font-weight:550;letter-spacing:-.005em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color var(--t-fast)}
+  .lane .where .step{font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;padding:0}
+  .lane .where .step::before{display:none}
+  .lane .where .act{font-size:13.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px;min-width:0}
+  .lane .where .act span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lane .where .act svg{width:14px;height:14px;flex:0 0 auto}
+  .lane .pr{display:grid;gap:6px;font-family:var(--mono);font-size:12.5px;color:var(--ink-3);min-width:0}
+  .lane .pr>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lane .pr .pc{color:var(--ink);font-weight:600}
+  .lane .fx-ticks{height:6px;gap:2px}
+  .lane:not(.working) .fx-ticks i.active{animation:none}
+  .lane>.state{justify-self:end}
+  .now-grid{gap:48px;grid-template-columns:minmax(0,1fr) 300px}
+  .now-grid.tandem{gap:48px}
+  #sessions,#waiting{gap:48px;margin-top:22px}
+  #sessions.tandem,#waiting.tandem{grid-template-columns:repeat(auto-fill,minmax(min(400px,100%),1fr));gap:48px 44px}
+  .group-gap{margin-top:48px}
+  .bx{container-type:inline-size;max-width:none;align-content:start;scroll-margin-top:calc(var(--topbar) + 16px)}
+  .bx.enter{animation:rise .4s var(--ease) both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .bx .fx-hero{margin-top:16px;gap:10px 24px;align-items:start}
+  .bx .fx-title{font-size:clamp(25px,6.4cqw,36px);letter-spacing:-.028em;line-height:1.12;font-weight:500}
+  .bx .fx-title a{color:inherit} .bx .fx-title a:hover{color:var(--accent-text);text-decoration:none}
+  .bx .fx-pct{font-size:56px;letter-spacing:-.05em}
+  .bx .fx-rail{margin-top:18px;gap:8px}
+  .bx .fx-ticks{height:8px}
+  .bx .fx-spec{margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
+  .bx .fx-spec>div{padding:10px 10px 11px 0;gap:4px}
+  .bx .fx-spec>div+div{padding-left:12px}
+  .bx .fx-spec dd{font-size:17px;letter-spacing:-.012em}
+  .bx .fx-spec dd small{font-size:13px}
+  .bx .fx-say{padding:13px 0}
+  .bx .fx-say .v{font-size:17px}
+  .bx .fx-say.sm .v{font-size:14.5px}
+  .bx .fx-sec,.bx .fx-sec+.fx-sec{margin-top:26px}
+  .bx .fx-h{border-bottom-color:var(--line-2)}
+  .bx .acts{padding:6px 0 0} .bx .fx-empty,.bx .acts.empty-acts{padding:10px 0;font-size:14px;color:var(--ink-3)}
+  .bx .feats{padding-top:10px}
+  .bx .strip{padding-top:10px}
+  .bx .fx-ms li{padding:8px 0}
+  .bx .wgh{padding-top:12px}
+  .bx .fxs-row{grid-template-columns:18px 24px minmax(0,1fr) minmax(40px,72px) 58px 16px;min-height:42px}
+  .bx .fxs-more{padding-left:52px}
+  .bx .earlier{margin-top:0}
+  @container (max-width:640px){.fx-wv .wrest{display:none}}
+  .fxs.pop .mk{animation:pop .55s var(--spring)}
+  @keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+  @keyframes breathe{50%{transform:scale(.6);opacity:.6}}
+  .bx-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .bx-foot .up{margin-left:auto;letter-spacing:0;text-transform:none}
+  @container (max-width:520px){
+    .fx-hero{grid-template-columns:minmax(0,1fr) auto}
+    .fx-spec{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .fx-spec>div:nth-child(odd){padding-left:0;border-left:0}
+    .fx-spec>div:nth-child(n+3){border-top:1px solid var(--line)}
+    .fx-say{grid-template-columns:minmax(0,1fr)} .fx-say .note2,.fx-say .more,.fx-say .helpers{grid-column:1}
+    .fxs-row{grid-template-columns:18px 24px minmax(0,1fr) auto 16px;gap:4px 8px}
+    .fxs .gantt{grid-column:3 / 6;grid-row:2;height:4px;margin-bottom:2px}
+    .fxs-more{padding-left:0}
+  }
+  .pulse{position:sticky;top:calc(var(--topbar) + 20px)}
+  .now-grid.tandem .pulse{position:static}
+  .nx-pulse{max-height:calc(100vh - var(--topbar) - 120px);overflow:auto}
+  .now-grid.tandem .nx-pulse{max-height:520px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:0 44px}
+  .pv{border:0;border-bottom:1px solid var(--line);padding:10px 0;grid-template-columns:22px minmax(0,1fr)}
+  .fin{gap:0}
+  .finrow{border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:12px 0}
+  .finrow:hover{transform:none}
+  .finrow:hover .t{color:var(--accent-text)}
+  .nx-none{display:flex;align-items:center;gap:10px;padding:14px 0;margin-top:14px;font-size:15px;color:var(--ink-2)}
+  @media (max-width:1180px){.nx-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.nx-stats>div:nth-child(4){padding-left:0;border-left:0}.nx-stats>div:nth-child(n+4){border-top:1px solid var(--line)}.lane{grid-template-columns:30px minmax(0,1.1fr) minmax(0,1.3fr) 176px}.lane>.pr{display:none}}
+  @media (max-width:1080px){.now-grid{grid-template-columns:minmax(0,1fr)}.pulse{position:static}}
+  @media (max-width:820px){.lane{grid-template-columns:30px minmax(0,1fr) auto;gap:6px 12px}.lane .where{grid-column:2 / 4;grid-row:2}.lane .who .lpc{display:inline}.lane .state .bt{display:none}.lane .who span:not(.an){white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+  @media (max-width:640px){
+    #head.nx-head{align-items:flex-start;flex-wrap:wrap}
+    .keybar{grid-template-columns:minmax(0,1fr)}
+    .nx-stats{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:36px}
+    .nx-stats>div:nth-child(4){padding-left:14px;border-left:1px solid var(--line)}
+    .nx-stats>div:nth-child(n+3){border-top:1px solid var(--line)}
+    .fx-h{flex-wrap:wrap}
+    .lanes .fx-h .fx-l,#liveH .fx-l,#waitWrap .fx-h .fx-l{flex-basis:100%;margin-left:0;text-align:left}
+    .tandem-pick{display:none}
+  }
 </style>
 </head>
 <body>
@@ -437,6 +419,7 @@
   var openSteps = {}, shutWaves = {}, openMore = {}, pmode = 'm';
 
   B.mount({ active: 'now', title: 'Now', crumbs: focusId ? ['Now', 'Session'] : ['Now'] });
+  if (!focusId) document.getElementById('head').classList.add('nx-head');
   if (focusId) { var hd = document.getElementById('head'); hd.classList.add('fx-head'); hd.firstElementChild.innerHTML = '<a class="back" href="/now">' + I('left') + 'Everything in progress</a>'; }
   var cp = document.getElementById('copyPrompt');
   cp.innerHTML = I('copy') + '<span class="cpl">Copy the one prompt</span>'; cp.setAttribute('aria-label', 'Copy the one prompt');
@@ -452,9 +435,9 @@
     var el = document.getElementById('keybar'), k = getKey();
     if (!data || data.owner || (focusId && data.sessions.length)) { el.hidden = true; el.innerHTML = ''; return; }
     if (el.dataset.k === k && !el.hidden) return;
-    el.dataset.k = k; el.hidden = false; el.className = 'card keybar';
+    el.dataset.k = k; el.hidden = false; el.className = 'keybar';
     // signing in is the way in (email + code); an owner key still works, folded away under "Use a key instead"
-    el.innerHTML = '<span class="gx">' + I('lock') + '</span><div><b>Your chats are private</b><p>Sign in with your email to see every chat you have open, with its steps and progress.</p></div>' +
+    el.innerHTML = '<div><b>Your chats are private</b><p>Sign in with your email to see every chat you have open, with its steps and progress.</p></div>' +
       '<div class="keyacts"><button class="btn primary" type="button" id="keysignin">' + I('user') + 'Sign in</button><button class="btn ghost sm" type="button" id="keyuse">Use a key instead</button></div>' +
       '<form id="keyform"' + (k && keyTried === k ? '' : ' hidden') + '><input class="input" id="keyin" type="password" aria-label="Breadledger key" autocomplete="current-password" placeholder="Breadledger key"><button class="btn" type="submit">' + I('eye') + 'Show my chats</button></form>' +
       (k && keyTried === k ? '<span class="bad" role="alert">That key did not open your chats. Check it and try again.</span>' : '');
@@ -466,7 +449,6 @@
   function short(ms){ var m = Math.round(ms/60000); if (m < 1) return '<1 min'; if (m < 60) return m + ' min'; var h = Math.floor(m/60); return h + 'h ' + ('0'+(m%60)).slice(-2) + 'm'; }
   function clock(ts){ var d = new Date(ts); return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2); }
   function when(ts){ var d = new Date(ts), t = new Date(); return d.toDateString() === t.toDateString() ? clock(ts) : d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ' ' + clock(ts); }
-  function ring(pct){ var r = 26, c = 2*Math.PI*r; return '<div class="ring" role="img" aria-label="' + pct + '% done"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="' + r + '"/><circle class="val" cx="32" cy="32" r="' + r + '" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c*(1-pct/100)).toFixed(1) + '"/></svg><b>' + pct + '%</b></div>'; }
   function stateBadge(s){
     if (s.state === 'done') return '<span class="state done"><span class="pip"></span>Finished</span>';
     if (s.state === 'ended') return '<span class="state ended"><span class="pip"></span>Closed</span>';
@@ -544,74 +526,25 @@
     return '<div class="strip">' + list.map(function(x){ return '<figure class="shot" data-shot="' + esc(x.url) + '" data-cap="' + esc(x.label || x.caption || '') + '"><img src="' + esc(x.url) + '" alt="' + esc(x.label || 'Screenshot') + '" loading="lazy"><figcaption>' + (x.stage ? '<span class="ba ' + esc(x.stage) + '">' + esc(x.stage) + '</span>' : '') + '<span class="truncate">' + esc(x.label || x.caption || 'Screen') + '</span></figcaption></figure>'; }).join('') + '</div>';
   }
 
-  // ---------- one session ----------
-  function sessionHTML(s, full){
-    var ws = waves(s), total = (s.tasks || []).length, done = (s.tasks || []).filter(function(t){ return t.status === 'done'; }).length;
-    var pct = total ? Math.round(done / total * 100) : (s.state === 'done' ? 100 : 0);
-    var active = (s.tasks || []).filter(function(t){ return t.status === 'active'; })[0];
-    var named = ws.some(function(w){ return w.name; });
-    var chat = s.kind === 'chat' ? (s.chat || {}) : null, ch = chat || {};
-    var h = '';
-    var stepsLine = active ? 'Step ' + stepNo(s, active) + ' of ' + total : total ? done + ' of ' + total + ' steps done' : (chat ? 'No step list yet' : '0 steps yet');
-    // a chat's clock is the message it is answering, not how long the chat has been open
-    var clockLine = chat
-      ? (s.state === 'working' || s.state === 'quiet' || s.state === 'needs'
-          ? (ch.askAt ? '<span>this message <span data-since="' + ch.askAt + '">' + dur(now() - ch.askAt) + '</span></span>' : '')
-          : (ch.askAt && ch.endAt && ch.endAt >= ch.askAt ? '<span>worked ' + short(ch.endAt - ch.askAt) + ' on your last message</span>' : ''))
-      : (s.state === 'done' ? '<span>took ' + short(s.updated - s.started) + '</span>' : '<span><span data-since="' + s.started + '">' + dur(now() - s.started) + '</span> on the clock</span>');
-    h += '<div class="sess-top">' + B.avatar(s.app || s.project, 'lg') +
-      '<div><div class="sess-who"><b>' + esc(s.app || s.project || 'Project') + '</b>' +
-        (chat ? '<span class="chipk">' + aIco('chat') + 'Chat</span>' + (ch.turns ? '<span>· ' + ch.turns + ' message' + (ch.turns === 1 ? '' : 's') + ' from you</span>' : '') + (ch.plan === 'aprizely' ? '<span>· plan from its Aprizely board</span>' : '')
-              : (s.project && s.project !== s.app ? '<span>· ' + esc(s.project) + '</span>' : '')) + '</div>' +
-      '<h2 class="sess-title">' + (full ? esc(s.title) : '<a href="/now/' + encodeURIComponent(s.id) + '">' + esc(s.title) + '</a>') + '</h2>' +
-      '<div class="sess-meta">' + stateBadge(s) + '<span>' + stepsLine + '</span>' + (clockLine ? '<span class="sep">·</span>' + clockLine : '') +
-        (eta(s) ? '<span class="sep">·</span><span>' + esc(eta(s)) + '</span>' : '') +
-        (s.progress ? '<span class="sep">·</span><span>' + B.fmtN(s.progress.done) + '/' + B.fmtN(s.progress.total) + ' ' + esc(s.progress.label || '') + '</span>' : '') +
-        '<span class="sep">·</span><span>' + (chat ? 'open since ' : 'started ') + when(s.started) + '</span></div></div>' + (chat && !total ? '' : ring(pct)) + '</div>';
-    if (chat && s.you) { var yk = s.id + '|y', long = s.you.text.length > 230;
-      h += '<div class="you' + (openMore[yk] ? ' open' : '') + '"><span class="k">You asked</span><span class="v">' + esc(s.you.text) + '</span><span class="w" data-ago="' + s.you.ts + '">' + B.ago(s.you.ts - skew) + '</span>' +
-        (long && !openMore[yk] ? '<button class="more" type="button" data-more="' + esc(yk) + '">Show all</button>' : '') + '</div>'; }
-    var doingK = { done: 'Done', ended: 'Closed', waiting: 'Your turn', needs: 'Needs you' }[s.state] || 'Now';
-    var doingV = chat && (s.state === 'working' || s.state === 'quiet') && s.acts && s.acts[0] ? s.acts[0].text : (s.current || (active && active.text) || 'Getting started');
-    h += '<div class="doing"><span class="k">' + doingK + '</span><span class="v">' + esc(doingV) + '<span class="car"></span></span>' +
-      (s.note ? '<span class="note2">' + esc(s.note) + '</span>' : '') + '</div>';
-    if (chat && ch.recap && s.state !== 'working') h += '<div class="recap"><span class="k">Its last reply</span><span class="v">' + esc(ch.recap) + '</span></div>';
-    if (chat && (ch.helpers || []).length) h += '<div class="helpers"><span class="hl">Helper agents</span>' + ch.helpers.map(function(x){
-      return '<span class="helper' + (x.done ? '' : ' run') + '" title="' + esc(x.d) + '">' + (x.done ? I('check') : '<span class="pip live"></span>') + '<span>' + esc(x.d) + '</span></span>'; }).join('') + '</div>';
-    if (!full && s.state !== 'done' && s.state !== 'waiting' && s.state !== 'ended') {
-      var acts = s.acts || [];
-      h += '<div class="follow" aria-label="Follow along"><div class="follow-h">' + aIco('eye') + 'Follow along' +
-        (active ? '<span class="in">— inside step ' + stepNo(s, active) + ': ' + esc(active.text) + '</span>' : '') +
-        '<span class="n">' + (s.actCount ? B.fmtN(s.actCount) + ' action' + (s.actCount === 1 ? '' : 's') + ' so far' : '') + '</span></div>' +
-        actsList(acts.slice(0, 6), { showStep: true, empty: 'Each thing the agent does — reading a file, editing, running the tests, checking a page — appears here the moment it happens.' }) + '</div>';
+  // ---------- one session on the board: the session page's parts, compact ----------
+  var pctSeen = {};
+  function bxSec(title, count, body){ return '<section class="fx-sec"><div class="fx-h"><h3>' + title + '</h3>' + (count !== '' ? '<span class="fx-l">' + count + '</span>' : '') + '</div>' + body + '</section>'; }
+  function sessionHTML(s){
+    var chat = s.kind === 'chat' ? (s.chat || {}) : null, ch = chat || {}, active = (s.tasks || []).filter(function(t){ return t.status === 'active'; })[0];
+    var h = fxHero(s, true);
+    if (s.state !== 'done' && s.state !== 'waiting' && s.state !== 'ended') {
+      h += bxSec('Follow along' + (active ? '<small>inside step ' + stepNo(s, active) + '</small>' : ''), s.actCount ? B.fmtN(s.actCount) + ' action' + (s.actCount === 1 ? '' : 's') : '',
+        actsList((s.acts || []).slice(0, 6), { showStep: true, empty: 'Each thing the agent does appears here the moment it happens: reading a file, editing, running the tests, checking a page.' }));
     }
-    if (named && ws.length > 1) h += '<div class="waves" role="list" aria-label="Waves">' + ws.slice(-6).map(function(w){ var p = Math.round(w.done / w.steps.length * 100);
-      return '<button class="wave' + (w.on ? ' on' : '') + (p === 100 ? ' done' : '') + '" role="listitem" style="--n:' + w.steps.length + ';--p:' + p + '%" data-jump="' + esc(s.id) + '|' + w.n + '" title="' + esc(w.name || 'Steps') + ' — ' + w.done + ' of ' + w.steps.length + '"><span class="bar"><i></i></span><span class="wl"><b>' + esc(w.name || 'Steps') + '</b><span>' + w.done + '/' + w.steps.length + '</span></span></button>'; }).join('') + '</div>';
-    var wk = s.id + '|w', fold = !full && ws.length > 4 && !openMore[wk] ? ws.length - 3 : 0;
-    var early = ws.slice(0, fold), eSteps = early.reduce(function(a, w){ return a + w.steps.length; }, 0), eDone = early.reduce(function(a, w){ return a + w.done; }, 0);
-    h += '<div class="plan">' + (fold ? '<button class="earlier" type="button" data-more="' + esc(wk) + '">' + I('checkcircle') + '<span><b>' + fold + ' earlier waves</b> · ' + eDone + ' of ' + eSteps + ' steps done · show them</span></button>' : '') + ws.slice(fold).map(function(w){
-      var key = s.id + '|' + w.n, complete = w.done === w.steps.length;
-      var shut = key in shutWaves ? shutWaves[key] : (!full && complete && ws.length > 1);
-      var wt = w.started ? (w.ended ? short(w.ended - w.started) : '<span data-since="' + w.started + '" data-short>' + short(now() - w.started) + '</span>') : '';
-      return '<div class="wgroup' + (shut ? ' shut' : '') + '" id="w-' + esc(key) + '">' +
-        (named ? '<button class="wgh' + (w.on ? ' on' : '') + '" type="button" data-wave="' + esc(key) + '" aria-expanded="' + !shut + '"><span class="t">' + esc(w.name || 'Steps') + '</span><span class="c">' + w.done + '/' + w.steps.length + (wt ? ' · ' + wt : '') + '</span><span class="chev">' + I('down') + '</span></button>' : '') +
-        '<ol class="steps2">' + w.steps.map(function(x){ var t = x.t, sk = s.id + '|' + x.i, open = full || openSteps[sk];
-          var popped = prev[s.id] && prev[s.id][x.i] && prev[s.id][x.i] !== 'done' && t.status === 'done';
-          var sa = (s.acts || []).filter(function(a){ return a.step === t.text; }), has = t.desc || sa.length;
-          return '<li class="st ' + t.status + (open && has ? ' open' : '') + (popped ? ' pop' : '') + '" data-i="' + x.i + '"><span class="dot">' + (t.status === 'done' ? I('check') : '') + '</span>' +
-            (has ? '<button class="lbl has" type="button" data-step="' + esc(sk) + '" aria-expanded="' + !!(open || t.status === 'active') + '"><span class="stepno">' + (x.i + 1) + '.</span>' + esc(t.text) + '<span class="i" aria-hidden="true">i</span></button>' : '<span class="lbl"><span class="stepno">' + (x.i + 1) + '.</span>' + esc(t.text) + '</span>') +
-            '<span class="tm">' + (sa.length ? '<span class="ac">' + sa.length + (full ? '' : (sa.length >= 40 ? '+' : '')) + ' action' + (sa.length === 1 ? '' : 's') + '</span>' : '') + stepTime(t) + '</span>' +
-            (t.desc ? '<div class="desc">' + esc(t.desc) + '</div>' : '') +
-            (sa.length && (full || t.status !== 'active') ? '<div class="sacts">' + actsList(full ? sa : sa.slice(0, 8)) + '</div>' : '') + '</li>'; }).join('') + '</ol></div>'; }).join('') + '</div>';
-    if (!full) {
-      var feats = s.features || [], fk = s.id + '|f', fmax = openMore[fk] ? 99 : 4;
-      if (feats.length) h += '<div class="blk"><div class="blk-h">Shipped in this session <span class="n">' + feats.length + '</span></div><ul class="feats">' + feats.slice(0, fmax).map(featLI).join('') + '</ul>' + (feats.length > fmax ? '<button class="more" type="button" data-more="' + esc(fk) + '">Show all ' + feats.length + '</button>' : '') + '</div>';
-      if ((s.shots || []).length) h += '<div class="blk"><div class="blk-h">Screens <span class="n">' + s.shots.length + '</span></div>' + thumbs(s.shots.slice(-6)) + '</div>';
-      if (!chat && (s.story || []).length) h += '<div class="blk"><div class="blk-h">Latest moves</div>' + tail(s.story.slice(0, 4), false) + '</div>';
-      h += '<div class="card-f"><a class="btn sm" href="/now/' + encodeURIComponent(s.id) + '">' + I('eye') + 'Open</a>' +
-        (chat ? (ch.live ? '<a class="btn sm ghost" href="' + esc(ch.live) + '" target="_blank" rel="noopener">' + I('external') + 'Aprizely board</a>' : '') + (ch.board ? '<a class="btn sm ghost" href="/now/' + encodeURIComponent(ch.board) + '">' + I('panel') + 'Its board</a>' : '')
-              : '<a class="btn sm ghost" href="/story/' + encodeURIComponent(s.id) + '">' + I('file') + 'Full story</a>') + (s.findings ? '<span class="badge warn">' + s.findings + ' finding' + (s.findings === 1 ? '' : 's') + '</span>' : '') + '<span class="meta">updated <span data-ago="' + s.updated + '">' + B.ago(s.updated - skew) + '</span></span></div>';
-    }
+    h += fxSteps(s, true);
+    var feats = s.features || [], fk = s.id + '|f', fmax = openMore[fk] ? 99 : 4;
+    if (feats.length) h += bxSec('Shipped here', feats.length, '<ul class="feats">' + feats.slice(0, fmax).map(featLI).join('') + '</ul>' + (feats.length > fmax ? '<button class="more" type="button" data-more="' + esc(fk) + '">Show all ' + feats.length + '</button>' : ''));
+    if ((s.shots || []).length) h += bxSec('Screens', s.shots.length, thumbs(s.shots.slice(-6)));
+    if (!chat && (s.story || []).length) h += bxSec('Latest moves', '', '<ul class="fx-ms">' + s.story.slice(0, 4).map(function(e){ return '<li class="k-' + esc(e.kind) + '"><span class="w">' + clock(e.ts) + '</span><div class="txt">' + evText(e) + '</div></li>'; }).join('') + '</ul>');
+    h += '<div class="bx-foot"><a class="btn sm" href="/now/' + encodeURIComponent(s.id) + '">' + I('eye') + 'Open</a>' +
+      (chat ? (ch.live ? '<a class="btn sm ghost" href="' + esc(ch.live) + '" target="_blank" rel="noopener">' + I('external') + 'Aprizely board</a>' : '') + (ch.board ? '<a class="btn sm ghost" href="/now/' + encodeURIComponent(ch.board) + '">' + I('panel') + 'Its board</a>' : '')
+            : '<a class="btn sm ghost" href="/story/' + encodeURIComponent(s.id) + '">' + I('file') + 'Full story</a>') +
+      '<span class="fx-l up">Updated <span data-ago="' + s.updated + '">' + B.ago(s.updated - skew) + '</span></span></div>';
     return h;
   }
   function featLI(f){ return '<li>' + I('checkcircle') + '<span>' + esc(f.title) + (f.status === 'applied' ? '<span class="up">upgraded</span>' : '') + '</span>' + (f.detail ? '<span class="fd">' + esc(f.detail) + '</span>' : '') + '</li>'; }
@@ -623,8 +556,8 @@
   function placeCards(arr, host, keep){
     arr.forEach(function(s, n){
       keep[s.id] = 1; var c = cardEls[s.id], sg = sig(s);
-      if (!c) { c = { el: document.createElement('section') }; c.el.className = 'card sess' + (firstLoad ? '' : ' enter'); c.el.id = 's-' + s.id; cardEls[s.id] = c; }
-      if (c.sig !== sg) { c.el.className = 'card sess ' + s.state + (c.el.classList.contains('enter') ? ' enter' : ''); c.el.style.setProperty('--h', B.hue(s.app || s.project)); c.el.innerHTML = sessionHTML(s, false); c.sig = sg; }
+      if (!c) { c = { el: document.createElement('section') }; c.el.className = 'bx fx' + (firstLoad ? '' : ' enter'); c.el.id = 's-' + s.id; cardEls[s.id] = c; }
+      if (c.sig !== sg) { c.el.className = 'bx fx ' + s.state + (c.el.classList.contains('enter') ? ' enter' : ''); c.el.innerHTML = sessionHTML(s); rollOdo(c.el); c.sig = sg; }
       if (host.children[n] !== c.el) host.insertBefore(c.el, host.children[n] || null);
       prev[s.id] = (s.tasks || []).map(function(t){ return t.status; });
     });
@@ -642,7 +575,7 @@
     document.title = (open.length ? '(' + open.length + ') ' : '') + 'Now · Breadledger';
     if (!open.length && !fin.length) { cardEls = {}; root.innerHTML = startHTML(); wireStart(); return; }
     if (!root.querySelector('#sessions')) {
-      root.innerHTML = '<section class="stats now-stats" id="stats" aria-label="Summary"></section><section class="card lanes" id="lanesWrap" aria-label="At a glance"><div class="card-h">' + I('grid') + 'At a glance<span class="meta" id="lanesMeta"></span></div><div id="lanes"></div></section><div class="now-grid"><div><div class="section-h" id="liveH"><h2>Working now</h2><span class="meta" id="liveMeta"></span><div class="seg tandem-pick" role="group" aria-label="Layout"><button type="button" data-lay="grid">Side by side</button><button type="button" data-lay="list">One column</button></div></div><div id="sessions"></div><div id="emptyLive" hidden></div><section id="waitWrap" class="group-gap" hidden><div class="section-h"><h2>Waiting for you</h2><span class="meta" id="waitMeta"></span></div><div id="waiting"></div></section><section id="finWrap" class="group-gap" hidden><div class="section-h"><h2>Finished in the last day</h2><span class="meta" id="finMeta"></span></div><div class="fin" id="fin"></div></section></div><aside class="card pulse" aria-label="Every move, across every session"><div class="card-h">' + I('activity') + 'Pulse<div class="seg" role="group" aria-label="Show"><button type="button" data-pmode="m" class="' + (pmode === 'm' ? 'on' : '') + '">Milestones</button><button type="button" data-pmode="a" class="' + (pmode === 'a' ? 'on' : '') + '">Every action</button></div></div><div class="card-b" id="pulse"></div></aside></div>';
+      root.innerHTML = '<dl class="fx-spec nx-stats" id="stats" aria-label="Summary"></dl><section class="lanes" id="lanesWrap" aria-label="At a glance"><div class="fx-h"><h2>At a glance</h2><span class="fx-l" id="lanesMeta"></span></div><div id="lanes"></div></section><div class="now-grid"><div class="nx-main"><div class="fx-h" id="liveH"><h2>Working now</h2><span class="fx-l" id="liveMeta"></span><div class="seg tandem-pick" role="group" aria-label="Layout"><button type="button" data-lay="grid">Side by side</button><button type="button" data-lay="list">One column</button></div></div><div id="sessions"></div><div id="emptyLive" hidden></div><section id="waitWrap" class="group-gap" hidden><div class="fx-h"><h2>Waiting for you</h2><span class="fx-l" id="waitMeta"></span></div><div id="waiting"></div></section><section id="finWrap" class="group-gap" hidden><div class="fx-h"><h2>Finished in the last day</h2><span class="fx-l" id="finMeta"></span></div><div class="fin" id="fin"></div></section></div> <aside class="pulse" aria-label="Every move, across every session"><div class="fx-h"><h2>Pulse</h2><div class="seg" role="group" aria-label="Show"><button type="button" data-pmode="m" class="' + (pmode === 'm' ? 'on' : '') + '">Milestones</button><button type="button" data-pmode="a" class="' + (pmode === 'a' ? 'on' : '') + '">Every action</button></div></div><div class="nx-pulse" id="pulse"></div></aside></div>';
       cardEls = {};
     }
     // summary: what is moving, what waits on you, and how far through every plan the work is
@@ -657,7 +590,7 @@
       ['Steps done', stepsDone + '<small>/ ' + steps + '</small>', 'across every plan'],
       ['Overall', (steps ? Math.round(stepsDone / steps * 100) : 0) + '<small>%</small>', 'of every step'],
       ['Actions', B.fmtN(acts), 'tool calls so far']
-    ].map(function(x){ return '<div class="stat plain"><span class="l">' + x[0] + '</span><span class="n">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
+    ].map(function(x){ return '<div title="' + x[2] + '"><dt class="fx-l">' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
     document.getElementById('liveMeta').textContent = [working ? working + ' working' : '', quiet ? quiet + ' quiet' : '', needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' you' : ''].filter(Boolean).join(' · ');
     // several boards at once sit side by side (the Aprizely tandem grid), with Pulse moving underneath; one board stays a column
     var many = live.length + wait.length > 1, tandem = many && layout !== 'list';
@@ -674,12 +607,12 @@
     document.getElementById('waitMeta').textContent = wait.length ? wait.length + ' finished a reply and wait for your next message' : '';
     renderLanes(open);
     var el = document.getElementById('emptyLive'); el.hidden = !!live.length;
-    if (!live.length) el.innerHTML = '<div class="card pad"><div class="row">' + I('checkcircle') + '<span class="grow">' + (wait.length ? 'Nothing is working this second — ' + wait.length + ' chat' + (wait.length === 1 ? ' is' : 's are') + ' waiting for your reply, below.' : 'Nothing is running right now. Send a message in any chat, or say <code>' + PROMPT + '</code> to a coding agent, and its work appears here.') + '</span></div></div>';
+    if (!live.length) el.innerHTML = '<div class="nx-none">' + I('checkcircle') + '<span class="grow">' + (wait.length ? 'Nothing is working this second — ' + wait.length + ' chat' + (wait.length === 1 ? ' is' : 's are') + ' waiting for your reply, below.' : 'Nothing is running right now. Send a message in any chat, or say <code>' + PROMPT + '</code> to a coding agent, and its work appears here.') + '</span></div>';
     // finished
     var fw = document.getElementById('finWrap'); fw.hidden = !fin.length;
     document.getElementById('finMeta').textContent = fin.length ? fin.length + ' session' + (fin.length === 1 ? '' : 's') : '';
     document.getElementById('fin').innerHTML = fin.map(function(s){ var done = (s.tasks || []).filter(function(t){ return t.status === 'done'; }).length;
-      return '<a class="finrow" href="/now/' + encodeURIComponent(s.id) + '">' + B.avatar(s.app || s.project) + '<div style="min-width:0"><div class="t">' + esc(s.title) + '</div><div class="s">' + esc(s.app || s.project) + (s.kind === 'chat' ? ' · chat closed' : '') + ' · ' + done + ' steps · ' + (s.kind === 'chat' ? 'open ' : 'took ') + short(s.updated - s.started) + ((s.features || []).length ? ' · ' + s.features.length + ' features' : '') + ((s.shots || []).length ? ' · ' + s.shots.length + ' screens' : '') + '</div></div><span class="s">' + clock(s.updated) + '</span></a>'; }).join('');
+      return '<a class="finrow" href="/now/' + encodeURIComponent(s.id) + '">' + B.avatar(s.app || s.project) + '<div style="min-width:0"><div class="t">' + esc(s.title) + '</div><div class="s">' + esc(s.app || s.project) + (s.kind === 'chat' ? ' · chat closed' : '') + ' · ' + done + ' steps · ' + (s.kind === 'chat' ? 'open ' : 'took ') + short(s.updated - s.started) + ((s.features || []).length ? ' · ' + s.features.length + ' features' : '') + ((s.shots || []).length ? ' · ' + s.shots.length + ' screens' : '') + '</div></div><span class="s">' + when(s.updated) + '</span></a>'; }).join('');
     renderPulse(list);
     firstLoad = false;
   }
@@ -708,12 +641,12 @@
       var total = (s.tasks || []).length, done = (s.tasks || []).filter(function(t){ return t.status === 'done'; }).length;
       var active = (s.tasks || []).filter(function(t){ return t.status === 'active'; })[0], ws = waves(s), w = ws.filter(function(x){ return x.on; })[0];
       var a = (s.acts || [])[0];
-      return '<button class="lane ' + s.state + '" type="button" data-go="' + esc(s.id) + '" style="--h:' + B.hue(s.app || s.project) + '"><span class="stripe"></span>' + B.avatar(s.app || s.project, 'sm') +
+      return '<button class="lane ' + s.state + '" type="button" data-go="' + esc(s.id) + '"  ">' + B.avatar(s.app || s.project, 'sm') +
         '<span class="who"><b><span class="an">' + esc(s.app || s.project) + '</span>' + (total ? '<i class="lpc"> · ' + Math.round(done / total * 100) + '%</i>' : '') + '</b><span>' + esc(s.title) + '</span></span>' +
         '<span class="where"><span class="step">' + (s.state === 'waiting' ? (s.chat && s.chat.ask ? 'Your turn — ' + esc(s.chat.ask) : 'Your turn — its reply is ready') : s.state === 'needs' ? 'Needs your OK — ' + esc((s.chat && s.chat.need) || 'approve to go on') : active ? 'Step ' + stepNo(s, active) + ' of ' + total + ': ' + esc(active.text) : s.kind === 'chat' && s.you ? 'On your message: ' + esc(s.you.text) : esc(s.current || 'Getting started')) + '</span>' +
           '<span class="act">' + (s.state === 'waiting' && s.chat && s.chat.recap ? I('checkcircle') + '<span>' + esc(s.chat.recap) + '</span>'
             : a ? aIco(a.icon) + '<span>' + esc(a.text) + ' · <span data-ago="' + a.ts + '">' + B.ago(a.ts - skew) + '</span></span>' : '<span>' + esc(s.current || '') + '</span>') + '</span></span>' +
-        '<span class="pr"><span>' + (total ? '<span class="pc">' + Math.round(done / total * 100) + '%</span> · ' : '') + (w && w.name && ws.length > 1 ? 'wave ' + (w.n + 1) + ' of ' + ws.length : total ? done + ' of ' + total + ' done' : 'no step list') + '</span><span class="progress"><i style="width:' + (total ? Math.round(done / total * 100) : 0) + '%"></i></span></span>' +
+        '<span class="pr"><span>' + (total ? '<span class="pc">' + Math.round(done / total * 100) + '%</span> · ' : '') + (w && w.name && ws.length > 1 ? 'wave ' + (w.n + 1) + ' of ' + ws.length : total ? done + ' of ' + total + ' done' : 'no step list') + '</span>' + (total ? '<span class="fx-ticks">' + (s.tasks || []).map(function(t){ return '<i class="' + t.status + '"></i>'; }).join('') + '</span>' : '') + '</span>' +
         stateBadge(s) + '</button>'; }).join('');
   }
   (function guide(){
@@ -735,18 +668,20 @@
   // ---------- focus: one session, everything ----------
   var focusSig = '', fxPct = 0, fxAll = false, openEv = {};
   // a number that rolls to its value, one column per digit (the screen-reader label is on the parent)
+  function rollOdo(el){ requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.querySelectorAll('.odo>span').forEach(function(c){ c.style.transform = 'translateY(-' + (c.dataset.to * 10) + '%)'; }); }); }); }
   function odo(pct, from){
     var str = String(pct), was = String(from); while (was.length < str.length) was = '0' + was;
     return str.split('').map(function(d, i){ var f = +(was[was.length - str.length + i]) || 0; return '<span class="odo" aria-hidden="true"><span data-to="' + d + '" style="transform:translateY(-' + (f * 10) + '%)">' + [0,1,2,3,4,5,6,7,8,9].map(function(n){ return '<b>' + n + '</b>'; }).join('') + '</span></span>'; }).join('');
   }
   function spec(k, v){ return '<div><dt class="fx-l">' + k + '</dt><dd>' + v + '</dd></div>'; }
-  function fxHero(s){
+  function fxHero(s, board){
     var ws = waves(s), tasks = s.tasks || [], total = tasks.length, done = tasks.filter(function(t){ return t.status === 'done'; }).length;
     var pct = total ? Math.round(done / total * 100) : (s.state === 'done' ? 100 : 0), active = tasks.filter(function(t){ return t.status === 'active'; })[0];
     var chat = s.kind === 'chat' ? (s.chat || {}) : null, ch = chat || {}, named = ws.some(function(w){ return w.name; });
     var h = '<div class="fx-eye">' + B.avatar(s.app || s.project, 'sm') + '<span class="an">' + esc(s.app || s.project || 'Project') + '</span>' +
       (chat ? '<span class="chipk">' + aIco('chat') + 'Chat</span>' : (s.project && s.project !== s.app ? '<span class="pj">' + esc(s.project) + '</span>' : '')) + stateBadge(s) + '</div>';
-    h += '<div class="fx-hero"><h1 class="fx-title">' + esc(s.title) + '</h1>' + (chat && !total ? '' : '<div class="fx-pct" role="img" aria-label="' + pct + '% done">' + odo(pct, Math.min(fxPct, pct)) + '<small>%</small></div>') + '</div>';
+    h += '<div class="fx-hero">' + (board ? '<h3 class="fx-title"><a href="/now/' + encodeURIComponent(s.id) + '">' + esc(s.title) + '</a></h3>' : '<h1 class="fx-title">' + esc(s.title) + '</h1>') + (chat && !total ? '' : '<div class="fx-pct" role="img" aria-label="' + pct + '% done">' + odo(pct, board ? Math.min(pctSeen[s.id] || 0, pct) : Math.min(fxPct, pct)) + '<small>%</small></div>') + '</div>';
+    if (board) pctSeen[s.id] = pct;
     if (total) h += '<div class="fx-rail" aria-hidden="' + (named && ws.length > 1 ? 'false' : 'true') + '">' + ws.map(function(w){
       var ticks = '<span class="fx-ticks">' + w.steps.map(function(x){ return '<i class="' + x.t.status + '"></i>'; }).join('') + '</span>';
       if (!(named && ws.length > 1)) return '<div class="fx-wv" style="--n:' + w.steps.length + '">' + ticks + '</div>';
@@ -755,14 +690,14 @@
     if (total) c.push(spec(active ? 'On step' : 'Steps', active ? stepNo(s, active) + '<small>of ' + total + '</small>' : done + '<small>of ' + total + '</small>'));
     if (chat) { if (s.state === 'working' || s.state === 'quiet' || s.state === 'needs') { if (ch.askAt) c.push(spec('This message', '<span data-since="' + ch.askAt + '">' + dur(now() - ch.askAt) + '</span>')); }
       else if (ch.askAt && ch.endAt && ch.endAt >= ch.askAt) c.push(spec('Worked on it', esc(short(ch.endAt - ch.askAt))));
-      if (ch.turns) c.push(spec('From you', ch.turns + '<small>message' + (ch.turns === 1 ? '' : 's') + '</small>')); }
+      if (ch.turns) c.push(board ? spec('Messages', ch.turns) : spec('From you', ch.turns + '<small>message' + (ch.turns === 1 ? '' : 's') + '</small>')); }
     else c.push(s.state === 'done' ? spec('Took', esc(short(s.updated - s.started))) : spec('On the clock', '<span data-since="' + s.started + '">' + dur(now() - s.started) + '</span>'));
-    if (eta(s)) c.push(spec('At this pace', esc(eta(s).replace(' left at this pace', '')) + '<small>left</small>'));
+    if (eta(s)) c.push(board ? spec('Time left', esc(eta(s).replace(' left at this pace', ''))) : spec('At this pace', esc(eta(s).replace(' left at this pace', '')) + '<small>left</small>'));
     if (s.progress) c.push(spec(esc(s.progress.label || 'Progress'), B.fmtN(s.progress.done) + '<small>of ' + B.fmtN(s.progress.total) + '</small>'));
     if (s.findings) c.push(spec('Findings', B.fmtN(s.findings)));
     if (s.actCount) c.push(spec('Actions', B.fmtN(s.actCount)));
     c.push(spec(chat ? 'Open since' : 'Started', esc(when(s.started))));
-    h += '<dl class="fx-spec">' + c.join('') + '</dl>';
+    h += '<dl class="fx-spec">' + (board ? c.slice(0, 4) : c).join('') + '</dl>';
     if (chat && s.you) { var yk = s.id + '|y', long = s.you.text.length > 230;
       h += '<div class="fx-say sm' + (openMore[yk] ? ' open' : '') + '"><span class="fx-l">You asked</span><span class="v clamp">' + esc(s.you.text) + '</span>' + (long && !openMore[yk] ? '<button class="more" type="button" data-more="' + esc(yk) + '">Show all</button>' : '') + '</div>'; }
     var doingK = { done: 'Done', ended: 'Closed', waiting: 'Your turn', needs: 'Needs you' }[s.state] || 'Now';
@@ -775,25 +710,27 @@
     return h;
   }
   // the ledger of steps: each with its note, and a bar placed where it really happened in the session's time
-  function fxSteps(s){
+  function fxSteps(s, board){
     var tasks = s.tasks || [], ws = waves(s), named = ws.some(function(w){ return w.name; });
     if (!tasks.length) return '';
     var ends = tasks.map(function(t){ return t.doneAt || 0; }), last = s.state === 'done' ? Math.max.apply(null, ends.concat([s.updated])) : now(), span = Math.max(1000, last - s.started);
     var timed = tasks.filter(function(t){ return t.status === 'done' && t.startedAt && t.doneAt; }), instant = timed.filter(function(t){ return t.doneAt - t.startedAt < 1000; });
     var hasNote = tasks.some(function(t, i){ return t.desc || (s.acts || []).some(function(a){ return a.step === t.text; }); });
-    var h = '<section class="fx-sec" aria-label="Every step"><div class="fx-h"><h2>Every step</h2>' + (hasNote ? '<button class="more" type="button" data-fxall="1">' + (fxAll ? 'Hide the notes' : 'Show every note') + '</button>' : '') + '<span class="fx-l tw">Where the time went</span></div>';
+    var hd = board ? 'h3' : 'h2', wk = s.id + '|w', fold = board && ws.length > 4 && !openMore[wk] ? ws.length - 3 : 0, early = ws.slice(0, fold);
+    var h = '<section class="fx-sec" aria-label="Every step"><div class="fx-h"><' + hd + '>Every step</' + hd + '>' + (hasNote && !board ? '<button class="more" type="button" data-fxall="1">' + (fxAll ? 'Hide the notes' : 'Show every note') + '</button>' : '') + '<span class="fx-l tw">Where the time went</span></div>';
     if (timed.length > 2 && instant.length >= timed.length / 2) h += '<p class="fx-cap">' + instant.length + ' of ' + timed.length + ' steps were ticked off within a second, so the time shows on the others.</p>';
-    h += ws.map(function(w){ var key = s.id + '|' + w.n, shut = !!shutWaves[key];
+    if (fold) h += '<button class="earlier" type="button" data-more="' + esc(wk) + '">' + I('checkcircle') + '<span><b>' + fold + ' earlier waves</b> · ' + early.reduce(function(a, w){ return a + w.done; }, 0) + ' of ' + early.reduce(function(a, w){ return a + w.steps.length; }, 0) + ' steps done · show them</span></button>';
+    h += ws.slice(fold).map(function(w){ var key = s.id + '|' + w.n, shut = key in shutWaves ? shutWaves[key] : (!!board && w.done === w.steps.length && ws.length > 1);
       var wt = w.started ? (w.ended ? short(w.ended - w.started) : '<span data-since="' + w.started + '" data-short>' + short(now() - w.started) + '</span>') : '';
       return '<div class="wgroup' + (shut ? ' shut' : '') + '" id="w-' + esc(key) + '">' + (named ? '<button class="wgh' + (w.on ? ' on' : '') + '" type="button" data-wave="' + esc(key) + '" aria-expanded="' + !shut + '"><span class="t">' + esc(w.name || 'Steps') + '</span><span class="c">' + w.done + '/' + w.steps.length + (wt ? ' · ' + wt : '') + '</span><span class="chev">' + I('down') + '</span></button>' : '') +
         '<ol class="fx-steps steps2">' + w.steps.map(function(x){ var t = x.t, sk = s.id + '|' + x.i, sa = (s.acts || []).filter(function(a){ return a.step === t.text; }), has = t.desc || sa.length;
-          var open = has && (fxAll || (sk in openSteps ? openSteps[sk] : t.status === 'active'));
+          var popped = prev[s.id] && prev[s.id][x.i] && prev[s.id][x.i] !== 'done' && t.status === 'done', open = has && ((!board && fxAll) || (sk in openSteps ? openSteps[sk] : t.status === 'active'));
           var st = t.startedAt ? Math.max(0, t.startedAt - s.started) : null, en = t.status === 'done' ? t.doneAt : t.status === 'active' ? last : null;
           var bar = st != null && en ? '<i style="left:' + Math.min(100, st / span * 100).toFixed(2) + '%;width:' + Math.min(100 - st / span * 100, (en - t.startedAt) / span * 100).toFixed(2) + '%"></i>' : '';
           var tm = t.status === 'done' && t.startedAt && t.doneAt && t.doneAt - t.startedAt < 1000 ? '&lt;1s' : stepTime(t);
           var row = '<span class="mk">' + (t.status === 'done' ? I('check') : t.status === 'active' ? '<span class="pip live"></span>' : '') + '</span><span class="no">' + ('0' + (x.i + 1)).slice(-2) + '</span><span class="nm">' + esc(t.text) + '</span><span class="gantt" aria-hidden="true">' + bar + '</span><span class="tm">' + tm + '</span>';
-          return '<li class="fxs ' + t.status + (open ? ' open' : '') + '" data-i="' + x.i + '">' + (has ? '<button class="fxs-row" type="button" data-fxstep="' + esc(sk) + '" aria-expanded="' + !!open + '">' + row + '<span class="cv">' + I('down') + '</span></button>' : '<div class="fxs-row">' + row + '<span></span></div>') +
-            (has ? '<div class="fxs-more">' + (t.desc ? '<p>' + esc(t.desc) + '</p>' : '') + (sa.length ? actsList(sa) : '') + '</div>' : '') + '</li>'; }).join('') + '</ol></div>'; }).join('');
+          return '<li class="fxs ' + t.status + (open ? ' open' : '') + (popped ? ' pop' : '') + '" data-i="' + x.i + '">' + (has ? '<button class="fxs-row" type="button" data-fxstep="' + esc(sk) + '" aria-expanded="' + !!open + '">' + row + '<span class="cv">' + I('down') + '</span></button>' : '<div class="fxs-row">' + row + '<span></span></div>') +
+            (has ? '<div class="fxs-more">' + (t.desc ? '<p>' + esc(t.desc) + '</p>' : '') + (sa.length ? actsList(board ? sa.slice(0, 8) : sa) : '') + '</div>' : '') + '</li>'; }).join('') + '</ol></div>'; }).join('');
     return h + '</section>';
   }
   function fxMilestones(s){
@@ -820,7 +757,7 @@
     var steps = fxSteps(s), from = fxPct, r0 = window.scrollY;
     root.innerHTML = '<article class="fx ' + s.state + '" style="--h:' + B.hue(s.app || s.project) + '">' + fxHero(s) + (steps ? '<div class="fx-cols"><div>' + steps + '</div><div class="fx-side">' + right + '</div></div>' : '<div class="fx-side" style="margin-top:44px">' + right + '</div>') + '</article>';
     var tasks = s.tasks || []; fxPct = tasks.length ? Math.round(tasks.filter(function(t){ return t.status === 'done'; }).length / tasks.length * 100) : (s.state === 'done' ? 100 : 0);
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){ root.querySelectorAll('.odo>span').forEach(function(c){ c.style.transform = 'translateY(-' + (c.dataset.to * 10) + '%)'; }); }); });
+    rollOdo(root);
     if (from) window.scrollTo(0, r0);
     prev[s.id] = (s.tasks || []).map(function(t){ return t.status; });
   }
@@ -849,7 +786,7 @@
   // ---------- events ----------
   root.addEventListener('click', function(ev){
     var t = ev.target.closest('[data-fxstep],[data-fxall],[data-ev],[data-step],[data-wave],[data-jump],[data-more],[data-go],[data-shot],[data-pmode]'); if (!t) return;
-    if (t.dataset.fxstep) { var fl = t.closest('.fxs'), fo = !fl.classList.contains('open'); openSteps[t.dataset.fxstep] = fo; fl.classList.toggle('open', fo); t.setAttribute('aria-expanded', fo); return; }
+    if (t.dataset.fxstep) { var fl = t.closest('.fxs'), fo = !fl.classList.contains('open'); openSteps[t.dataset.fxstep] = fo; fl.classList.toggle('open', fo); t.setAttribute('aria-expanded', fo); var c0 = cardEls[t.dataset.fxstep.split('|')[0]]; if (c0) c0.sig = ''; return; }
     if (t.dataset.fxall) { fxAll = !fxAll; openSteps = {}; focusSig = ''; render(); return; }
     if (t.dataset.ev) { var el0 = t.closest('li'), eo = !el0.classList.contains('open'); openEv[t.dataset.ev] = eo; el0.classList.toggle('open', eo); t.setAttribute('aria-expanded', eo); return; }
     if (t.dataset.pmode) { pmode = t.dataset.pmode; Array.prototype.forEach.call(t.parentNode.children, function(b){ b.classList.toggle('on', b === t); }); renderPulse(data.sessions); return; }
