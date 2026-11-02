@@ -19,6 +19,7 @@
   .views::-webkit-scrollbar{display:none}
   .views .seg{display:inline-flex;min-width:max-content}
   @media (max-width:900px){.views{display:block}}
+  @media (max-width:400px){.views{margin:0 -12px 12px;padding:0 12px}}   /* matches the page's narrower gutter */
   .view-head{display:grid;gap:10px;margin-bottom:12px}
   .view-head .card-b{display:grid;gap:10px}
   .tally{display:flex;gap:6px;flex-wrap:wrap}
@@ -313,7 +314,7 @@
   function updateProgress() { var done = BUGS.filter(isDone).length, pct = BUGS.length ? Math.round(done / BUGS.length * 100) : 0; var f = $('#barfill'), l = $('#progline'); if (f) f.style.width = pct + '%'; if (l) l.textContent = B.fmtN(done) + ' of ' + B.fmtN(BUGS.length) + ' checked · ' + pct + '%'; }
 
   /* ---------- overview dashboard ---------- */
-  var ACTIVITY = null, LIVE = [];
+  var ACTIVITY = null, LIVE = [], AGENTS = 0;
   var CATCOL = { crash: '#e5484d', 'data-loss': '#d1620a', logic: '#6b5cff', ui: '#2f6feb', security: '#b4227a', performance: '#0e8a6e', race: '#8a5cf6', sync: '#0a7ea4', auth: '#c0392b', other: '#6b7280', privacy: '#a3391f', claims: '#9a6700', accessibility: '#1f7a8c', observability: '#4b5fc7', testing: '#5b7a1f', seo: '#7a4fbf', ux: '#0e7490' };
   function sevCounts(list) { var c = { critical: 0, high: 0, medium: 0, low: 0 }; list.forEach(function (b) { c[b._sev] = (c[b._sev] || 0) + 1; }); return c; }
   function sevBar(list, cls) { var c = sevCounts(list), n = list.length || 1; return '<div class="sevbar' + (cls ? ' ' + cls : '') + '" aria-label="Severity split">' + ['critical', 'high', 'medium', 'low'].map(function (k) { return c[k] ? '<i class="' + k + '" style="width:' + (c[k] / n * 100).toFixed(1) + '%" title="' + c[k] + ' ' + k + '"></i>' : ''; }).join('') + '</div>'; }
@@ -349,7 +350,7 @@
       '</div></div>' +
       '<div class="card"><div class="card-h">' + icon('activity') + 'Last 30 days<span class="meta">' + (ACTIVITY ? B.fmtN(nAdd) + ' added · ' + B.fmtN(nChk) + ' checks · ' + B.fmtN(nSes) + ' sessions' : 'loading…') + '</span></div><div class="card-b stack">' +
         (ACTIVITY ? B.areaChart(series, { label: 'Ledger activity per day, last 30 days', unit: 'events' }) : '<div class="skeleton"><div class="sk"><i style="width:60%"></i></div><div class="sk"><i style="width:80%"></i></div><div class="sk"><i style="width:50%"></i></div></div>') +
-        '<div class="row wrap">' + (LIVE.length ? '<span class="badge ok"><span class="pip live"></span>' + LIVE.length + ' agent' + (LIVE.length > 1 ? 's' : '') + ' working now</span><a class="btn sm" href="/live">' + icon('live') + 'Watch</a>' : '<span class="badge"><span class="pip off"></span>No agent working right now</span><a class="btn sm ghost" href="/live">' + icon('live') + 'Live board</a>') + '<a class="btn sm ghost" href="/timeline">' + icon('activity') + 'Activity</a></div>' +
+        '<div class="row wrap">' + (AGENTS ? '<span class="badge ok"><span class="pip live"></span>' + AGENTS + ' agent' + (AGENTS > 1 ? 's' : '') + ' working now</span><a class="btn sm" href="/live">' + icon('live') + 'Watch</a>' : '<span class="badge"><span class="pip off"></span>No agent working right now</span><a class="btn sm ghost" href="/live">' + icon('live') + 'Live board</a>') + '<a class="btn sm ghost" href="/timeline">' + icon('activity') + 'Activity</a></div>' +
       '</div></div></div>';
     h += '<div class="section-h"><h2>Apps</h2><span class="meta">' + appOrder.length + ' apps · click one to open its bugs</span></div><div class="apps-grid">' + appOrder.slice(0, 12).map(function (a) { var l = apps[a], d = l.filter(isDone).length, pct = Math.round(d / l.length * 100); return '<button class="app-card" type="button" data-ovapp="' + esc(a) + '"><div class="top">' + B.avatar(a, 'lg') + '<span class="name">' + esc(a) + '</span><span class="cnt num">' + l.length + '</span></div>' + sevBar(l) + '<div class="foot"><span class="progress sm ok"><i style="width:' + pct + '%"></i></span><span class="num">' + d + '/' + l.length + ' re-verified</span></div></button>'; }).join('') + '</div>' +
       (appOrder.length > 12 ? '<div class="row" style="margin-top:10px"><button class="btn sm ghost" type="button" data-goview="bugs">' + icon('ledger') + 'All ' + appOrder.length + ' apps in the Bugs view</button></div>' : '');
@@ -491,9 +492,9 @@
   function liveTick() {
     if (document.hidden) return;
     fetch('/api/sessions?active=1&limit=5', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
-      var live = (d.sessions || []).filter(function (s) { return s.live; }), n = $('#livenote'); var was = LIVE.length; LIVE = live; if (st.view === 'overview' && was !== live.length && ACTIVITY) render();
-      if (!live.length) { n.hidden = true; return; }
-      var s = live[0]; n.innerHTML = '<span class="pip live"></span><div><b>' + esc(s.app) + '</b> · ' + esc((s.current || '').replace(/[<>&]/g, '')) + (live.length > 1 ? ' <span class="muted">+' + (live.length - 1) + ' more</span>' : '') + '</div><a class="btn sm" href="/live">' + icon('live') + 'Watch</a>'; n.hidden = false;
+      var c = d.counts || { agents: 0, boards: 0 }, n = $('#livenote'), was = AGENTS; AGENTS = c.agents; LIVE = (d.sessions || []).filter(function (s) { return s.live; }); if (st.view === 'overview' && was !== AGENTS && ACTIVITY) render();
+      if (!c.agents && !c.boards) { n.hidden = true; return; }
+      n.innerHTML = '<span class="pip live"></span><div><b>' + c.agents + ' agent' + (c.agents === 1 ? '' : 's') + ' working now</b>' + (c.boards ? ' <span class="muted">· ' + c.boards + ' board' + (c.boards === 1 ? '' : 's') + ' live</span>' : '') + '</div><a class="btn sm" href="/now">' + icon('live') + 'Watch</a>'; n.hidden = false;
     }).catch(function () {});
   }
 
@@ -610,7 +611,7 @@
   readHash(); filtersH();
   $$('.mic-in').forEach(function (b) { if (!b.innerHTML.trim()) b.innerHTML = icon('mic'); });
   if (/(^|&)new=1/.test(location.hash.slice(1))) { history.replaceState(null, '', location.pathname); setTimeout(openNewFinding, 50); }
-  B.mount({ active: 'ledger', view: st.view, title: 'Ledger', crumbs: ['Ledger'], actions: '<button class="btn" type="button" data-print>' + icon('print') + '<span class="lbl">Print</span></button><button class="btn primary" type="button" data-newfinding>' + icon('plus') + 'New finding <kbd style="margin-left:4px;border-color:transparent;background:rgba(255,255,255,.18);color:#fff">N</kbd></button>' });
+  B.mount({ active: 'ledger', view: st.view, title: 'Ledger', crumbs: ['Ledger'], actions: '<button class="btn" type="button" data-print>' + icon('print') + '<span class="lbl">Print</span></button><button class="btn primary" type="button" data-newfinding aria-label="New finding">' + icon('plus') + '<span class="lbl">New finding</span> <kbd style="margin-left:4px;border-color:transparent;background:rgba(255,255,255,.18);color:#fff">N</kbd></button>' });
   renderStats(); setView(st.view, true);
   if (st.id) openPeek(st.id);
   loadAsync();

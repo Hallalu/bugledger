@@ -107,7 +107,8 @@ svg.ico{width:18px;height:18px;flex:0 0 auto;vertical-align:-4px}
 .bl-top .crumbs{display:flex;align-items:center;gap:6px;min-width:0;font-weight:600;font-size:15.5px}
 .bl-top .crumbs .sep{color:var(--ink-3);opacity:.6}
 .bl-top .crumbs .parent{color:var(--ink-3);font-weight:500}
-.bl-top .actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+/* one row, always: a wrapped row spills out of the fixed-height bar and cuts buttons off */
+.bl-top .actions{margin-left:auto;display:flex;flex-wrap:nowrap;align-items:center;gap:8px}
 .bl-top .search{display:flex;align-items:center;gap:8px;height:36px;padding:0 10px 0 12px;border:1px solid var(--line);background:var(--bg-2);border-radius:var(--r-1);color:var(--ink-3);font:inherit;font-size:14px;cursor:text;min-width:240px;transition:border-color var(--t-fast),background var(--t-fast),box-shadow var(--t-fast)}
 .bl-top .search:hover{border-color:var(--line-2);background:var(--panel);box-shadow:var(--shadow-1)}
 .bl-top .search svg{width:16px;height:16px}
@@ -622,9 +623,23 @@ svg.ico{width:18px;height:18px;flex:0 0 auto;vertical-align:-4px}
   .bl-top .actions .btn:not(.primary) .lbl{display:none}
   .bl-top .actions .btn:not(.primary){width:34px;padding:0}
   .bl-top .actions .btn kbd{display:none}
+  .bl-top .actions{flex:none;gap:6px}
+  .bl-top .actions>*{flex:none}
   .peek{width:100vw}
   .kv{grid-template-columns:1fr}
   .table th{position:static}
+}
+/* phones: a crowded bar keeps every button by showing icons, and "Sign in" keeps its words when there is room */
+@media (max-width:600px){
+  .bl-top{gap:6px}
+  .bl-top .actions .btn.primary:not(.acct-in) .lbl{display:none}
+  .bl-top .actions .btn.primary:not(.acct-in){width:34px;padding:0;justify-content:center}
+  .bl-top .actions:has(>:nth-child(5)) .acct-in .lbl{display:none}
+  .bl-top .actions:has(>:nth-child(5)) .acct-in{width:34px;padding:0;justify-content:center}
+}
+@media (pointer:coarse){
+  .bar-row{min-height:36px}
+  .hero .dismiss{min-width:36px;min-height:36px}
 }
 @media (max-width:400px){
   .bl-content{padding:12px 12px 80px}

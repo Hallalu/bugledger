@@ -588,7 +588,7 @@ async function handle(request, env) {
           return owner || mine ? card : publicCard(card);
         });
         // owner = "you can see your chats" (the owner's key/account, or a signed-in member seeing their own)
-        return json({ ok: true, now, owner: owner || !!me, me: me ? { name: me.name, role: me.role } : null, chats: true, count: out.length, sessions: out });
+        return json({ ok: true, now, owner: owner || !!me, me: me ? { name: me.name, role: me.role } : null, chats: true, count: out.length, sessions: out, counts: await agentCounts(env, now, mine) });
       } catch (e) { return writeErr(e); }
     }
 
@@ -605,7 +605,7 @@ async function handle(request, env) {
         const ownerRead = ownerOK(request, env), mineOnly = new Set((results || []).filter((r) => r.owner_id).map((r) => r.id));
         rows = rows.map((s) => ({ ...(ownerRead || mineOnly.has(s.id) ? s : publicSession(s)), live: s.status === "active" && now - s.updated < 90_000 }));
         if (activeOnly) rows = rows.filter((s) => s.live || (s.status === "active" && now - s.updated < 10 * 60_000));
-        return json({ ok: true, now, count: rows.length, sessions: rows });
+        return json({ ok: true, now, count: rows.length, sessions: rows, counts: await agentCounts(env, now, ownerRead ? null : who(request).user && who(request).user.id) });
       } catch (e) { return writeErr(e); }
     }
     if (pathname === "/api/session" && request.method === "GET") {
@@ -859,6 +859,24 @@ const ownerOK = (request, env) => !env.LEDGER_WRITE_TOKEN || request.headers.get
 const canSee = (row, request, env) => row.owner_id ? !!(who(request).user && who(request).user.id === row.owner_id) : (!isChat(row.id) || ownerOK(request, env));
 // who may write a board or chat: the owner's key/account, or a signed-in member (their own rows only)
 const writer = (request, env) => ownerOK(request, env) ? { owner: true } : who(request).user ? { member: who(request).user.id } : null;
+// How many agents are working, for everyone to read. Numbers only: a chat is one agent, so a chat's own board isn't
+// counted twice; boards are reported beside it. Working = touched in the last 5 minutes and not waiting on a person.
+async function agentCounts(env, now, ownerId) {
+  const q = ownerId
+    ? env.DB.prepare("SELECT id, note, updated FROM sessions WHERE owner_id = ? AND status = 'active' AND updated > ?").bind(ownerId, now - 12 * 3600_000)
+    : env.DB.prepare("SELECT id, note, updated FROM sessions WHERE owner_id IS NULL AND status = 'active' AND updated > ?").bind(now - 12 * 3600_000);
+  const counts = { agents: 0, boards: 0, waiting: 0, needs: 0, at: now };
+  for (const r of (await q.all()).results || []) {
+    const fresh = now - r.updated < 5 * 60_000;
+    if (!isChat(r.id)) { if (fresh) counts.boards++; continue; }
+    const f = (safeParse(r.note, null) || {}).f;
+    if (f === "ended") continue;
+    if (f === "needs") counts.needs++;
+    else if (f === "waiting") counts.waiting++;
+    else if (fresh) counts.agents++;
+  }
+  return counts;
+}
 function mapSession(r) {
   return {
     id: r.id, kind: isChat(r.id) ? "chat" : "board", started: r.started, updated: r.updated, app: r.app, project: r.project,
