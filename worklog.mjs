@@ -209,7 +209,7 @@ if (cmd === "start") {
   if (cmd === "id") { console.log(s.id); process.exit(0); }
   if (cmd === "story") { console.log(storyUrl(s.id)); process.exit(0); }
   if (cmd === "events") {
-    const r = await fetch(`${BASE}/api/story?id=${s.id}`).then((r) => r.json()).catch(() => null);
+    const r = await fetch(`${BASE}/api/story?id=${s.id}`, { headers: { "x-ledger-key": TOKEN } }).then((r) => r.json()).catch(() => null);
     if (!r || !r.ok) die("could not load the story");
     const hms = (t) => { const d = new Date(t), p = (x) => String(x).padStart(2, "0"); return p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds()); }; // local time
     for (const e of r.events) console.log(`${hms(e.ts)}  ${e.kind.padEnd(7)} ${e.severity ? (SEV_ICON[e.severity] || "") + " " : ""}${e.title || ""}${e.status ? "  [" + e.status + "]" : ""}${e.file ? "  " + e.file : ""}`);

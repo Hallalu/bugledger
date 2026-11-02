@@ -6,6 +6,7 @@
 // field written to the append-only ledger is cleaned of hidden / AI-inserted / smuggled
 // Unicode first, so the ledger itself never stores an invisible payload. The "safe" preset
 // keeps emoji and multilingual text intact.
+import { publicCheck, publicEvent, publicSubmitted, publicRollup, publicSession, publicCard } from "./private-findings.mjs";
 import Sanitize from "../public/sanitize.js";
 import { redactPublic } from "./redact.mjs";
 import { handleJournal } from "./journal.mjs";
@@ -330,9 +331,12 @@ async function handle(request, env) {
           env.DB.prepare("SELECT * FROM checks WHERE session_id = ? ORDER BY ts ASC LIMIT 100").bind(id).all(),
           env.DB.prepare("SELECT * FROM submitted WHERE session_id = ? ORDER BY ts ASC LIMIT 200").bind(id).all(),
         ]);
-        const events = (ev.results || []).map(mapEvent);
-        const checks = (ck.results || []).map(mapCheck);
-        const additions = (sb.results || []).map(mapSubmitted);
+        // a member's own row passed canSee above; everyone else without the owner's key gets counts only
+        const full = ownerOK(request, env) || !!row.owner_id;
+        const allEvents = (ev.results || []).map(mapEvent);
+        const events = full ? allEvents : allEvents.map(publicEvent);
+        const checks = (ck.results || []).map(mapCheck).map((c) => full ? c : publicCheck(c));
+        const additions = (sb.results || []).map(mapSubmitted).map((s) => full ? s : publicSubmitted(s));
         // Every earlier scan of the same app that narrated a story → the full lineage (history),
         // each summarised to a rollup. `previous` stays the immediately-preceding one for the
         // progress line. One events query for all of them, grouped in JS.
@@ -351,11 +355,11 @@ async function handle(request, env) {
             ).bind(...rows.map((r) => r.id)).all();
             const byS = new Map();
             for (const e of (allEv.results || [])) { if (!byS.has(e.session_id)) byS.set(e.session_id, []); byS.get(e.session_id).push(mapEvent(e)); }
-            history = rows.map((r) => ({ id: r.id, started: r.started, updated: r.updated, title: r.title, status: r.status, rollup: rollup(byS.get(r.id) || []) }));
+            history = rows.map((r) => ({ id: r.id, started: r.started, updated: r.updated, title: r.title, status: r.status, rollup: full ? rollup(byS.get(r.id) || []) : publicRollup(rollup(byS.get(r.id) || [])) }));
             previous = history[0] || null;
           }
         } catch {}
-        return json({ ok: true, session, events, checks, additions, rollup: rollup(events), previous, history });
+        return json({ ok: true, session: full ? session : publicSession(session), events, checks, additions, rollup: full ? rollup(allEvents) : publicRollup(rollup(allEvents)), previous, history, redacted: !full });
       } catch (e) { return json({ ok: false, error: String(e) }, 500); }
     }
 
@@ -580,7 +584,8 @@ async function handle(request, env) {
           // the owner's latest ask in a chat (a "say" the hook marks you:true) — shown as "You asked" on the card
           const youEv = chat ? list.find((e) => e.kind === "say" && meta(e).you) : null;
           const you = youEv ? { ts: youEv.ts, text: youEv.detail || youEv.title } : null;
-          return { ...x, note: chat ? "" : x.note, chat, state, story, acts, actCount, features, shots, findings, you };
+          const card = { ...x, note: chat ? "" : x.note, chat, state, story, acts, actCount, features, shots, findings, you };
+          return owner || mine ? card : publicCard(card);
         });
         // owner = "you can see your chats" (the owner's key/account, or a signed-in member seeing their own)
         return json({ ok: true, now, owner: owner || !!me, me: me ? { name: me.name, role: me.role } : null, chats: true, count: out.length, sessions: out });
@@ -597,7 +602,8 @@ async function handle(request, env) {
         let rows = (results || []).filter((r) => canSee(r, request, env)).map(mapSession);   // chats: their owner's eyes only
         // "live" = active and touched within 90s; keep done sessions from the last hour for context
         const now = Date.now();
-        rows = rows.map((s) => ({ ...s, live: s.status === "active" && now - s.updated < 90_000 }));
+        const ownerRead = ownerOK(request, env), mineOnly = new Set((results || []).filter((r) => r.owner_id).map((r) => r.id));
+        rows = rows.map((s) => ({ ...(ownerRead || mineOnly.has(s.id) ? s : publicSession(s)), live: s.status === "active" && now - s.updated < 90_000 }));
         if (activeOnly) rows = rows.filter((s) => s.live || (s.status === "active" && now - s.updated < 10 * 60_000));
         return json({ ok: true, now, count: rows.length, sessions: rows });
       } catch (e) { return writeErr(e); }
@@ -608,7 +614,8 @@ async function handle(request, env) {
       try {
         const row = await env.DB.prepare("SELECT * FROM sessions WHERE id = ?").bind(id).first();
         if (row && !canSee(row, request, env)) return json({ ok: false, error: "private — sign in to see it" }, 401);
-        return row ? json({ ok: true, session: mapSession(row) }) : json({ ok: false, error: "not found" }, 404);
+        if (!row) return json({ ok: false, error: "not found" }, 404);
+        return json({ ok: true, session: ownerOK(request, env) || row.owner_id ? mapSession(row) : publicSession(mapSession(row)) });
       } catch (e) { return writeErr(e); }
     }
 
@@ -680,7 +687,7 @@ async function handle(request, env) {
         const sessions = (s.results || []).filter((r) => canSee(r, request, env)).map((r) => {
           const m = mapSession(r);
           return { kind: "session", id: m.id, ts: m.updated, started: m.started, app: m.app, project: m.project,
-            title: m.title, status: m.status, current: m.current, done: m.done, total: m.total,
+            title: m.title, status: m.status, current: owner || r.owner_id ? m.current : "", done: m.done, total: m.total,
             progress: m.progress, agent: m.agent, live: m.status === "active" && now - m.updated < 90_000 };
         });
         const checks = (c.results || []).map((r) => ({
@@ -691,11 +698,11 @@ async function handle(request, env) {
             complete: r.cov_total === r.cov_matched,
             verified: r.cov_verified != null ? r.cov_verified : null,
             verifiedPct: (r.cov_verified != null && r.cov_total) ? Math.round((r.cov_verified / r.cov_total) * 100) : null,
-            evidence: safeParse(r.evidence, null) } : null,
+            evidence: owner ? safeParse(r.evidence, null) : null } : null,
         }));
         const additions = (sub.results || []).map((r) => ({
           kind: "addition", id: r.id, ts: r.ts, subkind: r.kind, app: r.app, project: r.project,
-          title: r.title, severity: r.severity, category: r.category, shots: safeParse(r.shots, []), sessionId: r.session_id || null,
+          title: owner ? r.title : "A finding was recorded", severity: r.severity, category: r.category, shots: owner ? safeParse(r.shots, []) : [], sessionId: r.session_id || null,
         }));
         const events = sessions.concat(checks).concat(additions).sort((a, b) => b.ts - a.ts).slice(0, limit);
         return json({ ok: true, now, count: events.length, events });
@@ -707,12 +714,13 @@ async function handle(request, env) {
       const limit = Math.min(200, Math.max(1, num(url.searchParams.get("limit")) || 100));
       try {
         const { results } = await env.DB.prepare("SELECT * FROM submitted ORDER BY ts DESC LIMIT ?").bind(limit).all();
+        const full = ownerOK(request, env);
         const rows = (results || []).map((r) => ({
           id: r.id, ts: r.ts, app: r.app, project: r.project, kind: r.kind, title: r.title,
           category: r.category, severity: r.severity, symptom: r.symptom, fix: r.fix, file: r.file, submittedBy: r.submitted_by,
           shots: safeParse(r.shots, []), sessionId: r.session_id || null,
-        }));
-        return json({ ok: true, count: rows.length, submitted: rows });
+        })).map((s) => full ? s : publicSubmitted(s));
+        return json({ ok: true, count: rows.length, submitted: rows, redacted: !full });
       } catch (e) { return json({ ok: false, error: String(e) }, 500); }
     }
 
@@ -792,8 +800,6 @@ function mapEvent(r) {
     detail: r.detail, impact: r.impact, fix: r.fix, file: r.file, ref: r.ref, before: r.before_v, after: r.after_v,
     meta: safeParse(r.meta, null) };
 }
-const publicCheck = (c) => ({ ...c, notFound: [], found: [], securityChecked: [], securityFindings: [], notes: null,
-  coverage: c.coverage ? { ...c.coverage, missed: [], evidence: null } : null });
 function mapCheck(r) {
   return {
     id: r.id, ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by,
