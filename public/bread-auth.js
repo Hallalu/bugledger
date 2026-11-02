@@ -99,13 +99,13 @@
     if (menuEl) return closeMenu();
     var me = A.me, others = A.accounts.filter(function (a) { return a.id !== me.id; });
     menuEl = d.createElement('div'); menuEl.className = 'acct-menu'; menuEl.setAttribute('role', 'menu');
-    menuEl.innerHTML = '<div class="acct-head">' + B.avatar(me.name || me.email) + '<div class="acct-names"><b>' + esc(me.name || 'Your account') + '</b><span>' + esc(me.email) + '</span></div></div>' +
+    menuEl.innerHTML = '<div class="acct-head">' + B.avatar(me.name || me.email, null, true) + '<div class="acct-names"><b>' + esc(me.name || 'Your account') + '</b><span>' + esc(me.email) + '</span></div></div>' +
       '<a class="acct-item" role="menuitem" href="/now">' + icon('live') + 'My board</a>' +
       '<a class="acct-item" role="menuitem" href="/account">' + icon('user') + 'Your account</a>' +
       '<button class="acct-item" role="menuitem" type="button" data-m="connect">' + icon('link') + 'Connect Claude Code</button>' +
       '<div class="acct-sep"></div>' +
       (others.length ? '<div class="acct-sec">Switch to</div>' + others.map(function (a) {
-        return '<button class="acct-item" role="menuitem" type="button" data-sw="' + esc(a.id) + '">' + B.avatar(a.name || a.email, 'sm') + '<span class="acct-other"><b>' + esc(a.name || a.email) + '</b><span>' + esc(a.email) + '</span></span></button>'; }).join('') + '<div class="acct-sep"></div>' : '') +
+        return '<button class="acct-item" role="menuitem" type="button" data-sw="' + esc(a.id) + '">' + B.avatar(a.name || a.email, 'sm', true) + '<span class="acct-other"><b>' + esc(a.name || a.email) + '</b><span>' + esc(a.email) + '</span></span></button>'; }).join('') + '<div class="acct-sep"></div>' : '') +
       '<button class="acct-item" role="menuitem" type="button" data-m="add">' + icon('plus') + 'Add another account</button>' +
       '<button class="acct-item danger" role="menuitem" type="button" data-m="out">' + icon('logout') + 'Sign out</button>';
     // pinned to the screen just under the avatar, so it never runs off a phone's edge or widens the page
@@ -130,7 +130,7 @@
       slot.firstChild.onclick = function () { A.open(); };
       return;
     }
-    slot.innerHTML = '<button class="acct-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Your account: ' + esc(A.me.name || A.me.email) + '">' + B.avatar(A.me.name || A.me.email) + '</button>';
+    slot.innerHTML = '<button class="acct-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Your account: ' + esc(A.me.name || A.me.email) + '">' + B.avatar(A.me.name || A.me.email, null, true) + '</button>';
     slot.firstChild.onclick = function (e) { e.stopPropagation(); openMenu(slot.firstChild); };
   }
 
