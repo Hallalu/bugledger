@@ -10378,5 +10378,29 @@
     "status": "unverified",
     "session": "146b3f7c",
     "found": "2026-11-01"
+  },
+  {
+    "key": "bbff9217:thetaskexpectedthiscouldntbereadbutnodepixelbaketoolsaitoday",
+    "app": "Hallalu CRM",
+    "title": "Task expected this couldn't be read, but node /pixelbake/tools/ai-today.mjs reads it…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The task expected this couldn't be read, but `node ~/pixelbake/tools/ai-today.mjs` reads it now, so no other app has used any so far today.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "bbff9217",
+    "found": "2026-11-01"
+  },
+  {
+    "key": "bbff9217:itscostisntintheneuronfiguresandididntmeasureitsoyoumaywantt",
+    "app": "Hallalu CRM",
+    "title": "Its cost isn't in the neuron figures and I didn't measure it, so you may want to decide…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Its cost isn't in the neuron figures and I didn't measure it, so you may want to decide whether it should run on these jobs.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "bbff9217",
+    "found": "2026-11-01"
   }
 ]
