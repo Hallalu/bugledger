@@ -10786,5 +10786,29 @@
     "status": "unverified",
     "session": "83ed4583",
     "found": "2026-11-02"
+  },
+  {
+    "key": "d5023fa9:smallcostthe3nospeechreelstudiesandthepackpageeachrecordedas",
+    "app": "Hallalu CRM",
+    "title": "- Small cost: the 3 no-speech reel studies and the pack page each recorded a small…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Small cost:** the 3 no-speech reel studies and the pack page each recorded a small Haiku summary charge on the live site, because the fix for that isn't deployed yet.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d5023fa9",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "d5023fa9:the5speechreelstudieswerefiledbeforethatfixtooandididntcheck",
+    "app": "Hallalu CRM",
+    "title": "5 speech reel studies were filed before that fix too, and I didn't check their charges.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "The 5 speech reel studies were filed before that fix too, and I didn't check their charges.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "d5023fa9",
+    "found": "2026-11-02"
   }
 ]

@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-899 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+901 lead(s) auto-extracted by `harvest.mjs` from the local [language model] transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (635)
+## Hallalu CRM (637)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -639,6 +639,8 @@
 - [ ] `low` `other` (2026-11-02, #83ed4583) — One TikTok video failed to download and is marked for retry; the Bilibili run failed on…
 - [ ] `low` `other` (2026-11-02, #e9ed7236) — Didn't try another way around it, and doing it in Security is the proper route anyway.
 - [ ] `low` `other` (2026-11-02, #83ed4583) — Its timer is a real deadline that doesn't restart.
+- [ ] `low` `other` (2026-11-02, #d5023fa9) — - Small cost: the 3 no-speech reel studies and the pack page each recorded a small…
+- [ ] `low` `other` (2026-11-02, #d5023fa9) — 5 speech reel studies were filed before that fix too, and I didn't check their charges.
 
 ## Finished. (102)
 
