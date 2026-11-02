@@ -676,11 +676,13 @@ async function handle(request, env) {
     // ---- GET /api/activity : merged chronological feed (sessions + checks) for the timeline ----
     if (pathname === "/api/activity" && request.method === "GET") {
       const limit = Math.min(200, Math.max(1, num(url.searchParams.get("limit")) || 80));
+      const onlyApp = (url.searchParams.get("app") || "").slice(0, 120);   // one project's own history, not just what is in the latest events
+      const byApp = onlyApp ? "WHERE app = ? " : "", bindApp = onlyApp ? [onlyApp, limit] : [limit];
       try {
         const [s, c, sub] = await Promise.all([
-          env.DB.prepare("SELECT * FROM sessions ORDER BY updated DESC LIMIT ?").bind(limit).all(),
-          env.DB.prepare("SELECT * FROM checks ORDER BY ts DESC LIMIT ?").bind(limit).all(),
-          env.DB.prepare("SELECT * FROM submitted ORDER BY ts DESC LIMIT ?").bind(limit).all(),
+          env.DB.prepare(`SELECT * FROM sessions ${byApp}ORDER BY updated DESC LIMIT ?`).bind(...bindApp).all(),
+          env.DB.prepare(`SELECT * FROM checks ${byApp}ORDER BY ts DESC LIMIT ?`).bind(...bindApp).all(),
+          env.DB.prepare(`SELECT * FROM submitted ${byApp}ORDER BY ts DESC LIMIT ?`).bind(...bindApp).all(),
         ]);
         const now = Date.now();
         const owner = ownerOK(request, env);

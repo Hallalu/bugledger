@@ -147,18 +147,19 @@
   // filters: a kind segment + an app select, mirrored in the hash (#kind=check&app=Abba) so a view is linkable
   function readHash(){ try{ var p=new URLSearchParams((location.hash||'').replace(/^#/,'')); F.kind=p.get('kind')||'all'; F.app=p.get('app')||''; }catch(e){} if(['all','session','check','addition'].indexOf(F.kind)<0) F.kind='all'; }
   function writeHash(){ var p=[]; if(F.kind!=='all') p.push('kind='+encodeURIComponent(F.kind)); if(F.app) p.push('app='+encodeURIComponent(F.app)); try{ history.replaceState(null,'',location.pathname+(p.length?'#'+p.join('&'):'')); }catch(e){} }
+  var KNOWN={}, pollSeq=0;
   function paintFilters(){
     Bread.$$('#kindSeg button').forEach(function(b){ var on=b.getAttribute('data-kind')===F.kind; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); });
-    var sel=document.getElementById('appSel'), apps={}; EVS.forEach(function(e){ if(e.app) apps[e.app]=1; });
+    var sel=document.getElementById('appSel'), apps=KNOWN; EVS.forEach(function(e){ if(e.app) apps[e.app]=1; }); if(F.app) apps[F.app]=1;   // the chosen app stays chosen, even before its events arrive
     var names=Object.keys(apps).sort(function(a,b){ return a.localeCompare(b); });
     var have=Bread.$$('option',sel).slice(1).map(function(o){ return o.value; });
     if(have.join('|')!==names.join('|')) sel.innerHTML='<option value="">All apps</option>'+names.map(function(n){ return '<option value="'+esc(n)+'">'+esc(n)+'</option>'; }).join('');
-    sel.value=F.app; if(sel.value!==F.app){ F.app=''; sel.value=''; }
+    sel.value=F.app;
   }
-  function clearFilters(){ F.kind='all'; F.app=''; writeHash(); paintFilters(); draw(); }
+  function clearFilters(){ F.kind='all'; F.app=''; writeHash(); paintFilters(); draw(); poll(); }
   document.getElementById('kindSeg').addEventListener('click', function(ev){ var b=ev.target.closest('button[data-kind]'); if(!b) return; F.kind=b.getAttribute('data-kind'); writeHash(); paintFilters(); draw(); });
-  document.getElementById('appSel').addEventListener('change', function(){ F.app=this.value; writeHash(); draw(); });
-  window.addEventListener('hashchange', function(){ readHash(); paintFilters(); draw(); });
+  document.getElementById('appSel').addEventListener('change', function(){ F.app=this.value; writeHash(); draw(); poll(); });
+  window.addEventListener('hashchange', function(){ readHash(); paintFilters(); draw(); poll(); });
 
   function draw(){
     var feed=document.getElementById('feed');
@@ -199,7 +200,7 @@
     window.BREAD_SEARCH=function(q){ q=q.toLowerCase(); return EVS.filter(function(e){ return ((e.app||'')+' '+(e.project||'')+' '+(e.title||'')).toLowerCase().indexOf(q)>=0; }).slice(0,12).map(function(e){
       var id=e.kind==='session'?e.id:e.sessionId; return {group:'Activity', label:(e.app||'')+' · '+(e.title||kindLabel(e.scope)), icon:e.kind==='session'?'live':e.kind==='addition'?'plus':'checkcircle', href:id?'/story/'+encodeURIComponent(id):(e.kind==='check'?'/report?id='+encodeURIComponent(e.id):'/timeline'), sub:Bread.ago(e.ts)}; }); };
   }
-  function poll(){ if(document.hidden) return; fetch('/api/activity?limit=120',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ showErr(false); render(d); })
+  function poll(){ if(document.hidden) return; var seq=++pollSeq; fetch('/api/activity?limit=120'+(F.app?'&app='+encodeURIComponent(F.app):''),{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ if(seq!==pollSeq) return; showErr(false); render(d); })
     .catch(function(){ setPoll('reconnecting'); showErr(true); }); }
   readHash(); paintFilters();
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) poll(); });
