@@ -10438,5 +10438,65 @@
     "status": "unverified",
     "session": "3a6f7dfa",
     "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:nodeploysthepushesdidntstartanybuildordeploy",
+    "app": "Hallalu CRM",
+    "title": "- No deploys: the pushes didn't start any build or deploy.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **No deploys:** the pushes didn't start any build or deploy.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:hallalureplyscommitisdifferentitsfolderisntagitreposoipushed",
+    "app": "Hallalu CRM",
+    "title": "- Hallalu Reply's commit is different: its folder isn't a git repo, so I pushed from a…",
+    "category": "data-loss",
+    "severity": "critical",
+    "symptom": "- **Hallalu Reply's commit is different:** its folder isn't a git repo, so I pushed from a temporary copy and have since deleted it.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "3a6f7dfa:hallalucrmdoesntcallthisbackend",
+    "app": "Hallalu CRM",
+    "title": "Hallalu CRM doesn't call this backend.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Hallalu CRM doesn't call this backend.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "3a6f7dfa",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "8a2ece44:ididntchangeanyappandtheplanpageisntbuilt",
+    "app": "Hallalu CRM",
+    "title": "Didn't change any app, and the plan page isn't built.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "I didn't change any app, and the plan page isn't built.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8a2ece44",
+    "found": "2026-11-02"
+  },
+  {
+    "key": "8a2ece44:earlierverdicttheabsresearchreportfromaugustadvisedagainstau",
+    "app": "Hallalu CRM",
+    "title": "- Earlier verdict: the ABS research report from August advised against a UK consumer…",
+    "category": "other",
+    "severity": "low",
+    "symptom": "- **Earlier verdict:** the ABS research report from August advised against a UK consumer marketplace because the numbers didn't work.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "8a2ece44",
+    "found": "2026-11-02"
   }
 ]

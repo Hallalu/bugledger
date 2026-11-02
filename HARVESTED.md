@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-870 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+875 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (608)
+## Hallalu CRM (613)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -11,6 +11,7 @@
 - [ ] `critical` `data-loss` (2026-10-24, #c8a1be54) — Nothing was lost: - Each session's unfinished, uncommitted work stays in /pixelbake on…
 - [ ] `critical` `data-loss` (2026-10-24, #7054ce41) — Mirror fixed: uploaded 2, failed 0, deleted 0.
 - [ ] `critical` `data-loss` (2026-10-27, #2febca89) — Catch is that past chats older than that couldn't be reopened or used to recover lost…
+- [ ] `critical` `data-loss` (2026-11-02, #3a6f7dfa) — - Hallalu Reply's commit is different: its folder isn't a git repo, so I pushed from a…
 - [ ] `high` `security` (2026-08-10, #55c985af) — While they run, let me scaffold the Cloudflare Worker project and build the interactive…
 - [ ] `high` `crash` (2026-08-10, #55c985af) — Two problems: a crash in the report loop and heavy noise (268 medium — almost certainly…
 - [ ] `high` `auth` (2026-08-11, #55c985af) — Copy, conversion, accessibility) when the session limit resets to catch more.
@@ -612,6 +613,10 @@
 - [ ] `low` `other` (2026-11-02, #3a6f7dfa) — Two two-factor failures didn't come back, so the full disk most likely caused them.
 - [ ] `low` `other` (2026-11-02, #3a6f7dfa) — Old Turnstile failure went away because the test setup was corrected, not because the…
 - [ ] `low` `other` (2026-11-02, #3a6f7dfa) — My privacy page check didn't complete, but it was part of the same deploy.
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — - No deploys: the pushes didn't start any build or deploy.
+- [ ] `low` `other` (2026-11-02, #3a6f7dfa) — Hallalu CRM doesn't call this backend.
+- [ ] `low` `other` (2026-11-02, #8a2ece44) — Didn't change any app, and the plan page isn't built.
+- [ ] `low` `other` (2026-11-02, #8a2ece44) — - Earlier verdict: the ABS research report from August advised against a UK consumer…
 
 ## Finished. (102)
 
