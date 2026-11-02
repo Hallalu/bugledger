@@ -1,8 +1,8 @@
 # 🌱 Auto-Harvested Bugs — unverified, mined automatically from conversations
 
-898 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
+899 lead(s) auto-extracted by `harvest.mjs` from the local Claude transcripts. **Unverified** — promote good ones into `bugs.json`. Runs hourly via launchd.
 
-## Hallalu CRM (634)
+## Hallalu CRM (635)
 
 - [ ] `critical` `data-loss` (2026-08-17, #f256d011) — Ava composer — a + to drop a photo for her to look at, Enter to send (fixed — it was…
 - [ ] `critical` `data-loss` (2026-10-07, #e8725186) — Found a bug: an unknown or deleted character id leaves the Media Kit stuck on "Loading…
@@ -638,6 +638,7 @@
 - [ ] `low` `other` (2026-11-02, #83ed4583) — Answers come with the photo and a link to the post and second behind them, and any…
 - [ ] `low` `other` (2026-11-02, #83ed4583) — One TikTok video failed to download and is marked for retry; the Bilibili run failed on…
 - [ ] `low` `other` (2026-11-02, #e9ed7236) — Didn't try another way around it, and doing it in Security is the proper route anyway.
+- [ ] `low` `other` (2026-11-02, #83ed4583) — Its timer is a real deadline that doesn't restart.
 
 ## Finished. (102)
 

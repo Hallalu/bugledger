@@ -10774,5 +10774,17 @@
     "status": "unverified",
     "session": "e9ed7236",
     "found": "2026-11-02"
+  },
+  {
+    "key": "83ed4583:itstimerisarealdeadlinethatdoesntrestart",
+    "app": "Hallalu CRM",
+    "title": "Its timer is a real deadline that doesn't restart.",
+    "category": "other",
+    "severity": "low",
+    "symptom": "Its timer is a real deadline that doesn't restart.",
+    "source": "auto-harvest",
+    "status": "unverified",
+    "session": "83ed4583",
+    "found": "2026-11-02"
   }
 ]
