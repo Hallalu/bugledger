@@ -408,8 +408,10 @@ async function handle(request, env) {
           ? env.DB.prepare("SELECT * FROM checks WHERE app = ? ORDER BY ts DESC LIMIT ?").bind(app, limit)
           : env.DB.prepare("SELECT * FROM checks ORDER BY ts DESC LIMIT ?").bind(limit);
         const { results } = await q.all();
-        const rows = (results || []).map(mapCheck);
-        return json({ ok: true, count: rows.length, checks: rows });
+        // What was found in a project is the owner's to read. Anyone else sees that a check ran and its counts.
+        const full = ownerOK(request, env);
+        const rows = (results || []).map(mapCheck).map((c) => full ? c : publicCheck(c));
+        return json({ ok: true, count: rows.length, checks: rows, redacted: !full });
       } catch (e) {
         return json({ ok: false, error: String(e) }, 500);
       }
@@ -790,6 +792,8 @@ function mapEvent(r) {
     detail: r.detail, impact: r.impact, fix: r.fix, file: r.file, ref: r.ref, before: r.before_v, after: r.after_v,
     meta: safeParse(r.meta, null) };
 }
+const publicCheck = (c) => ({ ...c, notFound: [], found: [], securityChecked: [], securityFindings: [], notes: null,
+  coverage: c.coverage ? { ...c.coverage, missed: [], evidence: null } : null });
 function mapCheck(r) {
   return {
     id: r.id, ts: r.ts, app: r.app, project: r.project, checkedBy: r.checked_by,

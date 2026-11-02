@@ -29,3 +29,9 @@ test("worker.js parses and exports a fetch handler", async () => {
   assert.match(src, /export default \{[\s\S]*async fetch\(request, env\)/);
   assert.match(src, /\/api\/session\/event/); assert.match(src, /\/api\/story/); assert.match(src, /\/api\/admin\/recurrence/);
 });
+
+test("worker: outsiders see counts only on check records", () => {
+  const src = read("src/worker.js");
+  assert.match(src, /const full = ownerOK\(request, env\);/);
+  assert.match(src, /full \? c : publicCheck\(c\)/);
+});
