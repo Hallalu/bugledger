@@ -259,6 +259,9 @@
   .fx-ms .det{font-size:13.5px;line-height:1.55;color:var(--ink-3);margin-top:3px;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .fx-ms li.open .det{display:block}
   .fx-ms button.ev2{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;display:block;width:100%}
+  .fx-private{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.5;color:var(--ink-2)}
+  .fx-private svg{width:16px;height:16px;flex:0 0 auto;color:var(--ink-3)}
+  .fx-private .more{padding:0;font-size:inherit}
   .fx-foot{display:flex;gap:10px;flex-wrap:wrap;padding-top:16px}
   .fx-foot .btn.ghost:first-child{margin-left:-10px}
   #head.fx-head{align-items:center;flex-wrap:nowrap;margin-bottom:26px;max-width:1120px} #head.fx-head .back{margin:0}
@@ -500,6 +503,10 @@
       return '<li class="' + (fresh ? 'new' : '') + (a.ok === false ? ' bad' : '') + '"><span class="ai ' + esc(a.icon) + '">' + aIco(a.icon) + '</span><span class="tx">' + esc(a.text) +
         (opts.showStep && a.step ? ' <em>· ' + esc(a.step) + '</em>' : '') + '</span><span class="w" data-ago="' + a.ts + '">' + B.ago(a.ts - skew) + '</span></li>'; }).join('') + '</ol>';
   }
+  // a signed-out visitor gets the counts but not the steps themselves
+  function doneOf(s){ return (s.tasks || []).length ? s.tasks.filter(function(t){ return t.status === 'done'; }).length : (s.done || 0); }
+  function totalOf(s){ return (s.tasks || []).length || s.total || 0; }
+  function privateLine(){ return '<div class="fx-private">' + I('lock') + '<span>' + (data && data.me ? 'The steps and findings are private to whoever ran this.' : 'The steps and findings are private. <button class="more" type="button" data-signin="1">Sign in</button> to see yours.') + '</span></div>'; }
   function stepNo(s, t){ return (s.tasks || []).indexOf(t) + 1; }
   var EVI = { phase: ['arrow', 'accent'], say: ['sparkles', ''], found: ['bug', 'warn'], fixed: ['check', 'ok'], clean: ['shieldcheck', 'ok'], metric: ['zap', 'info'], verdict: ['checkcircle', 'ok'], caveat: ['alert', 'warn'], note: ['info', ''] };
   function evIcon(e){ if (e.kind === 'say' && e.meta && e.meta.you) return ['user', 'accent']; if (e.kind === 'note' && e.meta && e.meta.recap) return ['checkcircle', 'ok'];
@@ -535,7 +542,7 @@
   function sessionHTML(s){
     var chat = s.kind === 'chat' ? (s.chat || {}) : null, ch = chat || {}, active = (s.tasks || []).filter(function(t){ return t.status === 'active'; })[0];
     var h = fxHero(s, true);
-    if (s.state !== 'done' && s.state !== 'waiting' && s.state !== 'ended') {
+    if (!s.redacted && s.state !== 'done' && s.state !== 'waiting' && s.state !== 'ended') {
       h += bxSec('Follow along' + (active ? '<small>inside step ' + stepNo(s, active) + '</small>' : ''), s.actCount ? B.fmtN(s.actCount) + ' action' + (s.actCount === 1 ? '' : 's') : '',
         actsList((s.acts || []).slice(0, 6), { showStep: true, empty: 'Each thing the agent does appears here the moment it happens: reading a file, editing, running the tests, checking a page.' }));
     }
@@ -553,7 +560,7 @@
   function featLI(f){ return '<li>' + I('checkcircle') + '<span>' + esc(f.title) + (f.status === 'applied' ? '<span class="up">upgraded</span>' : '') + '</span>' + (f.detail ? '<span class="fd">' + esc(f.detail) + '</span>' : '') + '</li>'; }
 
   // ---------- the board ----------
-  function sig(s){ return JSON.stringify([s.updated, s.state, s.tasks, s.current, s.note, s.chat, s.you && s.you.ts, s.title, (s.story || []).length && s.story[0].id, (s.features || []).length, (s.shots || []).length, openMore[s.id + '|f'], openMore[s.id + '|w'], openMore[s.id + '|y'], (s.acts || []).length && s.acts[0].id]); }
+  function sig(s){ return JSON.stringify([s.updated, s.state, s.done, s.total, s.actCount, s.findings, s.tasks, s.current, s.note, s.chat, s.you && s.you.ts, s.title, (s.story || []).length && s.story[0].id, (s.features || []).length, (s.shots || []).length, openMore[s.id + '|f'], openMore[s.id + '|w'], openMore[s.id + '|y'], (s.acts || []).length && s.acts[0].id]); }
   var cardEls = {};
   // one keyed card per session; a card can move between groups (working → your turn) without being rebuilt
   function placeCards(arr, host, keep){
@@ -583,7 +590,7 @@
     }
     // summary: what is moving, what waits on you, and how far through every plan the work is
     var steps = 0, stepsDone = 0, acts = 0, chats = 0;
-    open.forEach(function(s){ (s.tasks || []).forEach(function(t){ steps++; if (t.status === 'done') stepsDone++; }); acts += s.actCount || 0; if (s.kind === 'chat') chats++; });
+    open.forEach(function(s){ steps += totalOf(s); stepsDone += doneOf(s); acts += s.actCount || 0; if (s.kind === 'chat') chats++; });
     var working = live.filter(function(s){ return s.state === 'working'; }).length, quiet = live.filter(function(s){ return s.state === 'quiet'; }).length, needs = live.filter(function(s){ return s.state === 'needs'; }).length;
     document.getElementById('stats').innerHTML = [
       // without the key only public boards are counted, so a 0 there would hide chats that are working: show – instead
@@ -614,7 +621,7 @@
     // finished
     var fw = document.getElementById('finWrap'); fw.hidden = !fin.length;
     document.getElementById('finMeta').textContent = fin.length ? fin.length + ' session' + (fin.length === 1 ? '' : 's') : '';
-    document.getElementById('fin').innerHTML = fin.map(function(s){ var done = (s.tasks || []).filter(function(t){ return t.status === 'done'; }).length;
+    document.getElementById('fin').innerHTML = fin.map(function(s){ var done = doneOf(s);
       return '<a class="finrow" href="/now/' + encodeURIComponent(s.id) + '">' + B.avatar(s.app || s.project) + '<div style="min-width:0"><div class="t">' + esc(s.title) + '</div><div class="s">' + esc(s.app || s.project) + (s.kind === 'chat' ? ' · chat closed' : '') + ' · ' + done + ' steps · ' + (s.kind === 'chat' ? 'open ' : 'took ') + short(s.updated - s.started) + ((s.features || []).length ? ' · ' + s.features.length + ' features' : '') + ((s.shots || []).length ? ' · ' + s.shots.length + ' screens' : '') + '</div></div><span class="s">' + when(s.updated) + '</span></a>'; }).join('');
     renderPulse(list);
     firstLoad = false;
@@ -630,6 +637,7 @@
       var ic = e.kind === 'feature' ? ['checkcircle', 'ok'] : evIcon(e);
       if (e.kind === 'act') return '<button class="pv' + (fresh ? ' fresh' : '') + '" type="button" data-go="' + esc(x.s.id) + '">' + B.avatar(x.s.app || x.s.project, 'xs') + '<span><span class="txt">' + esc(e.title) + '</span><span class="sub"><span class="truncate">' + esc(x.s.app || x.s.project) + '</span><span>·</span><span data-ago="' + e.ts + '">' + B.ago(e.ts - skew) + '</span></span></span></button>';
       return '<button class="pv' + (fresh ? ' fresh' : '') + '" type="button" data-go="' + esc(x.s.id) + '">' + B.avatar(x.s.app || x.s.project, 'xs') + '<span><span class="txt">' + (e.kind === 'feature' ? 'Shipped: ' : '') + evText(e) + '</span><span class="sub"><span class="truncate">' + esc(x.s.app || x.s.project) + '</span><span>·</span><span data-ago="' + e.ts + '">' + B.ago(e.ts - skew) + '</span></span></span></button>'; }).join('')
+      : list.some(function(s){ return s.redacted; }) ? '<p class="meta" style="padding:12px 0">' + (data && data.me ? 'These moves are private to whoever ran them.' : 'These moves are private. Sign in to see yours.') + '</p>'
       : '<p class="meta" style="padding:12px 0">' + (pmode === 'a' ? 'Every action across every session appears here as it happens.' : 'Milestones appear here as the agents work.') + '</p>';
     if (firstLoad) all.forEach(function(x){ pulseSeen[x.e.id] = 1; });
   }
@@ -641,15 +649,15 @@
     if (cnt('needs')) parts.push(cnt('needs') + ' need you'); if (cnt('working')) parts.push(cnt('working') + ' working'); if (cnt('quiet')) parts.push(cnt('quiet') + ' quiet'); if (cnt('waiting')) parts.push(cnt('waiting') + ' your turn');
     document.getElementById('lanesMeta').textContent = (live.length === 1 ? 'one thing open' : live.length + ' things open at once') + (parts.length ? ' · ' + parts.join(' · ') : '');
     document.getElementById('lanes').innerHTML = live.map(function(s){
-      var total = (s.tasks || []).length, done = (s.tasks || []).filter(function(t){ return t.status === 'done'; }).length;
+      var total = totalOf(s), done = doneOf(s);
       var active = (s.tasks || []).filter(function(t){ return t.status === 'active'; })[0], ws = waves(s), w = ws.filter(function(x){ return x.on; })[0];
       var a = (s.acts || [])[0];
       return '<button class="lane ' + s.state + '" type="button" data-go="' + esc(s.id) + '"  ">' + B.avatar(s.app || s.project, 'sm') +
         '<span class="who"><b><span class="an">' + esc(s.app || s.project) + '</span>' + (total ? '<i class="lpc"> · ' + Math.round(done / total * 100) + '%</i>' : '') + '</b><span>' + esc(s.title) + '</span></span>' +
-        '<span class="where"><span class="step">' + (s.state === 'waiting' ? (s.chat && s.chat.ask ? 'Your turn — ' + esc(s.chat.ask) : 'Your turn — its reply is ready') : s.state === 'needs' ? 'Needs your OK — ' + esc((s.chat && s.chat.need) || 'approve to go on') : active ? 'Step ' + stepNo(s, active) + ' of ' + total + ': ' + esc(active.text) : s.kind === 'chat' && s.you ? 'On your message: ' + esc(s.you.text) : esc(s.current || 'Getting started')) + '</span>' +
+        '<span class="where"><span class="step">' + (s.redacted ? 'Steps are private' : s.state === 'waiting' ? (s.chat && s.chat.ask ? 'Your turn — ' + esc(s.chat.ask) : 'Your turn — its reply is ready') : s.state === 'needs' ? 'Needs your OK — ' + esc((s.chat && s.chat.need) || 'approve to go on') : active ? 'Step ' + stepNo(s, active) + ' of ' + total + ': ' + esc(active.text) : s.kind === 'chat' && s.you ? 'On your message: ' + esc(s.you.text) : esc(s.current || 'Getting started')) + '</span>' +
           '<span class="act">' + (s.state === 'waiting' && s.chat && s.chat.recap ? I('checkcircle') + '<span>' + esc(s.chat.recap) + '</span>'
             : a ? aIco(a.icon) + '<span>' + esc(a.text) + ' · <span data-ago="' + a.ts + '">' + B.ago(a.ts - skew) + '</span></span>' : '<span>' + esc(s.current || '') + '</span>') + '</span></span>' +
-        '<span class="pr"><span>' + (total ? '<span class="pc">' + Math.round(done / total * 100) + '%</span> · ' : '') + (w && w.name && ws.length > 1 ? 'wave ' + (w.n + 1) + ' of ' + ws.length : total ? done + ' of ' + total + ' done' : 'no step list') + '</span>' + (total ? '<span class="fx-ticks">' + (s.tasks || []).map(function(t){ return '<i class="' + t.status + '"></i>'; }).join('') + '</span>' : '') + '</span>' +
+        '<span class="pr"><span>' + (total ? '<span class="pc">' + Math.round(done / total * 100) + '%</span> · ' : '') + (w && w.name && ws.length > 1 ? 'wave ' + (w.n + 1) + ' of ' + ws.length : total ? done + ' of ' + total + ' done' : 'no step list') + '</span>' + (total ? '<span class="fx-ticks">' + ((s.tasks || []).length ? s.tasks.map(function(t){ return '<i class="' + t.status + '"></i>'; }).join('') : Array.apply(null, Array(total)).map(function(x, i){ return '<i class="' + (i < done ? 'done' : 'pending') + '"></i>'; }).join('')) + '</span>' : '') + '</span>' +
         stateBadge(s) + '</button>'; }).join('');
   }
   (function guide(){
@@ -678,14 +686,15 @@
   }
   function spec(k, v){ return '<div><dt class="fx-l">' + k + '</dt><dd>' + v + '</dd></div>'; }
   function fxHero(s, board){
-    var ws = waves(s), tasks = s.tasks || [], total = tasks.length, done = tasks.filter(function(t){ return t.status === 'done'; }).length;
+    var ws = waves(s), tasks = s.tasks || [], total = totalOf(s), done = doneOf(s);
     var pct = total ? Math.round(done / total * 100) : (s.state === 'done' ? 100 : 0), active = tasks.filter(function(t){ return t.status === 'active'; })[0];
     var chat = s.kind === 'chat' ? (s.chat || {}) : null, ch = chat || {}, named = ws.some(function(w){ return w.name; });
     var h = '<div class="fx-eye">' + B.avatar(s.app || s.project, 'sm') + '<span class="an">' + esc(s.app || s.project || 'Project') + '</span>' +
       (chat ? '<span class="chipk">' + aIco('chat') + 'Chat</span>' : (s.project && s.project !== s.app ? '<span class="pj">' + esc(s.project) + '</span>' : '')) + stateBadge(s) + '</div>';
     h += '<div class="fx-hero">' + (board ? '<h3 class="fx-title"><a href="/now/' + encodeURIComponent(s.id) + '">' + esc(s.title) + '</a></h3>' : '<h1 class="fx-title">' + esc(s.title) + '</h1>') + (chat && !total ? '' : '<div class="fx-pct" role="img" aria-label="' + pct + '% done">' + odo(pct, board ? Math.min(pctSeen[s.id] || 0, pct) : Math.min(fxPct, pct)) + '<small>%</small></div>') + '</div>';
     if (board) pctSeen[s.id] = pct;
-    if (total) h += '<div class="fx-rail" aria-hidden="' + (named && ws.length > 1 ? 'false' : 'true') + '">' + ws.map(function(w){
+    if (s.redacted && total) { var marks = ''; for (var mi = 0; mi < total; mi++) marks += '<i class="' + (mi < done ? 'done' : 'pending') + '"></i>'; h += '<div class="fx-rail" aria-hidden="true"><div class="fx-wv" style="--n:1"><span class="fx-ticks">' + marks + '</span></div></div>'; }
+    else if (total) h += '<div class="fx-rail" aria-hidden="' + (named && ws.length > 1 ? 'false' : 'true') + '">' + ws.map(function(w){
       var ticks = '<span class="fx-ticks">' + w.steps.map(function(x){ return '<i class="' + x.t.status + '"></i>'; }).join('') + '</span>';
       if (!(named && ws.length > 1)) return '<div class="fx-wv" style="--n:' + w.steps.length + '">' + ticks + '</div>';
       return '<button class="fx-wv' + (w.on ? ' on' : '') + '" type="button" style="--n:' + w.steps.length + '" data-jump="' + esc(s.id) + '|' + w.n + '" title="' + esc(w.name) + ' — ' + w.done + ' of ' + w.steps.length + '">' + ticks + '<span class="fx-l"><b>' + (function(p){ return esc(p[0]) + (p[1] ? '<span class="wrest"> — ' + esc(p.slice(1).join(' — ')) + '</span>' : ''); })(String(w.name || 'Steps').split(' — ')) + '</b><span>' + w.done + '/' + w.steps.length + '</span></span></button>'; }).join('') + '</div>';
@@ -703,6 +712,7 @@
     h += '<dl class="fx-spec">' + (board ? c.slice(0, 4) : c).join('') + '</dl>';
     if (chat && s.you) { var yk = s.id + '|y', long = s.you.text.length > 230;
       h += '<div class="fx-say sm' + (openMore[yk] ? ' open' : '') + '"><span class="fx-l">You asked</span><span class="v clamp">' + esc(s.you.text) + '</span>' + (long && !openMore[yk] ? '<button class="more" type="button" data-more="' + esc(yk) + '">Show all</button>' : '') + '</div>'; }
+    if (s.redacted) return h + privateLine();
     var doingK = { done: 'Done', ended: 'Closed', waiting: 'Your turn', needs: 'Needs you' }[s.state] || 'Now';
     var doingV = chat && (s.state === 'working' || s.state === 'quiet') && s.acts && s.acts[0] ? s.acts[0].text
       : s.state === 'waiting' ? (ch.ask || s.current || 'Its reply is ready') : s.state === 'needs' ? (ch.need || s.current || 'It is waiting for your OK')
@@ -755,11 +765,11 @@
     if (sp.singles.length) right += sec('Screens', sp.singles.length, thumbs(sp.singles));
     if ((s.features || []).length) right += sec('Shipped here', s.features.length, '<ul class="feats">' + s.features.map(featLI).join('') + '</ul>');
     // nothing to show on a finished board with no actions: the empty block only earns its place while work can still arrive
-    if ((s.acts || []).length || s.state === 'working' || s.state === 'quiet') right += sec('Every action', B.fmtN(s.actCount || 0), actsList(s.acts || [], { showStep: true, empty: 'Each action appears here as the agent works.' }));
-    right += fxMilestones(s);
+    if ((s.acts || []).length || (!s.redacted && (s.state === 'working' || s.state === 'quiet'))) right += sec('Every action', B.fmtN(s.actCount || 0), actsList(s.acts || [], { showStep: true, empty: 'Each action appears here as the agent works.' }));
+    right += s.redacted ? '<div class="fx-foot"><a class="btn sm ghost" href="/story/' + encodeURIComponent(s.id) + '">' + I('file') + 'Open the full story</a></div>' : fxMilestones(s);
     var steps = fxSteps(s), from = fxPct, r0 = window.scrollY;
-    root.innerHTML = '<article class="fx ' + s.state + '" style="--h:' + B.hue(s.app || s.project) + '">' + fxHero(s) + (steps ? '<div class="fx-cols"><div>' + steps + '</div><div class="fx-side">' + right + '</div></div>' : '<div class="fx-side" style="margin-top:44px">' + right + '</div>') + '</article>';
-    var tasks = s.tasks || []; fxPct = tasks.length ? Math.round(tasks.filter(function(t){ return t.status === 'done'; }).length / tasks.length * 100) : (s.state === 'done' ? 100 : 0);
+    root.innerHTML = '<article class="fx ' + s.state + '" style="--h:' + B.hue(s.app || s.project) + '">' + fxHero(s) + (steps ? '<div class="fx-cols"><div>' + steps + '</div><div class="fx-side">' + right + '</div></div>' : '<div class="fx-side" style="margin-top:' + (s.redacted ? 4 : 44) + 'px">' + right + '</div>') + '</article>';
+    var fxT = totalOf(s); fxPct = fxT ? Math.round(doneOf(s) / fxT * 100) : (s.state === 'done' ? 100 : 0);
     rollOdo(root);
     if (from) window.scrollTo(0, r0);
     prev[s.id] = (s.tasks || []).map(function(t){ return t.status; });
@@ -788,7 +798,8 @@
 
   // ---------- events ----------
   root.addEventListener('click', function(ev){
-    var t = ev.target.closest('[data-fxstep],[data-fxall],[data-ev],[data-step],[data-wave],[data-jump],[data-more],[data-go],[data-shot],[data-pmode]'); if (!t) return;
+    var t = ev.target.closest('[data-signin],[data-fxstep],[data-fxall],[data-ev],[data-step],[data-wave],[data-jump],[data-more],[data-go],[data-shot],[data-pmode]'); if (!t) return;
+    if (t.dataset.signin) { if (B.auth) B.auth.open(); return; }
     if (t.dataset.fxstep) { var fl = t.closest('.fxs'), fo = !fl.classList.contains('open'); openSteps[t.dataset.fxstep] = fo; fl.classList.toggle('open', fo); t.setAttribute('aria-expanded', fo); var c0 = cardEls[t.dataset.fxstep.split('|')[0]]; if (c0) c0.sig = ''; return; }
     if (t.dataset.fxall) { fxAll = !fxAll; openSteps = {}; focusSig = ''; render(); return; }
     if (t.dataset.ev) { var el0 = t.closest('li'), eo = !el0.classList.contains('open'); openEv[t.dataset.ev] = eo; el0.classList.toggle('open', eo); t.setAttribute('aria-expanded', eo); return; }
