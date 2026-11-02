@@ -35,3 +35,9 @@ test("worker: outsiders see counts only on check records", () => {
   assert.match(src, /const full = ownerOK\(request, env\);/);
   assert.match(src, /full \? c : publicCheck\(c\)/);
 });
+
+test("Bread.reduceMotion is a value, so no page calls it (a call crashed tapping a row on the Now board)", () => {
+  for (const f of fs.readdirSync("public").filter((n) => n.endsWith(".html"))) {
+    assert.ok(!/\.reduceMotion\(\)/.test(fs.readFileSync("public/" + f, "utf8")), f);
+  }
+});
