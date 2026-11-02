@@ -1,4 +1,5 @@
 import { test } from "node:test";
+import fs from "node:fs";
 import assert from "node:assert/strict";
 import { publicCheck, publicEvent, publicSubmitted, publicRollup, publicSession, publicCard } from "../src/private-findings.mjs";
 
@@ -32,4 +33,9 @@ test("a board card hides story, actions, features, shots and asks", () => {
   const c = publicCard({ title: "Scan", findings: 4, current: SECRET, tasks: [], note: "", story: [SECRET], acts: [SECRET], features: [SECRET], shots: [SECRET], you: { text: SECRET } });
   assert.equal(hasSecret(c), false);
   assert.equal(c.findings, 4);
+});
+
+test("worker: a chat with helpers still running counts as working", () => {
+  const src = fs.readFileSync(new URL("../src/worker.js", import.meta.url), "utf8");
+  assert.match(src, /running \|\| \(fresh && chat\.f !== "waiting"\)/);
 });

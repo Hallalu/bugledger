@@ -494,7 +494,7 @@
     fetch('/api/sessions?active=1&limit=5', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
       var c = d.counts || { agents: 0, boards: 0 }, n = $('#livenote'), was = AGENTS; AGENTS = c.agents; LIVE = (d.sessions || []).filter(function (s) { return s.live; }); if (st.view === 'overview' && was !== AGENTS && ACTIVITY) render();
       if (!c.agents && !c.boards) { n.hidden = true; return; }
-      n.innerHTML = '<span class="pip live"></span><div><b>' + c.agents + ' agent' + (c.agents === 1 ? '' : 's') + ' working now</b>' + (c.boards ? ' <span class="muted">· ' + c.boards + ' board' + (c.boards === 1 ? '' : 's') + ' live</span>' : '') + '</div><a class="btn sm" href="/now">' + icon('live') + 'Watch</a>'; n.hidden = false;
+      n.innerHTML = '<span class="pip live"></span><div><b>' + c.agents + ' agent' + (c.agents === 1 ? '' : 's') + ' working now</b>' + (c.helpers ? ' <span class="muted">· ' + c.helpers + ' helper' + (c.helpers === 1 ? '' : 's') + '</span>' : '') + (c.boards ? ' <span class="muted">· ' + c.boards + ' board' + (c.boards === 1 ? '' : 's') + ' live</span>' : '') + '</div><a class="btn sm" href="/now">' + icon('live') + 'Watch</a>'; n.hidden = false;
     }).catch(function () {});
   }
 
